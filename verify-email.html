@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<!-- verify-email — landing after /auth/verify-email consume (Auth v2 PR4)
+     Also the post-signup "check your email" screen when ?status=sent. -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verify your email — MAKETZO</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#06070A">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/css/auth.css">
+</head>
+<body class="auth-body">
+
+<div class="bg-trading" aria-hidden="true">
+  <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+    <g stroke="#C9A84C" stroke-width="0.5" opacity="0.5">
+      <line x1="0" y1="150" x2="1440" y2="150"/><line x1="0" y1="300" x2="1440" y2="300"/><line x1="0" y1="450" x2="1440" y2="450"/><line x1="0" y1="600" x2="1440" y2="600"/>
+      <line x1="180" y1="0" x2="180" y2="900"/><line x1="360" y1="0" x2="360" y2="900"/><line x1="540" y1="0" x2="540" y2="900"/><line x1="720" y1="0" x2="720" y2="900"/><line x1="900" y1="0" x2="900" y2="900"/><line x1="1080" y1="0" x2="1080" y2="900"/><line x1="1260" y1="0" x2="1260" y2="900"/>
+    </g>
+  </svg>
+</div>
+
+<main class="auth-shell">
+  <a href="/" class="auth-brand mk-brand-lockup mk-brand-lockup--stacked" aria-label="MAKETZO home">
+    <img class="mk-brand-lockup__mark" src="assets/logo-mark.png" alt="">
+    <img class="mk-brand-lockup__wordmark" src="assets/logo-wordmark.png" alt="MAKETZO">
+  </a>
+
+  <div class="auth-card" id="okView" hidden>
+    <div class="auth-status">
+      <div class="auth-status-icon auth-status-icon--ok" aria-hidden="true">✓</div>
+      <h1 class="auth-title">Email verified.</h1>
+      <p class="auth-sub">You're signed in. Open the dashboard to get started.</p>
+    </div>
+    <a class="btn-primary auth-submit" href="/app">Open dashboard →</a>
+  </div>
+
+  <div class="auth-card" id="sentView" hidden>
+    <div class="auth-status">
+      <div class="auth-status-icon auth-status-icon--info" aria-hidden="true">✉</div>
+      <h1 class="auth-title">Check your email.</h1>
+      <p class="auth-sub" id="sentSub">We sent an email with next steps. Open it and follow the instructions to sign in. Links are good for 24 hours.</p>
+    </div>
+    <div class="auth-foot">
+      Didn't get it? Check spam, or <a href="signup.html">try again</a>.
+    </div>
+  </div>
+
+  <div class="auth-card" id="invalidView" hidden>
+    <div class="auth-status">
+      <div class="auth-status-icon auth-status-icon--error" aria-hidden="true">!</div>
+      <h1 class="auth-title">Link invalid or expired.</h1>
+      <p class="auth-sub">That verification link is no longer valid. Verification links expire 24 hours after they're sent and can only be used once.</p>
+    </div>
+    <a class="btn-primary auth-submit" href="login.html">Back to sign in</a>
+  </div>
+</main>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const status = params.get('status') || '';
+const email  = params.get('email') || '';
+
+if (status === 'ok') {
+  document.getElementById('okView').hidden = false;
+} else if (status === 'sent') {
+  if (email) {
+    document.getElementById('sentSub').textContent =
+      'We sent an email to ' + email + ' with next steps. Open it and follow the instructions to sign in. Links are good for 24 hours.';
+  }
+  document.getElementById('sentView').hidden = false;
+} else {
+  document.getElementById('invalidView').hidden = false;
+}
+</script>
+</body>
+</html>

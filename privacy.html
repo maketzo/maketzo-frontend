@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<!-- privacy — MAKETZO Privacy Policy · MVP draft tailored to actual stack -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy — MAKETZO</title>
+<meta name="description" content="MAKETZO Privacy Policy. What we collect, how we use it, your controls, and where the data lives. No sale to third parties. AI coaching is opt-in.">
+<meta name="theme-color" content="#06070A">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://maketzo.co/privacy">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--mk-surface-page); color: var(--mk-text-primary); font-family: var(--mk-font-sans); font-size: var(--mk-text-md); line-height: var(--mk-lead-body); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+a { color: inherit; text-decoration: none; }
+ul, ol { list-style: none; }
+img { display: block; max-width: 100%; }
+em, i { font-style: italic; }
+strong { color: var(--mk-text-primary); font-weight: 600; }
+
+.mobile-overlay { position: fixed; inset: 0; z-index: 90; background: rgba(0,0,0,.6); backdrop-filter: blur(6px); opacity: 0; pointer-events: none; transition: opacity var(--mk-dur-med); }
+.mobile-overlay.open { opacity: 1; pointer-events: auto; }
+.mobile-drawer { position: fixed; top: 0; right: 0; bottom: 0; z-index: 100; width: min(320px, 88%); background: var(--mk-surface-base); border-left: var(--mk-border-soft); padding: 80px 28px 28px; transform: translateX(100%); transition: transform var(--mk-dur-med) var(--mk-ease-out); display: flex; flex-direction: column; gap: 20px; }
+.mobile-drawer.open { transform: translateX(0); }
+.mobile-drawer-links li { padding: 12px 0; border-bottom: var(--mk-border-hairline); }
+.mobile-drawer-links a { font-family: var(--mk-font-display); font-size: var(--mk-display-md); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); }
+.mobile-drawer-cta { display: inline-flex; align-items: center; justify-content: center; background: var(--mk-gold-gradient); color: var(--mk-text-on-gold); font-family: var(--mk-font-sans); font-weight: 600; font-size: var(--mk-text-sm); letter-spacing: var(--mk-track-cap); text-transform: uppercase; padding: 14px 22px; border: 1px solid rgba(0,0,0,.18); border-radius: var(--mk-radius-button); cursor: pointer; margin-top: auto; }
+
+#mainNav { position: fixed; top: 0; left: 0; right: 0; z-index: 50; background: rgba(6,7,10,.85); backdrop-filter: blur(20px) saturate(140%); border-bottom: 1px solid rgba(212,175,55,.12); display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 14px 32px 14px 64px; }
+.nav-logo.mk-brand-lockup { --mk-brand-lockup-mark-h: 44px; --mk-brand-lockup-wordmark-h: 22px; --mk-brand-lockup-gap: 10px; }
+.nav-links { display: flex; align-items: center; gap: 28px; margin: 0; padding: 0; }
+.nav-links > li > a:not(.nav-login-btn) { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); font-weight: 500; letter-spacing: 0.02em; }
+.nav-links > li > a:not(.nav-login-btn):hover { color: var(--mk-text-primary); }
+.nav-login-btn { display: inline-flex; align-items: center; font-size: var(--mk-text-sm); font-weight: 600; letter-spacing: var(--mk-track-cap); text-transform: uppercase; padding: 7px 14px; color: var(--mk-text-secondary); border: 1px solid var(--mk-smoke-700); border-radius: var(--mk-radius-button); }
+.nav-login-btn:hover { color: var(--mk-text-primary); border-color: var(--mk-smoke-600); }
+.nav-cta { display: inline-flex; align-items: center; justify-content: center; font-family: var(--mk-font-sans); font-size: var(--mk-text-sm); font-weight: 600; letter-spacing: var(--mk-track-cap); text-transform: uppercase; padding: 7px 14px; border: 1px solid rgba(0,0,0,.18); border-radius: var(--mk-radius-button); cursor: pointer; background: var(--mk-gold-gradient); color: var(--mk-text-on-gold); white-space: nowrap; }
+.hamburger { display: none; background: transparent; border: 0; padding: 8px; cursor: pointer; flex-direction: column; gap: 5px; }
+.hamburger span { display: block; width: 24px; height: 2px; background: var(--mk-text-primary); transition: transform var(--mk-dur-snap), opacity var(--mk-dur-snap); }
+.hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+@media (max-width: 900px) { #mainNav { padding: 12px 20px; gap: 16px; } .nav-links { display: none; } .hamburger { display: flex; } }
+
+.btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-family: var(--mk-font-sans); font-size: var(--mk-text-sm); font-weight: 600; letter-spacing: var(--mk-track-cap); text-transform: uppercase; padding: 12px 22px; border-radius: var(--mk-radius-button); background: var(--mk-gold-gradient); color: var(--mk-text-on-gold); border: 1px solid rgba(0,0,0,.18); cursor: pointer; text-decoration: none; white-space: nowrap; }
+.btn-primary:hover { transform: translateY(-1px); box-shadow: var(--mk-glow-gold-md); }
+
+/* ── LEGAL PAGE LAYOUT ──────────────────────────────────────── */
+.legal-hero { padding: 132px 0 48px; background: var(--mk-obsidian-950); border-bottom: var(--mk-border-hairline); }
+.legal-hero-inner { max-width: 1100px; margin: 0 auto; padding: 0 32px; }
+.legal-hero-eyebrow { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); margin-bottom: 14px; }
+.legal-hero-title { font-family: var(--mk-font-display); font-size: clamp(2.2rem, 4.6vw, 3.4rem); letter-spacing: var(--mk-track-display); text-transform: uppercase; font-weight: 400; line-height: 1.04; margin-bottom: 12px; }
+.legal-hero-sub { font-family: var(--mk-font-mono); font-size: var(--mk-mono-sm); color: var(--mk-text-tertiary); }
+
+.legal-wrap { max-width: 1100px; margin: 0 auto; padding: 56px 32px 88px; display: grid; grid-template-columns: 240px 1fr; gap: 56px; align-items: flex-start; }
+.legal-toc {
+  position: sticky; top: 96px;
+  padding: 22px 24px;
+  background: var(--mk-surface-raised);
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: var(--mk-radius-card);
+}
+.legal-toc-title { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); margin-bottom: 14px; }
+.legal-toc ol { counter-reset: toc; display: flex; flex-direction: column; gap: 8px; }
+.legal-toc ol li { counter-increment: toc; }
+.legal-toc ol li a {
+  display: flex; gap: 10px;
+  font-size: var(--mk-text-sm);
+  color: var(--mk-text-secondary);
+  line-height: 1.4;
+  transition: color var(--mk-dur-fast);
+}
+.legal-toc ol li a::before {
+  content: counter(toc, decimal-leading-zero);
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-xs);
+  color: var(--mk-text-tertiary);
+  flex-shrink: 0;
+}
+.legal-toc ol li a:hover { color: var(--mk-brand); }
+
+.legal-body { color: var(--mk-text-secondary); }
+.legal-body section { margin-bottom: 48px; scroll-margin-top: 96px; }
+.legal-body section:last-child { margin-bottom: 0; }
+.legal-body h2 { font-family: var(--mk-font-display); font-size: clamp(1.4rem, 2.6vw, 1.9rem); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); font-weight: 400; margin-bottom: 16px; line-height: 1.1; }
+.legal-body p { font-size: var(--mk-text-md); line-height: var(--mk-lead-body); margin-bottom: 14px; }
+.legal-body p:last-child { margin-bottom: 0; }
+.legal-body p strong { color: var(--mk-text-primary); }
+.legal-body p a { color: var(--mk-brand); border-bottom: 1px solid rgba(212,175,55,.4); }
+.legal-body ul { list-style: none; padding-left: 0; margin: 0 0 14px; display: flex; flex-direction: column; gap: 8px; }
+.legal-body ul li { position: relative; padding-left: 20px; font-size: var(--mk-text-md); line-height: var(--mk-lead-body); }
+.legal-body ul li::before { content: '·'; position: absolute; left: 6px; top: -2px; color: var(--mk-brand); font-size: 1.4em; }
+.legal-body ul li strong { color: var(--mk-text-primary); }
+.legal-body .legal-callout {
+  padding: 18px 22px;
+  background:
+    linear-gradient(135deg, rgba(212,175,55,.05), transparent 60%),
+    var(--mk-surface-raised);
+  border-left: 3px solid var(--mk-brand);
+  border-radius: var(--mk-radius-card);
+  margin: 18px 0;
+}
+.legal-body .legal-callout p { margin-bottom: 0; }
+
+@media (max-width: 880px) {
+  .legal-wrap { grid-template-columns: 1fr; gap: 32px; }
+  .legal-toc { position: static; }
+}
+
+footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairline); padding: 56px 0 28px; }
+.footer-inner { max-width: var(--mk-container-marketing); margin: 0 auto; padding: 0 32px; }
+.footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; margin-bottom: 32px; padding-bottom: 32px; border-bottom: var(--mk-border-hairline); }
+.footer-logo-wrap { display: flex; flex-direction: column; align-items: flex-start; gap: 18px; margin-bottom: 12px; }
+.footer-logo-wrap .mk-brand-lockup { --mk-brand-lockup-mark-h: 40px; --mk-brand-lockup-wordmark-h: 20px; }
+.footer-tagline { font-size: var(--mk-text-sm); color: var(--mk-text-tertiary); line-height: var(--mk-lead-body); max-width: 360px; }
+.footer-tagline strong { display: block; color: var(--mk-text-primary); margin-bottom: 4px; }
+.footer-col-title { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); margin-bottom: 16px; }
+.footer-links { display: flex; flex-direction: column; gap: 10px; padding: 0; }
+.footer-links a { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); transition: color var(--mk-dur-fast); }
+.footer-links a:hover { color: var(--mk-text-primary); }
+.footer-bottom { display: flex; flex-direction: column; gap: 10px; }
+.footer-copy { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: 0.04em; color: var(--mk-text-tertiary); }
+.footer-disclaimer { font-size: var(--mk-text-xs); color: var(--mk-text-tertiary); line-height: var(--mk-lead-body); max-width: 900px; }
+@media (max-width: 800px) { .footer-grid { grid-template-columns: 1fr; gap: 24px; } }
+</style>
+</head>
+<body>
+
+<div class="mobile-overlay" id="mobileOverlay" onclick="closeDrawer()"></div>
+<div class="mobile-drawer" id="mobileDrawer">
+  <ul class="mobile-drawer-links">
+    <li><a href="system.html" onclick="closeDrawer()">The System</a></li>
+    <li><a href="journal.html" onclick="closeDrawer()">Journal</a></li>
+    <li><a href="edge.html" onclick="closeDrawer()">The Edge</a></li>
+    <li><a href="focus.html" onclick="closeDrawer()">Focus Room</a></li>
+    <li><a href="pricing.html" onclick="closeDrawer()">Get Started</a></li>
+    <li><a href="/app" onclick="closeDrawer()">Log In</a></li>
+  </ul>
+  <a class="mobile-drawer-cta" href="pricing.html">Start Free Trial &rarr;</a>
+</div>
+
+<nav id="mainNav">
+  <a href="index.html" class="nav-logo mk-brand-lockup">
+    <img class="mk-brand-lockup__mark" src="assets/logo-mark.png" alt="">
+    <img class="mk-brand-lockup__wordmark" src="assets/logo-wordmark.png" alt="MAKETZO">
+  </a>
+  <ul class="nav-links">
+    <li><a href="system.html">The System</a></li>
+    <li><a href="journal.html">Journal</a></li>
+    <li><a href="edge.html">The Edge</a></li>
+    <li><a href="focus.html">Focus Room</a></li>
+    <li><a href="pricing.html">Get Started</a></li>
+    <li><a href="/app" class="nav-login-btn">Log In</a></li>
+    <li><a class="nav-cta" href="pricing.html">Start Free Trial</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" onclick="toggleDrawer()" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+
+<header class="legal-hero">
+  <div class="legal-hero-inner">
+    <p class="legal-hero-eyebrow">PRIVACY POLICY</p>
+    <h1 class="legal-hero-title">Your Data. Your Trades. <em style="font-style:normal;background:var(--mk-gold-gradient);-webkit-background-clip:text;background-clip:text;color:transparent;">Your Control.</em></h1>
+    <p class="legal-hero-sub">Last updated: 14 May 2026 · Effective: 14 May 2026 · Operated by Abinic, LLC</p>
+  </div>
+</header>
+
+<div class="legal-wrap">
+  <aside class="legal-toc">
+    <div class="legal-toc-title">On This Page</div>
+    <ol>
+      <li><a href="#scope">Scope &amp; summary</a></li>
+      <li><a href="#what">What we collect</a></li>
+      <li><a href="#how">How we use it</a></li>
+      <li><a href="#where">Where data lives</a></li>
+      <li><a href="#controls">Your controls</a></li>
+      <li><a href="#cookies">Cookies &amp; tracking</a></li>
+      <li><a href="#children">Children &amp; age</a></li>
+      <li><a href="#retention">Data retention</a></li>
+      <li><a href="#changes">Changes to this policy</a></li>
+      <li><a href="#contact">Contact us</a></li>
+    </ol>
+  </aside>
+
+  <main class="legal-body">
+    <section id="scope">
+      <h2>1. Scope &amp; summary</h2>
+      <p>This policy describes how MAKETZO ("we", "us") — operated by Abinic, LLC — collects, uses, stores, and shares information when you visit <strong>maketzo.co</strong>, use our applications, or subscribe to our services.</p>
+      <div class="legal-callout">
+        <p><strong>Short version:</strong> We collect what we need to run the product — account info, trading performance, behavioral signals, billing. We don't sell your data. AI coaching features are opt-in. You can export or delete your data at any time.</p>
+      </div>
+    </section>
+
+    <section id="what">
+      <h2>2. What we collect</h2>
+      <p>We collect the following categories of information:</p>
+      <ul>
+        <li><strong>Account information.</strong> Name, email, password hash (if you use email login), or Google account identifier (if you use Google sign-in).</li>
+        <li><strong>Trading performance data.</strong> The trades, P&amp;L, sessions, and statistics you log in MAKETZO. This data only exists because you create it.</li>
+        <li><strong>Behavioral &amp; rule-break data.</strong> Strike events, max-loss adherence, COACH SAYS triggers, lockout history, streak length. Used by the discipline engine on your behalf.</li>
+        <li><strong>Billing information.</strong> Plan, status, and Stripe customer ID. <strong>We never see, store, or process your card details</strong> — those live entirely with Stripe.</li>
+        <li><strong>Communications.</strong> Emails you send us, contact-form submissions, and newsletter signup.</li>
+        <li><strong>Technical data.</strong> IP address, browser type, device type, page views, and basic error logs needed to keep the service running.</li>
+      </ul>
+    </section>
+
+    <section id="how">
+      <h2>3. How we use it</h2>
+      <p>We use the information described above to:</p>
+      <ul>
+        <li><strong>Operate the product.</strong> Authenticate your login, run the state machine, fire COACH SAYS, enforce strikes and lockouts, deliver Edge and Pulse alerts.</li>
+        <li><strong>Provide AI coaching features (opt-in only).</strong> If you explicitly opt in, we use your trading performance and behavioral data to generate personalized coaching insights. You can disable this at any time from your account.</li>
+        <li><strong>Send service emails.</strong> Welcome emails, billing receipts, trial reminders, and account notifications. These are required for account function.</li>
+        <li><strong>Send newsletter emails (opt-in).</strong> If you subscribed to our newsletter, we send weekly discipline tips. Unsubscribe link in every email.</li>
+        <li><strong>Improve the product.</strong> Aggregate, de-identified analytics to understand which features work. We never publish individual data.</li>
+        <li><strong>Comply with law.</strong> Respond to lawful requests where required.</li>
+      </ul>
+      <div class="legal-callout">
+        <p><strong>What we will never do:</strong> Sell your trading data to brokers, hedge funds, or third parties. Share your individual trades with advertisers. Use your data to train third-party AI models. Send your information to data brokers.</p>
+      </div>
+    </section>
+
+    <section id="where">
+      <h2>4. Where data lives</h2>
+      <p>The MAKETZO stack runs on the following infrastructure:</p>
+      <ul>
+        <li><strong>Authentication tokens.</strong> JWT tokens stored in your browser's <code style="font-family:var(--mk-font-mono);">localStorage</code>. We don't use third-party session cookies for authentication.</li>
+        <li><strong>Primary data store.</strong> MySQL database hosted on Hostinger infrastructure.</li>
+        <li><strong>Billing.</strong> Stripe holds your card details and processes payments. We hold only your Stripe customer ID and current subscription status.</li>
+        <li><strong>Email delivery.</strong> Resend handles transactional and newsletter emails on our behalf.</li>
+        <li><strong>Authentication provider.</strong> Google OAuth (if you choose Google sign-in). Standard OAuth scopes only — we never see your Google password.</li>
+      </ul>
+    </section>
+
+    <section id="controls">
+      <h2>5. Your controls</h2>
+      <p>You have meaningful control over your data:</p>
+      <ul>
+        <li><strong>Export.</strong> Download a complete copy of your trading data, journal entries, and account information at any time from your account page.</li>
+        <li><strong>Delete.</strong> Delete your account from your account page. We erase your data within 30 days, except for records we are legally required to retain (e.g., billing transactions for tax purposes).</li>
+        <li><strong>Opt out of AI coaching.</strong> Toggle off in your account. Once disabled, no behavioral data is fed into coaching models.</li>
+        <li><strong>Unsubscribe from newsletter.</strong> One-click link in every newsletter email. Service emails (billing, security) cannot be unsubscribed — they're required for account function.</li>
+        <li><strong>Access your data.</strong> Request a copy of all the information we hold about you. Email <a href="mailto:info@maketzo.co">info@maketzo.co</a> and we'll send it within 30 days.</li>
+        <li><strong>Correct your data.</strong> Update inaccurate information directly from your account, or email us if it's something the UI doesn't expose.</li>
+      </ul>
+    </section>
+
+    <section id="cookies">
+      <h2>6. Cookies &amp; tracking</h2>
+      <p>MAKETZO uses the minimum tracking required to run the service:</p>
+      <ul>
+        <li><strong>Authentication.</strong> JWT in <code style="font-family:var(--mk-font-mono);">localStorage</code> (not a cookie). Required to keep you logged in.</li>
+        <li><strong>Stripe billing portal.</strong> Stripe sets its own cookies when you visit the billing portal. Governed by <a href="https://stripe.com/privacy" target="_blank" rel="noopener">Stripe's privacy policy</a>.</li>
+        <li><strong>No third-party ad pixels.</strong> No Facebook Pixel. No Google Ads conversion tracking. No retargeting. No data brokers.</li>
+      </ul>
+    </section>
+
+    <section id="children">
+      <h2>7. Children &amp; age</h2>
+      <p>MAKETZO is intended for adults 18 years or older. We do not knowingly collect information from anyone under 18. If you believe a minor has provided us with information, contact us and we will delete it.</p>
+    </section>
+
+    <section id="retention">
+      <h2>8. Data retention</h2>
+      <p>We retain your account data for as long as your account is active. After you delete your account, we erase personal data within 30 days, except where we are legally required to retain certain records (e.g., billing records for tax obligations, typically 7 years).</p>
+      <p>Aggregate, fully de-identified data may be retained indefinitely for product analytics. This data cannot be linked back to you.</p>
+    </section>
+
+    <section id="changes">
+      <h2>9. Changes to this policy</h2>
+      <p>We may update this policy as the product evolves. When we make material changes, we'll email active subscribers and update the "Last updated" date at the top. Continued use of the service after a change indicates acceptance of the updated policy. We never retroactively reduce your privacy rights without explicit consent.</p>
+    </section>
+
+    <section id="contact">
+      <h2>10. Contact us</h2>
+      <p>Privacy questions, data requests, complaints, or just feedback:</p>
+      <ul>
+        <li>Email: <a href="mailto:info@maketzo.co">info@maketzo.co</a></li>
+        <li>Form: <a href="contact.html">maketzo.co/contact</a></li>
+        <li>Mailing: Abinic, LLC — mailing address provided on request</li>
+      </ul>
+      <p>We aim to respond to privacy inquiries within one trading day.</p>
+    </section>
+  </main>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-col-brand">
+        <div class="footer-logo-wrap">
+          <a href="index.html" class="mk-brand-lockup mk-brand-lockup--stacked">
+            <img class="mk-brand-lockup__mark" src="assets/logo-mark.png" alt="">
+            <img class="mk-brand-lockup__wordmark" src="assets/logo-wordmark.png" alt="MAKETZO">
+          </a>
+        </div>
+        <p class="footer-tagline"><strong>Built by traders, for traders.</strong>Discipline in every session. Edge in every trade. Accountability when it counts.</p>
+      </div>
+      <div><div class="footer-col-title">Product</div><ul class="footer-links"><li><a href="system.html">The System</a></li><li><a href="journal.html">Journal</a></li><li><a href="edge.html">The Edge</a></li><li><a href="focus.html">Focus Room</a></li><li><a href="pricing.html">Get Started</a></li><li><a href="why.html">Why MAKETZO</a></li></ul></div>
+      <div><div class="footer-col-title">Legal</div><ul class="footer-links"><li><a href="privacy.html">Privacy Policy</a></li><li><a href="terms.html">Terms of Service</a></li><li><a href="disclaimer.html">Risk Disclaimer</a></li><li><a href="contact.html">Contact Us</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">&copy; 2026 Abinic, LLC. All rights reserved. MAKETZO&reg; is a product of Abinic, LLC. maketzo.co</p>
+      <p class="footer-disclaimer">Trading securities, options, futures, forex, and cryptocurrencies involves substantial risk of loss and is not suitable for all investors. You may lose some or all of your capital. MAKETZO is a journaling, behavioral accountability, educational, and decision-support platform designed to help traders track performance, reinforce rules, and improve discipline. Neither Abinic, LLC nor MAKETZO provides investment advice, personalized financial advice, tax advice, legal advice, trade recommendations, or solicitations to buy or sell any security or financial instrument.</p>
+      <p class="footer-disclaimer">All indicators, analytics, alerts, scoring systems, coaching prompts, AI-generated insights, training modules, quizzes, and educational materials are provided for informational and educational purposes only. These tools may contain errors, omissions, delays, or inaccuracies and should not be relied upon as the sole basis for any trading, investing, or risk-management decision. No feature, signal, score, alert, prompt, or educational resource guarantees accuracy, suitability, profitability, or the prevention of losses.</p>
+      <p class="footer-disclaimer">Users remain solely responsible for evaluating all information, conducting independent research, managing risk, complying with applicable laws and regulations, and entering, modifying, or canceling orders. Abinic, LLC and MAKETZO do not execute trades, do not act as a broker-dealer or registered investment adviser, and do not have custody of customer funds. Past performance, simulated results, testimonials, and examples are illustrative only and do not guarantee future results.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+function toggleDrawer(){const d=document.getElementById('mobileDrawer');const o=document.getElementById('mobileOverlay');const h=document.getElementById('hamburger');d.classList.toggle('open');o.classList.toggle('open');h.classList.toggle('open');document.body.style.overflow=d.classList.contains('open')?'hidden':'';}
+function closeDrawer(){document.getElementById('mobileDrawer').classList.remove('open');document.getElementById('mobileOverlay').classList.remove('open');document.getElementById('hamburger').classList.remove('open');document.body.style.overflow='';}
+window.addEventListener('scroll',()=>{document.getElementById('mainNav').style.borderBottomColor=window.scrollY>60?'rgba(201,168,76,0.25)':'rgba(201,168,76,0.12)';});
+</script>
+</body>
+</html>

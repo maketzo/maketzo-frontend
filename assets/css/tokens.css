@@ -1,0 +1,407 @@
+/* =====================================================================
+   MAKETZO DESIGN TOKENS
+   Single source of truth. Import in both marketing and app.
+   ===================================================================== */
+
+:root {
+
+  /* ── COLOR · CANONICAL PALETTE ─────────────────────────────────────── */
+
+  /* Obsidian ramp — dark surfaces (the 70%) */
+  --mk-obsidian-950: #06070A;   /* deepest — page bg, modal scrim */
+  --mk-obsidian-900: #0D0F14;   /* primary surface — body bg */
+  --mk-obsidian-800: #141821;   /* raised surface — nav, top bar, cards on bg */
+  --mk-obsidian-700: #1C2230;   /* raised card, input bg */
+  --mk-obsidian-600: #2A3142;   /* hover, borders raised */
+
+  /* Gold ramp — THE brand signature */
+  --mk-gold-300: #F3D77A;   /* highlight — hover, focus rings on dark */
+  --mk-gold-400: #E5C572;   /* light — secondary brand surfaces */
+  --mk-gold-500: #D4AF37;   /* rich — primary brand, CTAs, the mark */
+  --mk-gold-600: #B8941F;   /* deep — pressed state */
+  --mk-gold-700: #7A6228;   /* dim — dividers, low-emphasis brand surfaces */
+  --mk-gold-900: #2D2410;   /* gold-tinted background wash */
+
+  /* Gold gradient — for the mark, hero moments, primary CTA fills */
+  --mk-gold-gradient: linear-gradient(135deg, #E5C572 0%, #D4AF37 45%, #B8941F 100%);
+  --mk-gold-gradient-soft: linear-gradient(135deg, rgba(229,197,114,.18) 0%, rgba(212,175,55,.10) 100%);
+
+  /* Neutral ramp — type & low-emphasis surfaces */
+  --mk-pearl-50:  #F6F7F9;   /* light-mode page bg */
+  --mk-pearl-100: #ECEEF2;
+  --mk-silver-300: #BFC7D5;  /* secondary text on dark */
+  --mk-silver-400: #9CA3B0;
+  --mk-stone-500: #7E8794;   /* tertiary text on dark */
+  --mk-smoke-600: #4A5260;   /* dividers on dark */
+  --mk-smoke-700: #2F3543;
+
+  /* State machine — semantic & functional only. Never decorative. */
+  --mk-profit-500: #4ADE80;  /* success, P&L positive, goal hit, peak mental state */
+  --mk-profit-700: #1A4A2A;  /* profit surface tint */
+  --mk-caution-500: #FBBF24; /* 8:30 checkpoint, breathe, fair mental state */
+  --mk-caution-700: #3D2E08;
+  --mk-warning-500: #FB923C; /* 10:30 checkpoint, slow down, walk away */
+  --mk-warning-700: #3D1F08;
+  --mk-danger-500: #F87171;  /* stop trading, full tilt, P&L negative */
+  --mk-danger-700: #4A1A1A;
+  --mk-lockin-500: #2DD4BF;  /* 2X/3X hit — post-win calm; exploratory OK */
+  --mk-lockin-700: #0D3330;
+
+  /* Light-mode token overrides (applied via [data-theme="light"]) */
+
+
+  /* ── TYPOGRAPHY ────────────────────────────────────────────────────── */
+
+  /* Three families, three jobs. */
+  --mk-font-display: 'Bebas Neue', 'Impact', sans-serif;   /* hero, section titles, banner status, dramatic moments */
+  --mk-font-sans:    'DM Sans', system-ui, sans-serif;     /* UI, body, all running text */
+  --mk-font-mono:    'DM Mono', ui-monospace, monospace;   /* P&L, tickers, timestamps, eyebrows, code */
+
+  /* Display scale — Bebas Neue. Always uppercase, tight tracking. */
+  --mk-display-xl:   clamp(3rem, 7vw, 5.5rem);   /* hero headline */
+  --mk-display-lg:   clamp(2.2rem, 4.5vw, 3.4rem); /* section title */
+  --mk-display-md:   clamp(1.6rem, 3vw, 2.2rem);   /* subsection */
+  --mk-display-sm:   1.25rem;                       /* banner status */
+
+  /* Sans scale — DM Sans. Body, UI, headings inside the app. */
+  --mk-text-xxl: 1.625rem;   /* 26 — app card huge value */
+  --mk-text-xl:  1.3125rem;  /* 21 */
+  --mk-text-lg:  1.0625rem;  /* 17 */
+  --mk-text-md:  0.9375rem;  /* 15 — app default body */
+  --mk-text-sm:  0.8125rem;  /* 13 — app secondary */
+  --mk-text-xs:  0.6875rem;  /* 11 — eyebrow, label */
+
+  /* Mono scale — DM Mono. Data, numbers. */
+  --mk-mono-xl:  1.5rem;
+  --mk-mono-lg:  1.125rem;
+  --mk-mono-md:  0.9375rem;
+  --mk-mono-sm:  0.75rem;
+  --mk-mono-xs:  0.625rem;   /* ticker rows */
+
+  /* Tracking */
+  --mk-track-tight:  -0.01em;
+  --mk-track-normal:  0;
+  --mk-track-eyebrow: 0.18em;   /* DM Mono eyebrows */
+  --mk-track-cap:     0.08em;   /* nav labels, pills */
+  --mk-track-display: 0.03em;   /* Bebas Neue body of headline */
+  --mk-track-display-wide: 0.08em; /* Bebas Neue subheadlines */
+
+  /* Leading */
+  --mk-lead-tight:   1.05;
+  --mk-lead-snug:    1.25;
+  --mk-lead-body:    1.65;
+  --mk-lead-loose:   1.78;
+
+
+  /* ── SPACING ───────────────────────────────────────────────────────── */
+  /* 4-px base scale. */
+  --mk-s-1:  4px;
+  --mk-s-2:  8px;
+  --mk-s-3:  12px;
+  --mk-s-4:  16px;
+  --mk-s-5:  20px;
+  --mk-s-6:  24px;
+  --mk-s-8:  32px;
+  --mk-s-10: 40px;
+  --mk-s-12: 48px;
+  --mk-s-16: 64px;
+  --mk-s-20: 80px;
+  --mk-s-24: 96px;
+  --mk-s-32: 128px;
+
+
+  /* ── RADIUS — three lanes, each with intent ───────────────────────── */
+  /* Functional UI (buttons, inputs, pills, badges) → sharp, terminal-energy */
+  --mk-radius-button: 4px;
+  --mk-radius-input:  6px;
+  --mk-radius-pill:   999px;
+
+  /* Containers (cards, panels, modals) → calm, premium */
+  --mk-radius-card-sm: 10px;
+  --mk-radius-card:    14px;
+  --mk-radius-card-lg: 20px;
+
+  /* Marketing-grade hero/feature surfaces */
+  --mk-radius-hero:    24px;
+
+
+  /* ── SHADOW — elevation system ─────────────────────────────────────── */
+  --mk-shadow-1:  0 1px 2px rgba(0,0,0,.4);
+  --mk-shadow-2:  0 4px 12px rgba(0,0,0,.45);
+  --mk-shadow-3:  0 10px 32px rgba(0,0,0,.55);
+  --mk-shadow-4:  0 24px 64px rgba(0,0,0,.65);
+
+  /* Gold glow — for primary CTA hover only. Use sparingly. */
+  --mk-glow-gold-sm: 0 0 0 1px rgba(212,175,55,.35), 0 8px 24px rgba(212,175,55,.18);
+  --mk-glow-gold-md: 0 0 0 1px rgba(212,175,55,.45), 0 14px 40px rgba(212,175,55,.28);
+
+  /* Danger glow — lockout state only */
+  --mk-glow-danger:  0 0 0 1px rgba(248,113,113,.35), 0 0 32px rgba(248,113,113,.18);
+
+
+  /* ── BORDERS ──────────────────────────────────────────────────────── */
+  --mk-border-hairline: 1px solid rgba(255,255,255,.06);
+  --mk-border-soft:     1px solid rgba(255,255,255,.10);
+  --mk-border-default:  1px solid rgba(255,255,255,.14);
+  --mk-border-strong:   1px solid rgba(255,255,255,.22);
+  --mk-border-gold-soft:  1px solid rgba(212,175,55,.20);
+  --mk-border-gold:       1px solid rgba(212,175,55,.45);
+
+
+  /* ── MOTION ───────────────────────────────────────────────────────── */
+  --mk-dur-fast:  120ms;
+  --mk-dur-snap:  180ms;
+  --mk-dur-med:   280ms;
+  --mk-dur-slow:  480ms;
+  --mk-dur-hero:  800ms;
+
+  --mk-ease-out:    cubic-bezier(.22,1,.36,1);
+  --mk-ease-in-out: cubic-bezier(.45,0,.25,1);
+  --mk-ease-spring: cubic-bezier(.34,1.56,.64,1);
+
+
+  /* ── LAYOUT ──────────────────────────────────────────────────────── */
+  --mk-container-marketing: 1180px;
+  --mk-container-narrow:    760px;
+  --mk-app-nav-width:       210px;
+  --mk-app-topbar-height:   48px;
+  --mk-app-content-pad:     20px;
+}
+
+
+/* =====================================================================
+   ROLE-MAPPED TOKENS — what each *means* in context.
+   Components reference these, not the raw palette.
+   ===================================================================== */
+
+:root {
+  /* Surface */
+  --mk-surface-page:     var(--mk-obsidian-950);
+  --mk-surface-base:     var(--mk-obsidian-900);
+  --mk-surface-raised:   var(--mk-obsidian-800);
+  --mk-surface-elevated: var(--mk-obsidian-700);
+  --mk-surface-hover:    var(--mk-obsidian-600);
+
+  /* Text */
+  --mk-text-primary:   #FFFFFF;
+  --mk-text-secondary: var(--mk-silver-300);
+  --mk-text-tertiary:  var(--mk-stone-500);
+  --mk-text-disabled:  var(--mk-smoke-600);
+  --mk-text-on-gold:   var(--mk-obsidian-950);
+
+  /* Brand */
+  --mk-brand:        var(--mk-gold-500);
+  --mk-brand-hover:  var(--mk-gold-300);
+  --mk-brand-deep:   var(--mk-gold-600);
+  --mk-brand-dim:    var(--mk-gold-700);
+
+  /* Semantic state */
+  --mk-state-profit:  var(--mk-profit-500);
+  --mk-state-caution: var(--mk-caution-500);
+  --mk-state-warning: var(--mk-warning-500);
+  --mk-state-danger:  var(--mk-danger-500);
+  --mk-state-lockin:  var(--mk-lockin-500);
+}
+
+
+/* =====================================================================
+   LIGHT MODE — for app only. Marketing stays dark-permanent.
+   ===================================================================== */
+
+[data-theme="light"] {
+  --mk-surface-page:     var(--mk-pearl-50);
+  --mk-surface-base:     #FFFFFF;
+  --mk-surface-raised:   #FFFFFF;
+  --mk-surface-elevated: var(--mk-pearl-100);
+  --mk-surface-hover:    #E4E8ED;
+
+  --mk-text-primary:   #0D0F14;
+  --mk-text-secondary: #4A5260;
+  --mk-text-tertiary:  #7E8794;
+
+  --mk-border-hairline: 1px solid rgba(0,0,0,.06);
+  --mk-border-soft:     1px solid rgba(0,0,0,.10);
+  --mk-border-default:  1px solid rgba(0,0,0,.14);
+}
+
+
+/* =====================================================================
+   STRIKE SYSTEM — Maketzo's enforcement mechanism.
+   All strike colors role-map to the canonical state ramp.
+   No new hexes — strikes are a behavioral driver of the state machine,
+   not a separate palette.
+   ===================================================================== */
+
+:root {
+  /* Severity — three tiers, each maps to a state-machine color. */
+  --mk-strike-clear:       var(--mk-text-tertiary);   /* 0 strikes — neutral */
+  --mk-strike-caution:     var(--mk-caution-500);     /* strike 1 */
+  --mk-strike-warning:     var(--mk-warning-500);     /* strike 2 */
+  --mk-strike-lockout:     var(--mk-danger-500);      /* strike 3 — locked */
+  --mk-strike-redeemed:    var(--mk-profit-500);      /* settled via reflection */
+  --mk-strike-gold:        var(--mk-brand);           /* clean-day gold mark */
+
+  /* Tonal backgrounds — re-use state ramp 700s. */
+  --mk-strike-caution-bg:  var(--mk-caution-700);
+  --mk-strike-warning-bg:  var(--mk-warning-700);
+  --mk-strike-lockout-bg:  var(--mk-danger-700);
+  --mk-strike-redeemed-bg: var(--mk-profit-700);
+
+  /* Strike-specific surfaces */
+  --mk-strike-dossier-bg:  #0F1014;                   /* file-folder feel — 1 shade off obsidian-900 */
+  --mk-strike-etch:        rgba(255,255,255,.06);     /* engraved separator */
+  --mk-strike-overlay:     rgba(5, 5, 7, 0.86);       /* lockout scrim */
+
+  /* Strike glow — for the issued-moment cinematic. */
+  --mk-strike-glow-caution: 0 0 0 1px rgba(251,191,36,.30), 0 24px 64px rgba(251,191,36,.10);
+  --mk-strike-glow-warning: 0 0 0 1px rgba(251,146,60,.30), 0 24px 64px rgba(251,146,60,.12);
+  --mk-strike-glow-lockout: 0 0 0 1px rgba(248,113,113,.45), 0 28px 80px rgba(248,113,113,.18);
+
+  /* Sigil sizing */
+  --mk-strike-sigil-stroke: 2.6px;
+}
+
+
+/* =====================================================================
+   CHART SYSTEM — annotated trade charts, replay, indicators.
+   Role-mapped to the canonical state ramp. Two chart-specific
+   surfaces only (canvas slightly cooler than the app surface; grid
+   line tones).
+   ===================================================================== */
+
+:root {
+  /* Canvas — cooler than app surface so charts read as "data zone" */
+  --mk-chart-canvas:    #07090D;
+  --mk-chart-panel:     var(--mk-obsidian-900);
+  --mk-chart-grid:      rgba(255,255,255,.05);
+  --mk-chart-grid-mid:  rgba(255,255,255,.08);
+  --mk-chart-axis:      var(--mk-text-tertiary);
+  --mk-chart-label:     var(--mk-text-secondary);
+
+  /* Annotation markers — semantic, mapped to state ramp.
+     Entry/Lesson/Edge are gold (the brand moments).
+     Stop/Strike are danger. Target is profit. Warning is warning.
+     Insight is lockin (teal). Exit is silver. */
+  --mk-chart-entry:    var(--mk-brand);
+  --mk-chart-exit:     var(--mk-silver-300);
+  --mk-chart-stop:     var(--mk-danger-500);
+  --mk-chart-target:   var(--mk-profit-500);
+  --mk-chart-warning:  var(--mk-warning-500);
+  --mk-chart-insight:  var(--mk-lockin-500);
+  --mk-chart-lesson:   var(--mk-brand);
+  --mk-chart-strike:   var(--mk-danger-500);
+
+  /* Zones — overlay washes for risk / focus / acceptance / supply */
+  --mk-chart-zone-risk:       rgba(248,113,113,.10);
+  --mk-chart-zone-risk-line:  rgba(248,113,113,.35);
+  --mk-chart-zone-focus:      rgba(212,175,55,.10);
+  --mk-chart-zone-focus-line: rgba(212,175,55,.35);
+  --mk-chart-zone-accept:     rgba(74,222,128,.08);
+  --mk-chart-zone-accept-line:rgba(74,222,128,.30);
+  --mk-chart-zone-supply:     rgba(251,146,60,.10);
+  --mk-chart-zone-supply-line:rgba(251,146,60,.30);
+
+  /* Edge & Pulse — proprietary indicator wash.
+     Never expose internals. Always abstract. */
+  --mk-edge-wash:    radial-gradient(120px 80px at 50% 50%, rgba(212,175,55,.22), rgba(212,175,55,0) 70%);
+  --mk-pulse-wash:   linear-gradient(180deg, rgba(45,212,191,.18), rgba(45,212,191,0) 100%);
+
+  --mk-chart-radius: var(--mk-radius-card-lg);
+  --mk-chart-shadow: 0 18px 60px rgba(0,0,0,.45);
+}
+
+
+/* =====================================================================
+   PAPER SURFACE — warm reading + exported report system.
+   The first deliberate brand expansion beyond obsidian. Used ONLY for
+   long-form reading (Documents, Journal) and exported reports.
+   Print-calibrated state colors — darker than the screen ramp so they
+   remain legible on warm paper and survive grayscale printing.
+   ===================================================================== */
+
+:root {
+  /* Paper canvas */
+  --mk-paper-bg:            #FAF8F3;   /* primary warm canvas */
+  --mk-paper-soft:          #FFFDF7;   /* page surface · slightly brighter */
+  --mk-paper-muted:         #F2EFE7;   /* raised card / table-stripe */
+  --mk-paper-deep:          #1F1B12;   /* dark ink, for cover-page tone */
+
+  /* Paper ink */
+  --mk-paper-ink:           #111827;   /* primary text */
+  --mk-paper-ink-muted:     #4B5563;   /* secondary */
+  --mk-paper-ink-soft:      #6B7280;   /* tertiary · meta */
+
+  /* Paper rule lines */
+  --mk-paper-border:        rgba(17,24,39,.10);
+  --mk-paper-border-strong: rgba(17,24,39,.20);
+  --mk-paper-rule:          rgba(17,24,39,.06);
+
+  /* Print-calibrated state colors — darker than screen ramp */
+  --mk-paper-gold:    #8C6A12;
+  --mk-paper-profit:  #1E6B3A;
+  --mk-paper-danger:  #B33A30;
+  --mk-paper-caution: #B07000;
+  --mk-paper-warning: #C25A1A;
+
+  /* Paper geometry */
+  --mk-paper-shadow:  0 28px 90px rgba(0,0,0,.42);
+  --mk-paper-radius:  18px;
+  --mk-paper-radius-sm: 10px;
+  --mk-paper-pad:     56px;
+  --mk-paper-pad-sm:  32px;
+}
+
+
+/* =====================================================================
+   DOCUMENT EXPERIENCE — PDF viewer, journal, highlights.
+   Premium reading surfaces inside a disciplined dark command shell.
+   Uses the paper-surface tokens introduced above + a small set of
+   highlight color washes that work on warm paper.
+   ===================================================================== */
+
+:root {
+  /* Highlight washes on warm paper — print-calibrated. */
+  --mk-doc-hl-gold:    rgba(140, 106, 18, .22);
+  --mk-doc-hl-gold-line:   rgba(140, 106, 18, .55);
+  --mk-doc-hl-blue:    rgba(45, 212, 191, .20);
+  --mk-doc-hl-blue-line:   rgba(45, 212, 191, .55);
+  --mk-doc-hl-orange:  rgba(194, 90, 26, .20);
+  --mk-doc-hl-orange-line: rgba(194, 90, 26, .55);
+  --mk-doc-hl-green:   rgba(30, 107, 58, .20);
+  --mk-doc-hl-green-line:  rgba(30, 107, 58, .55);
+  --mk-doc-hl-red:     rgba(179, 58, 48, .20);
+  --mk-doc-hl-red-line:    rgba(179, 58, 48, .55);
+
+  /* Document reading geometry */
+  --mk-doc-canvas-pad-desktop: 64px;
+  --mk-doc-canvas-pad-mobile:  28px;
+  --mk-doc-radius: 22px;
+}
+
+
+/* =====================================================================
+   CAPTURE SYSTEM — paste, drag/drop, attachments, copy.
+   The hero moment: pasting a TradingView screenshot elegantly turns it
+   into a Maketzo-branded annotated chart card. Strikes 1 & 2 of the
+   experience: instant recognition + elegant rebranding.
+   ===================================================================== */
+
+:root {
+  --mk-capture-bg:           rgba(20, 24, 33, 0.92);
+  --mk-capture-border:       rgba(255, 255, 255, 0.10);
+  --mk-capture-border-active: var(--mk-brand);
+  --mk-capture-radius:       22px;
+  --mk-capture-glow:         0 0 0 1px rgba(212,175,55,0.30),
+                             0 24px 80px rgba(212,175,55,0.16);
+}
+
+
+/* =====================================================================
+   NOTIFICATIONS — coaching toasts + transactional email shell.
+   ===================================================================== */
+
+:root {
+  --mk-notify-radius: 14px;
+  --mk-email-bg:      var(--mk-paper-bg);
+  --mk-email-pad:     32px;
+}

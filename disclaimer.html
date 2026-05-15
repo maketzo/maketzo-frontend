@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<!-- disclaimer — MAKETZO Risk Disclaimer · trading risk · no financial advice · no guarantees -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Risk Disclaimer — MAKETZO</title>
+<meta name="description" content="MAKETZO Risk Disclaimer. Trading involves substantial risk. MAKETZO is a discipline tool, not financial advice. Past performance does not guarantee future results.">
+<meta name="theme-color" content="#06070A">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://maketzo.co/disclaimer">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--mk-surface-page); color: var(--mk-text-primary); font-family: var(--mk-font-sans); font-size: var(--mk-text-md); line-height: var(--mk-lead-body); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+a { color: inherit; text-decoration: none; }
+ul, ol { list-style: none; }
+img { display: block; max-width: 100%; }
+em, i { font-style: italic; }
+strong { color: var(--mk-text-primary); font-weight: 600; }
+
+.mobile-overlay { position: fixed; inset: 0; z-index: 90; background: rgba(0,0,0,.6); backdrop-filter: blur(6px); opacity: 0; pointer-events: none; transition: opacity var(--mk-dur-med); }
+.mobile-overlay.open { opacity: 1; pointer-events: auto; }
+.mobile-drawer { position: fixed; top: 0; right: 0; bottom: 0; z-index: 100; width: min(320px, 88%); background: var(--mk-surface-base); border-left: var(--mk-border-soft); padding: 80px 28px 28px; transform: translateX(100%); transition: transform var(--mk-dur-med) var(--mk-ease-out); display: flex; flex-direction: column; gap: 20px; }
+.mobile-drawer.open { transform: translateX(0); }
+.mobile-drawer-links li { padding: 12px 0; border-bottom: var(--mk-border-hairline); }
+.mobile-drawer-links a { font-family: var(--mk-font-display); font-size: var(--mk-display-md); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); }
+.mobile-drawer-cta { display: inline-flex; align-items: center; justify-content: center; background: var(--mk-gold-gradient); color: var(--mk-text-on-gold); font-family: var(--mk-font-sans); font-weight: 600; font-size: var(--mk-text-sm); letter-spacing: var(--mk-track-cap); text-transform: uppercase; padding: 14px 22px; border: 1px solid rgba(0,0,0,.18); border-radius: var(--mk-radius-button); cursor: pointer; margin-top: auto; }
+
+#mainNav { position: fixed; top: 0; left: 0; right: 0; z-index: 50; background: rgba(6,7,10,.85); backdrop-filter: blur(20px) saturate(140%); border-bottom: 1px solid rgba(212,175,55,.12); display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 14px 32px 14px 64px; }
+.nav-logo.mk-brand-lockup { --mk-brand-lockup-mark-h: 44px; --mk-brand-lockup-wordmark-h: 22px; --mk-brand-lockup-gap: 10px; }
+.nav-links { display: flex; align-items: center; gap: 28px; margin: 0; padding: 0; }
+.nav-links > li > a:not(.nav-login-btn) { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); font-weight: 500; letter-spacing: 0.02em; }
+.nav-links > li > a:not(.nav-login-btn):hover { color: var(--mk-text-primary); }
+.nav-login-btn { display: inline-flex; align-items: center; font-size: var(--mk-text-sm); font-weight: 600; letter-spacing: var(--mk-track-cap); text-transform: uppercase; padding: 7px 14px; color: var(--mk-text-secondary); border: 1px solid var(--mk-smoke-700); border-radius: var(--mk-radius-button); }
+.nav-login-btn:hover { color: var(--mk-text-primary); border-color: var(--mk-smoke-600); }
+.nav-cta { display: inline-flex; align-items: center; justify-content: center; font-family: var(--mk-font-sans); font-size: var(--mk-text-sm); font-weight: 600; letter-spacing: var(--mk-track-cap); text-transform: uppercase; padding: 7px 14px; border: 1px solid rgba(0,0,0,.18); border-radius: var(--mk-radius-button); cursor: pointer; background: var(--mk-gold-gradient); color: var(--mk-text-on-gold); white-space: nowrap; }
+.hamburger { display: none; background: transparent; border: 0; padding: 8px; cursor: pointer; flex-direction: column; gap: 5px; }
+.hamburger span { display: block; width: 24px; height: 2px; background: var(--mk-text-primary); transition: transform var(--mk-dur-snap), opacity var(--mk-dur-snap); }
+.hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+@media (max-width: 900px) { #mainNav { padding: 12px 20px; gap: 16px; } .nav-links { display: none; } .hamburger { display: flex; } }
+
+/* ── DISCLAIMER HERO (red-themed, can't miss it) ────────────── */
+.legal-hero { padding: 132px 0 48px; background: linear-gradient(180deg, rgba(248,113,113,.06), transparent 50%), var(--mk-obsidian-950); border-bottom: 1px solid rgba(248,113,113,.32); }
+.legal-hero-inner { max-width: 1100px; margin: 0 auto; padding: 0 32px; }
+.legal-hero-eyebrow { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-danger-500); margin-bottom: 14px; }
+.legal-hero-title { font-family: var(--mk-font-display); font-size: clamp(2.2rem, 4.6vw, 3.4rem); letter-spacing: var(--mk-track-display); text-transform: uppercase; font-weight: 400; line-height: 1.04; margin-bottom: 12px; }
+.legal-hero-title em { font-style: normal; color: var(--mk-danger-500); }
+.legal-hero-sub { font-family: var(--mk-font-mono); font-size: var(--mk-mono-sm); color: var(--mk-text-tertiary); }
+
+.legal-wrap { max-width: 1100px; margin: 0 auto; padding: 56px 32px 88px; display: grid; grid-template-columns: 240px 1fr; gap: 56px; align-items: flex-start; }
+.legal-toc { position: sticky; top: 96px; padding: 22px 24px; background: var(--mk-surface-raised); border: 1px solid rgba(255,255,255,.06); border-radius: var(--mk-radius-card); }
+.legal-toc-title { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); margin-bottom: 14px; }
+.legal-toc ol { counter-reset: toc; display: flex; flex-direction: column; gap: 8px; }
+.legal-toc ol li { counter-increment: toc; }
+.legal-toc ol li a { display: flex; gap: 10px; font-size: var(--mk-text-sm); color: var(--mk-text-secondary); line-height: 1.4; transition: color var(--mk-dur-fast); }
+.legal-toc ol li a::before { content: counter(toc, decimal-leading-zero); font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); color: var(--mk-text-tertiary); flex-shrink: 0; }
+.legal-toc ol li a:hover { color: var(--mk-brand); }
+
+.legal-body { color: var(--mk-text-secondary); }
+.legal-body section { margin-bottom: 48px; scroll-margin-top: 96px; }
+.legal-body section:last-child { margin-bottom: 0; }
+.legal-body h2 { font-family: var(--mk-font-display); font-size: clamp(1.4rem, 2.6vw, 1.9rem); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); font-weight: 400; margin-bottom: 16px; line-height: 1.1; }
+.legal-body p { font-size: var(--mk-text-md); line-height: var(--mk-lead-body); margin-bottom: 14px; }
+.legal-body p:last-child { margin-bottom: 0; }
+.legal-body p strong { color: var(--mk-text-primary); }
+.legal-body p a { color: var(--mk-brand); border-bottom: 1px solid rgba(212,175,55,.4); }
+.legal-body ul { list-style: none; padding-left: 0; margin: 0 0 14px; display: flex; flex-direction: column; gap: 8px; }
+.legal-body ul li { position: relative; padding-left: 20px; font-size: var(--mk-text-md); line-height: var(--mk-lead-body); }
+.legal-body ul li::before { content: '·'; position: absolute; left: 6px; top: -2px; color: var(--mk-brand); font-size: 1.4em; }
+.legal-body ul li strong { color: var(--mk-text-primary); }
+.legal-body .legal-callout.danger { padding: 22px 26px; background: linear-gradient(135deg, rgba(248,113,113,.06), transparent 60%), var(--mk-surface-raised); border-left: 3px solid var(--mk-danger-500); border-radius: var(--mk-radius-card); margin: 22px 0; }
+.legal-body .legal-callout.danger p { margin-bottom: 0; font-size: var(--mk-text-md); color: var(--mk-text-primary); }
+.legal-body .legal-callout { padding: 18px 22px; background: linear-gradient(135deg, rgba(212,175,55,.05), transparent 60%), var(--mk-surface-raised); border-left: 3px solid var(--mk-brand); border-radius: var(--mk-radius-card); margin: 18px 0; }
+.legal-body .legal-callout p { margin-bottom: 0; }
+
+@media (max-width: 880px) { .legal-wrap { grid-template-columns: 1fr; gap: 32px; } .legal-toc { position: static; } }
+
+footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairline); padding: 56px 0 28px; }
+.footer-inner { max-width: var(--mk-container-marketing); margin: 0 auto; padding: 0 32px; }
+.footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; margin-bottom: 32px; padding-bottom: 32px; border-bottom: var(--mk-border-hairline); }
+.footer-logo-wrap { display: flex; flex-direction: column; align-items: flex-start; gap: 18px; margin-bottom: 12px; }
+.footer-logo-wrap .mk-brand-lockup { --mk-brand-lockup-mark-h: 40px; --mk-brand-lockup-wordmark-h: 20px; }
+.footer-tagline { font-size: var(--mk-text-sm); color: var(--mk-text-tertiary); line-height: var(--mk-lead-body); max-width: 360px; }
+.footer-tagline strong { display: block; color: var(--mk-text-primary); margin-bottom: 4px; }
+.footer-col-title { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); margin-bottom: 16px; }
+.footer-links { display: flex; flex-direction: column; gap: 10px; padding: 0; }
+.footer-links a { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); transition: color var(--mk-dur-fast); }
+.footer-links a:hover { color: var(--mk-text-primary); }
+.footer-bottom { display: flex; flex-direction: column; gap: 10px; }
+.footer-copy { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: 0.04em; color: var(--mk-text-tertiary); }
+.footer-disclaimer { font-size: var(--mk-text-xs); color: var(--mk-text-tertiary); line-height: var(--mk-lead-body); max-width: 900px; }
+@media (max-width: 800px) { .footer-grid { grid-template-columns: 1fr; gap: 24px; } }
+</style>
+</head>
+<body>
+
+<div class="mobile-overlay" id="mobileOverlay" onclick="closeDrawer()"></div>
+<div class="mobile-drawer" id="mobileDrawer">
+  <ul class="mobile-drawer-links">
+    <li><a href="system.html" onclick="closeDrawer()">The System</a></li>
+    <li><a href="journal.html" onclick="closeDrawer()">Journal</a></li>
+    <li><a href="edge.html" onclick="closeDrawer()">The Edge</a></li>
+    <li><a href="focus.html" onclick="closeDrawer()">Focus Room</a></li>
+    <li><a href="pricing.html" onclick="closeDrawer()">Get Started</a></li>
+    <li><a href="/app" onclick="closeDrawer()">Log In</a></li>
+  </ul>
+  <a class="mobile-drawer-cta" href="pricing.html">Start Free Trial &rarr;</a>
+</div>
+
+<nav id="mainNav">
+  <a href="index.html" class="nav-logo mk-brand-lockup">
+    <img class="mk-brand-lockup__mark" src="assets/logo-mark.png" alt="">
+    <img class="mk-brand-lockup__wordmark" src="assets/logo-wordmark.png" alt="MAKETZO">
+  </a>
+  <ul class="nav-links">
+    <li><a href="system.html">The System</a></li>
+    <li><a href="journal.html">Journal</a></li>
+    <li><a href="edge.html">The Edge</a></li>
+    <li><a href="focus.html">Focus Room</a></li>
+    <li><a href="pricing.html">Get Started</a></li>
+    <li><a href="/app" class="nav-login-btn">Log In</a></li>
+    <li><a class="nav-cta" href="pricing.html">Start Free Trial</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" onclick="toggleDrawer()" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+
+<header class="legal-hero">
+  <div class="legal-hero-inner">
+    <p class="legal-hero-eyebrow">RISK DISCLAIMER · READ THIS</p>
+    <h1 class="legal-hero-title">Trading Involves <em>Substantial Risk.</em></h1>
+    <p class="legal-hero-sub">Last updated: 14 May 2026 · Effective: 14 May 2026 · Operated by Abinic, LLC</p>
+  </div>
+</header>
+
+<div class="legal-wrap">
+  <aside class="legal-toc">
+    <div class="legal-toc-title">On This Page</div>
+    <ol>
+      <li><a href="#warning">The warning</a></li>
+      <li><a href="#whatwe">What we are not</a></li>
+      <li><a href="#past">Past performance</a></li>
+      <li><a href="#signals">Edge &amp; Pulse are signals</a></li>
+      <li><a href="#reviews">Trader reviews</a></li>
+      <li><a href="#fiduciary">No fiduciary relationship</a></li>
+      <li><a href="#advice">Consult a licensed advisor</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ol>
+  </aside>
+
+  <main class="legal-body">
+    <section id="warning">
+      <h2>1. The warning</h2>
+      <div class="legal-callout danger">
+        <p><strong>Trading in stocks, options, futures, currencies, cryptocurrencies, and other financial instruments involves substantial risk of loss and is not suitable for every investor. You can lose money — including more than your initial investment. Only trade with capital you can afford to lose entirely.</strong></p>
+      </div>
+      <p>The features MAKETZO provides — journaling, behavioral accountability, state machine, COACH SAYS, strike system, Edge, Pulse, Focus Room, Training Engine — are <strong>tools to support your own decision-making</strong>. They do not eliminate risk. No tool can.</p>
+    </section>
+
+    <section id="whatwe">
+      <h2>2. What we are not</h2>
+      <p>MAKETZO and Abinic, LLC are not:</p>
+      <ul>
+        <li>A registered investment advisor (RIA) or broker-dealer</li>
+        <li>A licensed financial planner or fiduciary</li>
+        <li>A registered investment company under the Investment Company Act</li>
+        <li>A commodity trading advisor (CTA) or futures commission merchant (FCM)</li>
+        <li>A money manager or fund operator</li>
+      </ul>
+      <p>We do not provide personalized investment advice. We do not recommend specific securities, sectors, strategies, or position sizes for your account. Everything we publish — on this site, in the product, in newsletters, in COACH SAYS, in Edge or Pulse — is general information and behavioral support, not financial advice.</p>
+    </section>
+
+    <section id="past">
+      <h2>3. Past performance does not guarantee future results</h2>
+      <p>This is the most important sentence on this page. Repeat it back: <strong>past performance does not guarantee future results.</strong> It applies to your own historical trades, to other traders' results, to backtests, to any chart on this website, and to any signal or outcome we ever describe.</p>
+      <p>Markets are non-stationary. A setup that worked last quarter may not work this quarter. A trader who was profitable last year may lose this year. A discipline streak that's helped you for months can break in a single session. Treat every claim of historical success — including your own — with appropriate skepticism.</p>
+    </section>
+
+    <section id="signals">
+      <h2>4. Edge and Pulse are signals — not guarantees</h2>
+      <p>Maketzo Edge and Maketzo Pulse are proprietary signals that produce outputs like "Prime", "Hold", "Exit", "Rising", and "Fading". These outputs reflect what our algorithms observe in real time. <strong>They are not predictions of future price.</strong> They are not buy or sell recommendations. They are not directionally guaranteed.</p>
+      <p>A "Prime" reading does not mean a trade will be profitable. A "Fading" reading does not mean a position should be closed immediately. You are responsible for every trading decision you make, and how you incorporate any signal into your own plan is entirely your responsibility.</p>
+    </section>
+
+    <section id="reviews">
+      <h2>5. Trader reviews and testimonials</h2>
+      <p>The trader reviews displayed on our website are real, owner-confirmed, and shared with the permission of the people who wrote them. They reflect individual experiences. <strong>Individual results vary, and reviews are not representative of typical results.</strong> Many traders lose money. Some traders profit. MAKETZO is one tool in a discipline stack — not the cause of any individual outcome.</p>
+      <p>Live activity displays ("trader joined", "session completed", etc.) are real events reflecting current user activity. They are not endorsements of results.</p>
+    </section>
+
+    <section id="fiduciary">
+      <h2>6. No fiduciary relationship</h2>
+      <p>Your use of MAKETZO does not create a fiduciary, advisory, agency, or partnership relationship between you and Abinic, LLC. We have no duty to advise you on the suitability of any trade, asset, or strategy for your specific financial situation, risk tolerance, time horizon, or objectives. That responsibility is entirely yours — or your licensed advisor's, if you have one.</p>
+    </section>
+
+    <section id="advice">
+      <h2>7. Consult a licensed advisor</h2>
+      <p>If you are unsure whether trading is appropriate for you, <strong>consult a licensed financial advisor, CPA, or attorney</strong> before you begin or before making any significant decision. They can assess your specific situation in ways that no software product — including MAKETZO — ever could.</p>
+      <p>This is especially important if:</p>
+      <ul>
+        <li>Trading capital represents a meaningful portion of your net worth</li>
+        <li>You are funding trading with debt, retirement accounts, or borrowed capital</li>
+        <li>You are trading professionally or for income (regulatory and tax implications apply)</li>
+        <li>You have not previously traded with real capital</li>
+      </ul>
+    </section>
+
+    <section id="contact">
+      <h2>8. Contact</h2>
+      <p>Questions about this disclaimer? Email <a href="mailto:info@maketzo.co">info@maketzo.co</a> or visit <a href="contact.html">maketzo.co/contact</a>.</p>
+      <p>For our full Terms of Service, see <a href="terms.html">/terms</a>. For privacy practices, see <a href="privacy.html">/privacy</a>.</p>
+    </section>
+  </main>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-col-brand">
+        <div class="footer-logo-wrap">
+          <a href="index.html" class="mk-brand-lockup mk-brand-lockup--stacked">
+            <img class="mk-brand-lockup__mark" src="assets/logo-mark.png" alt="">
+            <img class="mk-brand-lockup__wordmark" src="assets/logo-wordmark.png" alt="MAKETZO">
+          </a>
+        </div>
+        <p class="footer-tagline"><strong>Built by traders, for traders.</strong>Discipline in every session. Edge in every trade. Accountability when it counts.</p>
+      </div>
+      <div><div class="footer-col-title">Product</div><ul class="footer-links"><li><a href="system.html">The System</a></li><li><a href="journal.html">Journal</a></li><li><a href="edge.html">The Edge</a></li><li><a href="focus.html">Focus Room</a></li><li><a href="pricing.html">Get Started</a></li><li><a href="why.html">Why MAKETZO</a></li></ul></div>
+      <div><div class="footer-col-title">Legal</div><ul class="footer-links"><li><a href="privacy.html">Privacy Policy</a></li><li><a href="terms.html">Terms of Service</a></li><li><a href="disclaimer.html">Risk Disclaimer</a></li><li><a href="contact.html">Contact Us</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">&copy; 2026 Abinic, LLC. All rights reserved. MAKETZO&reg; is a product of Abinic, LLC. maketzo.co</p>
+      <p class="footer-disclaimer">Trading securities, options, futures, forex, and cryptocurrencies involves substantial risk of loss and is not suitable for all investors. You may lose some or all of your capital. MAKETZO is a journaling, behavioral accountability, educational, and decision-support platform designed to help traders track performance, reinforce rules, and improve discipline. Neither Abinic, LLC nor MAKETZO provides investment advice, personalized financial advice, tax advice, legal advice, trade recommendations, or solicitations to buy or sell any security or financial instrument.</p>
+      <p class="footer-disclaimer">All indicators, analytics, alerts, scoring systems, coaching prompts, AI-generated insights, training modules, quizzes, and educational materials are provided for informational and educational purposes only. These tools may contain errors, omissions, delays, or inaccuracies and should not be relied upon as the sole basis for any trading, investing, or risk-management decision. No feature, signal, score, alert, prompt, or educational resource guarantees accuracy, suitability, profitability, or the prevention of losses.</p>
+      <p class="footer-disclaimer">Users remain solely responsible for evaluating all information, conducting independent research, managing risk, complying with applicable laws and regulations, and entering, modifying, or canceling orders. Abinic, LLC and MAKETZO do not execute trades, do not act as a broker-dealer or registered investment adviser, and do not have custody of customer funds. Past performance, simulated results, testimonials, and examples are illustrative only and do not guarantee future results.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+function toggleDrawer(){const d=document.getElementById('mobileDrawer');const o=document.getElementById('mobileOverlay');const h=document.getElementById('hamburger');d.classList.toggle('open');o.classList.toggle('open');h.classList.toggle('open');document.body.style.overflow=d.classList.contains('open')?'hidden':'';}
+function closeDrawer(){document.getElementById('mobileDrawer').classList.remove('open');document.getElementById('mobileOverlay').classList.remove('open');document.getElementById('hamburger').classList.remove('open');document.body.style.overflow='';}
+window.addEventListener('scroll',()=>{document.getElementById('mainNav').style.borderBottomColor=window.scrollY>60?'rgba(201,168,76,0.25)':'rgba(201,168,76,0.12)';});
+</script>
+</body>
+</html>

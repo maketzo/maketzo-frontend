@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<!-- edge — Maketzo Edge + Pulse · conceptual prototypes only · NO indicator internals -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Edge — MAKETZO · Know When Your Window Is Open</title>
+<meta name="description" content="Maketzo Edge and Maketzo Pulse — proprietary signals that show traders when the opportunity window is open and when to sit on their hands. Pro and Elite tier. Invite-only TradingView access within 24 hours.">
+<meta name="theme-color" content="#06070A">
+<meta property="og:title" content="The Edge — MAKETZO">
+<meta property="og:description" content="Know exactly when to trade. Know exactly when to sit out. Edge + Pulse on Pro and Elite.">
+<meta property="og:url" content="https://maketzo.co/edge">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://maketzo.co/edge">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--mk-surface-page); color: var(--mk-text-primary); font-family: var(--mk-font-sans); font-size: var(--mk-text-md); line-height: var(--mk-lead-body); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+a { color: inherit; text-decoration: none; }
+ul, ol { list-style: none; }
+img { display: block; max-width: 100%; }
+em, i { font-style: italic; }
+strong { color: var(--mk-text-primary); font-weight: 600; }
+
+.bg-trading { position: fixed; inset: 0; pointer-events: none; z-index: 0; opacity: 0.12; }
+.bg-trading svg { width: 100%; height: 100%; display: block; }
+
+.mobile-overlay { position: fixed; inset: 0; z-index: 90; background: rgba(0,0,0,.6); backdrop-filter: blur(6px); opacity: 0; pointer-events: none; transition: opacity var(--mk-dur-med); }
+.mobile-overlay.open { opacity: 1; pointer-events: auto; }
+.mobile-drawer { position: fixed; top: 0; right: 0; bottom: 0; z-index: 100; width: min(320px, 88%); background: var(--mk-surface-base); border-left: var(--mk-border-soft); padding: 80px 28px 28px; transform: translateX(100%); transition: transform var(--mk-dur-med) var(--mk-ease-out); display: flex; flex-direction: column; gap: 20px; }
+.mobile-drawer.open { transform: translateX(0); }
+.mobile-drawer-links li { padding: 12px 0; border-bottom: var(--mk-border-hairline); }
+.mobile-drawer-links a { font-family: var(--mk-font-display); font-size: var(--mk-display-md); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); }
+.mobile-drawer-cta { display: inline-flex; align-items: center; justify-content: center; background: var(--mk-gold-gradient); color: var(--mk-text-on-gold); font-family: var(--mk-font-sans); font-weight: 600; font-size: var(--mk-text-sm); letter-spacing: var(--mk-track-cap); text-transform: uppercase; padding: 14px 22px; border: 1px solid rgba(0,0,0,.18); border-radius: var(--mk-radius-button); cursor: pointer; margin-top: auto; }
+
+#mainNav { position: fixed; top: 0; left: 0; right: 0; z-index: 50; background: rgba(6,7,10,.85); backdrop-filter: blur(20px) saturate(140%); border-bottom: 1px solid rgba(212,175,55,.12); transition: border-color var(--mk-dur-snap); display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 14px 32px 14px 64px; }
+.nav-logo.mk-brand-lockup { --mk-brand-lockup-mark-h: 44px; --mk-brand-lockup-wordmark-h: 22px; --mk-brand-lockup-gap: 10px; }
+.nav-links { display: flex; align-items: center; gap: 28px; margin: 0; padding: 0; }
+.nav-links > li > a:not(.nav-login-btn) { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); font-weight: 500; letter-spacing: 0.02em; transition: color var(--mk-dur-fast); }
+.nav-links > li > a:not(.nav-login-btn):hover { color: var(--mk-text-primary); }
+.nav-links > li > a[aria-current="page"] { color: var(--mk-brand); }
+.nav-login-btn { display: inline-flex; align-items: center; font-size: var(--mk-text-sm); font-weight: 600; letter-spacing: var(--mk-track-cap); text-transform: uppercase; padding: 7px 14px; color: var(--mk-text-secondary); border: 1px solid var(--mk-smoke-700); border-radius: var(--mk-radius-button); transition: color var(--mk-dur-fast), border-color var(--mk-dur-fast), background var(--mk-dur-fast); }
+.nav-login-btn:hover { color: var(--mk-text-primary); border-color: var(--mk-smoke-600); background: rgba(255,255,255,.03); }
+.nav-cta { display: inline-flex; align-items: center; justify-content: center; font-family: var(--mk-font-sans); font-size: var(--mk-text-sm); font-weight: 600; letter-spacing: var(--mk-track-cap); text-transform: uppercase; padding: 7px 14px; border: 1px solid rgba(0,0,0,.18); border-radius: var(--mk-radius-button); cursor: pointer; background: var(--mk-gold-gradient); color: var(--mk-text-on-gold); transition: transform var(--mk-dur-snap), box-shadow var(--mk-dur-snap); white-space: nowrap; }
+.nav-cta:hover { transform: translateY(-1px); box-shadow: var(--mk-glow-gold-sm); }
+.hamburger { display: none; background: transparent; border: 0; padding: 8px; cursor: pointer; flex-direction: column; gap: 5px; }
+.hamburger span { display: block; width: 24px; height: 2px; background: var(--mk-text-primary); transition: transform var(--mk-dur-snap), opacity var(--mk-dur-snap); }
+.hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+@media (max-width: 900px) { #mainNav { padding: 12px 20px; gap: 16px; } .nav-links { display: none; } .hamburger { display: flex; } }
+
+.btn-primary, .btn-secondary, .btn-ghost { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-family: var(--mk-font-sans); font-size: var(--mk-text-sm); font-weight: 600; letter-spacing: var(--mk-track-cap); text-transform: uppercase; padding: 12px 22px; border-radius: var(--mk-radius-button); border: 1px solid transparent; cursor: pointer; text-decoration: none; white-space: nowrap; transition: transform var(--mk-dur-snap), box-shadow var(--mk-dur-snap), background var(--mk-dur-snap), border-color var(--mk-dur-snap), color var(--mk-dur-snap); }
+.btn-primary { background: var(--mk-gold-gradient); color: var(--mk-text-on-gold); border-color: rgba(0,0,0,.18); }
+.btn-primary:hover { transform: translateY(-1px); box-shadow: var(--mk-glow-gold-md); color: var(--mk-text-on-gold); }
+.btn-secondary { background: transparent; color: var(--mk-text-primary); border: var(--mk-border-gold); }
+.btn-secondary:hover { color: var(--mk-brand); border-color: var(--mk-brand); background: rgba(212,175,55,.06); }
+.btn-ghost { background: transparent; color: var(--mk-text-secondary); border-color: var(--mk-smoke-700); padding: 10px 18px; font-size: var(--mk-text-xs); }
+.btn-ghost:hover { color: var(--mk-text-primary); border-color: var(--mk-smoke-600); background: rgba(255,255,255,.03); }
+
+.section { position: relative; z-index: 1; padding: 88px 0; background: var(--mk-surface-page); }
+.section.section-dark { background: var(--mk-surface-base); }
+.section-inner { max-width: var(--mk-container-marketing); margin: 0 auto; padding: 0 32px; }
+.section-eyebrow { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); text-align: center; margin-bottom: 14px; }
+.section-title { font-family: var(--mk-font-display); font-size: clamp(2rem, 4.5vw, 3.4rem); letter-spacing: var(--mk-track-display); line-height: 1.04; text-transform: uppercase; text-align: center; margin-bottom: 18px; font-weight: 400; }
+.section-title em { font-style: normal; background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.section-sub { font-size: var(--mk-text-lg); color: var(--mk-text-secondary); text-align: left; max-width: 820px; margin: 0 auto 48px; line-height: var(--mk-lead-body); }
+.section-sub strong { color: var(--mk-text-primary); }
+.section-sub + .section-sub { margin-top: -34px; }
+hr.mk-rule-gold, hr.mk-rule-gold--bold { margin: 0 auto; max-width: 1180px; }
+
+.reveal { opacity: 0; transform: translateY(16px); transition: opacity var(--mk-dur-slow) var(--mk-ease-out), transform var(--mk-dur-slow) var(--mk-ease-out); }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+.mk-cta-repeat { display: none; }
+@media (max-width: 600px) { .mk-cta-repeat { display: flex; justify-content: center; margin: 36px auto 0; padding: 0 16px; } .mk-cta-repeat .btn-primary { width: 100%; max-width: 320px; padding: 16px 24px; font-size: var(--mk-text-md); } }
+
+/* PAGE HERO — split layout: tilted image panel + copy at >=1000px. Below 1000px the image hides and copy renders centered. See docs/detail-page-hero-swap.md. */
+.page-hero { position: relative; z-index: 1; padding: 152px 0 96px; background: var(--mk-obsidian-950); text-align: center; border-bottom: var(--mk-border-hairline); overflow: hidden; min-height: 540px; display: flex; align-items: center; }
+.page-hero-bg { display: none; }
+.page-hero-inner { position: relative; z-index: 2; max-width: 820px; margin: 0 auto; padding: 0 32px; width: 100%; }
+.page-hero-eyebrow { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); margin-bottom: 18px; }
+.page-hero-title { font-family: var(--mk-font-display); font-size: clamp(2.4rem, 5.4vw, 4rem); letter-spacing: var(--mk-track-display); line-height: 1.04; text-transform: uppercase; font-weight: 400; margin-bottom: 20px; }
+.page-hero-title em { font-style: normal; background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.page-hero-sub { font-size: var(--mk-text-lg); color: var(--mk-text-secondary); line-height: var(--mk-lead-body); max-width: 640px; margin: 0 auto 14px; }
+.page-hero-sub:last-child { margin-bottom: 0; }
+.page-hero-sub--action { color: var(--mk-text-primary); }
+
+/* Hero entrance — class-flip + transition, no @keyframes. */
+.page-hero .page-hero-eyebrow,
+.page-hero .page-hero-title,
+.page-hero .page-hero-sub { opacity: 0; will-change: opacity, transform; transition: opacity 900ms cubic-bezier(.16,1,.3,1), transform 900ms cubic-bezier(.16,1,.3,1); }
+.page-hero .page-hero-eyebrow { transform: translateY(20px); transition-duration: 700ms; transition-delay: 100ms; }
+.page-hero .page-hero-title { transform: translateY(48px); transition-duration: 1200ms; transition-delay: 300ms; }
+.page-hero .page-hero-sub { transform: translateY(28px); transition-duration: 900ms; transition-delay: 700ms; }
+.page-hero .page-hero-sub + .page-hero-sub { transition-delay: 950ms; }
+body.hero-loaded .page-hero .page-hero-eyebrow,
+body.hero-loaded .page-hero .page-hero-title,
+body.hero-loaded .page-hero .page-hero-sub { opacity: 1; transform: translateY(0); }
+
+@media (min-width: 1000px) {
+  .page-hero { text-align: left; min-height: 680px; padding: 168px 0 112px; }
+  .page-hero-inner { max-width: 1240px; display: grid; grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.2fr); gap: 96px; align-items: center; }
+  .page-hero-sub { margin-left: 0; margin-right: 0; max-width: none; }
+  .page-hero-bg {
+    display: block; position: relative; width: 100%; aspect-ratio: 4 / 5;
+    border-radius: 14px; overflow: hidden; will-change: opacity, transform;
+    transform-origin: right center;
+    opacity: 0;
+    transform: perspective(800px) rotateY(50deg);
+    transition: opacity 1100ms cubic-bezier(.16,1,.3,1) 200ms, transform 1100ms cubic-bezier(.16,1,.3,1) 200ms;
+    box-shadow:
+      -56px 36px 80px -22px rgba(0,0,0,.85),
+      -22px 18px 40px -16px rgba(0,0,0,.60),
+      inset 0 0 0 1px rgba(212,175,55,.26),
+      0 0 44px rgba(212,175,55,.12);
+  }
+  .page-hero-bg img { width: 100%; height: 100%; object-fit: cover; object-position: 50% center; }
+  .page-hero-bg::after {
+    content: ''; position: absolute; inset: 0; pointer-events: none; border-radius: inherit;
+    background: linear-gradient(90deg, rgba(255,255,255,.14) 0%, transparent 28%, transparent 68%, rgba(0,0,0,.34) 100%);
+  }
+  body.hero-loaded .page-hero-bg { opacity: 1; transform: perspective(800px) rotateY(35deg); }
+
+  /* Mirror modifier — image on the right, tilt reversed. Add `page-hero--right` to the <section>. */
+  .page-hero--right .page-hero-inner { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); }
+  .page-hero--right .page-hero-text { order: 1; }
+  .page-hero--right .page-hero-bg {
+    order: 2;
+    transform-origin: left center;
+    transform: perspective(800px) rotateY(-50deg);
+    box-shadow:
+      56px 36px 80px -22px rgba(0,0,0,.85),
+      22px 18px 40px -16px rgba(0,0,0,.60),
+      inset 0 0 0 1px rgba(212,175,55,.26),
+      0 0 44px rgba(212,175,55,.12);
+  }
+  .page-hero--right .page-hero-bg::after {
+    background: linear-gradient(270deg, rgba(255,255,255,.14) 0%, transparent 28%, transparent 68%, rgba(0,0,0,.34) 100%);
+  }
+  body.hero-loaded .page-hero--right .page-hero-bg { transform: perspective(800px) rotateY(-35deg); }
+}
+
+@media (max-width: 600px) { .page-hero { min-height: 480px; padding: 132px 0 72px; } }
+
+/* ── PROBLEM ROW ────────────────────────────────────────────── */
+.problem-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; max-width: 1100px; margin: 0 auto; }
+.problem-card { padding: 28px 26px; background: var(--mk-surface-raised); border: 1px solid rgba(255,255,255,.06); border-radius: var(--mk-radius-card); }
+.problem-num { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); color: var(--mk-danger-500); margin-bottom: 10px; }
+.problem-title { font-family: var(--mk-font-display); font-size: var(--mk-display-md); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); margin-bottom: 10px; line-height: 1.1; }
+.problem-text { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); line-height: 1.55; }
+@media (max-width: 900px) { .problem-grid { grid-template-columns: 1fr; } }
+
+/* ── EDGE PRIME-TIME CARD — CONCEPTUAL VIZ ───────────────────── */
+.edge-card {
+  max-width: 880px; margin: 0 auto;
+  padding: 32px 36px;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(74,222,128,.07), transparent 60%),
+    var(--mk-surface-raised);
+  border: 1px solid rgba(74,222,128,.22);
+  border-radius: var(--mk-radius-card);
+  box-shadow: 0 0 0 1px rgba(74,222,128,.04), 0 18px 48px rgba(0,0,0,.35);
+}
+.edge-card-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 18px; margin-bottom: 22px; border-bottom: var(--mk-border-hairline); }
+.edge-card-symbol { font-family: var(--mk-font-mono); font-size: var(--mk-mono-sm); color: var(--mk-text-secondary); letter-spacing: 0.04em; }
+.edge-card-time { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-text-tertiary); }
+
+.edge-chart {
+  position: relative;
+  aspect-ratio: 2.4/1;
+  background:
+    linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px) 0 0/100% 25%,
+    linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px) 0 0/calc(100%/14) 100%;
+  border: 1px solid rgba(255,255,255,.04);
+  border-radius: var(--mk-radius-card-sm);
+  padding: 16px 14px 14px;
+  overflow: hidden;
+}
+
+.edge-prime-zone {
+  position: absolute;
+  top: 0; bottom: 0;
+  left: 23%; width: 41%;
+  background: linear-gradient(180deg, rgba(74,222,128,.18), rgba(74,222,128,.05));
+  border-left: 1px dashed rgba(74,222,128,.45);
+  border-right: 1px dashed rgba(74,222,128,.45);
+  pointer-events: none;
+  z-index: 0;
+}
+.edge-prime-zone-label {
+  position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+  font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs);
+  letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase;
+  color: var(--mk-profit-500);
+  white-space: nowrap;
+}
+
+.edge-candles {
+  position: relative; z-index: 1;
+  height: 100%;
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 6px;
+}
+.edge-candle {
+  position: relative;
+  flex: 1; max-width: 18px;
+  height: var(--h, 40%);
+  background: var(--c, var(--mk-text-tertiary));
+  border-radius: 1px;
+  align-self: flex-end;
+  margin-bottom: var(--b, 0%);
+}
+.edge-candle::before {
+  content: '';
+  position: absolute;
+  left: 50%; transform: translateX(-50%);
+  width: 1px;
+  bottom: 100%;
+  height: var(--w, 6px);
+  background: var(--c, var(--mk-text-tertiary));
+  opacity: .65;
+}
+.edge-candle--up { --c: var(--mk-profit-500); }
+.edge-candle--down { --c: var(--mk-danger-500); }
+.edge-candle--mute { --c: var(--mk-text-tertiary); opacity: .55; }
+
+.edge-card-chips { display: flex; justify-content: center; gap: 12px; margin-top: 24px; }
+.edge-chip {
+  font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs);
+  letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase;
+  padding: 6px 12px; border-radius: 999px;
+  border: 1px solid currentColor;
+  background: rgba(255,255,255,.02);
+}
+.edge-chip--warn { color: var(--mk-warning-500); }
+.edge-chip--exit { color: var(--mk-danger-500); }
+
+@media (max-width: 700px) {
+  .edge-card { padding: 24px 18px; }
+  .edge-chart { aspect-ratio: 1.7/1; padding: 12px 8px 10px; }
+  .edge-candles { gap: 4px; }
+  .edge-candle { max-width: 12px; }
+}
+
+/* ── PULSE PANEL ────────────────────────────────────────────── */
+.pulse-wrap { max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 36px; align-items: center; }
+.pulse-visual {
+  position: relative;
+  aspect-ratio: 1.4/1;
+  background:
+    radial-gradient(circle at 85% 50%, rgba(74,222,128,.10), transparent 65%),
+    var(--mk-surface-raised);
+  border: 1px solid rgba(74,222,128,.18);
+  border-radius: var(--mk-radius-card);
+  padding: 56px 28px 48px;
+  overflow: hidden;
+  box-shadow: 0 0 60px rgba(74,222,128,.06) inset;
+}
+.pulse-footnote {
+  position: absolute;
+  bottom: 16px; left: 28px; right: 28px;
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-xs);
+  letter-spacing: var(--mk-track-eyebrow);
+  text-transform: uppercase;
+  color: var(--mk-text-tertiary);
+  opacity: .55;
+  pointer-events: none;
+  text-align: center;
+}
+.pulse-bars { display: flex; align-items: flex-end; gap: 6px; height: 100%; padding: 8px 0; }
+.pulse-bars div {
+  flex: 1; min-width: 0;
+  background: linear-gradient(180deg, var(--bar-c, rgba(255,255,255,.20)), color-mix(in srgb, var(--bar-c, rgba(255,255,255,.20)) 25%, transparent));
+  border-radius: 2px;
+  animation: pulse-bar 2.4s var(--mk-ease-in-out) infinite;
+}
+.pulse-bars div:nth-child(1)  { height: 10%; animation-delay: 0s;    --bar-c: rgba(248, 113, 113, .55); }
+.pulse-bars div:nth-child(2)  { height: 14%; animation-delay: 0.08s; --bar-c: rgba(248, 113, 113, .55); }
+.pulse-bars div:nth-child(3)  { height: 11%; animation-delay: 0.16s; --bar-c: rgba(248, 113, 113, .55); }
+.pulse-bars div:nth-child(4)  { height: 20%; animation-delay: 0.24s; --bar-c: rgba(255, 255, 255, .32); }
+.pulse-bars div:nth-child(5)  { height: 26%; animation-delay: 0.32s; --bar-c: rgba(255, 255, 255, .32); }
+.pulse-bars div:nth-child(6)  { height: 24%; animation-delay: 0.40s; --bar-c: rgba(255, 255, 255, .32); }
+.pulse-bars div:nth-child(7)  { height: 42%; animation-delay: 0.48s; --bar-c: rgba(140, 225, 150, .60); }
+.pulse-bars div:nth-child(8)  { height: 56%; animation-delay: 0.56s; --bar-c: rgba(110, 225, 140, .76); }
+.pulse-bars div:nth-child(9)  { height: 68%; animation-delay: 0.64s; --bar-c: rgba(90, 225, 135, .88); }
+.pulse-bars div:nth-child(10) { height: 78%; animation-delay: 0.72s; --bar-c: var(--mk-profit-500); }
+.pulse-bars div:nth-child(11) { height: 86%; animation-delay: 0.80s; --bar-c: var(--mk-profit-500); }
+.pulse-bars div:nth-child(12) { height: 92%; animation-delay: 0.88s; --bar-c: var(--mk-profit-500); }
+.pulse-bars div:nth-child(13) { height: 96%; animation-delay: 0.96s; --bar-c: var(--mk-profit-500); }
+@keyframes pulse-bar { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(.92); } }
+.pulse-overlay {
+  position: absolute; top: 16px; left: 18px;
+  display: flex; gap: 10px; align-items: center;
+}
+.pulse-overlay-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--mk-profit-500); box-shadow: 0 0 10px var(--mk-profit-500); }
+.pulse-overlay-text { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-profit-500); }
+.pulse-copy h3 { font-family: var(--mk-font-display); font-size: clamp(1.6rem, 3vw, 2.2rem); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); font-weight: 400; margin-bottom: 14px; line-height: 1.1; }
+.pulse-copy h3 em { font-style: normal; background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.pulse-copy p { font-size: var(--mk-text-md); color: var(--mk-text-secondary); line-height: var(--mk-lead-body); margin-bottom: 14px; }
+.pulse-states { display: flex; gap: 24px; margin-top: 20px; }
+.pulse-state { flex: 1; padding-left: 14px; border-left: 2px solid currentColor; }
+.pulse-state.rising { color: var(--mk-profit-500); }
+.pulse-state.fading { color: var(--mk-warning-500); }
+.pulse-state-tag { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; margin-bottom: 6px; color: currentColor; }
+.pulse-state-text { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); line-height: 1.5; }
+@media (max-width: 880px) { .pulse-wrap { grid-template-columns: 1fr; gap: 28px; } }
+
+/* ── STACKED CHART MOCKUP CARD ──────────────────────────────── */
+.tv-card {
+  max-width: 980px; margin: 0 auto;
+  padding: 32px;
+  background:
+    radial-gradient(circle at 50% 60%, rgba(74,222,128,.05), transparent 70%),
+    var(--mk-surface-raised);
+  border: 1px solid rgba(74,222,128,.20);
+  border-radius: var(--mk-radius-card);
+}
+.tv-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 16px; margin-bottom: 20px; border-bottom: var(--mk-border-hairline); }
+.tv-header-left { display: flex; align-items: center; gap: 10px; }
+.tv-header-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--mk-profit-500); box-shadow: 0 0 8px var(--mk-profit-500); }
+.tv-header-text { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-text-tertiary); }
+.tv-ticker { font-family: var(--mk-font-mono); font-size: var(--mk-mono-sm); color: var(--mk-profit-500); }
+
+.feed-chart { display: flex; flex-direction: column; gap: 12px; }
+.feed-panel {
+  position: relative;
+  border: 1px solid rgba(255,255,255,.04);
+  border-radius: var(--mk-radius-sm);
+  overflow: hidden;
+}
+.feed-panel--price {
+  aspect-ratio: 3.2/1;
+  background:
+    linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px) 0 0/100% 25%,
+    linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px) 0 0/calc(100%/14) 100%,
+    rgba(0,0,0,.30);
+}
+.feed-panel--pulse {
+  aspect-ratio: 5.5/1;
+  background:
+    linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px) 0 0/calc(100%/14) 100%,
+    rgba(0,0,0,.30);
+}
+.feed-panel-label {
+  position: absolute; top: 10px; left: 14px;
+  font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs);
+  letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase;
+  color: var(--mk-text-tertiary);
+  z-index: 2;
+}
+.feed-panel--pulse .feed-panel-label { color: var(--mk-profit-500); }
+
+.feed-prime-zone {
+  position: absolute;
+  top: 0; bottom: 0;
+  left: 30%; width: 36%;
+  background: linear-gradient(180deg, rgba(74,222,128,.18), rgba(74,222,128,.05));
+  border-left: 1px dashed rgba(74,222,128,.45);
+  border-right: 1px dashed rgba(74,222,128,.45);
+  pointer-events: none;
+  z-index: 0;
+}
+.feed-prime-zone-label {
+  position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+  font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs);
+  letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase;
+  color: var(--mk-profit-500);
+  white-space: nowrap;
+}
+
+.feed-chip {
+  position: absolute; top: 10px; right: 14px;
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 4px 10px; border-radius: 999px;
+  font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs);
+  letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase;
+  border: 1px solid rgba(255,255,255,.08);
+  background: rgba(0,0,0,.40);
+  color: var(--mk-text-tertiary);
+  z-index: 2;
+}
+.feed-chip-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--mk-danger-500); box-shadow: 0 0 6px rgba(248,113,113,.55); }
+
+.feed-candles {
+  position: relative; z-index: 1;
+  height: 100%;
+  display: flex; align-items: flex-end; justify-content: space-between;
+  padding: 32px 14px 10px;
+  gap: 6px;
+}
+.feed-candle {
+  flex: 1; max-width: 14px;
+  height: var(--h, 40%);
+  background: var(--c, var(--mk-text-tertiary));
+  border-radius: 1px;
+  align-self: flex-end;
+}
+.feed-candle--up { --c: var(--mk-profit-500); }
+.feed-candle--down { --c: var(--mk-danger-500); }
+.feed-candle--mute { --c: var(--mk-text-tertiary); opacity: .55; }
+
+.feed-pulse-bars {
+  position: relative; z-index: 1;
+  height: 100%;
+  display: flex; align-items: flex-end;
+  padding: 28px 14px 10px;
+  gap: 6px;
+}
+.feed-pulse-bars div {
+  flex: 1; min-width: 0;
+  background: linear-gradient(180deg, var(--bar-c, rgba(255,255,255,.20)), color-mix(in srgb, var(--bar-c, rgba(255,255,255,.20)) 25%, transparent));
+  border-radius: 2px;
+}
+.feed-pulse-bars div:nth-child(1)  { height: 12%; --bar-c: rgba(248,113,113,.55); }
+.feed-pulse-bars div:nth-child(2)  { height: 16%; --bar-c: rgba(248,113,113,.55); }
+.feed-pulse-bars div:nth-child(3)  { height: 14%; --bar-c: rgba(255,255,255,.28); }
+.feed-pulse-bars div:nth-child(4)  { height: 22%; --bar-c: rgba(255,255,255,.28); }
+.feed-pulse-bars div:nth-child(5)  { height: 44%; --bar-c: rgba(135,225,150,.65); }
+.feed-pulse-bars div:nth-child(6)  { height: 58%; --bar-c: rgba(110,225,140,.78); }
+.feed-pulse-bars div:nth-child(7)  { height: 72%; --bar-c: rgba(90,225,135,.90); }
+.feed-pulse-bars div:nth-child(8)  { height: 84%; --bar-c: var(--mk-profit-500); }
+.feed-pulse-bars div:nth-child(9)  { height: 90%; --bar-c: var(--mk-profit-500); }
+.feed-pulse-bars div:nth-child(10) { height: 76%; --bar-c: var(--mk-profit-500); }
+.feed-pulse-bars div:nth-child(11) { height: 50%; --bar-c: rgba(130,225,150,.55); }
+.feed-pulse-bars div:nth-child(12) { height: 32%; --bar-c: rgba(255,255,255,.26); }
+.feed-pulse-bars div:nth-child(13) { height: 22%; --bar-c: rgba(255,255,255,.22); }
+.feed-pulse-bars div:nth-child(14) { height: 16%; --bar-c: rgba(255,255,255,.18); }
+
+.tv-caption { text-align: center; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-text-tertiary); margin-top: 18px; opacity: .7; }
+
+@media (max-width: 700px) {
+  .tv-card { padding: 20px; }
+  .feed-candles, .feed-pulse-bars { padding: 28px 8px 8px; gap: 4px; }
+  .feed-candle { max-width: 10px; }
+}
+
+/* ── ACCESS STEPS ───────────────────────────────────────────── */
+.access-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; max-width: 1000px; margin: 0 auto; }
+.access-card { padding: 28px 24px; background: var(--mk-surface-raised); border: 1px solid rgba(255,255,255,.06); border-radius: var(--mk-radius-card); }
+.access-num { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 50%; background: rgba(212,175,55,.08); border: var(--mk-border-gold-soft); font-family: var(--mk-font-display); font-size: 1.4rem; color: var(--mk-brand); margin-bottom: 14px; }
+.access-title { font-family: var(--mk-font-display); font-size: var(--mk-display-sm); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); margin-bottom: 8px; }
+.access-text { font-size: var(--mk-text-sm); color: var(--mk-text-tertiary); line-height: 1.55; }
+@media (max-width: 800px) { .access-grid { grid-template-columns: 1fr; max-width: 460px; } }
+
+/* ── TRUST STRIP ────────────────────────────────────────────── */
+.trust-card { max-width: 780px; margin: 0 auto; padding: 28px 36px; background: var(--mk-surface-raised); border: 1px solid rgba(212,175,55,.22); border-radius: var(--mk-radius-card); display: flex; align-items: center; gap: 20px; }
+.trust-stat { font-family: var(--mk-font-display); font-size: clamp(2.4rem, 4vw, 3rem); background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; line-height: 1; flex-shrink: 0; }
+.trust-text { flex: 1; font-size: var(--mk-text-sm); color: var(--mk-text-secondary); line-height: 1.5; }
+.trust-text a { color: var(--mk-brand); border-bottom: 1px solid rgba(212,175,55,.4); }
+@media (max-width: 600px) { .trust-card { flex-direction: column; text-align: center; padding: 24px; } }
+
+.final-cta-section { padding: 96px 0; background: var(--mk-obsidian-950); text-align: center; border-top: var(--mk-border-hairline); }
+.final-cta-eyebrow { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); margin-bottom: 18px; }
+.final-cta-title { font-family: var(--mk-font-display); font-size: clamp(2.2rem, 4.6vw, 3.2rem); letter-spacing: var(--mk-track-display); line-height: 1.04; text-transform: uppercase; font-weight: 400; margin-bottom: 24px; max-width: 700px; margin-left: auto; margin-right: auto; }
+.final-cta-title em { font-style: normal; background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.final-cta-btn-wrap { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.final-cta-note { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: 0.04em; color: var(--mk-text-tertiary); }
+
+.sticky-bar { position: fixed; bottom: 0; left: 0; right: 0; z-index: 55; display: flex; align-items: center; justify-content: center; gap: 14px; padding: 10px 64px 10px 24px; background: rgba(13,15,20,.62); backdrop-filter: blur(20px) saturate(140%); border-top: 1px solid rgba(212,175,55,.35); transform: translateY(100%); transition: transform var(--mk-dur-med) var(--mk-ease-out); }
+.sticky-bar.visible { transform: translateY(0); }
+body:has(.sticky-bar.visible) { padding-bottom: 80px; }
+.sticky-bar-text { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); }
+.sticky-bar-text strong { color: var(--mk-text-primary); }
+.sticky-bar-form { display: flex; gap: 8px; align-items: center; }
+.sticky-bar-input { background: rgba(20,24,33,.85); border: 1px solid rgba(255,255,255,.12); color: var(--mk-text-primary); font-family: var(--mk-font-mono); font-size: var(--mk-mono-sm); padding: 8px 12px; border-radius: var(--mk-radius-input); outline: none; width: 220px; }
+.sticky-bar-input::placeholder { color: var(--mk-text-tertiary); }
+.sticky-bar-input:focus { border-color: var(--mk-brand); box-shadow: 0 0 0 3px rgba(212,175,55,.18); }
+.sticky-bar-form .btn-primary { padding: 8px 14px; font-size: var(--mk-text-xs); }
+.sticky-bar-close { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); background: transparent; border: 0; cursor: pointer; color: var(--mk-text-tertiary); font-size: 1.4rem; line-height: 1; padding: 4px; }
+.sticky-bar-close:hover { color: var(--mk-text-primary); }
+@media (max-width: 700px) { .sticky-bar { flex-direction: column; padding: 12px 36px 12px 12px; gap: 8px; } .sticky-bar-input { width: 100%; max-width: 280px; } }
+
+footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairline); padding: 56px 0 28px; }
+.footer-inner { max-width: var(--mk-container-marketing); margin: 0 auto; padding: 0 32px; }
+.footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; margin-bottom: 32px; padding-bottom: 32px; border-bottom: var(--mk-border-hairline); }
+.footer-logo-wrap { display: flex; flex-direction: column; align-items: flex-start; gap: 18px; margin-bottom: 12px; }
+.footer-logo-wrap .mk-brand-lockup { --mk-brand-lockup-mark-h: 40px; --mk-brand-lockup-wordmark-h: 20px; }
+.footer-tagline { font-size: var(--mk-text-sm); color: var(--mk-text-tertiary); line-height: var(--mk-lead-body); max-width: 360px; }
+.footer-tagline strong { display: block; color: var(--mk-text-primary); margin-bottom: 4px; }
+.footer-col-title { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); margin-bottom: 16px; }
+.footer-links { display: flex; flex-direction: column; gap: 10px; padding: 0; }
+.footer-links a { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); transition: color var(--mk-dur-fast); }
+.footer-links a:hover { color: var(--mk-text-primary); }
+.footer-bottom { display: flex; flex-direction: column; gap: 10px; }
+.footer-copy { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: 0.04em; color: var(--mk-text-tertiary); }
+.footer-disclaimer { font-size: var(--mk-text-xs); color: var(--mk-text-tertiary); line-height: var(--mk-lead-body); max-width: 900px; }
+@media (max-width: 800px) { .footer-grid { grid-template-columns: 1fr; gap: 24px; } }
+</style>
+</head>
+<body>
+
+<div class="bg-trading" aria-hidden="true">
+  <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+    <g stroke="#C9A84C" stroke-width="0.5" opacity="0.5">
+      <line x1="0" y1="150" x2="1440" y2="150"/><line x1="0" y1="300" x2="1440" y2="300"/><line x1="0" y1="450" x2="1440" y2="450"/><line x1="0" y1="600" x2="1440" y2="600"/>
+      <line x1="180" y1="0" x2="180" y2="900"/><line x1="360" y1="0" x2="360" y2="900"/><line x1="540" y1="0" x2="540" y2="900"/><line x1="720" y1="0" x2="720" y2="900"/><line x1="900" y1="0" x2="900" y2="900"/><line x1="1080" y1="0" x2="1080" y2="900"/><line x1="1260" y1="0" x2="1260" y2="900"/>
+    </g>
+  </svg>
+</div>
+
+<div class="mobile-overlay" id="mobileOverlay" onclick="closeDrawer()"></div>
+<div class="mobile-drawer" id="mobileDrawer">
+  <ul class="mobile-drawer-links">
+    <li><a href="system.html" onclick="closeDrawer()">The System</a></li>
+    <li><a href="journal.html" onclick="closeDrawer()">Journal</a></li>
+    <li><a href="edge.html" onclick="closeDrawer()">The Edge</a></li>
+    <li><a href="focus.html" onclick="closeDrawer()">Focus Room</a></li>
+    <li><a href="pricing.html" onclick="closeDrawer()">Get Started</a></li>
+    <li><a href="/app" onclick="closeDrawer()">Log In</a></li>
+  </ul>
+  <button class="mobile-drawer-cta" onclick="handleCheckout('price_1TUWVpJIDbUntZeXyQD23z8W',{preventDefault:()=>{},currentTarget:null});closeDrawer()">Start Free Trial &rarr;</button>
+</div>
+
+<nav id="mainNav">
+  <a href="index.html" class="nav-logo mk-brand-lockup">
+    <img class="mk-brand-lockup__mark" src="assets/logo-mark.png" alt="">
+    <img class="mk-brand-lockup__wordmark" src="assets/logo-wordmark.png" alt="MAKETZO">
+  </a>
+  <ul class="nav-links">
+    <li><a href="system.html">The System</a></li>
+    <li><a href="journal.html">Journal</a></li>
+    <li><a href="edge.html" aria-current="page">The Edge</a></li>
+    <li><a href="focus.html">Focus Room</a></li>
+    <li><a href="pricing.html">Get Started</a></li>
+    <li><a href="/app" class="nav-login-btn">Log In</a></li>
+    <li><button class="nav-cta" onclick="handleCheckout('price_1TUWVpJIDbUntZeXyQD23z8W',event)">Start Free Trial</button></li>
+  </ul>
+  <button class="hamburger" id="hamburger" onclick="toggleDrawer()" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+
+<section class="page-hero">
+  <div class="page-hero-inner">
+    <picture class="page-hero-bg" aria-hidden="true">
+      <source srcset="assets/edge-hero.avif" type="image/avif">
+      <source srcset="assets/edge-hero.webp" type="image/webp">
+      <img src="assets/edge-hero.png" alt="" fetchpriority="high" decoding="async">
+    </picture>
+    <div class="page-hero-text">
+      <p class="page-hero-eyebrow">03 · TRADE INTELLIGENCE</p>
+      <h1 class="page-hero-title">Know when your window is open. <em>Know when to sit on your hands.</em></h1>
+      <p class="page-hero-sub">Most traders don't need more indicators. They need fewer bad trades. The real challenge is not finding another setup&mdash;it is knowing when momentum is truly on your side, when the odds are stacked against you, and when the smartest trade is no trade at all.</p>
+      <p class="page-hero-sub">Maketzo Edge and Maketzo Pulse were built to provide that clarity. They highlight the narrow windows when your strategy has the greatest statistical tailwind and tell you when to sit on your hands. If your goal is to trade less, trade better, and let discipline do the heavy lifting, this is a practical place to start.</p>
+      <div class="mk-cta-repeat">
+        <button class="btn-primary" data-cta-source="page-hero" onclick="handleCheckout('price_1TUWVpJIDbUntZeXyQD23z8W',event)">Start 7-Day Free Trial &rarr;</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- THE PROBLEM -->
+<section class="section">
+  <div class="section-inner">
+    <p class="section-eyebrow reveal">WHAT EDGE SOLVES</p>
+    <h2 class="section-title reveal">Three ways traders <em>misread the day</em></h2>
+    <p class="section-sub reveal">Most losing sessions don't come from bad setups. They come from trading the wrong half of the day. Edge separates the windows that pay from the windows that punish.</p>
+
+    <div class="problem-grid">
+      <div class="problem-card reveal">
+        <div class="problem-num">PROBLEM 01</div>
+        <div class="problem-title">Trading the dead zones</div>
+        <p class="problem-text">Mid-day chop, post-news drift, slow afternoons. The hours when nothing real is happening are the hours most losses get manufactured. You're not making bad trades — you're trading when there's nothing to trade.</p>
+      </div>
+      <div class="problem-card reveal">
+        <div class="problem-num">PROBLEM 02</div>
+        <div class="problem-title">Missing the prime windows</div>
+        <p class="problem-text">The first 30 minutes and the late-afternoon reversal. When conditions align, they don't stay aligned long. Traders who don't have a clear signal for "this is the window" hesitate through it.</p>
+      </div>
+      <div class="problem-card reveal">
+        <div class="problem-num">PROBLEM 03</div>
+        <div class="problem-title">Holding past the exit</div>
+        <p class="problem-text">The setup worked, the move ran, you have profit on screen — and then you give it back. The window doesn't tell you when it closed. Edge does.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EDGE OUTCOME PANELS -->
+<section class="section section-dark">
+  <div class="section-inner">
+    <p class="section-eyebrow reveal">MAKETZO EDGE</p>
+    <h2 class="section-title reveal">Three signals. <em>Three decisions.</em></h2>
+    <p class="section-sub reveal">Most traders already know their setups. What they struggle with is selectivity&mdash;knowing when conditions are truly aligned and when the highest-probability window has arrived. Maketzo Edge turns that judgment into a clean visual decision layer.</p>
+    <p class="section-sub reveal">PRIME TIME highlights the narrow periods when momentum, structure, and market context are working together. Risk banners tell you when to scale out, tighten up, or step aside entirely. Fewer second guesses. Fewer impulsive trades. More focus on the moments that matter.</p>
+
+    <div class="edge-card reveal">
+      <div class="edge-card-header">
+        <span class="edge-card-symbol">SKYQ &middot; 1m</span>
+        <span class="edge-card-time">09:38 ET</span>
+      </div>
+      <div class="edge-chart">
+        <div class="edge-prime-zone"><span class="edge-prime-zone-label">PRIME TIME</span></div>
+        <div class="edge-candles">
+          <span class="edge-candle edge-candle--down" style="--h:30%"></span>
+          <span class="edge-candle edge-candle--up"   style="--h:38%"></span>
+          <span class="edge-candle edge-candle--down" style="--h:32%"></span>
+          <span class="edge-candle edge-candle--up"   style="--h:46%"></span>
+          <span class="edge-candle edge-candle--up"   style="--h:54%"></span>
+          <span class="edge-candle edge-candle--up"   style="--h:62%"></span>
+          <span class="edge-candle edge-candle--up"   style="--h:72%"></span>
+          <span class="edge-candle edge-candle--up"   style="--h:80%"></span>
+          <span class="edge-candle edge-candle--up"   style="--h:84%"></span>
+          <span class="edge-candle edge-candle--up"   style="--h:76%"></span>
+          <span class="edge-candle edge-candle--down" style="--h:66%"></span>
+          <span class="edge-candle edge-candle--down" style="--h:56%"></span>
+          <span class="edge-candle edge-candle--down" style="--h:46%"></span>
+          <span class="edge-candle edge-candle--mute" style="--h:38%"></span>
+        </div>
+      </div>
+      <div class="edge-card-chips">
+        <span class="edge-chip edge-chip--warn">SCALE OUT</span>
+        <span class="edge-chip edge-chip--exit">EXIT NOW</span>
+      </div>
+    </div>
+
+    <div class="mk-cta-repeat">
+      <button class="btn-primary" onclick="handleCheckout('price_1TUWVpJIDbUntZeXyQD23z8W',event)">Start 7-Day Free Trial</button>
+    </div>
+  </div>
+</section>
+
+<!-- PULSE -->
+<section class="section">
+  <div class="section-inner">
+    <p class="section-eyebrow reveal">MAKETZO PULSE</p>
+    <h2 class="section-title reveal">Edge tells you <em>when</em>. Pulse tells you <em>still</em>.</h2>
+    <p class="section-sub reveal">Great trades begin long before the entry. Maketzo Pulse measures the underlying energy of the market and makes it obvious when momentum is building, fading, or absent altogether.</p>
+    <p class="section-sub reveal">Instead of forcing trades in dead conditions, you can quickly see when the tape has real power behind it. When Pulse is alive, your setups deserve attention. When it goes quiet, the best trade is often no trade.</p>
+
+    <div class="pulse-wrap">
+      <div class="pulse-visual reveal">
+        <div class="pulse-overlay">
+          <span class="pulse-overlay-dot"></span>
+          <span class="pulse-overlay-text">Strength Building</span>
+        </div>
+        <div class="pulse-bars">
+          <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+        </div>
+        <div class="pulse-footnote">Bars represent momentum strength &mdash; not price candles</div>
+      </div>
+      <div class="pulse-copy reveal">
+        <h3>The momentum read <em>you didn't have to derive</em></h3>
+        <p>Pulse runs on top of Edge as a second confirmation. It answers a different question: "the move I'm in — is it still moving, or am I about to give it all back?"</p>
+        <p>One glance. Rising or fading. That's the entire spec. Designed to be acted on, not interpreted.</p>
+        <div class="pulse-states">
+          <div class="pulse-state rising">
+            <div class="pulse-state-tag">Rising</div>
+            <div class="pulse-state-text">Energy is still building. Hold the position. Add only on your plan, never on Pulse alone.</div>
+          </div>
+          <div class="pulse-state fading">
+            <div class="pulse-state-tag">Fading</div>
+            <div class="pulse-state-text">Energy is leaving. Time to harvest. Combined with Edge "Exit Window," this is the moment to ring the register.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRADINGVIEW FEED MOCKUP -->
+<section class="section section-dark">
+  <div class="section-inner">
+    <p class="section-eyebrow reveal">WHAT YOU'LL SEE</p>
+    <h2 class="section-title reveal">Your private Edge feed <em>in TradingView</em></h2>
+    <p class="section-sub reveal">Together, Edge and Pulse simplify one of the hardest decisions in trading: when to act and when to wait. Pulse tells you whether meaningful momentum is present. Edge shows exactly when structure and timing align.</p>
+    <p class="section-sub reveal">The result is a cleaner chart, clearer decisions, and fewer trades taken out of boredom, fear, or urgency. You still make the decisions. Maketzo makes the favorable conditions far more obvious.</p>
+
+    <div class="tv-card reveal">
+      <div class="tv-header">
+        <div class="tv-header-left">
+          <span class="tv-header-dot"></span>
+          <span class="tv-header-text">Maketzo Edge · Live</span>
+        </div>
+        <span class="tv-ticker">PHIO &middot; 1m</span>
+      </div>
+
+      <div class="feed-chart">
+        <div class="feed-panel feed-panel--price">
+          <span class="feed-panel-label">Price</span>
+          <span class="feed-chip"><span class="feed-chip-dot"></span>No Trade</span>
+          <div class="feed-prime-zone"><span class="feed-prime-zone-label">Prime Time</span></div>
+          <div class="feed-candles">
+            <span class="feed-candle feed-candle--down" style="--h:32%"></span>
+            <span class="feed-candle feed-candle--up"   style="--h:38%"></span>
+            <span class="feed-candle feed-candle--down" style="--h:34%"></span>
+            <span class="feed-candle feed-candle--up"   style="--h:48%"></span>
+            <span class="feed-candle feed-candle--up"   style="--h:58%"></span>
+            <span class="feed-candle feed-candle--up"   style="--h:68%"></span>
+            <span class="feed-candle feed-candle--up"   style="--h:78%"></span>
+            <span class="feed-candle feed-candle--up"   style="--h:84%"></span>
+            <span class="feed-candle feed-candle--up"   style="--h:80%"></span>
+            <span class="feed-candle feed-candle--up"   style="--h:72%"></span>
+            <span class="feed-candle feed-candle--down" style="--h:62%"></span>
+            <span class="feed-candle feed-candle--down" style="--h:52%"></span>
+            <span class="feed-candle feed-candle--down" style="--h:44%"></span>
+            <span class="feed-candle feed-candle--mute" style="--h:38%"></span>
+          </div>
+        </div>
+
+        <div class="feed-panel feed-panel--pulse">
+          <span class="feed-panel-label">Pulse Active</span>
+          <div class="feed-pulse-bars">
+            <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+          </div>
+        </div>
+      </div>
+
+      <p class="tv-caption">Illustrative &mdash; no indicator internals shown</p>
+    </div>
+  </div>
+</section>
+
+<!-- ACCESS STEPS -->
+<section class="section">
+  <div class="section-inner">
+    <p class="section-eyebrow reveal">HOW ACCESS WORKS</p>
+    <h2 class="section-title reveal">Three steps. <em>Under 24 hours.</em></h2>
+    <p class="section-sub reveal">Edge and Pulse are private indicators. Access is granted by hand to active subscribers — keeps the signal clean.</p>
+
+    <div class="access-grid">
+      <div class="access-card reveal">
+        <div class="access-num">1</div>
+        <div class="access-title">Start your trial</div>
+        <p class="access-text">Pick Pro or Elite. Card-on-file via Stripe. No charge until day 8. Your subscription unlocks the invite queue.</p>
+      </div>
+      <div class="access-card reveal">
+        <div class="access-num">2</div>
+        <div class="access-title">Send your TradingView name</div>
+        <p class="access-text">From your account page, drop in the username you use on TradingView. One line, one click. We don't need your password.</p>
+      </div>
+      <div class="access-card reveal">
+        <div class="access-num">3</div>
+        <div class="access-title">Granted within 24 hours</div>
+        <p class="access-text">You'll see "Maketzo Edge" appear in your private indicators. Add it to any chart. The feed runs from there on.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST STRIP -->
+<section class="section section-dark">
+  <div class="section-inner">
+    <p class="section-eyebrow reveal">TRADER PROOF</p>
+    <h2 class="section-title reveal">Built and used <em>by traders who put their name on it</em></h2>
+
+    <div class="trust-card reveal">
+      <div class="trust-stat">33</div>
+      <div class="trust-text">
+        <strong>verified trader reviews</strong> from active MAKETZO members — every one real, owner-confirmed, and posted with their permission. The full set lives on the <a href="index.html#reviews">homepage reviews wall</a>.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<hr class="mk-rule-gold--bold">
+<section class="final-cta-section">
+  <p class="final-cta-eyebrow reveal">7-DAY FREE TRIAL · EDGE + PULSE INCLUDED ON PRO</p>
+  <h2 class="final-cta-title reveal">Trade with Edge. Journal with Discipline. <em>Win.</em></h2>
+  <div class="final-cta-btn-wrap reveal">
+    <button class="btn-primary" style="padding:18px 44px;font-size:var(--mk-text-md);" onclick="handleCheckout('price_1TUWVpJIDbUntZeXyQD23z8W',event)">Start 7-Day Free Trial</button>
+    <p class="final-cta-note">Pro · $49/mo · Edge + Pulse + Focus Room + System · Cancel in one click</p>
+  </div>
+</section>
+
+<hr class="mk-rule-gold">
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-col-brand">
+        <div class="footer-logo-wrap">
+          <a href="index.html" class="mk-brand-lockup mk-brand-lockup--stacked">
+            <img class="mk-brand-lockup__mark" src="assets/logo-mark.png" alt="">
+            <img class="mk-brand-lockup__wordmark" src="assets/logo-wordmark.png" alt="MAKETZO">
+          </a>
+        </div>
+        <p class="footer-tagline"><strong>Built by traders, for traders.</strong>Discipline in every session. Edge in every trade. Accountability when it counts.</p>
+      </div>
+      <div><div class="footer-col-title">Product</div><ul class="footer-links"><li><a href="system.html">The System</a></li><li><a href="journal.html">Journal</a></li><li><a href="edge.html">The Edge</a></li><li><a href="focus.html">Focus Room</a></li><li><a href="pricing.html">Get Started</a></li><li><a href="why.html">Why MAKETZO</a></li></ul></div>
+      <div><div class="footer-col-title">Legal</div><ul class="footer-links"><li><a href="privacy.html">Privacy Policy</a></li><li><a href="terms.html">Terms of Service</a></li><li><a href="disclaimer.html">Risk Disclaimer</a></li><li><a href="contact.html">Contact Us</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">&copy; 2026 Abinic, LLC. All rights reserved. MAKETZO&reg; is a product of Abinic, LLC. maketzo.co</p>
+      <p class="footer-disclaimer">Trading securities, options, futures, forex, and cryptocurrencies involves substantial risk of loss and is not suitable for all investors. You may lose some or all of your capital. MAKETZO is a journaling, behavioral accountability, educational, and decision-support platform designed to help traders track performance, reinforce rules, and improve discipline. Neither Abinic, LLC nor MAKETZO provides investment advice, personalized financial advice, tax advice, legal advice, trade recommendations, or solicitations to buy or sell any security or financial instrument.</p>
+      <p class="footer-disclaimer">All indicators, analytics, alerts, scoring systems, coaching prompts, AI-generated insights, training modules, quizzes, and educational materials are provided for informational and educational purposes only. These tools may contain errors, omissions, delays, or inaccuracies and should not be relied upon as the sole basis for any trading, investing, or risk-management decision. No feature, signal, score, alert, prompt, or educational resource guarantees accuracy, suitability, profitability, or the prevention of losses.</p>
+      <p class="footer-disclaimer">Users remain solely responsible for evaluating all information, conducting independent research, managing risk, complying with applicable laws and regulations, and entering, modifying, or canceling orders. Abinic, LLC and MAKETZO do not execute trades, do not act as a broker-dealer or registered investment adviser, and do not have custody of customer funds. Past performance, simulated results, testimonials, and examples are illustrative only and do not guarantee future results.</p>
+    </div>
+  </div>
+</footer>
+
+<div class="sticky-bar" id="stickyBar">
+  <span class="sticky-bar-text"><strong>Trade sharper.</strong> Weekly discipline tips from MAKETZO.</span>
+  <form class="sticky-bar-form" onsubmit="event.preventDefault();handleStickyEmail()">
+    <input class="sticky-bar-input" id="stickyEmail" type="email" placeholder="your@email.com" required>
+    <button class="btn-primary" type="submit">Subscribe</button>
+  </form>
+  <button class="sticky-bar-close" onclick="closeStickyBar()" aria-label="Close">&times;</button>
+</div>
+
+<script>
+const API='https://api.maketzo.co';
+function toggleDrawer(){const d=document.getElementById('mobileDrawer');const o=document.getElementById('mobileOverlay');const h=document.getElementById('hamburger');d.classList.toggle('open');o.classList.toggle('open');h.classList.toggle('open');document.body.style.overflow=d.classList.contains('open')?'hidden':'';}
+function closeDrawer(){document.getElementById('mobileDrawer').classList.remove('open');document.getElementById('mobileOverlay').classList.remove('open');document.getElementById('hamburger').classList.remove('open');document.body.style.overflow='';}
+async function handleCheckout(priceId,e){
+  if(e&&e.preventDefault)e.preventDefault();
+  const btn=e&&e.currentTarget?e.currentTarget:null;
+  const finalId=(btn&&btn.dataset&&btn.dataset.priceId)?btn.dataset.priceId:priceId;
+  const orig=btn?btn.innerHTML:'';
+  if(btn){btn.innerHTML='Loading...';btn.disabled=true;}
+  const token=localStorage.getItem('maketzo_token');
+  if(!token){window.location.href=API+'/auth/google?checkout='+encodeURIComponent(finalId);return;}
+  try{
+    const res=await fetch(API+'/billing/create-checkout',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({priceId:finalId})});
+    const data=await res.json();
+    if(data.url){window.location.href=data.url;}else{throw new Error(data.error||'Checkout failed');}
+  }catch(err){alert('Something went wrong. Please try again.');if(btn){btn.innerHTML=orig;btn.disabled=false;}}
+}
+requestAnimationFrame(()=>document.body.classList.add('hero-loaded'));
+const reveals=document.querySelectorAll('.reveal');
+const obs=new IntersectionObserver((entries)=>{entries.forEach((e,i)=>{if(e.isIntersecting){setTimeout(()=>e.target.classList.add('visible'),i*50);obs.unobserve(e.target);}});},{threshold:0.06});
+reveals.forEach(el=>obs.observe(el));
+let stickyShown=false,stickyDismissed=false;
+window.addEventListener('scroll',()=>{
+  if(!stickyDismissed&&!stickyShown&&window.scrollY/(document.body.scrollHeight-window.innerHeight)>0.45){
+    document.getElementById('stickyBar').classList.add('visible');stickyShown=true;
+  }
+  document.getElementById('mainNav').style.borderBottomColor=window.scrollY>60?'rgba(201,168,76,0.25)':'rgba(201,168,76,0.12)';
+});
+function closeStickyBar(){document.getElementById('stickyBar').classList.remove('visible');stickyDismissed=true;}
+async function handleStickyEmail(){
+  const input=document.getElementById('stickyEmail');
+  const email=input.value.trim();
+  if(!email||!email.includes('@'))return;
+  try{await fetch(API+'/newsletter/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email})});}catch(e){}
+  input.value='';input.placeholder='Subscribed ✓';
+  setTimeout(closeStickyBar,1500);
+}
+</script>
+</body>
+</html>

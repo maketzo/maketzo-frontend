@@ -1,0 +1,37 @@
+# MIME types for modern image formats
+# Hostinger / LiteSpeed do not register these by default; without this block
+# AVIF is served as text/plain and some browsers refuse it.
+AddType image/avif .avif
+AddType image/webp .webp
+
+# Clean URLs for marketing pages
+# Maps /system -> system.html, /edge -> edge.html, etc. without the .html suffix.
+# Trailing slashes get redirected (301) to the non-slash canonical form so SEO
+# and analytics don't fork into /pricing and /pricing/.
+RewriteEngine On
+
+# Strip trailing slashes (except the bare /).
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.+)/$ /$1 [R=301,L]
+
+# If a real file or directory exists for the URL, serve it as-is.
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Otherwise, if a matching .html file exists, serve it without revealing the suffix.
+RewriteCond %{DOCUMENT_ROOT}/$1.html -f
+RewriteRule ^([^./]+)$ /$1.html [L]
+
+# Cache static assets aggressively. HTML stays fresh.
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType image/avif "access plus 30 days"
+  ExpiresByType image/webp "access plus 30 days"
+  ExpiresByType image/png "access plus 30 days"
+  ExpiresByType image/jpeg "access plus 30 days"
+  ExpiresByType image/svg+xml "access plus 30 days"
+  ExpiresByType text/css "access plus 7 days"
+  ExpiresByType application/javascript "access plus 7 days"
+  ExpiresByType text/html "access plus 0 seconds"
+</IfModule>

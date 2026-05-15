@@ -1,0 +1,2487 @@
+<!DOCTYPE html>
+<!-- deploy: 2026-05-14 SCP/SSH path verified -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MAKETZO — Stop Losing to Yourself. Start Trading with Discipline.</title>
+<meta name="description" content="MAKETZO is the behavioral accountability system for retail day traders. Proprietary indicators, COACH SAYS enforcement, Focus Room music, and a trade journal that stops you from breaking your rules.">
+<meta name="keywords" content="trading journal, day trading accountability, trading discipline, small cap trading, behavioral trading system, TraderVue alternative, TradeZella alternative, trading psychology, momentum trading journal, DAS trader journal">
+<meta property="og:title" content="MAKETZO — Stop Losing to Yourself">
+<meta property="og:description" content="The only trading system that enforces your rules when willpower fails.">
+<meta property="og:url" content="https://maketzo.co">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://maketzo.co">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<style>
+/* ====================================================================
+   MAKETZO landing — page-specific styles.
+   Foundations come from /assets/css/tokens.css and /assets/css/components.css.
+   ==================================================================== */
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--mk-surface-page);
+  color: var(--mk-text-primary);
+  font-family: var(--mk-font-sans);
+  font-size: var(--mk-text-md);
+  line-height: var(--mk-lead-body);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+a { color: inherit; text-decoration: none; }
+ul, ol { list-style: none; }
+img { display: block; max-width: 100%; }
+em, i { font-style: italic; }
+strong { color: var(--mk-text-primary); font-weight: 600; }
+
+/* ── BACKGROUND TRADING SVG ─────────────────────────────────── */
+.bg-trading {
+  position: fixed; inset: 0;
+  pointer-events: none; z-index: 0;
+  opacity: 0.18;
+}
+.bg-trading svg { width: 100%; height: 100%; display: block; }
+
+/* ── MOBILE OVERLAY + DRAWER ─────────────────────────────────── */
+.mobile-overlay {
+  position: fixed; inset: 0; z-index: 90;
+  background: rgba(0,0,0,.6);
+  backdrop-filter: blur(6px);
+  opacity: 0; pointer-events: none;
+  transition: opacity var(--mk-dur-med);
+}
+.mobile-overlay.open { opacity: 1; pointer-events: auto; }
+.mobile-drawer {
+  position: fixed; top: 0; right: 0; bottom: 0; z-index: 100;
+  width: min(320px, 88%);
+  background: var(--mk-surface-base);
+  border-left: var(--mk-border-soft);
+  padding: 80px 28px 28px;
+  transform: translateX(100%);
+  transition: transform var(--mk-dur-med) var(--mk-ease-out);
+  display: flex; flex-direction: column; gap: 20px;
+}
+.mobile-drawer.open { transform: translateX(0); }
+.mobile-drawer-links li {
+  padding: 12px 0;
+  border-bottom: var(--mk-border-hairline);
+}
+.mobile-drawer-links a {
+  font-family: var(--mk-font-display);
+  font-size: var(--mk-display-md);
+  letter-spacing: var(--mk-track-display);
+  text-transform: uppercase;
+  color: var(--mk-text-primary);
+}
+.mobile-drawer-cta {
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--mk-gold-gradient);
+  color: var(--mk-text-on-gold);
+  font-family: var(--mk-font-sans);
+  font-weight: 600;
+  font-size: var(--mk-text-sm);
+  letter-spacing: var(--mk-track-cap);
+  text-transform: uppercase;
+  padding: 14px 22px;
+  border: 1px solid rgba(0,0,0,.18);
+  border-radius: var(--mk-radius-button);
+  cursor: pointer;
+  margin-top: auto;
+}
+
+/* ── NAV ─────────────────────────────────────────────────────── */
+#mainNav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+  background: rgba(6,7,10,.85);
+  backdrop-filter: blur(20px) saturate(140%);
+  border-bottom: 1px solid rgba(212,175,55,.12);
+  transition: border-color var(--mk-dur-snap);
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 24px;
+  padding: 14px 32px 14px 64px;
+}
+.nav-logo.mk-brand-lockup {
+  --mk-brand-lockup-mark-h: 44px;
+  --mk-brand-lockup-wordmark-h: 22px;
+  --mk-brand-lockup-gap: 10px;
+}
+.nav-links {
+  display: flex; align-items: center; gap: 28px;
+  margin: 0; padding: 0;
+}
+.nav-links > li > a:not(.nav-login-btn) {
+  font-size: var(--mk-text-sm);
+  color: var(--mk-text-secondary);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  transition: color var(--mk-dur-fast);
+}
+.nav-links > li > a:not(.nav-login-btn):hover { color: var(--mk-text-primary); }
+.nav-login-btn {
+  display: inline-flex; align-items: center;
+  font-size: var(--mk-text-sm); font-weight: 600;
+  letter-spacing: var(--mk-track-cap);
+  text-transform: uppercase;
+  padding: 7px 14px;
+  color: var(--mk-text-secondary);
+  border: 1px solid var(--mk-smoke-700);
+  border-radius: var(--mk-radius-button);
+  transition: color var(--mk-dur-fast), border-color var(--mk-dur-fast), background var(--mk-dur-fast);
+}
+.nav-login-btn:hover {
+  color: var(--mk-text-primary);
+  border-color: var(--mk-smoke-600);
+  background: rgba(255,255,255,.03);
+}
+.nav-cta {
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--mk-font-sans);
+  font-size: var(--mk-text-sm); font-weight: 600;
+  letter-spacing: var(--mk-track-cap);
+  text-transform: uppercase;
+  padding: 7px 14px;
+  border: 1px solid rgba(0,0,0,.18);
+  border-radius: var(--mk-radius-button);
+  cursor: pointer;
+  background: var(--mk-gold-gradient);
+  color: var(--mk-text-on-gold);
+  transition: transform var(--mk-dur-snap), box-shadow var(--mk-dur-snap);
+  white-space: nowrap;
+}
+.nav-cta:hover { transform: translateY(-1px); box-shadow: var(--mk-glow-gold-sm); }
+.hamburger {
+  display: none;
+  background: transparent; border: 0; padding: 8px;
+  cursor: pointer;
+  flex-direction: column; gap: 5px;
+}
+.hamburger span {
+  display: block; width: 24px; height: 2px;
+  background: var(--mk-text-primary);
+  transition: transform var(--mk-dur-snap), opacity var(--mk-dur-snap);
+}
+.hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+@media (max-width: 900px) {
+  #mainNav { padding: 12px 20px; gap: 16px; }
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+}
+
+/* ── HERO ────────────────────────────────────────────────────── */
+.hero {
+  position: relative; z-index: 1;
+  min-height: 100vh;
+  padding-top: 86px;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--mk-obsidian-950);
+}
+.hero-bg {
+  position: absolute; inset: 0;
+  z-index: 0;
+  display: block;
+}
+.hero-bg img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: 65% center;
+  display: block;
+}
+.hero-scrim {
+  position: absolute; inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg,
+      var(--mk-obsidian-950) 0%,
+      rgba(6,7,10,.92) 22%,
+      rgba(6,7,10,.55) 48%,
+      rgba(6,7,10,.18) 72%,
+      rgba(6,7,10,.30) 100%),
+    radial-gradient(800px 600px at 8% 18%, rgba(212,175,55,.10), transparent 60%),
+    radial-gradient(120% 90% at 70% 50%, transparent 55%, rgba(0,0,0,.45) 100%);
+}
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 60px 64px 80px;
+  min-height: calc(100vh - 86px);
+  display: flex; flex-direction: column; justify-content: center;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  align-self: flex-start;
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-xs);
+  letter-spacing: var(--mk-track-eyebrow);
+  text-transform: uppercase;
+  color: var(--mk-brand);
+  padding: 6px 14px;
+  border: var(--mk-border-gold-soft);
+  border-radius: var(--mk-radius-pill);
+  background: rgba(212,175,55,.04);
+  margin-bottom: 28px;
+}
+.hero-badge .badge-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--mk-profit-500);
+  box-shadow: 0 0 10px var(--mk-profit-500);
+  animation: mk-pulse 1.4s infinite;
+}
+.hero-headline {
+  font-family: var(--mk-font-display);
+  font-size: clamp(2.6rem, 5.8vw, 4.8rem);
+  line-height: 1.02;
+  letter-spacing: var(--mk-track-display);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  font-weight: 400;
+  max-width: 14ch;
+}
+.hero-headline em {
+  font-style: normal;
+  background: var(--mk-gold-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  display: inline-block;
+}
+.hero-stop { display: block; margin-bottom: 24px; }
+.hero-stop .power-pulse {
+  font-family: var(--mk-font-display);
+  font-size: clamp(1.4rem, 2.6vw, 1.9rem);
+  letter-spacing: var(--mk-track-display-wide);
+  text-transform: uppercase;
+  background: var(--mk-gold-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: mk-power-pulse 3s var(--mk-ease-in-out) infinite;
+}
+@keyframes mk-power-pulse {
+  0%, 100% { opacity: 1; filter: brightness(1); }
+  50%      { opacity: 0.95; filter: brightness(1.12); }
+}
+.hero-sub {
+  font-size: var(--mk-text-lg);
+  color: var(--mk-text-secondary);
+  max-width: 500px;
+  margin-bottom: 32px;
+  line-height: var(--mk-lead-body);
+}
+.hero-sub strong { color: var(--mk-text-primary); }
+.hero-ctas {
+  display: flex; gap: 14px; flex-wrap: wrap;
+  margin-bottom: 36px;
+}
+.hero-proof {
+  display: flex; flex-direction: column; gap: 14px;
+  padding-top: 24px;
+  border-top: var(--mk-border-hairline);
+}
+.proof-row { display: flex; align-items: center; gap: 14px; }
+.proof-icon-wrap {
+  width: 36px; height: 36px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: var(--mk-radius-pill);
+  background: rgba(212,175,55,.08);
+  border: var(--mk-border-gold-soft);
+  font-size: 16px;
+  color: var(--mk-brand);
+  flex-shrink: 0;
+}
+.proof-title {
+  font-family: var(--mk-font-sans);
+  font-size: var(--mk-text-md);
+  color: var(--mk-text-primary);
+  font-weight: 500;
+}
+.proof-sub {
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-xs);
+  letter-spacing: 0.04em;
+  color: var(--mk-text-tertiary);
+  margin-top: 2px;
+}
+@media (max-width: 1200px) {
+  .hero-content { padding: 60px 40px 80px; }
+  .hero-bg img { object-position: 62% center; }
+}
+@media (max-width: 1000px) {
+  .hero { min-height: auto; }
+  .hero-content { padding: 56px 32px 72px; min-height: 88vh; }
+  .hero-bg img { object-position: 60% center; }
+  .hero-scrim {
+    background:
+      linear-gradient(180deg, rgba(6,7,10,.55) 0%, rgba(6,7,10,.78) 100%),
+      linear-gradient(90deg, rgba(6,7,10,.85) 0%, rgba(6,7,10,.35) 70%, rgba(6,7,10,.45) 100%);
+  }
+}
+@media (max-width: 600px) {
+  .hero-content { padding: 48px 20px 56px; min-height: 92vh; }
+  .hero-bg img { object-position: 68% center; }
+  .hero-scrim {
+    background:
+      linear-gradient(180deg, rgba(6,7,10,.65) 0%, rgba(6,7,10,.88) 100%);
+  }
+}
+
+/* ── BUTTONS (legacy class names mapped to design-system styles) ── */
+.btn-primary,
+.btn-secondary,
+.btn-ghost,
+.cta-outline,
+.cta-gold {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 8px;
+  font-family: var(--mk-font-sans);
+  font-size: var(--mk-text-sm); font-weight: 600;
+  letter-spacing: var(--mk-track-cap);
+  text-transform: uppercase;
+  padding: 12px 22px;
+  border-radius: var(--mk-radius-button);
+  border: 1px solid transparent;
+  cursor: pointer; text-decoration: none;
+  white-space: nowrap;
+  transition: transform var(--mk-dur-snap), box-shadow var(--mk-dur-snap),
+              background var(--mk-dur-snap), border-color var(--mk-dur-snap),
+              color var(--mk-dur-snap);
+}
+.btn-primary,
+.cta-gold {
+  background: var(--mk-gold-gradient);
+  color: var(--mk-text-on-gold);
+  border-color: rgba(0,0,0,.18);
+}
+.btn-primary:hover,
+.cta-gold:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--mk-glow-gold-md);
+  color: var(--mk-text-on-gold);
+}
+.btn-secondary,
+.cta-outline {
+  background: transparent;
+  color: var(--mk-text-primary);
+  border: var(--mk-border-gold);
+}
+.btn-secondary:hover,
+.cta-outline:hover {
+  color: var(--mk-brand);
+  border-color: var(--mk-brand);
+  background: rgba(212,175,55,.06);
+}
+.btn-ghost {
+  background: transparent;
+  color: var(--mk-text-secondary);
+  border-color: var(--mk-smoke-700);
+  padding: 10px 18px;
+  font-size: var(--mk-text-xs);
+}
+.btn-ghost:hover {
+  color: var(--mk-text-primary);
+  border-color: var(--mk-smoke-600);
+  background: rgba(255,255,255,.03);
+}
+
+/* ── TOAST ───────────────────────────────────────────────────── */
+.toast {
+  position: fixed; bottom: 24px; left: 24px; z-index: 60;
+  display: flex; flex-direction: column; gap: 12px;
+  padding: 20px 22px;
+  width: 280px;
+  min-height: 128px;
+  background:
+    linear-gradient(135deg, rgba(212,175,55,.06), transparent 60%),
+    var(--mk-surface-raised);
+  border: 1px solid rgba(212,175,55,.28);
+  border-radius: var(--mk-radius-card);
+  box-shadow: var(--mk-shadow-4);
+  transform: translateY(0); opacity: 1;
+  transition: transform var(--mk-dur-med) var(--mk-ease-out),
+              opacity var(--mk-dur-med);
+}
+.toast::before {
+  content: 'Live Activity';
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-xs);
+  letter-spacing: var(--mk-track-eyebrow);
+  text-transform: uppercase;
+  color: var(--mk-brand);
+}
+.toast.hidden { transform: translateY(20px); opacity: 0; pointer-events: none; }
+.toast-dot {
+  position: absolute; top: 22px; right: 22px;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--mk-profit-500);
+  box-shadow: 0 0 10px var(--mk-profit-500);
+  animation: mk-pulse 1.4s infinite;
+}
+.toast-text {
+  font-size: var(--mk-text-md);
+  line-height: var(--mk-lead-snug);
+  color: var(--mk-text-secondary);
+}
+.toast-text strong { color: var(--mk-text-primary); font-weight: 600; }
+@media (max-width: 600px) {
+  .toast { left: 12px; right: 12px; width: auto; }
+}
+
+/* ── STICKY EMAIL BAR ────────────────────────────────────────── */
+.sticky-bar {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 55;
+  display: flex; align-items: center; justify-content: center; gap: 14px;
+  padding: 10px 64px 10px 24px;
+  background: rgba(13,15,20,.62);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  border-top: 1px solid rgba(212,175,55,.35);
+  transform: translateY(100%);
+  transition: transform var(--mk-dur-med) var(--mk-ease-out);
+}
+.sticky-bar.visible { transform: translateY(0); }
+body:has(.sticky-bar.visible) { padding-bottom: 80px; }
+.sticky-bar-text { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); }
+.sticky-bar-text strong { color: var(--mk-text-primary); }
+.sticky-bar-form { display: flex; gap: 8px; align-items: center; }
+.sticky-bar-input {
+  background: rgba(20,24,33,.85);
+  border: 1px solid rgba(255,255,255,.12);
+  color: var(--mk-text-primary);
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-sm);
+  padding: 8px 12px;
+  border-radius: var(--mk-radius-input);
+  outline: none;
+  width: 220px;
+}
+.sticky-bar-input::placeholder { color: var(--mk-text-tertiary); }
+.sticky-bar-input:focus { border-color: var(--mk-brand); box-shadow: 0 0 0 3px rgba(212,175,55,.18); }
+.sticky-bar-form .btn-primary { padding: 8px 14px; font-size: var(--mk-text-xs); }
+.sticky-bar-close {
+  position: absolute; right: 16px; top: 50%;
+  transform: translateY(-50%);
+  background: transparent; border: 0; cursor: pointer;
+  color: var(--mk-text-tertiary);
+  font-size: 1.4rem; line-height: 1;
+  padding: 4px;
+}
+.sticky-bar-close:hover { color: var(--mk-text-primary); }
+@media (max-width: 700px) {
+  .sticky-bar { flex-wrap: wrap; padding: 10px 16px; gap: 10px; }
+  .sticky-bar-form { flex: 1; }
+  .sticky-bar-input { flex: 1; min-width: 0; width: auto; }
+}
+
+/* ── SECTION SHELL ───────────────────────────────────────────── */
+.section {
+  position: relative; z-index: 1;
+  padding: 96px 0;
+  background: var(--mk-surface-page);
+}
+.section.section-dark { background: var(--mk-surface-base); }
+.section-inner {
+  max-width: var(--mk-container-marketing);
+  margin: 0 auto;
+  padding: 0 32px;
+}
+.section-eyebrow {
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-xs);
+  letter-spacing: var(--mk-track-eyebrow);
+  text-transform: uppercase;
+  color: var(--mk-brand);
+  text-align: center;
+  margin-bottom: 14px;
+}
+.section-title {
+  font-family: var(--mk-font-display);
+  font-size: clamp(2rem, 4.5vw, 3.4rem);
+  letter-spacing: var(--mk-track-display);
+  line-height: 1.04;
+  text-transform: uppercase;
+  text-align: center;
+  margin-bottom: 18px;
+  font-weight: 400;
+}
+.section-title em {
+  font-style: normal;
+  background: var(--mk-gold-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.section-sub {
+  font-size: var(--mk-text-lg);
+  color: var(--mk-text-secondary);
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto 48px;
+  line-height: var(--mk-lead-body);
+}
+.section-sub strong { color: var(--mk-text-primary); }
+
+/* mk-rule-gold lives in components.css; size and rhythm are page concerns */
+hr.mk-rule-gold,
+hr.mk-rule-gold--bold {
+  margin: 0 auto;
+  max-width: 1180px;
+}
+
+/* ── WHY: PAIN GRID ──────────────────────────────────────────── */
+.pain-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+.pain-card {
+  background: var(--mk-surface-raised);
+  border: var(--mk-border-hairline);
+  border-radius: var(--mk-radius-card-lg);
+  padding: 32px 28px;
+}
+.pain-card-label {
+  display: inline-block;
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-xs);
+  letter-spacing: var(--mk-track-eyebrow);
+  text-transform: uppercase;
+  padding: 5px 12px;
+  border-radius: var(--mk-radius-pill);
+  margin-bottom: 20px;
+}
+.pain-card-label.bad {
+  background: var(--mk-danger-700);
+  color: var(--mk-danger-500);
+  border: 1px solid rgba(248,113,113,.25);
+}
+.pain-card-label.good {
+  background: rgba(212,175,55,.10);
+  color: var(--mk-brand);
+  border: 1px solid rgba(212,175,55,.30);
+}
+.pain-list li {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 10px 0;
+  border-top: var(--mk-border-hairline);
+  font-size: var(--mk-text-md);
+  color: var(--mk-text-secondary);
+  line-height: var(--mk-lead-body);
+}
+.pain-list li:first-child { border-top: 0; }
+.pain-list.good li { color: var(--mk-text-secondary); }
+.pain-mark {
+  flex-shrink: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 22px; height: 22px;
+  border-radius: var(--mk-radius-pill);
+  font-size: 11px; line-height: 1;
+  margin-top: 2px;
+}
+.pain-mark.x { background: var(--mk-danger-700); color: var(--mk-danger-500); }
+.pain-mark.check { background: rgba(212,175,55,.12); color: var(--mk-brand); }
+@media (max-width: 800px) { .pain-grid { grid-template-columns: 1fr; } }
+
+/* ── TEASER BLOCKS ───────────────────────────────────────────── */
+.teaser-block {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: center;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.teaser-block.reverse > .teaser-text { order: 2; }
+.teaser-block.reverse > .teaser-visual { order: 1; }
+.teaser-eyebrow {
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-xs);
+  letter-spacing: var(--mk-track-eyebrow);
+  text-transform: uppercase;
+  color: var(--mk-brand);
+  margin-bottom: 14px;
+}
+.teaser-title {
+  font-family: var(--mk-font-display);
+  font-size: clamp(1.8rem, 3.6vw, 2.6rem);
+  letter-spacing: var(--mk-track-display);
+  line-height: 1.06;
+  text-transform: uppercase;
+  margin-bottom: 22px;
+  font-weight: 400;
+}
+.teaser-title em {
+  font-style: normal;
+  background: var(--mk-gold-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.teaser-body {
+  font-size: var(--mk-text-md);
+  color: var(--mk-text-secondary);
+  line-height: var(--mk-lead-body);
+  margin-bottom: 16px;
+}
+.teaser-body strong { color: var(--mk-text-primary); }
+.teaser-cta-row { margin-top: 8px; }
+@media (max-width: 900px) {
+  .teaser-block { grid-template-columns: 1fr; gap: 40px; }
+  .teaser-block.reverse > .teaser-text,
+  .teaser-block.reverse > .teaser-visual { order: 0; }
+}
+
+/* ── COACH VISUAL ────────────────────────────────────────────── */
+.coach-visual {
+  background:
+    linear-gradient(135deg, rgba(212,175,55,.06), rgba(212,175,55,.02)),
+    var(--mk-surface-raised);
+  border: var(--mk-border-gold-soft);
+  border-radius: var(--mk-radius-card-lg);
+  padding: 24px;
+}
+.coach-visual-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding-bottom: 16px;
+  margin-bottom: 16px;
+  border-bottom: var(--mk-border-hairline);
+}
+.coach-visual-label {
+  font-family: var(--mk-font-display);
+  font-size: var(--mk-display-sm);
+  letter-spacing: var(--mk-track-display-wide);
+  text-transform: uppercase;
+  color: var(--mk-brand);
+}
+.coach-visual-time {
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-sm);
+  color: var(--mk-text-tertiary);
+  letter-spacing: 0.04em;
+}
+.coach-pills {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  margin-bottom: 18px;
+}
+.coach-pill {
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 5px 12px;
+  border-radius: var(--mk-radius-pill);
+  background: var(--mk-surface-elevated);
+  color: var(--mk-text-tertiary);
+  border: 1px solid rgba(255,255,255,.08);
+}
+.coach-pill.on {
+  background: rgba(212,175,55,.10);
+  color: var(--mk-brand);
+  border-color: rgba(212,175,55,.30);
+}
+.coach-visual-caption {
+  font-size: var(--mk-text-sm);
+  color: var(--mk-text-tertiary);
+  margin-bottom: 18px;
+  line-height: var(--mk-lead-body);
+}
+.coach-examples-mini { display: flex; flex-direction: column; gap: 10px; }
+.coach-ex-mini {
+  padding: 12px 14px;
+  background: var(--mk-surface-elevated);
+  border-radius: var(--mk-radius-card-sm);
+  border-left: 2px solid var(--mk-brand);
+}
+.coach-ex-mini-time {
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-xs);
+  letter-spacing: var(--mk-track-eyebrow);
+  text-transform: uppercase;
+  color: var(--mk-brand);
+  margin-bottom: 4px;
+}
+.coach-ex-mini-msg { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); }
+
+/* ── STRIKE WIDGET ───────────────────────────────────────────── */
+.strike-widget {
+  background:
+    linear-gradient(135deg, rgba(248,113,113,.05), transparent),
+    var(--mk-surface-raised);
+  border: 1px solid rgba(248,113,113,.20);
+  border-radius: var(--mk-radius-card-lg);
+  padding: 24px;
+}
+.strike-widget-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding-bottom: 16px; margin-bottom: 16px;
+  border-bottom: var(--mk-border-hairline);
+}
+.strike-widget-label {
+  font-family: var(--mk-font-display);
+  font-size: var(--mk-display-sm);
+  letter-spacing: var(--mk-track-display-wide);
+  text-transform: uppercase;
+  color: var(--mk-warning-500);
+}
+.strike-widget-status {
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-xs);
+  letter-spacing: var(--mk-track-eyebrow);
+  text-transform: uppercase;
+  color: var(--mk-profit-500);
+  padding: 4px 10px;
+  border-radius: var(--mk-radius-pill);
+  background: var(--mk-profit-700);
+}
+.strike-counter-row {
+  display: flex; align-items: center; justify-content: center; gap: 16px;
+  margin-bottom: 20px;
+}
+.strike-dot {
+  width: 48px; height: 48px;
+  border-radius: var(--mk-radius-pill);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--mk-font-display);
+  font-size: 1.6rem;
+  letter-spacing: var(--mk-track-display);
+  border: 2px solid;
+}
+.strike-dot.hit  { background: var(--mk-caution-700); color: var(--mk-caution-500); border-color: var(--mk-caution-500); }
+.strike-dot.warn { background: var(--mk-warning-700); color: var(--mk-warning-500); border-color: var(--mk-warning-500); box-shadow: 0 0 24px rgba(251,146,60,.25); }
+.strike-dot.empty { background: var(--mk-surface-elevated); color: var(--mk-text-tertiary); border-color: var(--mk-smoke-700); }
+.strike-arrow { color: var(--mk-text-tertiary); font-size: 1.2rem; }
+.strike-lockout-box {
+  background: var(--mk-warning-700);
+  border: 1px solid rgba(251,146,60,.30);
+  border-radius: var(--mk-radius-card-sm);
+  padding: 14px 18px;
+  margin-bottom: 16px;
+}
+.strike-lockout-label {
+  font-family: var(--mk-font-display);
+  font-size: var(--mk-display-sm);
+  letter-spacing: var(--mk-track-display-wide);
+  text-transform: uppercase;
+  color: var(--mk-warning-500);
+  margin-bottom: 4px;
+}
+.strike-lockout-msg { font-size: var(--mk-text-sm); color: #fdba74; }
+.strike-caption {
+  font-size: var(--mk-text-sm);
+  color: var(--mk-text-tertiary);
+  margin-bottom: 16px;
+  line-height: var(--mk-lead-body);
+}
+.strike-examples-mini { display: flex; flex-direction: column; gap: 10px; }
+.strike-ex-mini {
+  padding: 12px 14px;
+  background: var(--mk-surface-elevated);
+  border-radius: var(--mk-radius-card-sm);
+  border-left: 2px solid var(--mk-danger-500);
+}
+.strike-ex-mini-strike {
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-xs);
+  letter-spacing: var(--mk-track-eyebrow);
+  text-transform: uppercase;
+  color: var(--mk-danger-500);
+  margin-bottom: 4px;
+}
+.strike-ex-mini-msg { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); }
+
+/* ── CHART VISUAL ────────────────────────────────────────────── */
+.chart-visual {
+  background: var(--mk-chart-canvas);
+  border: var(--mk-border-hairline);
+  border-radius: var(--mk-radius-card-lg);
+  padding: 24px;
+}
+.chart-visual-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 16px;
+}
+.chart-visual-title {
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-sm);
+  color: var(--mk-text-secondary);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.chart-visual-badge {
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-xs);
+  letter-spacing: var(--mk-track-eyebrow);
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: var(--mk-radius-pill);
+  background: rgba(212,175,55,.10);
+  color: var(--mk-brand);
+  border: 1px solid rgba(212,175,55,.30);
+}
+.chart-svg-wrap { position: relative; margin-bottom: 14px; }
+.chart-visual svg { width: 100%; display: block; }
+.chart-zone-label {
+  position: absolute;
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-xs);
+  letter-spacing: var(--mk-track-eyebrow);
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+.chart-zone-label.zone-prime {
+  top: 8px; left: 32%;
+  background: rgba(74,222,128,.12);
+  color: var(--mk-profit-500);
+  border: 1px solid rgba(74,222,128,.25);
+}
+.chart-zone-label.zone-exit {
+  top: 8px; right: 8%;
+  background: rgba(248,113,113,.12);
+  color: var(--mk-danger-500);
+  border: 1px solid rgba(248,113,113,.25);
+}
+.chart-caption {
+  font-size: var(--mk-text-sm);
+  color: var(--mk-text-tertiary);
+  text-align: center;
+  line-height: var(--mk-lead-body);
+}
+
+/* ── FOCUS ROOM VISUAL ───────────────────────────────────────── */
+.focus-visual {
+  background:
+    radial-gradient(400px 200px at 50% 0%, rgba(212,175,55,.10), transparent 70%),
+    var(--mk-surface-raised);
+  border: var(--mk-border-hairline);
+  border-radius: var(--mk-radius-card-lg);
+  padding: 24px;
+}
+.focus-visual-header {
+  display: flex; align-items: center; gap: 10px;
+  padding-bottom: 14px; margin-bottom: 16px;
+  border-bottom: var(--mk-border-hairline);
+}
+.focus-visual-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--mk-profit-500);
+  box-shadow: 0 0 8px var(--mk-profit-500);
+  animation: mk-pulse 1.4s infinite;
+}
+.focus-visual-label {
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-xs);
+  letter-spacing: var(--mk-track-eyebrow);
+  text-transform: uppercase;
+  color: var(--mk-text-tertiary);
+}
+.focus-player-card {
+  display: flex; flex-direction: column; gap: 14px;
+  padding: 16px;
+  background: var(--mk-surface-base);
+  border-radius: var(--mk-radius-card-sm);
+  border: var(--mk-border-hairline);
+}
+.focus-player-art {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--mk-radius-card-sm);
+  background:
+    radial-gradient(60% 80% at 50% 50%, rgba(212,175,55,.20), transparent 70%),
+    linear-gradient(135deg, var(--mk-obsidian-800), var(--mk-obsidian-950));
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.focus-art-glow {
+  position: absolute; inset: 0;
+  background: radial-gradient(circle at 30% 70%, rgba(212,175,55,.25), transparent 60%);
+}
+.focus-art-text {
+  position: relative;
+  font-family: var(--mk-font-display);
+  font-size: clamp(1.1rem, 2vw, 1.6rem);
+  letter-spacing: var(--mk-track-display-wide);
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--mk-gold-300);
+}
+.focus-player-controls { display: flex; align-items: center; gap: 14px; }
+.focus-play-btn {
+  width: 44px; height: 44px;
+  border-radius: var(--mk-radius-pill);
+  background: var(--mk-gold-gradient);
+  color: var(--mk-text-on-gold);
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 0; border: 0;
+  flex-shrink: 0;
+  text-decoration: none;
+}
+.focus-play-icon { font-size: 14px; }
+.focus-track-info { flex: 1; }
+.focus-track-name {
+  font-family: var(--mk-font-sans);
+  font-size: var(--mk-text-md);
+  color: var(--mk-text-primary);
+  font-weight: 600;
+}
+.focus-track-sub {
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-xs);
+  letter-spacing: 0.04em;
+  color: var(--mk-text-tertiary);
+  margin-top: 2px;
+}
+.focus-track-progress { width: 100%; }
+.focus-progress-bar {
+  height: 3px; width: 100%;
+  background: rgba(255,255,255,.08);
+  border-radius: var(--mk-radius-pill);
+  overflow: hidden;
+}
+.focus-progress-fill {
+  height: 100%; width: 42%;
+  background: var(--mk-gold-gradient);
+}
+.focus-moods-mini {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  margin-top: 16px;
+}
+.focus-mood-tag {
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: var(--mk-radius-pill);
+  background: var(--mk-surface-elevated);
+  color: var(--mk-text-tertiary);
+  border: 1px solid rgba(255,255,255,.08);
+}
+.focus-provocative {
+  font-size: var(--mk-text-md);
+  color: var(--mk-text-primary);
+  font-style: italic;
+  margin: 16px 0;
+}
+.focus-provocative strong { color: var(--mk-brand); font-style: normal; }
+
+/* ── FOCUS ROOM TEASER · 3-feature stack (replaces Suno player widget) ── */
+.focus-feature-stack { display: flex; flex-direction: column; gap: 14px; }
+.focus-feature-card {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  gap: 16px;
+  align-items: start;
+  padding: 18px 20px;
+  background: linear-gradient(135deg, rgba(212,175,55,.05), transparent 60%), var(--mk-surface-raised);
+  border: 1px solid rgba(212,175,55,.18);
+  border-left: 3px solid var(--mk-brand);
+  border-radius: var(--mk-radius-card);
+  transition: transform var(--mk-dur-snap) var(--mk-ease-out), border-color var(--mk-dur-snap);
+}
+.focus-feature-card:hover { transform: translateX(2px); border-color: rgba(212,175,55,.42); }
+.focus-feature-num {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: rgba(212,175,55,.10);
+  border: 1px solid rgba(212,175,55,.42);
+  color: var(--mk-brand);
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-md);
+  letter-spacing: 0;
+  margin-top: 2px;
+}
+.focus-feature-title {
+  font-family: var(--mk-font-display);
+  font-size: 1.25rem;
+  letter-spacing: var(--mk-track-display);
+  text-transform: uppercase;
+  color: var(--mk-text-primary);
+  line-height: 1.1;
+  margin-bottom: 6px;
+}
+.focus-feature-text {
+  font-size: var(--mk-text-sm);
+  color: var(--mk-text-secondary);
+  line-height: 1.5;
+}
+.focus-closing-line {
+  margin-top: 22px;
+  padding: 18px 22px;
+  background: linear-gradient(90deg, rgba(212,175,55,.08), transparent 80%);
+  border-left: 3px solid var(--mk-brand);
+  border-radius: var(--mk-radius-card-sm);
+  font-family: var(--mk-font-display);
+  font-size: clamp(1.1rem, 2vw, 1.4rem);
+  letter-spacing: var(--mk-track-display);
+  text-transform: uppercase;
+  color: var(--mk-text-primary);
+  line-height: 1.18;
+}
+.focus-closing-line em { font-style: normal; background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+/* ── REVIEWS ─────────────────────────────────────────────────── */
+.reviews-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+  max-width: 1100px;
+  margin: 0 auto;
+  transition: opacity var(--mk-dur-slow);
+}
+.review-card {
+  background: var(--mk-surface-raised);
+  border: var(--mk-border-hairline);
+  border-radius: var(--mk-radius-card);
+  padding: 22px 24px;
+  display: flex; flex-direction: column; gap: 16px;
+}
+.review-stars {
+  color: var(--mk-brand);
+  font-size: 14px;
+  letter-spacing: 2px;
+}
+.review-quote {
+  font-size: var(--mk-text-md);
+  color: var(--mk-text-secondary);
+  line-height: var(--mk-lead-body);
+  font-style: italic;
+}
+.review-author {
+  display: flex; align-items: center; gap: 12px;
+  padding-top: 14px;
+  border-top: var(--mk-border-hairline);
+}
+.review-avatar {
+  width: 36px; height: 36px;
+  border-radius: var(--mk-radius-pill);
+  background: var(--mk-gold-gradient);
+  color: var(--mk-text-on-gold);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--mk-font-display);
+  font-size: var(--mk-text-sm);
+  letter-spacing: var(--mk-track-display);
+  flex-shrink: 0;
+}
+.review-name {
+  font-size: var(--mk-text-sm);
+  color: var(--mk-text-primary);
+  font-weight: 600;
+}
+.review-meta {
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-xs);
+  letter-spacing: 0.04em;
+  color: var(--mk-text-tertiary);
+}
+
+/* ── PRICING ─────────────────────────────────────────────────── */
+.pricing-toggle-wrap {
+  display: flex; align-items: center; justify-content: center; gap: 14px;
+  margin-bottom: 48px;
+  flex-wrap: wrap;
+}
+.pricing-toggle-label {
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-xs);
+  letter-spacing: var(--mk-track-eyebrow);
+  text-transform: uppercase;
+  color: var(--mk-text-tertiary);
+  cursor: pointer;
+  transition: color var(--mk-dur-fast);
+}
+.pricing-toggle-label.active { color: var(--mk-brand); }
+.pricing-toggle {
+  position: relative;
+  width: 44px; height: 24px;
+  background: var(--mk-surface-elevated);
+  border: 1px solid rgba(255,255,255,.10);
+  border-radius: var(--mk-radius-pill);
+  cursor: pointer;
+}
+.pricing-toggle-knob {
+  position: absolute; top: 2px; left: 2px;
+  width: 18px; height: 18px; border-radius: var(--mk-radius-pill);
+  background: var(--mk-gold-gradient);
+  transition: transform var(--mk-dur-snap) var(--mk-ease-out);
+}
+.pricing-toggle.annual .pricing-toggle-knob { transform: translateX(20px); }
+.save-badge {
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-xs);
+  letter-spacing: var(--mk-track-eyebrow);
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: var(--mk-radius-pill);
+  background: rgba(74,222,128,.10);
+  color: var(--mk-profit-500);
+  border: 1px solid rgba(74,222,128,.25);
+}
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.price-card {
+  position: relative;
+  background: var(--mk-surface-raised);
+  border: var(--mk-border-hairline);
+  border-radius: var(--mk-radius-card-lg);
+  padding: 32px 28px;
+  display: flex; flex-direction: column;
+}
+.price-card.featured {
+  background:
+    linear-gradient(135deg, rgba(212,175,55,.08), rgba(212,175,55,.02)),
+    var(--mk-surface-raised);
+  border: var(--mk-border-gold);
+}
+.popular-badge {
+  position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-xs);
+  letter-spacing: var(--mk-track-eyebrow);
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: var(--mk-radius-pill);
+  background: var(--mk-gold-gradient);
+  color: var(--mk-text-on-gold);
+}
+.price-eyebrow {
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-xs);
+  letter-spacing: var(--mk-track-eyebrow);
+  text-transform: uppercase;
+  color: var(--mk-brand);
+  margin-bottom: 8px;
+}
+.price-name {
+  font-family: var(--mk-font-display);
+  font-size: 1.7rem;
+  letter-spacing: var(--mk-track-display);
+  text-transform: uppercase;
+  margin-bottom: 18px;
+  font-weight: 400;
+}
+.price-row {
+  display: flex; align-items: baseline; gap: 4px;
+  margin-bottom: 6px;
+}
+.price-dollar {
+  font-family: var(--mk-font-mono);
+  font-size: 1.2rem;
+  color: var(--mk-text-tertiary);
+}
+.price-num {
+  font-family: var(--mk-font-display);
+  font-size: 3.4rem;
+  letter-spacing: var(--mk-track-display);
+  color: var(--mk-text-primary);
+  line-height: 1;
+}
+.price-per {
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-sm);
+  color: var(--mk-text-tertiary);
+  letter-spacing: 0.04em;
+}
+.price-sub {
+  font-size: var(--mk-text-sm);
+  color: var(--mk-text-tertiary);
+  margin-bottom: 18px;
+}
+.price-rule {
+  height: 1px; margin: 0 0 18px;
+  background: linear-gradient(90deg, transparent, rgba(212,175,55,.30), transparent);
+}
+.price-list { display: flex; flex-direction: column; gap: 10px; flex: 1; padding: 0; }
+.price-list li {
+  display: block;
+  font-size: var(--mk-text-sm);
+  color: var(--mk-text-secondary);
+  line-height: var(--mk-lead-body);
+  padding-left: 20px;
+  position: relative;
+}
+.price-list li::before {
+  content: "\2713";
+  position: absolute; left: 0; top: 0;
+  color: var(--mk-brand);
+  font-size: 12px;
+}
+.price-list li.bold { color: var(--mk-text-primary); font-weight: 500; }
+.price-card .cta-outline,
+.price-card .cta-gold {
+  margin-top: 22px;
+  width: 100%;
+}
+.price-note {
+  text-align: center;
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-xs);
+  letter-spacing: 0.04em;
+  color: var(--mk-text-tertiary);
+  margin-top: 10px;
+}
+.pricing-cta-row {
+  margin-top: 40px;
+  text-align: center;
+  display: flex; flex-direction: column; align-items: center; gap: 14px;
+}
+.pricing-cta-sub {
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-xs);
+  letter-spacing: 0.04em;
+  color: var(--mk-text-tertiary);
+}
+@media (max-width: 900px) { .pricing-grid { grid-template-columns: 1fr; } }
+
+/* ── REFERRAL ────────────────────────────────────────────────── */
+.referral-box {
+  max-width: 1000px;
+  margin: 0 auto;
+  background: var(--mk-surface-raised);
+  border: var(--mk-border-hairline);
+  border-radius: var(--mk-radius-card-lg);
+  padding: 40px 36px;
+}
+.referral-intro {
+  font-size: var(--mk-text-md);
+  color: var(--mk-text-secondary);
+  margin-bottom: 28px;
+  text-align: center;
+  line-height: var(--mk-lead-body);
+}
+.referral-intro strong { color: var(--mk-text-primary); }
+.ref-steps {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 28px;
+}
+.ref-step {
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  padding: 18px 14px;
+  background: var(--mk-surface-elevated);
+  border-radius: var(--mk-radius-card-sm);
+  border: var(--mk-border-hairline);
+  text-align: center;
+  height: 100%;
+}
+.ref-num {
+  width: 32px; height: 32px;
+  border-radius: var(--mk-radius-pill);
+  background: var(--mk-gold-gradient);
+  color: var(--mk-text-on-gold);
+  font-family: var(--mk-font-display);
+  font-size: var(--mk-display-sm);
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.ref-text {
+  font-size: var(--mk-text-sm);
+  color: var(--mk-text-secondary);
+  line-height: var(--mk-lead-body);
+}
+.ref-divider {
+  color: var(--mk-brand);
+  font-size: 1.2rem;
+  text-align: center;
+}
+.ref-rewards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+.ref-reward-card {
+  background:
+    linear-gradient(135deg, rgba(212,175,55,.08), rgba(212,175,55,.02)),
+    var(--mk-surface-elevated);
+  border: var(--mk-border-gold-soft);
+  border-radius: var(--mk-radius-card);
+  padding: 22px 24px;
+}
+.ref-reward-who {
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-xs);
+  letter-spacing: var(--mk-track-eyebrow);
+  text-transform: uppercase;
+  color: var(--mk-brand);
+  margin-bottom: 8px;
+}
+.ref-reward-what {
+  font-family: var(--mk-font-display);
+  font-size: var(--mk-display-md);
+  letter-spacing: var(--mk-track-display);
+  text-transform: uppercase;
+  color: var(--mk-text-primary);
+  margin-bottom: 6px;
+  font-weight: 400;
+}
+.ref-reward-detail {
+  font-size: var(--mk-text-sm);
+  color: var(--mk-text-tertiary);
+  line-height: var(--mk-lead-body);
+}
+.ref-note {
+  text-align: center;
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-xs);
+  letter-spacing: 0.04em;
+  color: var(--mk-text-tertiary);
+}
+@media (max-width: 900px) {
+  .ref-steps { grid-template-columns: 1fr; }
+  .ref-divider { transform: rotate(90deg); }
+  .ref-rewards { grid-template-columns: 1fr; }
+}
+
+/* ── EMAIL SIGNUP ────────────────────────────────────────────── */
+.email-wrap {
+  max-width: 620px;
+  margin: 0 auto;
+  text-align: center;
+}
+.email-wrap .section-sub { margin-bottom: 0; }
+.email-form {
+  display: flex; gap: 10px; justify-content: center;
+  margin-top: 28px; flex-wrap: wrap;
+}
+.email-input {
+  flex: 1; min-width: 240px;
+  background: var(--mk-surface-elevated);
+  border: 1px solid rgba(255,255,255,.10);
+  color: var(--mk-text-primary);
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-md);
+  padding: 12px 14px;
+  border-radius: var(--mk-radius-input);
+  outline: none;
+  transition: border-color var(--mk-dur-snap), box-shadow var(--mk-dur-snap);
+}
+.email-input::placeholder { color: var(--mk-text-tertiary); }
+.email-input:focus {
+  border-color: var(--mk-brand);
+  box-shadow: 0 0 0 3px rgba(212,175,55,.18);
+}
+.email-success {
+  display: none;
+  margin-top: 18px;
+  padding: 14px 18px;
+  background: var(--mk-profit-700);
+  border: 1px solid rgba(74,222,128,.30);
+  border-radius: var(--mk-radius-card-sm);
+  color: var(--mk-profit-500);
+  font-size: var(--mk-text-sm);
+}
+.email-success.show { display: block; }
+.email-note {
+  margin-top: 14px;
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-xs);
+  letter-spacing: 0.04em;
+  color: var(--mk-text-tertiary);
+}
+
+/* ── FAQ ─────────────────────────────────────────────────────── */
+.faq-list {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.faq-item {
+  background: var(--mk-surface-raised);
+  border: var(--mk-border-hairline);
+  border-radius: var(--mk-radius-card);
+  overflow: hidden;
+}
+.faq-q {
+  width: 100%; text-align: left;
+  background: transparent;
+  color: var(--mk-brand);
+  font-family: var(--mk-font-sans);
+  font-size: var(--mk-text-md);
+  font-weight: 600;
+  padding: 18px 22px;
+  border: 0;
+  cursor: pointer;
+  position: relative;
+  padding-right: 48px;
+  transition: color var(--mk-dur-fast);
+}
+.faq-q:hover { color: var(--mk-brand-hover); }
+.faq-q::after {
+  content: "+";
+  position: absolute;
+  right: 22px; top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--mk-font-display);
+  font-size: 1.4rem;
+  color: var(--mk-brand);
+  transition: transform var(--mk-dur-snap);
+}
+.faq-q.open::after { transform: translateY(-50%) rotate(45deg); }
+.faq-a {
+  display: none;
+  padding: 0 22px 20px;
+  color: var(--mk-text-primary);
+  font-size: var(--mk-text-md);
+  line-height: var(--mk-lead-body);
+}
+.faq-a.open { display: block; }
+.faq-a strong { color: var(--mk-brand); font-weight: 600; }
+.faq-a em { color: var(--mk-text-tertiary); font-style: italic; }
+.faq-list-inner {
+  list-style: disc;
+  padding-left: 22px;
+  margin: 10px 0;
+  color: var(--mk-text-secondary);
+}
+.faq-list-inner li {
+  margin: 6px 0;
+  font-size: var(--mk-text-sm);
+  line-height: var(--mk-lead-body);
+}
+
+/* ── FINAL CTA ───────────────────────────────────────────────── */
+.final-cta-section {
+  position: relative;
+  background: var(--mk-obsidian-950);
+  text-align: center;
+  overflow: hidden;
+}
+.final-cta-glow {
+  position: absolute; inset: 0;
+  background: radial-gradient(600px 300px at 50% 50%, rgba(212,175,55,.16), transparent 70%);
+  pointer-events: none;
+}
+.final-cta-section .section-inner { position: relative; z-index: 1; }
+.final-cta-headline {
+  font-family: var(--mk-font-display);
+  font-size: clamp(2.4rem, 5.5vw, 4rem);
+  letter-spacing: var(--mk-track-display);
+  text-transform: uppercase;
+  line-height: 1.04;
+  margin-bottom: 18px;
+  font-weight: 400;
+}
+.final-cta-headline em {
+  font-style: normal;
+  background: var(--mk-gold-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.final-cta-sub {
+  font-size: var(--mk-text-lg);
+  color: var(--mk-text-secondary);
+  margin-bottom: 36px;
+  line-height: var(--mk-lead-body);
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.final-cta-btns {
+  display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+.final-cta-note {
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-xs);
+  letter-spacing: 0.04em;
+  color: var(--mk-text-tertiary);
+}
+
+/* ── FOOTER ──────────────────────────────────────────────────── */
+footer {
+  background: var(--mk-obsidian-950);
+  border-top: var(--mk-border-hairline);
+  padding: 56px 0 28px;
+}
+.footer-inner {
+  max-width: var(--mk-container-marketing);
+  margin: 0 auto;
+  padding: 0 32px;
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 40px;
+  margin-bottom: 32px;
+  padding-bottom: 32px;
+  border-bottom: var(--mk-border-hairline);
+}
+.footer-logo-wrap {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 18px;
+  margin-bottom: 12px;
+}
+.footer-logo-wrap .mk-brand-lockup {
+  --mk-brand-lockup-mark-h: 40px;
+  --mk-brand-lockup-wordmark-h: 20px;
+}
+.footer-tagline {
+  font-size: var(--mk-text-sm);
+  color: var(--mk-text-tertiary);
+  line-height: var(--mk-lead-body);
+  max-width: 360px;
+}
+.footer-tagline strong {
+  display: block;
+  color: var(--mk-text-primary);
+  margin-bottom: 4px;
+}
+.footer-col-title {
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-xs);
+  letter-spacing: var(--mk-track-eyebrow);
+  text-transform: uppercase;
+  color: var(--mk-brand);
+  margin-bottom: 16px;
+}
+.footer-links { display: flex; flex-direction: column; gap: 10px; padding: 0; }
+.footer-links a {
+  font-size: var(--mk-text-sm);
+  color: var(--mk-text-secondary);
+  transition: color var(--mk-dur-fast);
+}
+.footer-links a:hover { color: var(--mk-text-primary); }
+.footer-bottom {
+  display: flex; flex-direction: column; gap: 10px;
+}
+.footer-copy {
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-xs);
+  letter-spacing: 0.04em;
+  color: var(--mk-text-tertiary);
+}
+.footer-disclaimer {
+  font-size: var(--mk-text-xs);
+  color: var(--mk-text-tertiary);
+  line-height: var(--mk-lead-body);
+  max-width: 900px;
+}
+@media (max-width: 800px) { .footer-grid { grid-template-columns: 1fr; gap: 24px; } }
+
+/* ── MOBILE-ONLY REPEATED CTA ───────────────────────────────────
+   Project rule: at section breaks on phones (<=600px), repeat the
+   primary trial CTA when no button is in close proximity above.
+   Hidden on desktop where the page is shorter and side-CTAs in
+   nav + hero stay in view longer. */
+.mk-cta-repeat { display: none; }
+@media (max-width: 600px) {
+  .mk-cta-repeat {
+    display: flex;
+    justify-content: center;
+    margin: 36px auto 0;
+    padding: 0 16px;
+  }
+  .mk-cta-repeat .btn-primary {
+    width: 100%;
+    max-width: 320px;
+    padding: 16px 24px;
+    font-size: var(--mk-text-md);
+  }
+}
+
+/* ── REVEAL ANIMATION ────────────────────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity var(--mk-dur-slow) var(--mk-ease-out),
+    transform var(--mk-dur-slow) var(--mk-ease-out);
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ── HERO TEXT ENTRANCE — PARALLAX CASCADE ─────────────────────
+   JS-triggered. Each element rises at its own distance/duration to
+   create a layered, depth-feel parallax: the headline is "heavy"
+   (longest travel, slowest settle); the badge is "light" (shortest
+   travel, quickest settle). Curve is ease-out-expo for a graceful
+   slow finish (cubic-bezier(.16, 1, .3, 1)). */
+.hero-badge, .hero-headline, .hero-stop,
+.hero-sub, .hero-ctas, .hero-proof {
+  opacity: 0;
+  will-change: opacity, transform;
+}
+.hero-badge    { transform: translateY(20px); transition: opacity  700ms cubic-bezier(.16,1,.3,1), transform  700ms cubic-bezier(.16,1,.3,1); }
+.hero-headline { transform: translateY(48px); transition: opacity 1200ms cubic-bezier(.16,1,.3,1), transform 1200ms cubic-bezier(.16,1,.3,1); }
+.hero-stop     { transform: translateY(36px); transition: opacity 1000ms cubic-bezier(.16,1,.3,1), transform 1000ms cubic-bezier(.16,1,.3,1); }
+.hero-sub      { transform: translateY(28px); transition: opacity  900ms cubic-bezier(.16,1,.3,1), transform  900ms cubic-bezier(.16,1,.3,1); }
+.hero-ctas     { transform: translateY(24px); transition: opacity  800ms cubic-bezier(.16,1,.3,1), transform  800ms cubic-bezier(.16,1,.3,1); }
+.hero-proof    { transform: translateY(20px); transition: opacity  800ms cubic-bezier(.16,1,.3,1), transform  800ms cubic-bezier(.16,1,.3,1); }
+
+body.hero-loaded .hero-badge    { opacity: 1; transform: translateY(0); transition-delay:  100ms; }
+body.hero-loaded .hero-headline { opacity: 1; transform: translateY(0); transition-delay:  300ms; }
+body.hero-loaded .hero-stop     { opacity: 1; transform: translateY(0); transition-delay:  600ms; }
+body.hero-loaded .hero-sub      { opacity: 1; transform: translateY(0); transition-delay:  900ms; }
+body.hero-loaded .hero-ctas     { opacity: 1; transform: translateY(0); transition-delay: 1200ms; }
+body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transition-delay: 1500ms; }
+
+@media (scripting: none) {
+  .hero-badge, .hero-headline, .hero-stop,
+  .hero-sub, .hero-ctas, .hero-proof {
+    opacity: 1; transform: none;
+  }
+}
+
+/* BEGIN journal-positioning section styles */
+.journal-hp-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; max-width: 1180px; margin: 0 auto; }
+.journal-hp-card { padding: 26px 22px; background: var(--mk-surface-raised); border: 1px solid rgba(212,175,55,.14); border-radius: var(--mk-radius-card); display: flex; flex-direction: column; gap: 10px; }
+.journal-hp-icon { display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px; border-radius: 12px; background: rgba(212,175,55,.08); border: var(--mk-border-gold-soft); color: var(--mk-brand); font-family: var(--mk-font-mono); font-size: var(--mk-mono-sm); font-weight: 600; }
+.journal-hp-tag { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-text-tertiary); }
+.journal-hp-title { font-family: var(--mk-font-display); font-size: var(--mk-display-sm); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); line-height: 1.1; }
+.journal-hp-text { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); line-height: 1.55; }
+.journal-hp-explore { text-align: center; margin-top: 36px; }
+@media (max-width: 1000px) { .journal-hp-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 560px) { .journal-hp-grid { grid-template-columns: 1fr; } }
+/* END journal-positioning section styles */
+</style>
+</head>
+<body>
+
+<div class="bg-trading" aria-hidden="true">
+  <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+    <g stroke="#C9A84C" stroke-width="0.5" opacity="0.5">
+      <line x1="0" y1="150" x2="1440" y2="150"/><line x1="0" y1="300" x2="1440" y2="300"/>
+      <line x1="0" y1="450" x2="1440" y2="450"/><line x1="0" y1="600" x2="1440" y2="600"/>
+      <line x1="180" y1="0" x2="180" y2="900"/><line x1="360" y1="0" x2="360" y2="900"/>
+      <line x1="540" y1="0" x2="540" y2="900"/><line x1="720" y1="0" x2="720" y2="900"/>
+      <line x1="900" y1="0" x2="900" y2="900"/><line x1="1080" y1="0" x2="1080" y2="900"/>
+      <line x1="1260" y1="0" x2="1260" y2="900"/>
+    </g>
+    <g fill="#C9A84C" opacity="0.5">
+      <rect x="60" y="480" width="12" height="70"/><line x1="66" y1="462" x2="66" y2="558" stroke="#C9A84C" stroke-width="1.5"/>
+      <rect x="88" y="445" width="12" height="90"/><line x1="94" y1="428" x2="94" y2="543" stroke="#C9A84C" stroke-width="1.5"/>
+      <rect x="116" y="408" width="12" height="55"/><line x1="122" y1="392" x2="122" y2="470" stroke="#C9A84C" stroke-width="1.5"/>
+    </g>
+    <polyline points="200,640 380,570 560,470 740,370 920,270 1100,190 1280,150" stroke="#C9A84C" stroke-width="1.2" fill="none" opacity="0.3"/>
+  </svg>
+</div>
+
+<!-- MOBILE OVERLAY -->
+<div class="mobile-overlay" id="mobileOverlay" onclick="closeDrawer()"></div>
+
+<!-- MOBILE DRAWER -->
+<div class="mobile-drawer" id="mobileDrawer">
+  <ul class="mobile-drawer-links">
+    <li><a href="system.html" onclick="closeDrawer()">The System</a></li>
+    <li><a href="journal.html" onclick="closeDrawer()">Journal</a></li>
+    <li><a href="edge.html" onclick="closeDrawer()">The Edge</a></li>
+    <li><a href="focus.html" onclick="closeDrawer()">Focus Room</a></li>
+    <li><a href="pricing.html" onclick="closeDrawer()">Get Started</a></li>
+    <li><a href="/app" onclick="closeDrawer()">Log In</a></li>
+  </ul>
+  <button class="mobile-drawer-cta" onclick="handleCheckout('price_1TUWVpJIDbUntZeXyQD23z8W',{preventDefault:()=>{}});closeDrawer()">Start Free Trial &rarr;</button>
+</div>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <a href="index.html" class="nav-logo mk-brand-lockup">
+    <img class="mk-brand-lockup__mark" src="assets/logo-mark.png" alt="">
+    <img class="mk-brand-lockup__wordmark" src="assets/logo-wordmark.png" alt="MAKETZO">
+  </a>
+  <ul class="nav-links">
+    <li><a href="system.html">The System</a></li>
+    <li><a href="journal.html">Journal</a></li>
+    <li><a href="edge.html">The Edge</a></li>
+    <li><a href="focus.html">Focus Room</a></li>
+    <li><a href="pricing.html">Get Started</a></li>
+    <li><a href="/app" class="nav-login-btn">Log In</a></li>
+    <li><button class="nav-cta" onclick="handleCheckout('price_1TUWVpJIDbUntZeXyQD23z8W',event)">Start Free Trial</button></li>
+  </ul>
+  <button class="hamburger" id="hamburger" onclick="toggleDrawer()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- HERO — FULL-BLEED -->
+<section class="hero">
+  <picture class="hero-bg" aria-hidden="true">
+    <source srcset="assets/hero-trader.avif" type="image/avif">
+    <source srcset="assets/hero-trader.webp" type="image/webp">
+    <img src="assets/hero-trader.png" alt="" fetchpriority="high" decoding="async">
+  </picture>
+  <div class="hero-scrim" aria-hidden="true"></div>
+
+  <div class="hero-content">
+    <div class="hero-badge"><span class="badge-dot"></span>The accountability system retail traders actually need</div>
+    <h1 class="hero-headline">You know the rules.<br>You break them <em>anyway.</em></h1>
+    <span class="hero-stop"><span class="power-pulse">MAKETZO STOPS THAT.</span></span>
+    <p class="hero-sub">We've all been there — you've read the books, joined the communities, learned the setups. And yet you still lose… <strong>to yourself.</strong> MAKETZO is the external enforcement system that holds the line when willpower doesn't.</p>
+    <div class="hero-ctas">
+      <button class="btn-primary" onclick="handleCheckout('price_1TUWVpJIDbUntZeXyQD23z8W',event)">Start 7-Day Free Trial &rarr;</button>
+      <a href="#why" class="btn-secondary">&#9654; See How It Works</a>
+    </div>
+    <div class="hero-proof">
+      <div class="proof-row">
+        <div class="proof-icon-wrap">&#9889;</div>
+        <div class="proof-text-wrap"><div class="proof-title">7 days free, full access</div><div class="proof-sub">Test everything, risk-free</div></div>
+      </div>
+      <div class="proof-row">
+        <div class="proof-icon-wrap">&#10003;</div>
+        <div class="proof-text-wrap"><div class="proof-title">Cancel in one click</div><div class="proof-sub">No commitments, no questions asked</div></div>
+      </div>
+      <div class="proof-row">
+        <div class="proof-icon-wrap">&#128274;</div>
+        <div class="proof-text-wrap"><div class="proof-title">Access to Elite Invite-only Indicators</div><div class="proof-sub">Built for serious small-cap traders</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TOAST -->
+<div class="toast hidden" id="toast">
+  <div class="toast-dot"></div>
+  <div class="toast-text"><strong id="toastName">Marcus R.</strong> from <strong id="toastCity">Austin</strong> just started a free trial</div>
+</div>
+
+<!-- STICKY EMAIL BAR -->
+<div class="sticky-bar" id="stickyBar">
+  <p class="sticky-bar-text"><strong>Stay Sharp.</strong> Bi-weekly trading discipline insights.</p>
+  <div class="sticky-bar-form">
+    <input type="email" class="sticky-bar-input" placeholder="your@email.com" id="stickyEmail">
+    <button class="btn-primary" onclick="handleStickyEmail()">Subscribe</button>
+  </div>
+  <button class="sticky-bar-close" onclick="closeStickyBar()" aria-label="Close">&times;</button>
+</div>
+
+<!-- WHY MAKETZO -->
+<hr class="mk-rule-gold">
+
+<section class="section" id="why">
+  <div class="section-inner">
+    <p class="section-eyebrow reveal">01 &middot; Why MAKETZO</p>
+    <h2 class="section-title reveal">You don't have a <em>strategy</em> problem.</h2>
+    <p class="section-sub reveal">Every retail trader who keeps losing has the same diagnosis: they know exactly what to do. They just can't make themselves do it when it counts. That's not a knowledge gap — that's a <strong>discipline gap.</strong> And no journal alone fixes that.</p>
+    <div class="pain-grid reveal">
+      <div class="pain-card">
+        <div class="pain-card-label bad">Without MAKETZO</div>
+        <ul class="pain-list">
+          <li><span class="pain-mark x">&#10005;</span>You know your rules — and break them in the moment</li>
+          <li><span class="pain-mark x">&#10005;</span>You revenge trade after a loss</li>
+          <li><span class="pain-mark x">&#10005;</span>You chase extended moves when you know you shouldn't</li>
+          <li><span class="pain-mark x">&#10005;</span>You blow up a good week in one bad afternoon</li>
+          <li><span class="pain-mark x">&#10005;</span>Your journal is a graveyard of good intentions</li>
+        </ul>
+      </div>
+      <div class="pain-card">
+        <div class="pain-card-label good">With MAKETZO</div>
+        <ul class="pain-list good">
+          <li><span class="pain-mark check">&#10004;</span>Rules are enforced before you can break them</li>
+          <li><span class="pain-mark check">&#10004;</span>Behavioral gates protect you before damage compounds</li>
+          <li><span class="pain-mark check">&#10004;</span>COACH SAYS tells you to sit down — and you listen</li>
+          <li><span class="pain-mark check">&#10004;</span>Checkpoints protect your week on autopilot</li>
+          <li><span class="pain-mark check">&#10004;</span>Your journal shows exactly why you win and lose</li>
+        </ul>
+      </div>
+    </div>
+    <div class="mk-cta-repeat">
+      <button class="btn-primary" data-cta-source="why" onclick="handleCheckout('price_1TUWVpJIDbUntZeXyQD23z8W',event)">Start 7-Day Free Trial &rarr;</button>
+    </div>
+  </div>
+</section>
+
+<!-- BEGIN journal-positioning -->
+<hr class="mk-rule-gold">
+
+<section class="section" id="journal-positioning">
+  <div class="section-inner">
+    <p class="section-eyebrow reveal">01&frac12; &middot; More Than Discipline</p>
+    <h2 class="section-title reveal">A serious trading journal. <em>Plus everything they can't do.</em></h2>
+    <p class="section-sub reveal">If you're comparing MAKETZO to <strong>TradeZella</strong> or <strong>TraderVue</strong> &mdash; yes, we cover the journal job. Broker import. P&amp;L analytics. Tagging. Session review. We just <strong>don't stop there.</strong></p>
+
+    <div class="journal-hp-grid">
+      <div class="journal-hp-card reveal">
+        <div class="journal-hp-icon">01</div>
+        <div class="journal-hp-tag">Broker Import</div>
+        <div class="journal-hp-title">Bring your trades in</div>
+        <p class="journal-hp-text">CSV upload with auto-parse for major retail brokers. Drop your trade history in &mdash; mapped without manual cleanup.</p>
+      </div>
+      <div class="journal-hp-card reveal">
+        <div class="journal-hp-icon">02</div>
+        <div class="journal-hp-tag">P&amp;L Analytics</div>
+        <div class="journal-hp-title">See where you actually win</div>
+        <p class="journal-hp-text">Performance sliced by symbol, setup, time-of-day, day-of-week, and session state. Bleed-hours stop hiding.</p>
+      </div>
+      <div class="journal-hp-card reveal">
+        <div class="journal-hp-icon">03</div>
+        <div class="journal-hp-tag">Tagging &amp; Filtering</div>
+        <div class="journal-hp-title">Slice your own way</div>
+        <p class="journal-hp-text">Custom tags. Multi-dimensional filters. Saved views you can return to. Your taxonomy, not ours.</p>
+      </div>
+      <div class="journal-hp-card reveal">
+        <div class="journal-hp-icon">04</div>
+        <div class="journal-hp-tag">Session Review</div>
+        <div class="journal-hp-title">A debrief that writes itself</div>
+        <p class="journal-hp-text">Daily and weekly auto-summaries. Rule-break diff vs. last week. The review you keep meaning to do &mdash; already done.</p>
+      </div>
+    </div>
+
+    <div class="journal-hp-explore reveal">
+      <a href="journal.html" class="btn-secondary">Explore Journal capabilities &rarr;</a>
+    </div>
+  </div>
+</section>
+<!-- END journal-positioning -->
+
+<!-- THE SYSTEM TEASER -->
+<hr class="mk-rule-gold">
+
+<section class="section section-dark">
+  <div class="section-inner">
+    <div class="teaser-block reveal">
+      <div class="teaser-text">
+        <div class="teaser-eyebrow">02 &middot; The System</div>
+        <h2 class="teaser-title">Your accountability partner.<br><em>Built into the platform.</em></h2>
+        <p class="teaser-body">Log your P&amp;L. MAKETZO instantly reads your session state and risk level. At 8:30AM and 10:30AM, <strong>&#128226; COACH SAYS</strong> fires with direct, no-excuse instructions based on your actual data.</p>
+        <p class="teaser-body">Works <strong>before you connect your broker</strong> — enter your net P&amp;L manually and the accountability engine does the rest immediately.</p>
+        <div class="teaser-cta-row"><a href="system.html" class="btn-ghost">Learn More About The System &rarr;</a></div>
+      </div>
+      <div class="teaser-visual">
+        <div class="coach-visual">
+          <div class="coach-visual-header">
+            <span class="coach-visual-label">&#128226; COACH SAYS</span>
+            <span class="coach-visual-time">10:30AM</span>
+          </div>
+          <div class="coach-visual-body">
+            <div class="coach-pills">
+              <span class="coach-pill on">SLOW DAY</span><span class="coach-pill on">SMALL SIZE ONLY</span>
+              <span class="coach-pill">NO EXPLORATORY</span><span class="coach-pill on">STEP AWAY IF OFF</span>
+              <span class="coach-pill">PROTECT CAPITAL</span>
+            </div>
+            <p class="coach-visual-caption">Fires automatically based on your real session data. You set the rules once — MAKETZO enforces them every single session.</p>
+            <div class="coach-examples-mini">
+              <div class="coach-ex-mini"><div class="coach-ex-mini-time">8:30AM — PRE-MARKET</div><div class="coach-ex-mini-msg">You're green today. Stay disciplined.</div></div>
+              <div class="coach-ex-mini"><div class="coach-ex-mini-time">DAILY LIMIT REACHED</div><div class="coach-ex-mini-msg">Session over. Walk away. Come back tomorrow.</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="mk-cta-repeat">
+      <button class="btn-primary" data-cta-source="system" onclick="handleCheckout('price_1TUWVpJIDbUntZeXyQD23z8W',event)">Start 7-Day Free Trial &rarr;</button>
+    </div>
+  </div>
+</section>
+
+<!-- STRIKE SYSTEM TEASER -->
+<hr class="mk-rule-gold">
+
+<section class="section">
+  <div class="section-inner">
+    <div class="teaser-block reverse reveal">
+      <div class="teaser-text">
+        <div class="teaser-eyebrow">03 &middot; The Strike System</div>
+        <h2 class="teaser-title">Three strikes.<br><em>Then the system steps in.</em></h2>
+        <p class="teaser-body">Every time you break a rule — overtrade, exceed your loss limit, force a bad setup — you get a strike. <strong>MAKETZO tracks them automatically.</strong> At Strike 2 you get a warning. At Strike 3 you're locked out for the session.</p>
+        <p class="teaser-body">You can't override it. You can't negotiate with it. You set the rules when you were thinking clearly — <strong>the system holds the line when you're not.</strong></p>
+        <div class="teaser-cta-row"><a href="system.html" class="btn-ghost">Learn More About The System &rarr;</a></div>
+      </div>
+      <div class="teaser-visual">
+        <div class="strike-widget">
+          <div class="strike-widget-header">
+            <span class="strike-widget-label">&#9888; STRIKE TRACKER</span>
+            <span class="strike-widget-status">Session Active</span>
+          </div>
+          <div class="coach-visual-body">
+            <div class="strike-counter-row">
+              <div class="strike-dot hit">1</div>
+              <span class="strike-arrow">&#8594;</span>
+              <div class="strike-dot warn">2</div>
+              <span class="strike-arrow">&#8594;</span>
+              <div class="strike-dot empty">3</div>
+            </div>
+            <div class="strike-lockout-box">
+              <div class="strike-lockout-label">Strike 2 Warning</div>
+              <div class="strike-lockout-msg">Slow down. One more strike and you're locked out.</div>
+            </div>
+            <p class="strike-caption">Strikes are tracked automatically from your session data. You set the thresholds — the system enforces them without mercy.</p>
+            <div class="strike-examples-mini">
+              <div class="strike-ex-mini">
+                <div class="strike-ex-mini-strike">STRIKE 1 — 9:47AM</div>
+                <div class="strike-ex-mini-msg">Daily loss limit exceeded. Caution active.</div>
+              </div>
+              <div class="strike-ex-mini">
+                <div class="strike-ex-mini-strike">STRIKE 3 — SESSION LOCKED</div>
+                <div class="strike-ex-mini-msg">You're done for today. Come back tomorrow.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="mk-cta-repeat">
+      <button class="btn-primary" data-cta-source="strike" onclick="handleCheckout('price_1TUWVpJIDbUntZeXyQD23z8W',event)">Start 7-Day Free Trial &rarr;</button>
+    </div>
+  </div>
+</section>
+
+<!-- THE EDGE TEASER -->
+<hr class="mk-rule-gold">
+
+<section class="section section-dark">
+  <div class="section-inner">
+    <div class="teaser-block reveal">
+      <div class="teaser-text">
+        <div class="teaser-eyebrow">04 &middot; The Edge</div>
+        <h2 class="teaser-title">Know exactly when<br><em>your window is open.</em></h2>
+        <p class="teaser-body">Two proprietary invite-only indicators built from scratch for small-cap momentum traders. <strong>Maketzo Edge</strong> tells you when conditions favor entries and fires EXIT NOW when they don't. <strong>Maketzo Pulse</strong> warns you before momentum breaks down.</p>
+        <p class="teaser-body">Not on the public TradingView library. Not sold separately. <strong>Included with Pro</strong> — access granted within 24 hours.</p>
+        <div class="teaser-cta-row"><a href="edge.html" class="btn-ghost">Learn More About The Edge &rarr;</a></div>
+      </div>
+      <div class="teaser-visual">
+        <div class="chart-visual">
+          <div class="chart-visual-header">
+            <span class="chart-visual-title">Maketzo Edge &middot; 1M</span>
+            <span class="chart-visual-badge">INVITE ONLY</span>
+          </div>
+          <div class="chart-svg-wrap">
+            <svg viewBox="0 0 400 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="120" y="0" width="160" height="200" fill="rgba(76,175,130,0.07)"/>
+              <line x1="120" y1="0" x2="120" y2="200" stroke="#4CAF82" stroke-width="1" stroke-dasharray="4,3" opacity="0.5"/>
+              <rect x="310" y="0" width="90" height="200" fill="rgba(224,82,82,0.06)"/>
+              <line x1="310" y1="0" x2="310" y2="200" stroke="#E05252" stroke-width="1" stroke-dasharray="4,3" opacity="0.5"/>
+              <rect x="10" y="130" width="8" height="40" fill="#E05252" opacity="0.7"/><rect x="25" y="120" width="8" height="50" fill="#E05252" opacity="0.7"/>
+              <rect x="40" y="110" width="8" height="45" fill="#4CAF82" opacity="0.7"/><rect x="55" y="100" width="8" height="40" fill="#E05252" opacity="0.7"/>
+              <rect x="70" y="115" width="8" height="45" fill="#E05252" opacity="0.7"/><rect x="85" y="105" width="8" height="35" fill="#4CAF82" opacity="0.7"/>
+              <rect x="100" y="90" width="8" height="40" fill="#4CAF82" opacity="0.7"/>
+              <rect x="130" y="70" width="8" height="35" fill="#4CAF82"/><rect x="145" y="55" width="8" height="30" fill="#4CAF82"/>
+              <rect x="160" y="40" width="8" height="30" fill="#4CAF82"/><rect x="175" y="30" width="8" height="28" fill="#4CAF82"/>
+              <rect x="190" y="35" width="8" height="32" fill="#4CAF82"/><rect x="205" y="28" width="8" height="30" fill="#4CAF82"/>
+              <rect x="220" y="38" width="8" height="35" fill="#4CAF82"/><rect x="235" y="45" width="8" height="40" fill="#4CAF82" opacity="0.8"/>
+              <rect x="250" y="55" width="8" height="45" fill="#E05252" opacity="0.8"/><rect x="265" y="65" width="8" height="50" fill="#E05252" opacity="0.8"/>
+              <rect x="320" y="80" width="8" height="55" fill="#E05252"/><rect x="335" y="90" width="8" height="65" fill="#E05252"/>
+              <rect x="350" y="100" width="8" height="70" fill="#E05252"/><rect x="365" y="115" width="8" height="65" fill="#E05252"/>
+              <circle cx="134" cy="65" r="5" fill="#4CAF82"/><circle cx="134" cy="65" r="9" fill="rgba(76,175,130,0.2)"/>
+              <circle cx="314" cy="75" r="5" fill="#E05252"/><circle cx="314" cy="75" r="9" fill="rgba(224,82,82,0.2)"/>
+              <rect x="305" y="50" width="68" height="18" rx="2" fill="rgba(224,82,82,0.15)" stroke="#E05252" stroke-width="0.5"/>
+              <text x="339" y="62" text-anchor="middle" font-family="'Bebas Neue', sans-serif" font-size="9" fill="#E05252" letter-spacing="1">EXIT NOW</text>
+            </svg>
+            <div class="chart-zone-label zone-prime">PRIME TIME</div>
+            <div class="chart-zone-label zone-exit">EXIT</div>
+          </div>
+          <p class="chart-caption">Prime Time window opens &rarr; entry signals fire &rarr; EXIT NOW closes the trade. No interpretation needed.</p>
+        </div>
+      </div>
+    </div>
+    <div class="mk-cta-repeat">
+      <button class="btn-primary" data-cta-source="edge" onclick="handleCheckout('price_1TUWVpJIDbUntZeXyQD23z8W',event)">Start 7-Day Free Trial &rarr;</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOCUS ROOM TEASER -->
+<hr class="mk-rule-gold">
+
+<section class="section">
+  <div class="section-inner">
+    <div class="teaser-block reverse reveal">
+      <div class="teaser-text">
+        <div class="teaser-eyebrow">04 &middot; Focus Room</div>
+        <h2 class="teaser-title">Train the State<br><em>That Protects the Account</em></h2>
+        <p class="teaser-body">Focus Room is a private trader reset environment designed to help you enter the zone, stay disciplined, and recover when tilt, overtrading, or decision fatigue begin to compromise your judgment.</p>
+        <p class="teaser-body">Zone Tracks, guided meditation, and Coach-triggered reset protocols work together to restore the mental state required to follow your rules and protect your capital.</p>
+        <p class="focus-closing-line">You are still allowed to trade &mdash; <em>but not from the wrong state.</em></p>
+        <div class="teaser-cta-row"><a href="focus.html" class="btn-ghost">Learn More About The Focus Room &rarr;</a></div>
+      </div>
+      <div class="teaser-visual">
+        <div class="focus-feature-stack">
+          <div class="focus-feature-card">
+            <span class="focus-feature-num">1</span>
+            <div>
+              <div class="focus-feature-title">Zone Tracks</div>
+              <p class="focus-feature-text">Curated audio for getting in the zone, staying focused, sitting on hands, and reinforcing trading rules.</p>
+            </div>
+          </div>
+          <div class="focus-feature-card">
+            <span class="focus-feature-num">2</span>
+            <div>
+              <div class="focus-feature-title">Meditation Zone</div>
+              <p class="focus-feature-text">5- and 10-minute reset sessions with breathing guidance, calming audio, and optional Anchor Images.</p>
+            </div>
+          </div>
+          <div class="focus-feature-card">
+            <span class="focus-feature-num">3</span>
+            <div>
+              <div class="focus-feature-title">Coach Intervention</div>
+              <p class="focus-feature-text">Automated prompts when Maketzo detects strikes, overtrading, or elevated emotional risk.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="mk-cta-repeat">
+      <button class="btn-primary" data-cta-source="focus" onclick="handleCheckout('price_1TUWVpJIDbUntZeXyQD23z8W',event)">Start 7-Day Free Trial &rarr;</button>
+    </div>
+  </div>
+</section>
+
+<!-- SOCIAL PROOF -->
+<hr class="mk-rule-gold">
+
+<section class="section section-dark">
+  <div class="section-inner">
+    <p class="section-eyebrow reveal">06 &middot; Trader Reviews</p>
+    <h2 class="section-title reveal">Results that speak for themselves.</h2>
+    <p class="section-sub reveal">Real traders. Real discipline. Real results.</p>
+    <div class="reviews-grid" id="reviewsGrid">
+    </div>
+    
+  </div>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  var reviews = [{"stars": 5, "quote": "The EXIT NOW banner fired while I was in a position going against me. I listened and saved myself $1,400 that I would have held through out of ego. That moment alone changed how I think about trading. I used to believe I could willpower my way through bad setups, but MAKETZO proved that the system has to hold the line when emotion takes over.", "initials": "MR", "name": "Michael R.", "meta": "Small cap momentum trader \u00b7 4 years"}, {"stars": 5, "quote": "My cent-per-share average went from negative two cents to positive fourteen cents in six weeks. I did not change my strategy or setups at all. What changed was when I pulled the trigger. MAKETZO made my discipline visible in a way nothing else ever has. I have tried journals, coaches, accountability partners. None of them worked like this does.", "initials": "TK", "name": "Tracy K.", "meta": "Small cap trader \u00b7 DAS user"}, {"stars": 5, "quote": "I have tried TraderVue and TradeZella. Neither one told me when not to trade. MAKETZO does, and that single distinction is everything when you are a momentum trader who overtrades on slow days. I used to average fourteen trades on a choppy open. Now I average four, my results improved immediately, and I am less stressed at the end of every session.", "initials": "RP", "name": "Ryan P.", "meta": "Momentum trader \u00b7 full time"}, {"stars": 5, "quote": "I blew two accounts before this. One month in and I have not blown my third. I was starting to think I just was not built for trading. Turns out I was breaking my own rules so consistently that no edge could survive it. The guardrails here finally gave me a fighting chance and I am more profitable now than I have ever been.", "initials": "JS", "name": "Justin S.", "meta": "New trader \u00b7 8 months"}, {"stars": 5, "quote": "The behavioral lockout feature felt annoying the first few times it triggered. Then it stopped me from taking a revenge trade after a rough open and I ended the day flat instead of down eight hundred dollars. Now I consider it the smartest feature in the app. You do not truly appreciate it until it saves you from yourself.", "initials": "EJ", "name": "Emma J.", "meta": "Small cap trader \u00b7 DAS user"}, {"stars": 5, "quote": "First month my losses dropped by around forty percent. Second month I was actually profitable for the first time in eight months of live trading. Third month I hit my best P&L ever. MAKETZO did not give me a new strategy. It created the discipline structure that let everything I already knew finally click into place.", "initials": "KD", "name": "Kevin D.", "meta": "Retail trader \u00b7 Texas"}, {"stars": 5, "quote": "I used to check my P&L every five minutes while in a trade and it was destroying my decision-making. MAKETZO redirected my focus toward the setup and process instead of the dollar amount. That shift alone improved my hold time on winners and completely changed my relationship with the screen during live sessions.", "initials": "MH", "name": "Michelle H.", "meta": "Retail trader \u00b7 New Jersey"}, {"stars": 5, "quote": "Six weeks in and my consistency is at a level I have never hit before. Not just P&L consistency but process consistency. Same approach every day, same discipline, same decision framework. MAKETZO did not give me the strategy. It gave me the structure to actually execute the strategy I already had. That is the missing piece for most traders.", "initials": "BM", "name": "Brian M.", "meta": "Momentum trader \u00b7 DAS user"}, {"stars": 5, "quote": "Three months of using this and my drawdown days are almost unrecognizable compared to before. The system genuinely changes how you show up to the screen. I am calmer, more selective, and more consistent than I have ever been. The results followed naturally once the behavior changed. That is exactly the order it needed to happen in.", "initials": "JL", "name": "Jamie L.", "meta": "Retail trader \u00b7 Ohio"}, {"stars": 5, "quote": "Been trading for six years and I still learned something from the guardrail system here. That was humbling to admit but it is true. There were patterns in my behavior I did not even know existed until MAKETZO made them visible. The data does not lie and now I finally have data that is actually actionable for improving day by day.", "initials": "VL", "name": "Vanessa L.", "meta": "Veteran retail trader \u00b7 6 years"}, {"stars": 5, "quote": "The daily loss limit enforcement is the feature I underestimated most going in. I thought I did not need it because I already knew my limits. Turns out knowing them and honoring them in the heat of the moment are two completely different disciplines. MAKETZO handles the honoring part automatically. That is exactly the separation I needed.", "initials": "NR", "name": "Nicole R.", "meta": "Small cap trader \u00b7 full time"}, {"stars": 5, "quote": "My coach told me to try this months ago and I ignored the advice because I thought I had enough tools. Finally gave it a shot and within three weeks I understood exactly why he recommended it. The external accountability structure is something I genuinely could not replicate on my own no matter how much I wanted to.", "initials": "SR", "name": "Stephanie R.", "meta": "Small cap trader \u00b7 18 months"}, {"stars": 5, "quote": "Cut my average daily loss in half within three weeks without changing a single setup or strategy. I just changed when I pulled the trigger based on what the system was telling me. That timing discipline is the hardest thing to build on your own, and having an external system enforce it makes all the difference in the world.", "initials": "CT", "name": "Chris T.", "meta": "Small cap momentum trader \u00b7 3 years"}, {"stars": 5, "quote": "What I like most is that it does not judge you. It just shows you the data and creates the structure to do something about it. I have worked with coaches who made me feel terrible about mistakes. MAKETZO just holds the line and lets you make better decisions going forward. It is fair, effective, and actually keeps me motivated.", "initials": "OC", "name": "Olivia C.", "meta": "Small cap trader \u00b7 TradingView user"}, {"stars": 5, "quote": "Stopped sizing up when frustrated and that single change improved my results more than any setup tweak I have made in four years. The system caught the pattern before I consciously recognized it myself. That kind of insight used to require paying a coach thousands of dollars. The value here is genuinely extraordinary.", "initials": "ZP", "name": "Zoe P.", "meta": "Small cap trader \u00b7 full time"}, {"stars": 5, "quote": "I have recommended this to every trader I know who is struggling with discipline. Because that is exactly what it solves. Not strategy, not setups, but discipline. If you have a profitable approach and keep sabotaging it with emotional decisions, this is the exact tool that closes that gap. Nothing else I have found even comes close.", "initials": "DT", "name": "Derek T.", "meta": "Day trader \u00b7 5 years"}, {"stars": 5, "quote": "I over-trade when the market is slow and I knew it for two years without being able to fix it. Knowing a problem and fixing it are completely different things without external structure. MAKETZO provides that structure automatically, without requiring me to rely on willpower at exactly the moment when willpower is at its lowest.", "initials": "CW", "name": "Chloe W.", "meta": "Swing trader \u00b7 3 years"}, {"stars": 5, "quote": "MAKETZO stopped me from blowing up my account three times in one month. It is the only reason I am still trading.", "initials": "GK", "name": "Gary K.", "meta": "Part-time trader \u00b7 weekends"}, {"stars": 5, "quote": "Best trading tool I have ever used, and I have tried everything. The guardrails paid for a full year of subscription in the first two weeks.", "initials": "SC", "name": "Sandra C.", "meta": "Swing trader \u00b7 DAS user"}, {"stars": 5, "quote": "My worst day this month was still green. That has never happened before in three years of live trading.", "initials": "DP", "name": "David P.", "meta": "Small cap momentum trader \u00b7 3 years"}, {"stars": 5, "quote": "Stopped revenge trading in week two. That alone made this the most valuable purchase I have made as a trader.", "initials": "AL", "name": "Ashley L.", "meta": "Small cap trader \u00b7 TradingView user"}, {"stars": 5, "quote": "The free trial got me in the door. The results on day five kept me subscribed for good.", "initials": "JW", "name": "Jake W.", "meta": "Retail trader \u00b7 Pennsylvania"}, {"stars": 5, "quote": "Set it up in ten minutes, used it the same session, and never traded without it again. Exactly how a tool like this should work.", "initials": "LN", "name": "Luis N.", "meta": "Day trader \u00b7 California"}, {"stars": 5, "quote": "Saved me from a revenge trade that would have wiped out my whole week. It paid for twelve months of subscription in one moment.", "initials": "WS", "name": "Will S.", "meta": "Day trader \u00b7 2 years"}, {"stars": 5, "quote": "I did not believe the reviews when I signed up. Now I am writing one that says exactly the same thing. That tells you everything.", "initials": "KA", "name": "Karen A.", "meta": "Retail trader \u00b7 2 years"}, {"stars": 5, "quote": "The exit alerts are fast, accurate, and they fire when it matters. I will not trade without this running on my screen.", "initials": "TM", "name": "Tony M.", "meta": "Day trader \u00b7 Chicago"}, {"stars": 5, "quote": "Two months in, my consistency is the best it has ever been. This is the missing piece I was looking for from day one.", "initials": "MM", "name": "Marcus M.", "meta": "Retail trader \u00b7 Michigan"}, {"stars": 5, "quote": "I wish I had found this two years ago. Would have saved me a lot of money and a lot of frustration.", "initials": "HM", "name": "Henry M.", "meta": "Part-time trader \u00b7 3 years"}, {"stars": 5, "quote": "The indicators are elite. The accountability layer on top of them is what makes the whole thing genuinely different.", "initials": "PH", "name": "Patricia H.", "meta": "Retail trader \u00b7 Florida"}, {"stars": 5, "quote": "My trading buddy and I both use it now. Having the same system running for both of us changed our whole weekly conversation.", "initials": "FD", "name": "Felicia D.", "meta": "Retail trader \u00b7 Georgia"}, {"stars": 4, "quote": "The core system is excellent and works exactly as advertised. Would love a few more customization options but the results are real.", "initials": "IN", "name": "Isaac N.", "meta": "New trader \u00b7 6 months"}, {"stars": 5, "quote": "Week three was my best week in six months. Stuck with it through a rough start and it paid off in a big way.", "initials": "RB", "name": "Rob B.", "meta": "Momentum trader \u00b7 4 years"}, {"stars": 4, "quote": "Still learning all the features but what I have used has already paid for itself several times over. Really impressed so far.", "initials": "AP", "name": "Amy P.", "meta": "Retail trader \u00b7 1 year"}, {"stars": 5, "quote": "Sat on my hands during a choppy open because MAKETZO said to. Saved myself from four bad trades and closed the day green.", "initials": "SM", "name": "Sarah M.", "meta": "Retail trader \u00b7 Washington"}];
+  var shown = [];
+  var grid = document.getElementById('reviewsGrid');
+
+  function starHtml(n) {
+    var s = '';
+    for (var i = 0; i < n; i++) s += '&#9733;';
+    for (var i = n; i < 5; i++) s += '&#9734;';
+    return s;
+  }
+
+  function pickFour() {
+    var pool = reviews.filter(function(r, i) { return shown.indexOf(i) === -1; });
+    if (pool.length < 4) { shown = []; pool = reviews.slice(); }
+    for (var i = pool.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = pool[i]; pool[i] = pool[j]; pool[j] = tmp;
+    }
+    var pick = pool.slice(0, 4);
+    pick.forEach(function(r) { shown.push(reviews.indexOf(r)); });
+    return pick;
+  }
+
+  function renderReviews() {
+    var pick = pickFour();
+    grid.style.opacity = '0';
+    grid.style.transition = 'opacity 0.5s';
+    setTimeout(function() {
+      grid.innerHTML = pick.map(function(r) {
+        return '<div class="review-card">' +
+          '<div class="review-stars">' + starHtml(r.stars) + '</div>' +
+          '<p class="review-quote">"' + r.quote + '"</p>' +
+          '<div class="review-author">' +
+            '<div class="review-avatar">' + r.initials + '</div>' +
+            '<div><div class="review-name">' + r.name + '</div>' +
+            '<div class="review-meta">' + r.meta + '</div></div>' +
+          '</div></div>';
+      }).join('');
+      grid.style.opacity = '1';
+    }, 500);
+  }
+
+  renderReviews();
+  setInterval(renderReviews, 30000);
+});
+</script>
+    <div class="mk-cta-repeat">
+      <button class="btn-primary" data-cta-source="reviews" onclick="handleCheckout('price_1TUWVpJIDbUntZeXyQD23z8W',event)">Start 7-Day Free Trial &rarr;</button>
+    </div>
+</section>
+
+<!-- PRICING -->
+<hr class="mk-rule-gold">
+
+<section class="section" id="pricing">
+  <div class="section-inner">
+    <p class="section-eyebrow reveal">07 &middot; Pricing</p>
+    <h2 class="section-title reveal">Start free. Stay because it works.</h2>
+    <p class="section-sub reveal">7-day free trial on all plans. Card required — not charged until day 8. Cancel anytime.</p>
+    <div class="pricing-toggle-wrap reveal">
+      <span class="pricing-toggle-label active" id="labelMonthly" onclick="setPricing(false)">Monthly</span>
+      <div class="pricing-toggle" id="pricingToggle" onclick="togglePricing()"><div class="pricing-toggle-knob"></div></div>
+      <span class="pricing-toggle-label" id="labelAnnual" onclick="setPricing(true)">Annual</span>
+      <span class="save-badge" id="saveBadge" style="display:none;">Save up to 32%</span>
+    </div>
+    <div class="pricing-grid">
+      <div class="price-card reveal">
+        <div class="price-eyebrow">Starter</div><div class="price-name">MAKETZO Journal</div>
+        <div class="price-row"><span class="price-dollar">$</span><span class="price-num" id="p1num">19</span><span class="price-per" id="p1per">/mo</span></div>
+        <div class="price-sub" id="p1sub">or $159/yr &mdash; save 30%</div>
+        <div class="price-rule"></div>
+        <ul class="price-list">
+          <li class="bold">Accountability engine + COACH SAYS</li><li class="bold">Strike system + behavioral lockout</li>
+          <li class="bold">Full trade journal + DAS import</li><li>&cent;/Share tracking + analytics</li>
+          <li>Streak tracking + custom date ranges</li>
+        </ul>
+        <button class="cta-outline" id="cta1" data-price-id="price_1TUWS7JIDbUntZeXg0a1Sgj5" onclick="handleCheckout(this.dataset.priceId,event)">Start Free Trial</button>
+        <p class="price-note">7 days free &middot; No charge until day 8</p>
+      </div>
+      <div class="price-card featured reveal">
+        <div class="popular-badge">Most Popular</div>
+        <div class="price-eyebrow">Pro</div><div class="price-name">MAKETZO Pro</div>
+        <div class="price-row"><span class="price-dollar">$</span><span class="price-num" id="p2num">49</span><span class="price-per" id="p2per">/mo</span></div>
+        <div class="price-sub" id="p2sub">or $399/yr &mdash; save 32%</div>
+        <div class="price-rule"></div>
+        <ul class="price-list">
+          <li class="bold">Everything in Journal</li><li class="bold">Maketzo Edge — invite-only access</li>
+          <li class="bold">Maketzo Pulse — invite-only access</li><li class="bold">Focus Room — full playlist access</li>
+          <li>Priority support + setup walkthrough</li>
+        </ul>
+        <button class="cta-gold" id="cta2" data-price-id="price_1TUWVpJIDbUntZeXyQD23z8W" onclick="handleCheckout(this.dataset.priceId,event)">Start Free Trial &rarr;</button>
+        <p class="price-note">7 days free &middot; No charge until day 8</p>
+      </div>
+      <div class="price-card reveal">
+        <div class="price-eyebrow">Elite</div><div class="price-name">MAKETZO Elite</div>
+        <div class="price-row"><span class="price-dollar">$</span><span class="price-num" id="p3num">79</span><span class="price-per" id="p3per">/mo</span></div>
+        <div class="price-sub" id="p3sub">or $649/yr &mdash; save 32%</div>
+        <div class="price-rule"></div>
+        <ul class="price-list">
+          <li class="bold">Everything in Pro</li><li class="bold">AI-powered weekly trade review</li>
+          <li class="bold">Personalized behavioral coaching report</li><li class="bold">1-on-1 onboarding call (month 1)</li>
+          <li>Early access to new indicators</li>
+        </ul>
+        <button class="cta-outline" id="cta3" data-price-id="price_1TUWabJIDbUntZeXYh8IrvEa" onclick="handleCheckout(this.dataset.priceId,event)">Start Free Trial</button>
+        <p class="price-note">7 days free &middot; No charge until day 8</p>
+      </div>
+    </div>
+    <div class="pricing-cta-row reveal">
+      <a href="pricing.html" class="btn-ghost">See full plan comparison &rarr;</a>
+      <p class="pricing-cta-sub">All plans include a 7-day free trial. No charge until day 8.</p>
+    </div>
+  </div>
+</section>
+
+<!-- REFERRAL -->
+<hr class="mk-rule-gold">
+
+<section class="section section-dark">
+  <div class="section-inner">
+    <p class="section-eyebrow reveal">08 &middot; Refer &amp; Save</p>
+    <h2 class="section-title reveal">Share it. Earn free months.</h2>
+    <p class="section-sub reveal">Think of a trader you know who keeps making the same mistakes. Send them your link. You both win.</p>
+    <div class="referral-box reveal">
+      <p class="referral-intro">Once you subscribe, your unique referral link appears in your dashboard. When they sign up and become a paying member, <strong>you get a free month automatically</strong> — no action required.</p>
+      <div class="ref-steps">
+        <div class="ref-step"><div class="ref-num">1</div><div class="ref-text">Subscribe — your referral link appears in your dashboard</div></div>
+        <div class="ref-divider">&rarr;</div>
+        <div class="ref-step"><div class="ref-num">2</div><div class="ref-text">Share your link with a trader who needs accountability</div></div>
+        <div class="ref-divider">&rarr;</div>
+        <div class="ref-step"><div class="ref-num">3</div><div class="ref-text">They complete their 7-day trial and become a paying member</div></div>
+        <div class="ref-divider">&rarr;</div>
+        <div class="ref-step"><div class="ref-num">4</div><div class="ref-text">You get one free month credited automatically</div></div>
+      </div>
+      <div class="ref-rewards">
+        <div class="ref-reward-card"><div class="ref-reward-who">You Earn</div><div class="ref-reward-what">1 free month per referral</div><div class="ref-reward-detail">Max 2 referrals — up to $98 in free Pro access</div></div>
+        <div class="ref-reward-card"><div class="ref-reward-who">They Save</div><div class="ref-reward-what">50% off their first month</div><div class="ref-reward-detail">$24.50 instead of $49 on Pro</div></div>
+      </div>
+      <p class="ref-note">Credits apply automatically to your next billing cycle. Maximum 2 referrals total.</p>
+    </div>
+    <div class="mk-cta-repeat">
+      <button class="btn-primary" data-cta-source="referral" onclick="handleCheckout('price_1TUWVpJIDbUntZeXyQD23z8W',event)">Start 7-Day Free Trial &rarr;</button>
+    </div>
+  </div>
+</section>
+
+<!-- NEWSLETTER -->
+<hr class="mk-rule-gold">
+
+<section class="section">
+  <div class="section-inner">
+    <div class="email-wrap">
+      <p class="section-eyebrow reveal">09 &middot; Stay Sharp</p>
+      <h2 class="section-title reveal">Trading discipline insights.</h2>
+      <p class="section-sub reveal">Bi-weekly insights on trading psychology and how to get more from MAKETZO. No spam. Unsubscribe anytime.</p>
+      <form class="email-form reveal" id="emailForm" onsubmit="handleEmail(event)">
+        <input type="email" class="email-input" placeholder="your@email.com" required id="emailInput">
+        <button type="submit" class="btn-primary" id="emailBtn">Subscribe &rarr;</button>
+      </form>
+      <div class="email-success" id="emailSuccess">&#10003;&nbsp; You're in. Check your inbox for a welcome note from MAKETZO.</div>
+      <p class="email-note reveal">By subscribing you agree to receive email from MAKETZO. We never sell your data.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<hr class="mk-rule-gold">
+
+<section class="section section-dark">
+  <div class="section-inner">
+    <p class="section-eyebrow reveal">10 &middot; Questions</p>
+    <h2 class="section-title reveal">Everything you want to know.</h2>
+    <p class="section-sub reveal">If something isn't answered here, email us at info@maketzo.co — we read every one.</p>
+    <div class="faq-list">
+      <div class="faq-item reveal"><button class="faq-q" onclick="toggleFaq(this)">I've tried journaling before and quit. Why is MAKETZO different?</button><div class="faq-a">Most journals are passive — you log trades and maybe review them later. <strong>MAKETZO is active.</strong> It reads your session in real time, fires COACH SAYS at 8:30AM and 10:30AM with direct instructions, tracks your strikes, and enforces the rules you set when you were thinking clearly. <em>MAKETZO stops you from doing it in the first place.</em></div></div>
+      <div class="faq-item reveal"><button class="faq-q" onclick="toggleFaq(this)">How is this different from TraderVue or TradeZella?</button><div class="faq-a">TraderVue and TradeZella are solid journals — they record and analyze trades well. <strong>MAKETZO does that too</strong> — DAS import, &cent;/share tracking, win rate, equity curve, streaks, custom date ranges. The difference is what happens before you make a mistake: <em>a behavioral enforcement system</em>, two proprietary indicators, and a Focus Room built around your mental state. It's a complete replacement — and it does something they can't: <strong>stop the damage before it happens.</strong></div></div>
+      <div class="faq-item reveal"><button class="faq-q" onclick="toggleFaq(this)">Do I need to connect my broker to start using it?</button><div class="faq-a"><strong>No.</strong> The accountability engine works the moment you log your net P&amp;L manually. DAS Trader CSV import is available for full trade-level analysis but it's optional. <em>Start today. Connect your data when you're ready.</em></div></div>
+      <div class="faq-item reveal"><button class="faq-q" onclick="toggleFaq(this)">How does the 7-day free trial work?</button><div class="faq-a">Card required at signup — but <strong>you are not charged until day 8.</strong> Cancel any time before then and you pay nothing. Pro and Elite subscribers receive TradingView indicator access within 24 hours. <em>No tricks. No gotchas. No fine print.</em></div></div>
+      <div class="faq-item reveal"><button class="faq-q" onclick="toggleFaq(this)">Is MAKETZO useful if I only trade part-time?</button><div class="faq-a">Absolutely — <strong>part-time traders often benefit most.</strong> When you only have a limited window to trade, every bad decision costs more. MAKETZO's checkpoints and behavioral gates protect your limited session time. Log your P&amp;L, follow the rules, protect your capital.</div></div>
+      <div class="faq-item reveal"><button class="faq-q" onclick="toggleFaq(this)">Is my trading data private and secure?</button><div class="faq-a">Your data is yours alone. <strong>MAKETZO does not share, sell, or expose your trading data to any third party.</strong> Each account is fully isolated. You can export or delete your data at any time.</div></div>
+      <div class="faq-item reveal"><button class="faq-q" onclick="toggleFaq(this)">How does the referral program work?</button><div class="faq-a">After subscribing, your referral link appears in your dashboard. When they become a paying member, <strong>you receive one free month</strong> credited automatically. Max 2 referrals. They get <strong>50% off their first month</strong> — $24.50 instead of $49 on Pro.</div></div>
+      <div class="faq-item reveal"><button class="faq-q" onclick="toggleFaq(this)">Is MAKETZO built for small cap traders?</button><div class="faq-a"><strong>Yes. MAKETZO is purpose-built for small cap momentum traders.</strong> The invite-only indicators, COACH SAYS logic, and session structure are all calibrated for the speed, volatility, and behavioral demands of small cap trading. If you trade large caps or swing trade, the accountability engine and guardrail system still apply — but the indicators are optimized for small cap setups and that is the environment we are designed for.</div></div>
+      <div class="faq-item reveal"><button class="faq-q" onclick="toggleFaq(this)">What do I need to use MAKETZO?</button><div class="faq-a">
+<strong>Required — one of the following:</strong>
+<ul class="faq-list-inner">
+  <li><strong>DAS Trader Pro</strong> — for detailed trade reporting, P&amp;L tracking, and session analysis</li>
+  <li><strong>TradingView</strong> — required if you want access to our proprietary invite-only indicator scripts</li>
+</ul>
+<strong>Minimum specs:</strong>
+<ul class="faq-list-inner">
+  <li>Modern browser (Chrome 148+, Firefox 150+, Edge 148+, Safari 26+)</li>
+  <li>Stable internet connection (10 Mbps or faster recommended)</li>
+  <li>Desktop or laptop — MAKETZO is not optimized for mobile during live trading sessions</li>
+</ul>
+No software installation required. MAKETZO runs in your browser alongside your existing platform.</div></div>
+    </div>
+    <div class="mk-cta-repeat">
+      <button class="btn-primary" data-cta-source="faq" onclick="handleCheckout('price_1TUWVpJIDbUntZeXyQD23z8W',event)">Start 7-Day Free Trial &rarr;</button>
+    </div>
+  </div>
+</section>
+
+<!-- PICK YOUR LEVEL OF ACCOUNTABILITY -->
+<hr class="mk-rule-gold">
+
+<section class="section section-dark" id="pricing-2">
+  <div class="section-inner">
+    <p class="section-eyebrow reveal">11 &middot; Pricing</p>
+    <h2 class="section-title reveal">Pick your level of <em>accountability.</em></h2>
+    <p class="section-sub reveal">Journal builds the discipline foundation. Pro adds the invite-only Edge and Pulse indicators. Elite layers in AI weekly coaching and a 1-on-1 onboarding call.</p>
+    <div class="pricing-grid">
+      <div class="price-card reveal">
+        <div class="price-eyebrow">Starter</div><div class="price-name">MAKETZO Journal</div>
+        <div class="price-row"><span class="price-dollar">$</span><span class="price-num">19</span><span class="price-per">/mo</span></div>
+        <div class="price-sub">or $159/yr &mdash; save 30%</div>
+        <div class="price-rule"></div>
+        <ul class="price-list">
+          <li class="bold">Accountability engine + COACH SAYS</li><li class="bold">Strike system + behavioral lockout</li>
+          <li class="bold">Full trade journal + DAS import</li><li>&cent;/Share tracking + analytics</li>
+          <li>Streak tracking + custom date ranges</li>
+        </ul>
+        <button class="cta-outline" data-price-id="price_1TUWS7JIDbUntZeXg0a1Sgj5" onclick="handleCheckout(this.dataset.priceId,event)">Start Free Trial</button>
+        <p class="price-note">7 days free &middot; No charge until day 8</p>
+      </div>
+      <div class="price-card featured reveal">
+        <div class="popular-badge">Most Popular</div>
+        <div class="price-eyebrow">Pro</div><div class="price-name">MAKETZO Pro</div>
+        <div class="price-row"><span class="price-dollar">$</span><span class="price-num">49</span><span class="price-per">/mo</span></div>
+        <div class="price-sub">or $399/yr &mdash; save 32%</div>
+        <div class="price-rule"></div>
+        <ul class="price-list">
+          <li class="bold">Everything in Journal</li><li class="bold">Maketzo Edge &mdash; invite-only access</li>
+          <li class="bold">Maketzo Pulse &mdash; invite-only access</li><li class="bold">Focus Room &mdash; full playlist access</li>
+          <li>Priority support + setup walkthrough</li>
+        </ul>
+        <button class="cta-gold" data-price-id="price_1TUWVpJIDbUntZeXyQD23z8W" onclick="handleCheckout(this.dataset.priceId,event)">Start Free Trial &rarr;</button>
+        <p class="price-note">7 days free &middot; No charge until day 8</p>
+      </div>
+      <div class="price-card reveal">
+        <div class="price-eyebrow">Elite</div><div class="price-name">MAKETZO Elite</div>
+        <div class="price-row"><span class="price-dollar">$</span><span class="price-num">79</span><span class="price-per">/mo</span></div>
+        <div class="price-sub">or $649/yr &mdash; save 32%</div>
+        <div class="price-rule"></div>
+        <ul class="price-list">
+          <li class="bold">Everything in Pro</li><li class="bold">AI-powered weekly trade review</li>
+          <li class="bold">Personalized behavioral coaching report</li><li class="bold">1-on-1 onboarding call (month 1)</li>
+          <li>Early access to new indicators</li>
+        </ul>
+        <button class="cta-outline" data-price-id="price_1TUWabJIDbUntZeXYh8IrvEa" onclick="handleCheckout(this.dataset.priceId,event)">Start Free Trial</button>
+        <p class="price-note">7 days free &middot; No charge until day 8</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<hr class="mk-rule-gold">
+
+<section class="section final-cta-section">
+  <div class="final-cta-glow"></div>
+  <div class="section-inner">
+    <p class="section-eyebrow reveal">Ready?</p>
+    <h2 class="final-cta-headline reveal">Stop losing to <em>yourself.</em></h2>
+    <p class="final-cta-sub reveal">7 days free. Full access from day one. No charge until day 8. Cancel in one click.</p>
+    <div class="final-cta-btns reveal">
+      <button class="btn-primary" onclick="handleCheckout('price_1TUWVpJIDbUntZeXyQD23z8W',event)">Start Free Trial &rarr;</button>
+      <a href="pricing.html" class="btn-secondary">Compare All Plans</a>
+    </div>
+    <p class="final-cta-note reveal">Pro &middot; $49/mo or $399/yr &middot; Edge, Pulse &amp; Focus Room included &middot; Cancel anytime</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<hr class="mk-rule-gold">
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-col-brand">
+        <div class="footer-logo-wrap">
+          <a href="index.html" class="mk-brand-lockup mk-brand-lockup--stacked">
+            <img class="mk-brand-lockup__mark" src="assets/logo-mark.png" alt="">
+            <img class="mk-brand-lockup__wordmark" src="assets/logo-wordmark.png" alt="MAKETZO">
+          </a>
+        </div>
+        <p class="footer-tagline"><strong>Built by traders, for traders.</strong>Discipline in every session. Edge in every trade. Accountability when it counts.</p>
+      </div>
+      <div><div class="footer-col-title">Product</div><ul class="footer-links"><li><a href="system.html">The System</a></li><li><a href="journal.html">Journal</a></li><li><a href="edge.html">The Edge</a></li><li><a href="focus.html">Focus Room</a></li><li><a href="pricing.html">Get Started</a></li><li><a href="why.html">Why MAKETZO</a></li></ul></div>
+      <div><div class="footer-col-title">Legal</div><ul class="footer-links"><li><a href="privacy.html">Privacy Policy</a></li><li><a href="terms.html">Terms of Service</a></li><li><a href="disclaimer.html">Risk Disclaimer</a></li><li><a href="contact.html">Contact Us</a></li></ul></div>
+      
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">&copy; 2026 Abinic, LLC. All rights reserved. MAKETZO&reg; is a product of Abinic, LLC. maketzo.co</p>
+      <p class="footer-disclaimer">Trading securities, options, futures, forex, and cryptocurrencies involves substantial risk of loss and is not suitable for all investors. You may lose some or all of your capital. MAKETZO is a journaling, behavioral accountability, educational, and decision-support platform designed to help traders track performance, reinforce rules, and improve discipline. Neither Abinic, LLC nor MAKETZO provides investment advice, personalized financial advice, tax advice, legal advice, trade recommendations, or solicitations to buy or sell any security or financial instrument.</p>
+      <p class="footer-disclaimer">All indicators, analytics, alerts, scoring systems, coaching prompts, AI-generated insights, training modules, quizzes, and educational materials are provided for informational and educational purposes only. These tools may contain errors, omissions, delays, or inaccuracies and should not be relied upon as the sole basis for any trading, investing, or risk-management decision. No feature, signal, score, alert, prompt, or educational resource guarantees accuracy, suitability, profitability, or the prevention of losses.</p>
+      <p class="footer-disclaimer">Users remain solely responsible for evaluating all information, conducting independent research, managing risk, complying with applicable laws and regulations, and entering, modifying, or canceling orders. Abinic, LLC and MAKETZO do not execute trades, do not act as a broker-dealer or registered investment adviser, and do not have custody of customer funds. Past performance, simulated results, testimonials, and examples are illustrative only and do not guarantee future results.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+const API='https://api.maketzo.co';
+
+// HERO ENTRANCE — flip class on body after load to trigger the
+// staggered CSS slide+fade transition on .hero-* elements.
+(function heroEntrance(){
+  function go(){
+    requestAnimationFrame(function(){ document.body.classList.add('hero-loaded'); });
+  }
+  if (document.readyState === 'complete') { go(); }
+  else { window.addEventListener('load', go); }
+})();
+
+// MOBILE DRAWER
+function toggleDrawer(){
+  const d=document.getElementById('mobileDrawer');
+  const o=document.getElementById('mobileOverlay');
+  const h=document.getElementById('hamburger');
+  d.classList.toggle('open');
+  o.classList.toggle('open');
+  h.classList.toggle('open');
+  document.body.style.overflow=d.classList.contains('open')?'hidden':'';
+}
+function closeDrawer(){
+  document.getElementById('mobileDrawer').classList.remove('open');
+  document.getElementById('mobileOverlay').classList.remove('open');
+  document.getElementById('hamburger').classList.remove('open');
+  document.body.style.overflow='';
+}
+
+// PRICING
+const plans={
+  monthly:[
+    {num:'19',per:'/mo',sub:'or $159/yr \u2014 save 30%',priceId:'price_1TUWS7JIDbUntZeXg0a1Sgj5'},
+    {num:'49',per:'/mo',sub:'or $399/yr \u2014 save 32%',priceId:'price_1TUWVpJIDbUntZeXyQD23z8W'},
+    {num:'79',per:'/mo',sub:'or $649/yr \u2014 save 32%',priceId:'price_1TUWabJIDbUntZeXYh8IrvEa'}
+  ],
+  annual:[
+    {num:'159',per:'/yr',sub:'Billed annually \u2014 save 30%',priceId:'price_1TUWUUJIDbUntZeX9CMTqV1D'},
+    {num:'399',per:'/yr',sub:'Billed annually \u2014 save 32%',priceId:'price_1TUWZIJIDbUntZeXl4Xtfudj'},
+    {num:'649',per:'/yr',sub:'Billed annually \u2014 save 32%',priceId:'price_1TUWc2JIDbUntZeXOIkeHml4'}
+  ]
+};
+let isAnnual=false;
+function setPricing(annual){
+  isAnnual=annual;
+  document.getElementById('pricingToggle').classList.toggle('annual',annual);
+  document.getElementById('labelMonthly').classList.toggle('active',!annual);
+  document.getElementById('labelAnnual').classList.toggle('active',annual);
+  document.getElementById('saveBadge').style.display=annual?'inline':'none';
+  const m=annual?'annual':'monthly';
+  [['p1num','p1per','p1sub','cta1'],['p2num','p2per','p2sub','cta2'],['p3num','p3per','p3sub','cta3']].forEach(([n,p,s,c],i)=>{
+    const pl=plans[m][i];
+    document.getElementById(n).textContent=pl.num;
+    document.getElementById(p).textContent=pl.per;
+    document.getElementById(s).textContent=pl.sub;
+    document.getElementById(c).dataset.priceId=pl.priceId;
+  });
+}
+function togglePricing(){setPricing(!isAnnual);}
+
+async function handleCheckout(priceId,e){
+  e.preventDefault();
+  const btn=e.currentTarget;
+  const finalId=(btn&&btn.dataset&&btn.dataset.priceId)?btn.dataset.priceId:priceId;
+  const orig=btn?btn.innerHTML:'';
+  if(btn){btn.innerHTML='Loading...';btn.disabled=true;}
+  const token=localStorage.getItem('maketzo_token');
+  if(!token){window.location.href=API+'/auth/google?checkout='+encodeURIComponent(finalId);return;}
+  try{
+    const res=await fetch(API+'/billing/create-checkout',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({priceId:finalId})});
+    const data=await res.json();
+    if(data.url){window.location.href=data.url;}
+    else{throw new Error(data.error||'Checkout failed');}
+  }catch(err){alert('Something went wrong. Please try again.');if(btn){btn.innerHTML=orig;btn.disabled=false;}}
+}
+
+// TOAST
+const firstNames=['Marcus','Jason','Tyler','David','Sarah','Amanda','Chris','Ryan','Mike','Lisa','Kevin','Dana','James','Priya','Tom','Aisha','Brian','Kelly','Derek','Lauren','Andre','Megan','Carlos','Nicole','Steve','Rachel','Eric','Heather','Nathan','Jessica','Greg','Samantha','Adam','Olivia','Scott','Kyle','Troy','Monica','Luke','Crystal','Zach','Amber','Paul','Danielle'];
+const lastInits=['A','B','C','D','E','F','G','H','J','K','L','M','N','P','R','S','T','W'];
+const cities=['Austin, TX','Dallas, TX','Chicago, IL','Atlanta, GA','Denver, CO','Seattle, WA','Phoenix, AZ','Miami, FL','Charlotte, NC','Boston, MA','Nashville, TN','Portland, OR','San Diego, CA','Las Vegas, NV','Minneapolis, MN','Tampa, FL','Kansas City, MO','Cincinnati, OH','Pittsburgh, PA','Raleigh, NC','Salt Lake City, UT','Richmond, VA','Louisville, KY','Memphis, TN','Columbus, OH','Orlando, FL','Sacramento, CA','Houston, TX','Los Angeles, CA','New York, NY','Philadelphia, PA','Detroit, MI','St. Louis, MO','Indianapolis, IN','Baltimore, MD','Toronto, Canada','London, UK','Sydney, Australia','Dublin, Ireland','Vancouver, Canada'];
+function randItem(a){return a[Math.floor(Math.random()*a.length)];}
+const toast=document.getElementById('toast');
+function showToast(){
+  document.getElementById('toastName').textContent=randItem(firstNames)+' '+randItem(lastInits)+'.';
+  document.getElementById('toastCity').textContent=randItem(cities);
+  toast.classList.remove('hidden');
+  setTimeout(()=>toast.classList.add('hidden'),7000);
+  setTimeout(showToast,90000+Math.floor(Math.random()*60000));
+}
+setTimeout(showToast,30000+Math.floor(Math.random()*20000));
+
+// REVEAL
+const reveals=document.querySelectorAll('.reveal');
+const obs=new IntersectionObserver((entries)=>{
+  entries.forEach((e,i)=>{if(e.isIntersecting){setTimeout(()=>e.target.classList.add('visible'),i*50);obs.unobserve(e.target);}});
+},{threshold:0.06});
+reveals.forEach(el=>obs.observe(el));
+
+// FAQ
+function toggleFaq(btn){btn.classList.toggle('open');btn.nextElementSibling.classList.toggle('open');}
+
+// EMAIL — wired to backend
+async function handleEmail(e){
+  e.preventDefault();
+  const btn=document.getElementById('emailBtn');
+  const email=document.getElementById('emailInput').value.trim();
+  if(!email)return;
+  btn.innerHTML='Sending...';btn.disabled=true;
+  try{
+    const res=await fetch(API+'/newsletter/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email})});
+    const data=await res.json();
+    if(res.ok){
+      document.getElementById('emailForm').style.display='none';
+      document.getElementById('emailSuccess').classList.add('show');
+    }else{throw new Error(data.error||'Failed');}
+  }catch(err){alert('Something went wrong. Please try again.');btn.innerHTML='Subscribe \u2192';btn.disabled=false;}
+}
+
+// STICKY BAR
+let stickyShown=false,stickyDismissed=false;
+window.addEventListener('scroll',()=>{
+  if(!stickyDismissed&&!stickyShown&&window.scrollY/(document.body.scrollHeight-window.innerHeight)>0.45){
+    document.getElementById('stickyBar').classList.add('visible');stickyShown=true;
+  }
+  document.getElementById('mainNav').style.borderBottomColor=window.scrollY>60?'rgba(201,168,76,0.25)':'rgba(201,168,76,0.12)';
+});
+function closeStickyBar(){document.getElementById('stickyBar').classList.remove('visible');stickyDismissed=true;}
+async function handleStickyEmail(){
+  const input=document.getElementById('stickyEmail');
+  const email=input.value.trim();
+  if(!email||!email.includes('@'))return;
+  try{await fetch(API+'/newsletter/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email})});}catch(e){}
+  input.value='';input.placeholder='Subscribed \u2713';
+  setTimeout(closeStickyBar,1500);
+}
+</script>
+</body>
+</html>

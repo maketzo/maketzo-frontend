@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<!-- contact — email + form · posts to api.maketzo.co/contact · Resend → info@maketzo.co -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact — MAKETZO · We Answer Every Email</title>
+<meta name="description" content="Get in touch with MAKETZO. Billing, account, Edge access, feature requests. Email info@maketzo.co or use the form. We answer every message.">
+<meta name="theme-color" content="#06070A">
+<meta property="og:title" content="Contact — MAKETZO">
+<meta property="og:description" content="We answer every email. Promise.">
+<meta property="og:url" content="https://maketzo.co/contact">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://maketzo.co/contact">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--mk-surface-page); color: var(--mk-text-primary); font-family: var(--mk-font-sans); font-size: var(--mk-text-md); line-height: var(--mk-lead-body); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+a { color: inherit; text-decoration: none; }
+ul, ol { list-style: none; }
+img { display: block; max-width: 100%; }
+em, i { font-style: italic; }
+strong { color: var(--mk-text-primary); font-weight: 600; }
+
+.bg-trading { position: fixed; inset: 0; pointer-events: none; z-index: 0; opacity: 0.12; }
+.bg-trading svg { width: 100%; height: 100%; display: block; }
+
+.mobile-overlay { position: fixed; inset: 0; z-index: 90; background: rgba(0,0,0,.6); backdrop-filter: blur(6px); opacity: 0; pointer-events: none; transition: opacity var(--mk-dur-med); }
+.mobile-overlay.open { opacity: 1; pointer-events: auto; }
+.mobile-drawer { position: fixed; top: 0; right: 0; bottom: 0; z-index: 100; width: min(320px, 88%); background: var(--mk-surface-base); border-left: var(--mk-border-soft); padding: 80px 28px 28px; transform: translateX(100%); transition: transform var(--mk-dur-med) var(--mk-ease-out); display: flex; flex-direction: column; gap: 20px; }
+.mobile-drawer.open { transform: translateX(0); }
+.mobile-drawer-links li { padding: 12px 0; border-bottom: var(--mk-border-hairline); }
+.mobile-drawer-links a { font-family: var(--mk-font-display); font-size: var(--mk-display-md); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); }
+.mobile-drawer-cta { display: inline-flex; align-items: center; justify-content: center; background: var(--mk-gold-gradient); color: var(--mk-text-on-gold); font-family: var(--mk-font-sans); font-weight: 600; font-size: var(--mk-text-sm); letter-spacing: var(--mk-track-cap); text-transform: uppercase; padding: 14px 22px; border: 1px solid rgba(0,0,0,.18); border-radius: var(--mk-radius-button); cursor: pointer; margin-top: auto; }
+
+#mainNav { position: fixed; top: 0; left: 0; right: 0; z-index: 50; background: rgba(6,7,10,.85); backdrop-filter: blur(20px) saturate(140%); border-bottom: 1px solid rgba(212,175,55,.12); transition: border-color var(--mk-dur-snap); display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 14px 32px 14px 64px; }
+.nav-logo.mk-brand-lockup { --mk-brand-lockup-mark-h: 44px; --mk-brand-lockup-wordmark-h: 22px; --mk-brand-lockup-gap: 10px; }
+.nav-links { display: flex; align-items: center; gap: 28px; margin: 0; padding: 0; }
+.nav-links > li > a:not(.nav-login-btn) { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); font-weight: 500; letter-spacing: 0.02em; transition: color var(--mk-dur-fast); }
+.nav-links > li > a:not(.nav-login-btn):hover { color: var(--mk-text-primary); }
+.nav-login-btn { display: inline-flex; align-items: center; font-size: var(--mk-text-sm); font-weight: 600; letter-spacing: var(--mk-track-cap); text-transform: uppercase; padding: 7px 14px; color: var(--mk-text-secondary); border: 1px solid var(--mk-smoke-700); border-radius: var(--mk-radius-button); transition: color var(--mk-dur-fast), border-color var(--mk-dur-fast), background var(--mk-dur-fast); }
+.nav-login-btn:hover { color: var(--mk-text-primary); border-color: var(--mk-smoke-600); background: rgba(255,255,255,.03); }
+.nav-cta { display: inline-flex; align-items: center; justify-content: center; font-family: var(--mk-font-sans); font-size: var(--mk-text-sm); font-weight: 600; letter-spacing: var(--mk-track-cap); text-transform: uppercase; padding: 7px 14px; border: 1px solid rgba(0,0,0,.18); border-radius: var(--mk-radius-button); cursor: pointer; background: var(--mk-gold-gradient); color: var(--mk-text-on-gold); transition: transform var(--mk-dur-snap), box-shadow var(--mk-dur-snap); white-space: nowrap; }
+.nav-cta:hover { transform: translateY(-1px); box-shadow: var(--mk-glow-gold-sm); }
+.hamburger { display: none; background: transparent; border: 0; padding: 8px; cursor: pointer; flex-direction: column; gap: 5px; }
+.hamburger span { display: block; width: 24px; height: 2px; background: var(--mk-text-primary); transition: transform var(--mk-dur-snap), opacity var(--mk-dur-snap); }
+.hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+@media (max-width: 900px) { #mainNav { padding: 12px 20px; gap: 16px; } .nav-links { display: none; } .hamburger { display: flex; } }
+
+.btn-primary, .btn-secondary, .btn-ghost { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-family: var(--mk-font-sans); font-size: var(--mk-text-sm); font-weight: 600; letter-spacing: var(--mk-track-cap); text-transform: uppercase; padding: 12px 22px; border-radius: var(--mk-radius-button); border: 1px solid transparent; cursor: pointer; text-decoration: none; white-space: nowrap; transition: transform var(--mk-dur-snap), box-shadow var(--mk-dur-snap), background var(--mk-dur-snap), border-color var(--mk-dur-snap), color var(--mk-dur-snap); }
+.btn-primary { background: var(--mk-gold-gradient); color: var(--mk-text-on-gold); border-color: rgba(0,0,0,.18); }
+.btn-primary:hover { transform: translateY(-1px); box-shadow: var(--mk-glow-gold-md); color: var(--mk-text-on-gold); }
+.btn-primary:disabled { opacity: .65; cursor: not-allowed; transform: none; }
+.btn-secondary { background: transparent; color: var(--mk-text-primary); border: var(--mk-border-gold); }
+.btn-secondary:hover { color: var(--mk-brand); border-color: var(--mk-brand); background: rgba(212,175,55,.06); }
+.btn-ghost { background: transparent; color: var(--mk-text-secondary); border-color: var(--mk-smoke-700); padding: 10px 18px; font-size: var(--mk-text-xs); }
+.btn-ghost:hover { color: var(--mk-text-primary); border-color: var(--mk-smoke-600); background: rgba(255,255,255,.03); }
+
+.section { position: relative; z-index: 1; padding: 88px 0; background: var(--mk-surface-page); }
+.section.section-dark { background: var(--mk-surface-base); }
+.section-inner { max-width: var(--mk-container-marketing); margin: 0 auto; padding: 0 32px; }
+.section-eyebrow { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); text-align: center; margin-bottom: 14px; }
+.section-title { font-family: var(--mk-font-display); font-size: clamp(2rem, 4.5vw, 3.4rem); letter-spacing: var(--mk-track-display); line-height: 1.04; text-transform: uppercase; text-align: center; margin-bottom: 18px; font-weight: 400; }
+.section-title em { font-style: normal; background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.section-sub { font-size: var(--mk-text-lg); color: var(--mk-text-secondary); text-align: center; max-width: 700px; margin: 0 auto 48px; line-height: var(--mk-lead-body); }
+.section-sub strong { color: var(--mk-text-primary); }
+hr.mk-rule-gold, hr.mk-rule-gold--bold { margin: 0 auto; max-width: 1180px; }
+
+.reveal { opacity: 0; transform: translateY(16px); transition: opacity var(--mk-dur-slow) var(--mk-ease-out), transform var(--mk-dur-slow) var(--mk-ease-out); }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+.page-hero { position: relative; z-index: 1; padding: 152px 0 64px; background: var(--mk-obsidian-950); text-align: center; border-bottom: var(--mk-border-hairline); }
+.page-hero-inner { max-width: 820px; margin: 0 auto; padding: 0 32px; }
+.page-hero-eyebrow { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); margin-bottom: 18px; }
+.page-hero-title { font-family: var(--mk-font-display); font-size: clamp(2.4rem, 5.4vw, 4rem); letter-spacing: var(--mk-track-display); line-height: 1.04; text-transform: uppercase; font-weight: 400; margin-bottom: 20px; }
+.page-hero-title em { font-style: normal; background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.page-hero-sub { font-size: var(--mk-text-lg); color: var(--mk-text-secondary); line-height: var(--mk-lead-body); max-width: 640px; margin: 0 auto; }
+
+/* ── CONTACT LAYOUT ─────────────────────────────────────────── */
+.contact-grid {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 40px;
+  align-items: flex-start;
+}
+.contact-form-card {
+  padding: 36px 36px;
+  background: var(--mk-surface-raised);
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: var(--mk-radius-card);
+}
+.contact-form-title { font-family: var(--mk-font-display); font-size: clamp(1.4rem, 2.4vw, 1.7rem); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); margin-bottom: 6px; line-height: 1.1; }
+.contact-form-sub { font-size: var(--mk-text-sm); color: var(--mk-text-tertiary); margin-bottom: 28px; }
+
+.mk-form-field { margin-bottom: 18px; }
+.mk-form-field label {
+  display: block;
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-xs);
+  letter-spacing: var(--mk-track-eyebrow);
+  text-transform: uppercase;
+  color: var(--mk-text-tertiary);
+  margin-bottom: 8px;
+}
+.mk-form-field input,
+.mk-form-field select,
+.mk-form-field textarea {
+  width: 100%;
+  padding: 12px 14px;
+  background: rgba(0,0,0,.35);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: var(--mk-radius-input);
+  color: var(--mk-text-primary);
+  font-family: var(--mk-font-sans);
+  font-size: var(--mk-text-md);
+  outline: none;
+  transition: border-color var(--mk-dur-fast), box-shadow var(--mk-dur-fast);
+}
+.mk-form-field input:focus,
+.mk-form-field select:focus,
+.mk-form-field textarea:focus {
+  border-color: var(--mk-brand);
+  box-shadow: 0 0 0 3px rgba(212,175,55,.18);
+}
+.mk-form-field textarea { min-height: 140px; resize: vertical; font-family: var(--mk-font-sans); }
+.mk-form-field select { appearance: none; -webkit-appearance: none; background-image: linear-gradient(45deg, transparent 50%, var(--mk-text-tertiary) 50%), linear-gradient(135deg, var(--mk-text-tertiary) 50%, transparent 50%); background-position: calc(100% - 18px) 50%, calc(100% - 12px) 50%; background-size: 6px 6px, 6px 6px; background-repeat: no-repeat; padding-right: 36px; }
+
+.honeypot { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+
+.contact-submit-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  margin-top: 8px;
+}
+.contact-submit-row .btn-primary { padding: 14px 28px; }
+.contact-note { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); color: var(--mk-text-tertiary); }
+
+.contact-success {
+  display: none;
+  padding: 24px;
+  background: rgba(74,222,128,.08);
+  border: 1px solid rgba(74,222,128,.32);
+  border-radius: var(--mk-radius-card);
+  text-align: center;
+}
+.contact-success.show { display: block; }
+.contact-success-title { font-family: var(--mk-font-display); font-size: var(--mk-display-md); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-profit-500); margin-bottom: 8px; }
+.contact-success-text { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); line-height: 1.5; }
+
+.contact-side { display: flex; flex-direction: column; gap: 18px; }
+.contact-side-card {
+  padding: 24px 26px;
+  background:
+    linear-gradient(135deg, rgba(212,175,55,.05), transparent 60%),
+    var(--mk-surface-raised);
+  border: 1px solid rgba(212,175,55,.22);
+  border-radius: var(--mk-radius-card);
+}
+.contact-side-card.muted {
+  background: var(--mk-surface-raised);
+  border-color: rgba(255,255,255,.06);
+}
+.contact-side-tag { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); margin-bottom: 12px; }
+.contact-side-card.muted .contact-side-tag { color: var(--mk-text-tertiary); }
+.contact-side-title { font-family: var(--mk-font-display); font-size: var(--mk-display-md); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); margin-bottom: 8px; line-height: 1.1; }
+.contact-side-text { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); line-height: 1.5; }
+.contact-side-text a { color: var(--mk-brand); border-bottom: 1px solid rgba(212,175,55,.4); }
+.contact-side-text strong { color: var(--mk-text-primary); }
+
+@media (max-width: 880px) { .contact-grid { grid-template-columns: 1fr; gap: 24px; } }
+
+/* ── TRUST STRIP ────────────────────────────────────────────── */
+.trust-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+.trust-tile {
+  text-align: center;
+  padding: 24px 22px;
+  background: var(--mk-surface-raised);
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: var(--mk-radius-card);
+}
+.trust-tile-icon { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: rgba(212,175,55,.08); border: var(--mk-border-gold-soft); color: var(--mk-brand); margin-bottom: 12px; }
+.trust-tile-title { font-family: var(--mk-font-display); font-size: var(--mk-display-sm); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); margin-bottom: 6px; }
+.trust-tile-text { font-size: var(--mk-text-sm); color: var(--mk-text-tertiary); line-height: 1.5; }
+@media (max-width: 800px) { .trust-strip { grid-template-columns: 1fr; max-width: 420px; } }
+
+.final-cta-section { padding: 96px 0; background: var(--mk-obsidian-950); text-align: center; border-top: var(--mk-border-hairline); }
+.final-cta-eyebrow { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); margin-bottom: 18px; }
+.final-cta-title { font-family: var(--mk-font-display); font-size: clamp(2.2rem, 4.6vw, 3.2rem); letter-spacing: var(--mk-track-display); line-height: 1.04; text-transform: uppercase; font-weight: 400; margin-bottom: 24px; max-width: 700px; margin-left: auto; margin-right: auto; }
+.final-cta-title em { font-style: normal; background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.final-cta-btn-wrap { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.final-cta-note { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: 0.04em; color: var(--mk-text-tertiary); }
+
+footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairline); padding: 56px 0 28px; }
+.footer-inner { max-width: var(--mk-container-marketing); margin: 0 auto; padding: 0 32px; }
+.footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; margin-bottom: 32px; padding-bottom: 32px; border-bottom: var(--mk-border-hairline); }
+.footer-logo-wrap { display: flex; flex-direction: column; align-items: flex-start; gap: 18px; margin-bottom: 12px; }
+.footer-logo-wrap .mk-brand-lockup { --mk-brand-lockup-mark-h: 40px; --mk-brand-lockup-wordmark-h: 20px; }
+.footer-tagline { font-size: var(--mk-text-sm); color: var(--mk-text-tertiary); line-height: var(--mk-lead-body); max-width: 360px; }
+.footer-tagline strong { display: block; color: var(--mk-text-primary); margin-bottom: 4px; }
+.footer-col-title { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); margin-bottom: 16px; }
+.footer-links { display: flex; flex-direction: column; gap: 10px; padding: 0; }
+.footer-links a { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); transition: color var(--mk-dur-fast); }
+.footer-links a:hover { color: var(--mk-text-primary); }
+.footer-bottom { display: flex; flex-direction: column; gap: 10px; }
+.footer-copy { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: 0.04em; color: var(--mk-text-tertiary); }
+.footer-disclaimer { font-size: var(--mk-text-xs); color: var(--mk-text-tertiary); line-height: var(--mk-lead-body); max-width: 900px; }
+@media (max-width: 800px) { .footer-grid { grid-template-columns: 1fr; gap: 24px; } }
+</style>
+</head>
+<body>
+
+<div class="bg-trading" aria-hidden="true">
+  <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+    <g stroke="#C9A84C" stroke-width="0.5" opacity="0.5">
+      <line x1="0" y1="150" x2="1440" y2="150"/><line x1="0" y1="300" x2="1440" y2="300"/><line x1="0" y1="450" x2="1440" y2="450"/><line x1="0" y1="600" x2="1440" y2="600"/>
+      <line x1="180" y1="0" x2="180" y2="900"/><line x1="360" y1="0" x2="360" y2="900"/><line x1="540" y1="0" x2="540" y2="900"/><line x1="720" y1="0" x2="720" y2="900"/><line x1="900" y1="0" x2="900" y2="900"/><line x1="1080" y1="0" x2="1080" y2="900"/><line x1="1260" y1="0" x2="1260" y2="900"/>
+    </g>
+  </svg>
+</div>
+
+<div class="mobile-overlay" id="mobileOverlay" onclick="closeDrawer()"></div>
+<div class="mobile-drawer" id="mobileDrawer">
+  <ul class="mobile-drawer-links">
+    <li><a href="system.html" onclick="closeDrawer()">The System</a></li>
+    <li><a href="journal.html" onclick="closeDrawer()">Journal</a></li>
+    <li><a href="edge.html" onclick="closeDrawer()">The Edge</a></li>
+    <li><a href="focus.html" onclick="closeDrawer()">Focus Room</a></li>
+    <li><a href="pricing.html" onclick="closeDrawer()">Get Started</a></li>
+    <li><a href="/app" onclick="closeDrawer()">Log In</a></li>
+  </ul>
+  <button class="mobile-drawer-cta" onclick="handleCheckout('price_1TUWVpJIDbUntZeXyQD23z8W',{preventDefault:()=>{},currentTarget:null});closeDrawer()">Start Free Trial &rarr;</button>
+</div>
+
+<nav id="mainNav">
+  <a href="index.html" class="nav-logo mk-brand-lockup">
+    <img class="mk-brand-lockup__mark" src="assets/logo-mark.png" alt="">
+    <img class="mk-brand-lockup__wordmark" src="assets/logo-wordmark.png" alt="MAKETZO">
+  </a>
+  <ul class="nav-links">
+    <li><a href="system.html">The System</a></li>
+    <li><a href="journal.html">Journal</a></li>
+    <li><a href="edge.html">The Edge</a></li>
+    <li><a href="focus.html">Focus Room</a></li>
+    <li><a href="pricing.html">Get Started</a></li>
+    <li><a href="/app" class="nav-login-btn">Log In</a></li>
+    <li><button class="nav-cta" onclick="handleCheckout('price_1TUWVpJIDbUntZeXyQD23z8W',event)">Start Free Trial</button></li>
+  </ul>
+  <button class="hamburger" id="hamburger" onclick="toggleDrawer()" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+
+<section class="page-hero">
+  <div class="page-hero-inner">
+    <p class="page-hero-eyebrow reveal">CONTACT</p>
+    <h1 class="page-hero-title reveal">We answer <em>every email.</em></h1>
+    <p class="page-hero-sub reveal">Billing, account, Edge access, feature requests, partnership ideas, or just feedback. Tell us what you need. We typically reply within one trading day.</p>
+  </div>
+</section>
+
+<!-- CONTACT FORM + SIDE -->
+<section class="section">
+  <div class="section-inner">
+    <div class="contact-grid">
+      <div class="contact-form-card reveal">
+        <h2 class="contact-form-title">Send us a message</h2>
+        <p class="contact-form-sub">Fill it in and hit submit. It goes straight to info@maketzo.co.</p>
+
+        <form id="contactForm" novalidate>
+          <div class="mk-form-field">
+            <label for="cname">Your name</label>
+            <input id="cname" name="name" type="text" autocomplete="name" required maxlength="120">
+          </div>
+          <div class="mk-form-field">
+            <label for="cemail">Email</label>
+            <input id="cemail" name="email" type="email" autocomplete="email" required maxlength="200">
+          </div>
+          <div class="mk-form-field">
+            <label for="csubject">Subject</label>
+            <select id="csubject" name="subject" required>
+              <option value="">Choose one</option>
+              <option value="Billing">Billing &amp; subscription</option>
+              <option value="Account">Account &amp; login</option>
+              <option value="Edge access">Edge / Pulse access</option>
+              <option value="Feature request">Feature request</option>
+              <option value="Bug report">Bug report</option>
+              <option value="Partnership">Partnership / press</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="mk-form-field">
+            <label for="cmessage">Message</label>
+            <textarea id="cmessage" name="message" required maxlength="5000" placeholder="Tell us what's going on…"></textarea>
+          </div>
+
+          <input class="honeypot" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+          <div class="contact-submit-row">
+            <span class="contact-note">No tracking · No autoresponders</span>
+            <button class="btn-primary" type="submit" id="contactSubmit">Send Message</button>
+          </div>
+        </form>
+
+        <div class="contact-success" id="contactSuccess">
+          <div class="contact-success-title">Got it.</div>
+          <p class="contact-success-text">Message received. We'll reply within one trading day, usually faster.</p>
+        </div>
+      </div>
+
+      <aside class="contact-side reveal">
+        <div class="contact-side-card">
+          <div class="contact-side-tag">EMAIL DIRECT</div>
+          <div class="contact-side-title">info@maketzo.co</div>
+          <p class="contact-side-text">Prefer email over forms? <a href="mailto:info@maketzo.co">info@maketzo.co</a> reaches the same humans. Reply usually within one trading day.</p>
+        </div>
+
+        <div class="contact-side-card">
+          <div class="contact-side-tag">ALREADY A MEMBER?</div>
+          <div class="contact-side-title">Manage billing</div>
+          <p class="contact-side-text">Cancel, switch tiers, update card — all one-click from your <a href="/account">account page</a>. No phone call required, ever.</p>
+        </div>
+
+        <div class="contact-side-card muted">
+          <div class="contact-side-tag">COMMUNITY · SOON</div>
+          <div class="contact-side-title">Discord launching</div>
+          <p class="contact-side-text">Our member community is opening soon. Active subscribers get invited automatically — no separate signup.</p>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST STRIP -->
+<section class="section section-dark">
+  <div class="section-inner">
+    <p class="section-eyebrow reveal">WHAT TO EXPECT</p>
+    <h2 class="section-title reveal">Real humans. <em>Fast replies.</em></h2>
+
+    <div class="trust-strip">
+      <div class="trust-tile reveal">
+        <div class="trust-tile-icon">✉</div>
+        <div class="trust-tile-title">One Trading Day</div>
+        <div class="trust-tile-text">Average reply time. Most messages get a response within hours.</div>
+      </div>
+      <div class="trust-tile reveal">
+        <div class="trust-tile-icon">●</div>
+        <div class="trust-tile-title">Real People</div>
+        <div class="trust-tile-text">No autoresponders. No chatbots. The team reads and replies.</div>
+      </div>
+      <div class="trust-tile reveal">
+        <div class="trust-tile-icon">★</div>
+        <div class="trust-tile-title">Feedback Lands</div>
+        <div class="trust-tile-text">Feature requests go into the public roadmap. Bug reports get triaged.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<hr class="mk-rule-gold--bold">
+<section class="final-cta-section">
+  <p class="final-cta-eyebrow reveal">7-DAY FREE TRIAL · NO CHARGE UNTIL DAY 8</p>
+  <h2 class="final-cta-title reveal">Or, just <em>start trading with discipline today</em></h2>
+  <div class="final-cta-btn-wrap reveal">
+    <button class="btn-primary" style="padding:18px 44px;font-size:var(--mk-text-md);" onclick="handleCheckout('price_1TUWVpJIDbUntZeXyQD23z8W',event)">Start 7-Day Free Trial</button>
+    <p class="final-cta-note">Pro · $49/mo · Cancel in one click · Stripe-secured</p>
+  </div>
+</section>
+
+<hr class="mk-rule-gold">
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-col-brand">
+        <div class="footer-logo-wrap">
+          <a href="index.html" class="mk-brand-lockup mk-brand-lockup--stacked">
+            <img class="mk-brand-lockup__mark" src="assets/logo-mark.png" alt="">
+            <img class="mk-brand-lockup__wordmark" src="assets/logo-wordmark.png" alt="MAKETZO">
+          </a>
+        </div>
+        <p class="footer-tagline"><strong>Built by traders, for traders.</strong>Discipline in every session. Edge in every trade. Accountability when it counts.</p>
+      </div>
+      <div><div class="footer-col-title">Product</div><ul class="footer-links"><li><a href="system.html">The System</a></li><li><a href="journal.html">Journal</a></li><li><a href="edge.html">The Edge</a></li><li><a href="focus.html">Focus Room</a></li><li><a href="pricing.html">Get Started</a></li><li><a href="why.html">Why MAKETZO</a></li></ul></div>
+      <div><div class="footer-col-title">Legal</div><ul class="footer-links"><li><a href="privacy.html">Privacy Policy</a></li><li><a href="terms.html">Terms of Service</a></li><li><a href="disclaimer.html">Risk Disclaimer</a></li><li><a href="contact.html">Contact Us</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">&copy; 2026 Abinic, LLC. All rights reserved. MAKETZO&reg; is a product of Abinic, LLC. maketzo.co</p>
+      <p class="footer-disclaimer">Trading securities, options, futures, forex, and cryptocurrencies involves substantial risk of loss and is not suitable for all investors. You may lose some or all of your capital. MAKETZO is a journaling, behavioral accountability, educational, and decision-support platform designed to help traders track performance, reinforce rules, and improve discipline. Neither Abinic, LLC nor MAKETZO provides investment advice, personalized financial advice, tax advice, legal advice, trade recommendations, or solicitations to buy or sell any security or financial instrument.</p>
+      <p class="footer-disclaimer">All indicators, analytics, alerts, scoring systems, coaching prompts, AI-generated insights, training modules, quizzes, and educational materials are provided for informational and educational purposes only. These tools may contain errors, omissions, delays, or inaccuracies and should not be relied upon as the sole basis for any trading, investing, or risk-management decision. No feature, signal, score, alert, prompt, or educational resource guarantees accuracy, suitability, profitability, or the prevention of losses.</p>
+      <p class="footer-disclaimer">Users remain solely responsible for evaluating all information, conducting independent research, managing risk, complying with applicable laws and regulations, and entering, modifying, or canceling orders. Abinic, LLC and MAKETZO do not execute trades, do not act as a broker-dealer or registered investment adviser, and do not have custody of customer funds. Past performance, simulated results, testimonials, and examples are illustrative only and do not guarantee future results.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+const API='https://api.maketzo.co';
+function toggleDrawer(){const d=document.getElementById('mobileDrawer');const o=document.getElementById('mobileOverlay');const h=document.getElementById('hamburger');d.classList.toggle('open');o.classList.toggle('open');h.classList.toggle('open');document.body.style.overflow=d.classList.contains('open')?'hidden':'';}
+function closeDrawer(){document.getElementById('mobileDrawer').classList.remove('open');document.getElementById('mobileOverlay').classList.remove('open');document.getElementById('hamburger').classList.remove('open');document.body.style.overflow='';}
+async function handleCheckout(priceId,e){
+  if(e&&e.preventDefault)e.preventDefault();
+  const btn=e&&e.currentTarget?e.currentTarget:null;
+  const finalId=(btn&&btn.dataset&&btn.dataset.priceId)?btn.dataset.priceId:priceId;
+  const orig=btn?btn.innerHTML:'';
+  if(btn){btn.innerHTML='Loading...';btn.disabled=true;}
+  const token=localStorage.getItem('maketzo_token');
+  if(!token){window.location.href=API+'/auth/google?checkout='+encodeURIComponent(finalId);return;}
+  try{
+    const res=await fetch(API+'/billing/create-checkout',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({priceId:finalId})});
+    const data=await res.json();
+    if(data.url){window.location.href=data.url;}else{throw new Error(data.error||'Checkout failed');}
+  }catch(err){alert('Something went wrong. Please try again.');if(btn){btn.innerHTML=orig;btn.disabled=false;}}
+}
+const reveals=document.querySelectorAll('.reveal');
+const obs=new IntersectionObserver((entries)=>{entries.forEach((e,i)=>{if(e.isIntersecting){setTimeout(()=>e.target.classList.add('visible'),i*50);obs.unobserve(e.target);}});},{threshold:0.06});
+reveals.forEach(el=>obs.observe(el));
+
+// CONTACT FORM
+document.getElementById('contactForm').addEventListener('submit',async function(e){
+  e.preventDefault();
+  const form=e.currentTarget;
+  const submitBtn=document.getElementById('contactSubmit');
+  const success=document.getElementById('contactSuccess');
+  const data={
+    name:form.name.value.trim(),
+    email:form.email.value.trim(),
+    subject:form.subject.value,
+    message:form.message.value.trim(),
+    website:form.website.value
+  };
+  if(!data.name||!data.email||!data.message){alert('Please fill in name, email, and message.');return;}
+  if(!data.email.includes('@')){alert('Please enter a valid email.');return;}
+  const orig=submitBtn.innerHTML;
+  submitBtn.innerHTML='Sending...';submitBtn.disabled=true;
+  try{
+    const res=await fetch(API+'/contact',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+    const json=await res.json();
+    if(res.ok&&json.ok){form.style.display='none';success.classList.add('show');}
+    else{throw new Error(json.error||'Send failed');}
+  }catch(err){alert(err.message||'Something went wrong. Email info@maketzo.co directly.');submitBtn.innerHTML=orig;submitBtn.disabled=false;}
+});
+</script>
+</body>
+</html>

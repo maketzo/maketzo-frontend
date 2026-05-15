@@ -1,0 +1,447 @@
+/* =====================================================================
+   MAKETZO · CANONICAL COMPONENTS
+   Import after tokens.css. Provides .mk-* classes used in marketing,
+   product, decks, emails — everywhere Maketzo ships.
+   ===================================================================== */
+
+@import url('tokens.css');
+
+
+/* ── Base reset (scoped to mk-* root only — don't override host app) ── */
+
+.mk-reset, .mk-reset *, .mk-reset *::before, .mk-reset *::after {
+  box-sizing: border-box;
+}
+
+
+/* ── BUTTONS ─────────────────────────────────────────────────────── */
+
+.mk-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 8px;
+  font-family: var(--mk-font-sans);
+  font-size: var(--mk-text-sm);
+  font-weight: 600;
+  letter-spacing: var(--mk-track-cap);
+  text-transform: uppercase;
+  padding: 12px 22px;
+  border-radius: var(--mk-radius-button);
+  border: 1px solid transparent;
+  cursor: pointer;
+  text-decoration: none;
+  transition:
+    background var(--mk-dur-snap) var(--mk-ease-out),
+    transform var(--mk-dur-snap) var(--mk-ease-out),
+    box-shadow var(--mk-dur-snap) var(--mk-ease-out),
+    border-color var(--mk-dur-snap) var(--mk-ease-out),
+    color var(--mk-dur-snap) var(--mk-ease-out);
+  white-space: nowrap;
+  user-select: none;
+}
+.mk-btn:focus-visible {
+  outline: 2px solid var(--mk-brand);
+  outline-offset: 2px;
+}
+
+.mk-btn--primary {
+  background: var(--mk-gold-gradient);
+  color: var(--mk-text-on-gold);
+  border-color: rgba(0,0,0,.18);
+}
+.mk-btn--primary:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--mk-glow-gold-md);
+  color: var(--mk-text-on-gold);
+}
+.mk-btn--primary:active { transform: translateY(0); background: var(--mk-gold-600); }
+
+.mk-btn--secondary {
+  background: transparent;
+  color: var(--mk-text-primary);
+  border: var(--mk-border-gold);
+}
+.mk-btn--secondary:hover {
+  color: var(--mk-brand);
+  border-color: var(--mk-brand);
+  background: rgba(212,175,55,.06);
+}
+
+.mk-btn--ghost {
+  background: transparent;
+  color: var(--mk-text-secondary);
+  border-color: var(--mk-smoke-700);
+}
+.mk-btn--ghost:hover {
+  color: var(--mk-text-primary);
+  border-color: var(--mk-smoke-600);
+  background: rgba(255,255,255,.03);
+}
+
+.mk-btn--link {
+  background: transparent;
+  padding: 12px 4px;
+  color: var(--mk-brand);
+  border: none;
+  letter-spacing: 0.04em;
+}
+.mk-btn--link:hover { color: var(--mk-brand-hover); gap: 12px; }
+
+.mk-btn--danger {
+  background: rgba(248,113,113,.12);
+  color: var(--mk-danger-500);
+  border-color: rgba(248,113,113,.35);
+}
+.mk-btn--danger:hover { background: rgba(248,113,113,.22); color: var(--mk-danger-500); }
+
+.mk-btn--sm { padding: 7px 14px; font-size: var(--mk-text-xs); }
+.mk-btn--lg { padding: 16px 32px; font-size: var(--mk-text-md); }
+
+/* App utility buttons — calmer, lowercase-friendly */
+.mk-btn--util {
+  background: var(--mk-surface-elevated);
+  border-color: rgba(255,255,255,.10);
+  color: var(--mk-text-secondary);
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0.02em;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: var(--mk-text-sm);
+}
+.mk-btn--util:hover { color: var(--mk-text-primary); background: var(--mk-surface-hover); }
+
+
+/* ── PILLS / BADGES ─────────────────────────────────────────────── */
+
+.mk-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: var(--mk-radius-pill);
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+.mk-pill--profit  { background: var(--mk-profit-700);  color: var(--mk-profit-500);  border-color: rgba(74,222,128,.2); }
+.mk-pill--caution { background: var(--mk-caution-700); color: var(--mk-caution-500); border-color: rgba(251,191,36,.2); }
+.mk-pill--warning { background: var(--mk-warning-700); color: var(--mk-warning-500); border-color: rgba(251,146,60,.2); }
+.mk-pill--danger  { background: var(--mk-danger-700);  color: var(--mk-danger-500);  border-color: rgba(248,113,113,.2); }
+.mk-pill--lockin  { background: var(--mk-lockin-700);  color: var(--mk-lockin-500);  border-color: rgba(45,212,191,.2); }
+.mk-pill--brand   { background: rgba(212,175,55,.10);  color: var(--mk-brand);       border-color: rgba(212,175,55,.25); }
+.mk-pill--neutral { background: var(--mk-surface-elevated); color: var(--mk-text-tertiary); border-color: rgba(255,255,255,.08); }
+
+.mk-tabpill {
+  font-family: var(--mk-font-sans);
+  font-size: var(--mk-text-xs);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  padding: 5px 12px;
+  border-radius: var(--mk-radius-pill);
+  border: 1px solid rgba(255,255,255,.10);
+  background: transparent;
+  color: var(--mk-text-secondary);
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: color var(--mk-dur-fast), background var(--mk-dur-fast), border-color var(--mk-dur-fast);
+}
+.mk-tabpill:hover { color: var(--mk-text-primary); }
+.mk-tabpill.is-active {
+  background: rgba(212,175,55,.10);
+  color: var(--mk-brand);
+  border-color: rgba(212,175,55,.35);
+}
+
+.mk-dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+.mk-dot--profit  { background: var(--mk-profit-500);  box-shadow: 0 0 8px var(--mk-profit-500); }
+.mk-dot--caution { background: var(--mk-caution-500); }
+.mk-dot--warning { background: var(--mk-warning-500); }
+.mk-dot--danger  { background: var(--mk-danger-500); animation: mk-pulse 1.4s infinite; }
+.mk-dot--lockin  { background: var(--mk-lockin-500); }
+.mk-dot--brand   { background: var(--mk-brand); }
+@keyframes mk-pulse { 0%,100%{opacity:1;}50%{opacity:.35;} }
+
+
+/* ── CARDS ──────────────────────────────────────────────────────── */
+
+.mk-card {
+  background: var(--mk-surface-raised);
+  border: var(--mk-border-hairline);
+  border-radius: var(--mk-radius-card);
+  padding: 18px 20px;
+  transition: border-color var(--mk-dur-snap), background var(--mk-dur-snap);
+}
+.mk-card--raised { background: var(--mk-surface-elevated); }
+.mk-card--brand {
+  background:
+    linear-gradient(135deg, rgba(212,175,55,.08), rgba(212,175,55,.02)),
+    var(--mk-surface-raised);
+  border: var(--mk-border-gold-soft);
+}
+.mk-card--danger { background: var(--mk-danger-700); border-color: rgba(248,113,113,.35); }
+
+.mk-card-label {
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-xs);
+  font-weight: 500;
+  letter-spacing: var(--mk-track-eyebrow);
+  text-transform: uppercase;
+  color: var(--mk-text-tertiary);
+  margin-bottom: 8px;
+}
+.mk-card-val {
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-text-xxl);
+  font-weight: 500;
+  color: var(--mk-text-primary);
+  line-height: 1.1;
+}
+.mk-card-sub {
+  font-size: var(--mk-text-sm);
+  color: var(--mk-text-tertiary);
+  margin-top: 4px;
+}
+.mk-card-val.is-profit  { color: var(--mk-profit-500); }
+.mk-card-val.is-danger  { color: var(--mk-danger-500); }
+.mk-card-val.is-caution { color: var(--mk-caution-500); }
+.mk-card-val.is-warning { color: var(--mk-warning-500); }
+.mk-card-val.is-lockin  { color: var(--mk-lockin-500); }
+.mk-card-val.is-brand   { color: var(--mk-brand); }
+
+
+/* ── INPUTS ────────────────────────────────────────────────────── */
+
+.mk-input {
+  width: 100%;
+  background: var(--mk-surface-elevated);
+  border: 1px solid rgba(255,255,255,.10);
+  color: var(--mk-text-primary);
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-md);
+  padding: 10px 12px;
+  border-radius: var(--mk-radius-input);
+  outline: none;
+  transition: border-color var(--mk-dur-snap), box-shadow var(--mk-dur-snap);
+}
+.mk-input::placeholder { color: var(--mk-text-tertiary); }
+.mk-input:focus { border-color: var(--mk-brand); box-shadow: 0 0 0 3px rgba(212,175,55,.18); }
+.mk-input:disabled { opacity: .5; cursor: not-allowed; }
+
+.mk-input-group {
+  display: flex; align-items: center;
+  background: var(--mk-surface-elevated);
+  border: 1px solid rgba(255,255,255,.10);
+  border-radius: var(--mk-radius-input);
+  overflow: hidden;
+  transition: border-color var(--mk-dur-snap);
+}
+.mk-input-group:focus-within { border-color: var(--mk-brand); }
+.mk-input-group .mk-input-prefix {
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-md);
+  color: var(--mk-text-secondary);
+  padding-left: 12px;
+}
+.mk-input-group .mk-input {
+  background: transparent; border: none; box-shadow: none;
+  padding-left: 4px;
+}
+
+.mk-label {
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--mk-track-eyebrow);
+  color: var(--mk-text-tertiary);
+  display: block;
+  margin-bottom: 6px;
+}
+
+
+/* ── STATE BANNER ────────────────────────────────────────────── */
+
+.mk-banner {
+  border-radius: var(--mk-radius-card);
+  padding: 16px 18px;
+  transition: background var(--mk-dur-med), border-color var(--mk-dur-med);
+}
+.mk-banner--profit  { background: var(--mk-profit-700);  border: 1px solid rgba(74,222,128,.30); }
+.mk-banner--caution { background: var(--mk-caution-700); border: 1px solid rgba(251,191,36,.30); }
+.mk-banner--warning { background: var(--mk-warning-700); border: 1px solid rgba(251,146,60,.30); }
+.mk-banner--danger  { background: var(--mk-danger-700);  border: 1px solid rgba(248,113,113,.30); }
+.mk-banner--lockin  { background: var(--mk-lockin-700);  border: 1px solid rgba(45,212,191,.30); }
+.mk-banner--brand   {
+  background: linear-gradient(135deg, rgba(212,175,55,.18), var(--mk-lockin-700));
+  border: 1px solid rgba(212,175,55,.40);
+}
+.mk-banner--lockout {
+  background: #2A0606; border: 1.5px solid rgba(248,113,113,.55);
+  box-shadow: var(--mk-glow-danger);
+  text-align: center;
+  padding: 24px 20px;
+}
+.mk-banner--closed { background: var(--mk-surface-raised); border: var(--mk-border-hairline); }
+
+.banner-top {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 12px; gap: 12px; flex-wrap: wrap;
+}
+.banner-status {
+  font-family: var(--mk-font-display);
+  font-size: var(--mk-display-sm);
+  font-weight: 400;
+  letter-spacing: var(--mk-track-display-wide);
+  text-transform: uppercase;
+  line-height: 1;
+}
+.mk-banner--profit .banner-status  { color: var(--mk-profit-500); }
+.mk-banner--lockin .banner-status  { color: var(--mk-lockin-500); }
+.mk-banner--caution .banner-status { color: var(--mk-caution-500); }
+.mk-banner--warning .banner-status { color: var(--mk-warning-500); }
+.mk-banner--danger .banner-status  { color: var(--mk-danger-500); }
+.mk-banner--brand .banner-status   { color: var(--mk-brand); }
+.mk-banner--closed .banner-status  { color: var(--mk-text-tertiary); font-family: var(--mk-font-sans); font-size: var(--mk-text-sm); }
+
+.banner-pnl {
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-text-xl);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.mk-banner--profit .banner-pnl  { color: var(--mk-profit-500); }
+.mk-banner--lockin .banner-pnl  { color: var(--mk-lockin-500); }
+.mk-banner--caution .banner-pnl { color: var(--mk-caution-500); }
+.mk-banner--warning .banner-pnl { color: var(--mk-warning-500); }
+.mk-banner--danger .banner-pnl  { color: var(--mk-danger-500); }
+.mk-banner--brand .banner-pnl   { color: var(--mk-brand); }
+
+.banner-rules {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 4px;
+}
+.banner-rule {
+  font-family: var(--mk-font-sans);
+  font-size: var(--mk-text-xs);
+  letter-spacing: 0.04em;
+  padding: 5px 9px;
+  border-radius: 4px;
+}
+.mk-banner--profit .banner-rule  { background: rgba(74,222,128,.10); color: #86efac; }
+.mk-banner--caution .banner-rule { background: rgba(251,191,36,.10); color: #fcd34d; }
+.mk-banner--warning .banner-rule { background: rgba(251,146,60,.10); color: #fdba74; }
+.mk-banner--danger .banner-rule  { background: rgba(248,113,113,.10); color: #fca5a5; }
+.mk-banner--lockin .banner-rule  { background: rgba(45,212,191,.10); color: #5eead4; }
+.mk-banner--brand .banner-rule   { background: rgba(212,175,55,.12); color: var(--mk-gold-300); }
+
+.lockout-status {
+  font-family: var(--mk-font-display);
+  font-size: var(--mk-display-md);
+  letter-spacing: 0.06em;
+  color: var(--mk-danger-500);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+.lockout-sub {
+  font-family: var(--mk-font-sans);
+  font-size: var(--mk-text-sm);
+  color: #fca5a5;
+  letter-spacing: 0.02em;
+}
+
+
+/* ── ICONS · stroked, 1.5px ─────────────────────────────────── */
+.mk-icon { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+.mk-icon--sm { width: 14px; height: 14px; }
+.mk-icon--lg { width: 24px; height: 24px; }
+
+
+/* ── BRAND LOCKUP ─────────────────────────────────────────────────────
+   The canonical mark + wordmark image lockup. Use anywhere the brand
+   identifier appears — nav, sidenav, footer, email header, report cover.
+   NEVER recreate the wordmark with text (Bebas in CSS). Always use the
+   image asset so the proprietary kerning + metallic gradient survives.
+
+   Three sizing knobs are exposed as CSS custom properties so each
+   surface can tune scale without inventing new classes:
+     --mk-brand-lockup-mark-h       mark icon height           (40px default)
+     --mk-brand-lockup-wordmark-h   wordmark max-height        (18px default)
+     --mk-brand-lockup-gap          gap between mark + wordmark (6px default)
+
+   The wordmark uses max-height + max-width:100% so it scales DOWN when
+   the container is too narrow to fit at the requested height — never
+   clips, never breaks layout.
+*/
+.mk-brand-lockup {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--mk-brand-lockup-gap, 6px);
+  text-decoration: none;
+  flex-shrink: 0;
+  min-width: 0;
+}
+.mk-brand-lockup__mark {
+  height: var(--mk-brand-lockup-mark-h, 40px);
+  width: auto;
+  flex-shrink: 0;
+  display: block;
+}
+.mk-brand-lockup__wordmark {
+  height: auto;
+  width: auto;
+  max-height: var(--mk-brand-lockup-wordmark-h, 18px);
+  max-width: 100%;
+  min-width: 0;
+  flex-shrink: 1;
+  display: block;
+}
+.mk-brand-lockup[data-wordmark="off"] .mk-brand-lockup__wordmark { display: none; }
+
+/* Stacked variant — mark above wordmark. For email headers, report covers,
+   final-CTA hero moments. */
+.mk-brand-lockup--stacked {
+  flex-direction: column;
+  align-items: center;
+  gap: var(--mk-brand-lockup-gap-stacked, 14px);
+}
+
+
+/* ── SECTION DIVIDERS · GOLD RULE ─────────────────────────────────────
+   The canonical between-section divider. A 1px gold gradient that fades
+   in from transparent at the edges and peaks at center. Sits between
+   major surfaces (sections, hero → first content, content → footer).
+
+   Use it instead of a flat hairline border when you want the rhythm of
+   the page to feel cinematic. Keep usage restrained — the rule is part
+   of the gold-restraint budget (one rule per section boundary, max).
+
+   Variants:
+     .mk-rule-gold          1px, soft (default)
+     .mk-rule-gold--bold    2px, brighter center
+     .mk-rule-gold--short   width auto, 240px max, centered (for callouts)
+*/
+.mk-rule-gold {
+  display: block;
+  height: 1px;
+  width: 100%;
+  border: 0;
+  margin: 0;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(212, 175, 55, 0) 8%,
+    rgba(212, 175, 55, 0.55) 50%,
+    rgba(212, 175, 55, 0) 92%,
+    transparent 100%);
+}
+.mk-rule-gold--bold {
+  height: 2px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(212, 175, 55, 0) 5%,
+    var(--mk-gold-500) 50%,
+    rgba(212, 175, 55, 0) 95%,
+    transparent 100%);
+}
+.mk-rule-gold--short {
+  width: 240px;
+  margin: 0 auto;
+}

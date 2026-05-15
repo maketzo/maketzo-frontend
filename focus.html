@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<!-- focus — Focus Room: trader state management · 5 mood-based Zone Tracks · meditation zone · anchor images (concept) · COACH SAYS interventions · Pro+ -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Focus Room — MAKETZO · Train the Most Important Edge in Trading: Your State of Mind</title>
+<meta name="description" content="Focus Room is the intervention layer of MAKETZO's behavioral OS. Five mood-based Zone Tracks, a meditation reset, anchor images, and COACH SAYS that steps in when tilt is detected. Pro and Elite.">
+<meta name="theme-color" content="#06070A">
+<meta property="og:title" content="Focus Room — MAKETZO">
+<meta property="og:description" content="Train the most important edge in trading: your state of mind. Zone Tracks, resets, COACH SAYS interventions.">
+<meta property="og:url" content="https://maketzo.co/focus">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://maketzo.co/focus">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--mk-surface-page); color: var(--mk-text-primary); font-family: var(--mk-font-sans); font-size: var(--mk-text-md); line-height: var(--mk-lead-body); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+a { color: inherit; text-decoration: none; }
+ul, ol { list-style: none; }
+img { display: block; max-width: 100%; }
+em, i { font-style: italic; }
+strong { color: var(--mk-text-primary); font-weight: 600; }
+
+.bg-trading { position: fixed; inset: 0; pointer-events: none; z-index: 0; opacity: 0.12; }
+.bg-trading svg { width: 100%; height: 100%; display: block; }
+
+.mobile-overlay { position: fixed; inset: 0; z-index: 90; background: rgba(0,0,0,.6); backdrop-filter: blur(6px); opacity: 0; pointer-events: none; transition: opacity var(--mk-dur-med); }
+.mobile-overlay.open { opacity: 1; pointer-events: auto; }
+.mobile-drawer { position: fixed; top: 0; right: 0; bottom: 0; z-index: 100; width: min(320px, 88%); background: var(--mk-surface-base); border-left: var(--mk-border-soft); padding: 80px 28px 28px; transform: translateX(100%); transition: transform var(--mk-dur-med) var(--mk-ease-out); display: flex; flex-direction: column; gap: 20px; }
+.mobile-drawer.open { transform: translateX(0); }
+.mobile-drawer-links li { padding: 12px 0; border-bottom: var(--mk-border-hairline); }
+.mobile-drawer-links a { font-family: var(--mk-font-display); font-size: var(--mk-display-md); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); }
+.mobile-drawer-cta { display: inline-flex; align-items: center; justify-content: center; background: var(--mk-gold-gradient); color: var(--mk-text-on-gold); font-family: var(--mk-font-sans); font-weight: 600; font-size: var(--mk-text-sm); letter-spacing: var(--mk-track-cap); text-transform: uppercase; padding: 14px 22px; border: 1px solid rgba(0,0,0,.18); border-radius: var(--mk-radius-button); cursor: pointer; margin-top: auto; }
+
+#mainNav { position: fixed; top: 0; left: 0; right: 0; z-index: 50; background: rgba(6,7,10,.85); backdrop-filter: blur(20px) saturate(140%); border-bottom: 1px solid rgba(212,175,55,.12); transition: border-color var(--mk-dur-snap); display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 14px 32px 14px 64px; }
+.nav-logo.mk-brand-lockup { --mk-brand-lockup-mark-h: 44px; --mk-brand-lockup-wordmark-h: 22px; --mk-brand-lockup-gap: 10px; }
+.nav-links { display: flex; align-items: center; gap: 28px; margin: 0; padding: 0; }
+.nav-links > li > a:not(.nav-login-btn) { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); font-weight: 500; letter-spacing: 0.02em; transition: color var(--mk-dur-fast); }
+.nav-links > li > a:not(.nav-login-btn):hover { color: var(--mk-text-primary); }
+.nav-links > li > a[aria-current="page"] { color: var(--mk-brand); }
+.nav-login-btn { display: inline-flex; align-items: center; font-size: var(--mk-text-sm); font-weight: 600; letter-spacing: var(--mk-track-cap); text-transform: uppercase; padding: 7px 14px; color: var(--mk-text-secondary); border: 1px solid var(--mk-smoke-700); border-radius: var(--mk-radius-button); transition: color var(--mk-dur-fast), border-color var(--mk-dur-fast), background var(--mk-dur-fast); }
+.nav-login-btn:hover { color: var(--mk-text-primary); border-color: var(--mk-smoke-600); background: rgba(255,255,255,.03); }
+.nav-cta { display: inline-flex; align-items: center; justify-content: center; font-family: var(--mk-font-sans); font-size: var(--mk-text-sm); font-weight: 600; letter-spacing: var(--mk-track-cap); text-transform: uppercase; padding: 7px 14px; border: 1px solid rgba(0,0,0,.18); border-radius: var(--mk-radius-button); cursor: pointer; background: var(--mk-gold-gradient); color: var(--mk-text-on-gold); transition: transform var(--mk-dur-snap), box-shadow var(--mk-dur-snap); white-space: nowrap; }
+.nav-cta:hover { transform: translateY(-1px); box-shadow: var(--mk-glow-gold-sm); }
+.hamburger { display: none; background: transparent; border: 0; padding: 8px; cursor: pointer; flex-direction: column; gap: 5px; }
+.hamburger span { display: block; width: 24px; height: 2px; background: var(--mk-text-primary); transition: transform var(--mk-dur-snap), opacity var(--mk-dur-snap); }
+.hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+@media (max-width: 900px) { #mainNav { padding: 12px 20px; gap: 16px; } .nav-links { display: none; } .hamburger { display: flex; } }
+
+.btn-primary, .btn-secondary, .btn-ghost { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-family: var(--mk-font-sans); font-size: var(--mk-text-sm); font-weight: 600; letter-spacing: var(--mk-track-cap); text-transform: uppercase; padding: 12px 22px; border-radius: var(--mk-radius-button); border: 1px solid transparent; cursor: pointer; text-decoration: none; white-space: nowrap; transition: transform var(--mk-dur-snap), box-shadow var(--mk-dur-snap), background var(--mk-dur-snap), border-color var(--mk-dur-snap), color var(--mk-dur-snap); }
+.btn-primary { background: var(--mk-gold-gradient); color: var(--mk-text-on-gold); border-color: rgba(0,0,0,.18); }
+.btn-primary:hover { transform: translateY(-1px); box-shadow: var(--mk-glow-gold-md); color: var(--mk-text-on-gold); }
+.btn-primary--lg { padding: 18px 44px; font-size: var(--mk-text-md); }
+.btn-secondary { background: transparent; color: var(--mk-text-primary); border: var(--mk-border-gold); }
+.btn-secondary:hover { color: var(--mk-brand); border-color: var(--mk-brand); background: rgba(212,175,55,.06); }
+.btn-ghost { background: transparent; color: var(--mk-text-secondary); border-color: var(--mk-smoke-700); padding: 10px 18px; font-size: var(--mk-text-xs); }
+.btn-ghost:hover { color: var(--mk-text-primary); border-color: var(--mk-smoke-600); background: rgba(255,255,255,.03); }
+
+.section { position: relative; z-index: 1; padding: 88px 0; background: var(--mk-surface-page); }
+.section.section-dark { background: var(--mk-surface-base); }
+.section-inner { max-width: var(--mk-container-marketing); margin: 0 auto; padding: 0 32px; }
+.section-eyebrow { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); text-align: center; margin-bottom: 14px; }
+.section-title { font-family: var(--mk-font-display); font-size: clamp(2rem, 4.5vw, 3.4rem); letter-spacing: var(--mk-track-display); line-height: 1.04; text-transform: uppercase; text-align: center; margin-bottom: 18px; font-weight: 400; }
+.section-title em { font-style: normal; background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.section-sub { font-size: var(--mk-text-lg); color: var(--mk-text-secondary); text-align: center; max-width: 700px; margin: 0 auto 48px; line-height: var(--mk-lead-body); }
+.section-sub strong { color: var(--mk-text-primary); }
+hr.mk-rule-gold, hr.mk-rule-gold--bold { margin: 0 auto; max-width: 1180px; }
+
+.reveal { opacity: 0; transform: translateY(16px); transition: opacity var(--mk-dur-slow) var(--mk-ease-out), transform var(--mk-dur-slow) var(--mk-ease-out); }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+.mk-cta-repeat { display: none; }
+@media (max-width: 600px) { .mk-cta-repeat { display: flex; justify-content: center; margin: 36px auto 0; padding: 0 16px; } .mk-cta-repeat .btn-primary { width: 100%; max-width: 320px; padding: 16px 24px; font-size: var(--mk-text-md); } }
+
+/* ── PAGE HERO — split layout: tilted image panel + copy at >=1000px. ──
+   Below 1000px the image hides and copy renders centered. See docs/detail-page-hero-swap.md. */
+.page-hero { position: relative; z-index: 1; padding: 152px 0 96px; background: var(--mk-obsidian-950); text-align: center; border-bottom: var(--mk-border-hairline); overflow: hidden; min-height: 540px; display: flex; align-items: center; }
+.page-hero-bg { display: none; }
+.page-hero-inner { position: relative; z-index: 2; max-width: 820px; margin: 0 auto; padding: 0 32px; width: 100%; }
+.page-hero-eyebrow { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); margin-bottom: 18px; display: inline-flex; align-items: center; gap: 12px; }
+.page-hero-tier-chip { display: inline-flex; align-items: center; padding: 3px 10px; background: rgba(212,175,55,.12); border: 1px solid rgba(212,175,55,.45); border-radius: var(--mk-radius-pill); color: var(--mk-brand); font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; }
+.page-hero-title { font-family: var(--mk-font-display); font-size: clamp(2.4rem, 5.4vw, 4rem); letter-spacing: var(--mk-track-display); line-height: 1.04; text-transform: uppercase; font-weight: 400; margin-bottom: 20px; }
+.page-hero-title em { font-style: normal; background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.page-hero-sub { font-size: var(--mk-text-lg); color: var(--mk-text-secondary); line-height: var(--mk-lead-body); max-width: 640px; margin: 0 auto 14px; }
+.page-hero-sub:last-child { margin-bottom: 0; }
+.page-hero-sub--action { color: var(--mk-text-primary); }
+
+/* Hero entrance — class-flip + transition, no @keyframes. */
+.page-hero .page-hero-eyebrow,
+.page-hero .page-hero-title,
+.page-hero .page-hero-sub { opacity: 0; will-change: opacity, transform; transition: opacity 900ms cubic-bezier(.16,1,.3,1), transform 900ms cubic-bezier(.16,1,.3,1); }
+.page-hero .page-hero-eyebrow { transform: translateY(20px); transition-duration: 700ms; transition-delay: 100ms; }
+.page-hero .page-hero-title { transform: translateY(48px); transition-duration: 1200ms; transition-delay: 300ms; }
+.page-hero .page-hero-sub { transform: translateY(28px); transition-duration: 900ms; transition-delay: 700ms; }
+.page-hero .page-hero-sub + .page-hero-sub { transition-delay: 850ms; }
+body.hero-loaded .page-hero .page-hero-eyebrow,
+body.hero-loaded .page-hero .page-hero-title,
+body.hero-loaded .page-hero .page-hero-sub { opacity: 1; transform: translateY(0); }
+
+@media (min-width: 1000px) {
+  .page-hero { text-align: left; min-height: 680px; padding: 168px 0 112px; }
+  .page-hero-inner { max-width: 1240px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 96px; align-items: center; }
+  .page-hero-sub { margin-left: 0; margin-right: 0; max-width: none; }
+  .page-hero-bg {
+    display: block; position: relative; width: 100%; aspect-ratio: 4 / 5;
+    border-radius: 14px; overflow: hidden; will-change: opacity, transform;
+    transform-origin: right center;
+    opacity: 0;
+    transform: perspective(800px) rotateY(50deg);
+    transition: opacity 1100ms cubic-bezier(.16,1,.3,1) 200ms, transform 1100ms cubic-bezier(.16,1,.3,1) 200ms;
+    box-shadow:
+      -56px 36px 80px -22px rgba(0,0,0,.85),
+      -22px 18px 40px -16px rgba(0,0,0,.60),
+      inset 0 0 0 1px rgba(212,175,55,.26),
+      0 0 44px rgba(212,175,55,.12);
+  }
+  .page-hero-bg img { width: 100%; height: 100%; object-fit: cover; object-position: 50% center; }
+  .page-hero-bg::after {
+    content: ''; position: absolute; inset: 0; pointer-events: none; border-radius: inherit;
+    background: linear-gradient(90deg, rgba(255,255,255,.14) 0%, transparent 28%, transparent 68%, rgba(0,0,0,.34) 100%);
+  }
+  body.hero-loaded .page-hero-bg { opacity: 1; transform: perspective(800px) rotateY(35deg); }
+
+  .page-hero--right .page-hero-inner { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); }
+  .page-hero--right .page-hero-text { order: 1; }
+  .page-hero--right .page-hero-bg {
+    order: 2;
+    transform-origin: left center;
+    transform: perspective(800px) rotateY(-50deg);
+    box-shadow:
+      56px 36px 80px -22px rgba(0,0,0,.85),
+      22px 18px 40px -16px rgba(0,0,0,.60),
+      inset 0 0 0 1px rgba(212,175,55,.26),
+      0 0 44px rgba(212,175,55,.12);
+  }
+  .page-hero--right .page-hero-bg::after {
+    background: linear-gradient(270deg, rgba(255,255,255,.14) 0%, transparent 28%, transparent 68%, rgba(0,0,0,.34) 100%);
+  }
+  body.hero-loaded .page-hero--right .page-hero-bg { transform: perspective(800px) rotateY(-35deg); }
+
+  /* HUD stat chips — overlaid on the hero figure in desktop layout only.
+     CSS-only, no JS. Three pill chips arranged along the right edge of the photo
+     to read like floating session-readout panels — pure aspirational decoration. */
+  .page-hero-bg .page-hero-stats { position: absolute; right: 18px; top: 22px; z-index: 3; display: flex; flex-direction: column; gap: 10px; align-items: flex-end; pointer-events: none; }
+  .page-hero-bg .page-hero-stat-chip {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 7px 12px;
+    background: rgba(6,7,10,.78);
+    border: 1px solid rgba(212,175,55,.32);
+    border-radius: var(--mk-radius-pill);
+    font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs);
+    letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase;
+    color: var(--mk-text-secondary);
+    backdrop-filter: blur(8px);
+  }
+  .page-hero-bg .page-hero-stat-chip strong { color: var(--mk-text-primary); font-family: var(--mk-font-mono); font-weight: 500; }
+  .page-hero-bg .page-hero-stat-chip::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--mk-lockin-500); box-shadow: 0 0 8px var(--mk-lockin-500); }
+  .page-hero-bg .page-hero-stat-chip.is-gold::before { background: var(--mk-brand); box-shadow: 0 0 8px var(--mk-brand); }
+  .page-hero-bg .page-hero-stat-chip.is-warning::before { background: var(--mk-caution-500); box-shadow: 0 0 8px var(--mk-caution-500); }
+}
+@media (max-width: 999px) { .page-hero-stats { display: none; } }
+@media (max-width: 600px) { .page-hero { min-height: 480px; padding: 132px 0 72px; } }
+
+/* ── WHY STATE MATTERS — 4-card behavioral threats grid ────────────── */
+.why-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+  max-width: 1180px;
+  margin: 0 auto 48px;
+}
+.why-card {
+  position: relative;
+  padding: 28px 26px 26px;
+  background: var(--mk-surface-raised);
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: var(--mk-radius-card);
+  border-top: 3px solid var(--mk-smoke-700);
+  transition: transform var(--mk-dur-med) var(--mk-ease-out);
+}
+.why-card:hover { transform: translateY(-3px); }
+.why-card[data-threat="overtrading"] { border-top-color: var(--mk-warning-500); }
+.why-card[data-threat="revenge"] { border-top-color: var(--mk-danger-500); }
+.why-card[data-threat="fatigue"] { border-top-color: var(--mk-caution-500); }
+.why-card[data-threat="fomo"] { border-top-color: var(--mk-brand); }
+.why-tag { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-text-tertiary); margin-bottom: 10px; }
+.why-name { font-family: var(--mk-font-display); font-size: var(--mk-display-md); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); margin-bottom: 10px; line-height: 1.1; }
+.why-text { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); line-height: 1.55; }
+
+/* Pull-quote — designed editorial moment, not a card. Oversized serif quote
+   glyph, no fill, hairline gold rule below for closure. Visually distinct
+   from the threat-card grid above. */
+.why-pullquote {
+  max-width: 820px;
+  margin: 28px auto 0;
+  padding: 8px 32px 0;
+  text-align: center;
+  background: none;
+  border: none;
+  border-radius: 0;
+}
+.why-pullquote::before {
+  content: '\201C';
+  display: block;
+  font-family: 'Georgia', 'Times New Roman', serif;
+  font-size: clamp(5.5rem, 11vw, 9rem);
+  line-height: 0.8;
+  margin-bottom: 4px;
+  background: var(--mk-gold-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-weight: 400;
+}
+.why-pullquote p {
+  font-family: var(--mk-font-display);
+  font-size: clamp(1.5rem, 2.8vw, 2.1rem);
+  letter-spacing: var(--mk-track-display);
+  line-height: 1.18;
+  text-transform: uppercase;
+  color: var(--mk-text-primary);
+  font-weight: 400;
+}
+.why-pullquote::after {
+  content: '';
+  display: block;
+  width: 72px;
+  height: 1px;
+  margin: 26px auto 0;
+  background: var(--mk-gold-gradient);
+  opacity: .8;
+}
+.why-pullquote em { font-style: normal; background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+/* ── ZONE TRACKS — 5 mood-based playlist cards ───────────────────────── */
+.zone-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  max-width: 1180px;
+  margin: 0 auto;
+}
+.zone-card {
+  display: flex; flex-direction: column;
+  padding: 28px 28px 26px;
+  background: linear-gradient(135deg, var(--mood-glow, rgba(212,175,55,.06)), transparent 60%), var(--mk-surface-raised);
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: var(--mk-radius-card);
+  transition: transform var(--mk-dur-med) var(--mk-ease-out);
+}
+.zone-card:hover { transform: translateY(-3px); }
+.zone-card[data-mood="get-in-the-zone"] { --mood-glow: rgba(212,175,55,.08); border-color: rgba(212,175,55,.24); }
+.zone-card[data-mood="stay-locked"] { --mood-glow: rgba(45,212,191,.08); border-color: rgba(45,212,191,.24); }
+.zone-card[data-mood="sit-on-hands"] { --mood-glow: rgba(155,135,245,.06); border-color: rgba(155,135,245,.22); }
+.zone-card[data-mood="fire-me-up"] { --mood-glow: rgba(251,146,60,.08); border-color: rgba(251,146,60,.24); }
+.zone-card[data-mood="rule-programming"] { --mood-glow: rgba(74,222,128,.06); border-color: rgba(74,222,128,.22); }
+
+.zone-tag {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-xs);
+  letter-spacing: var(--mk-track-eyebrow);
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+.zone-card[data-mood="get-in-the-zone"] .zone-tag { color: var(--mk-brand); }
+.zone-card[data-mood="stay-locked"] .zone-tag { color: var(--mk-lockin-500); }
+.zone-card[data-mood="sit-on-hands"] .zone-tag { color: #9B87F5; }
+.zone-card[data-mood="fire-me-up"] .zone-tag { color: var(--mk-warning-500); }
+.zone-card[data-mood="rule-programming"] .zone-tag { color: var(--mk-profit-500); }
+.zone-tag::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: currentColor; box-shadow: 0 0 8px currentColor; }
+
+.zone-name { font-family: var(--mk-font-display); font-size: clamp(1.4rem, 2.4vw, 1.7rem); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); margin-bottom: 10px; line-height: 1.1; }
+.zone-use { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); line-height: 1.55; margin: 0; }
+.zone-use a { color: var(--mk-brand); border-bottom: 1px solid rgba(212,175,55,.4); }
+
+/* Sample tracks · two Spotify embeds shown as previews */
+.zone-samples {
+  max-width: 1180px;
+  margin: 56px auto 0;
+  padding-top: 48px;
+  border-top: 1px solid rgba(255,255,255,.06);
+  text-align: center;
+}
+.zone-samples-title {
+  font-family: var(--mk-font-display);
+  font-size: clamp(1.5rem, 2.6vw, 1.9rem);
+  letter-spacing: var(--mk-track-display);
+  text-transform: uppercase;
+  color: var(--mk-text-primary);
+  margin-bottom: 10px;
+}
+.zone-samples-sub {
+  font-size: var(--mk-text-base);
+  color: var(--mk-text-secondary);
+  line-height: 1.55;
+  max-width: 640px;
+  margin: 0 auto 28px;
+}
+.zone-samples-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  max-width: 880px;
+  margin: 0 auto;
+}
+.zone-sample {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  min-height: 232px;
+  padding: 32px;
+  background: var(--mk-surface-raised);
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: var(--mk-radius-card);
+  text-align: center;
+}
+.zone-sample iframe { width: 100%; min-height: 232px; border: 0; border-radius: 12px; }
+
+.zone-embed {
+  display: block;
+  width: 100%;
+  min-height: 152px;
+  border: none;
+  background: var(--mk-obsidian-950);
+  border-radius: 12px;
+}
+.zone-pending-tag { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); margin-bottom: 10px; }
+.zone-pending-text { font-size: var(--mk-text-sm); color: var(--mk-text-tertiary); line-height: 1.5; margin: 0; }
+
+@media (max-width: 1000px) { .zone-grid { grid-template-columns: repeat(2, 1fr); max-width: 720px; } }
+@media (max-width: 640px) {
+  .zone-grid { grid-template-columns: 1fr; max-width: 480px; }
+  .zone-samples-grid { grid-template-columns: 1fr; max-width: 480px; }
+}
+
+/* ── MEDITATION ZONE — breathing orb + reset copy ─────────────────────── */
+.med-wrap {
+  max-width: 1080px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 0.85fr 1fr;
+  gap: 48px;
+  align-items: center;
+  padding: 40px;
+  background: linear-gradient(135deg, rgba(45,212,191,.05), transparent 60%), var(--mk-surface-raised);
+  border: 1px solid rgba(45,212,191,.22);
+  border-radius: var(--mk-radius-card-lg);
+}
+.med-visual {
+  position: relative;
+  aspect-ratio: 1/1;
+  display: flex; align-items: center; justify-content: center;
+}
+.med-orb {
+  width: min(220px, 80%);
+  aspect-ratio: 1/1;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 50%, rgba(45,212,191,.45), rgba(45,212,191,.08) 60%, transparent 80%);
+  box-shadow: 0 0 48px rgba(45,212,191,.25), inset 0 0 0 1px rgba(45,212,191,.32);
+  animation: mk-breathe 12s ease-in-out infinite;
+}
+@keyframes mk-breathe {
+  0%, 100% { transform: scale(.78); opacity: .7; }
+  33%      { transform: scale(1);   opacity: 1; }
+  66%      { transform: scale(1);   opacity: 1; }
+}
+.med-orb-label {
+  position: absolute;
+  bottom: -14px; left: 0; right: 0;
+  text-align: center;
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-xs);
+  letter-spacing: var(--mk-track-eyebrow);
+  text-transform: uppercase;
+  color: var(--mk-lockin-500);
+}
+.med-copy h3 { font-family: var(--mk-font-display); font-size: clamp(1.6rem, 3vw, 2.2rem); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); font-weight: 400; margin-bottom: 14px; line-height: 1.1; }
+.med-copy h3 em { font-style: normal; background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.med-copy p { font-size: var(--mk-text-md); color: var(--mk-text-secondary); line-height: var(--mk-lead-body); margin-bottom: 18px; }
+.med-controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 4px; }
+.med-pill {
+  display: inline-flex; align-items: center;
+  padding: 10px 18px;
+  background: rgba(45,212,191,.08);
+  border: 1px solid rgba(45,212,191,.32);
+  border-radius: var(--mk-radius-pill);
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-sm);
+  letter-spacing: var(--mk-track-cap);
+  text-transform: uppercase;
+  color: var(--mk-lockin-500);
+}
+.med-controls-note { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: 0.04em; color: var(--mk-text-tertiary); margin-left: 4px; }
+@media (max-width: 880px) { .med-wrap { grid-template-columns: 1fr; gap: 40px; padding: 32px; } .med-controls { justify-content: flex-start; } }
+
+/* ── ANCHOR IMAGES — 3-up concept grid ─────────────────────────────────── */
+.anchor-wrap { max-width: 1080px; margin: 0 auto; }
+.anchor-concept-tag {
+  display: inline-flex; align-items: center; gap: 8px;
+  margin: 0 auto 22px; padding: 5px 12px;
+  background: rgba(212,175,55,.08);
+  border: 1px dashed rgba(212,175,55,.45);
+  border-radius: var(--mk-radius-pill);
+  font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs);
+  letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase;
+  color: var(--mk-brand);
+}
+.anchor-concept-row { display: flex; justify-content: center; margin-bottom: 28px; }
+.anchor-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  max-width: 880px;
+  margin: 0 auto 28px;
+}
+.anchor-tile {
+  position: relative;
+  aspect-ratio: 4/5;
+  background: var(--mk-surface-raised);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: var(--mk-radius-card);
+  overflow: hidden;
+}
+.anchor-tile picture { display: block; width: 100%; height: 100%; }
+.anchor-tile img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+}
+.anchor-tile-heart {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 30px;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(8,10,14,.55);
+  border: 1px solid rgba(212,175,55,.55);
+  border-radius: 999px;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  pointer-events: none;
+}
+.anchor-tile-heart svg { width: 14px; height: 14px; display: block; fill: var(--mk-brand); }
+.anchor-examples-caption {
+  text-align: center;
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-xs);
+  letter-spacing: var(--mk-track-eyebrow);
+  text-transform: uppercase;
+  color: var(--mk-text-tertiary);
+  margin: 0 auto 18px;
+}
+.anchor-line {
+  text-align: center;
+  font-family: var(--mk-font-display);
+  font-size: clamp(1.3rem, 2.4vw, 1.8rem);
+  letter-spacing: var(--mk-track-display);
+  text-transform: uppercase;
+  color: var(--mk-text-primary);
+  font-weight: 400;
+  line-height: 1.1;
+  margin-bottom: 10px;
+}
+.anchor-line em { font-style: normal; background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.anchor-subline {
+  text-align: center;
+  font-size: var(--mk-text-base);
+  color: var(--mk-text-secondary);
+  line-height: 1.4;
+}
+@media (max-width: 700px) { .anchor-grid { grid-template-columns: repeat(2, 1fr); max-width: 480px; } .anchor-tile:nth-child(3) { display: none; } }
+
+/* ── COACH SAYS · INTERVENTION CARDS ─────────────────────────────────── */
+.coach-int-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 22px;
+  max-width: 1180px;
+  margin: 0 auto;
+}
+.coach-int-card {
+  position: relative;
+  padding: 32px 28px 26px;
+  background: linear-gradient(135deg, rgba(212,175,55,.06), transparent 60%), var(--mk-surface-raised);
+  border: 1px solid rgba(212,175,55,.22);
+  border-left: 3px solid var(--mk-brand);
+  border-radius: var(--mk-radius-card);
+  box-shadow: var(--mk-shadow-2);
+}
+.coach-int-card::before {
+  content: 'COACH SAYS';
+  position: absolute; top: 14px; left: 28px;
+  font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs);
+  letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase;
+  color: var(--mk-brand);
+}
+.coach-int-trigger {
+  display: block;
+  margin-top: 22px; margin-bottom: 14px;
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-xs);
+  letter-spacing: var(--mk-track-eyebrow);
+  text-transform: uppercase;
+  color: var(--mk-text-tertiary);
+}
+.coach-int-trigger strong { color: var(--mk-warning-500); font-weight: 500; }
+.coach-int-line {
+  font-family: var(--mk-font-display);
+  font-size: clamp(1.2rem, 2vw, 1.5rem);
+  line-height: 1.18;
+  letter-spacing: var(--mk-track-display);
+  text-transform: uppercase;
+  color: var(--mk-text-primary);
+}
+.coach-int-line em { font-style: normal; background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.coach-int-action {
+  display: block;
+  margin-top: 16px; padding-top: 14px;
+  border-top: var(--mk-border-hairline);
+  font-size: var(--mk-text-sm);
+  color: var(--mk-text-secondary);
+  line-height: 1.5;
+}
+.coach-int-action strong { color: var(--mk-text-primary); }
+
+/* ── PRO TIER GATE ───────────────────────────────────────────────────── */
+.tier-gate {
+  max-width: 880px; margin: 0 auto;
+  padding: 40px 44px;
+  background:
+    linear-gradient(180deg, rgba(212,175,55,.08), transparent 50%),
+    var(--mk-obsidian-950);
+  border: 1px solid rgba(212,175,55,.32);
+  border-radius: var(--mk-radius-card-lg);
+  text-align: center;
+  box-shadow: var(--mk-shadow-3);
+}
+.tier-gate-lock {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 64px; height: 64px;
+  margin-bottom: 22px;
+  border-radius: 50%;
+  background: var(--mk-gold-gradient);
+  color: var(--mk-text-on-gold);
+}
+.tier-gate-lock svg { width: 28px; height: 28px; display: block; }
+.tier-gate-title { font-family: var(--mk-font-display); font-size: clamp(1.6rem, 3vw, 2.2rem); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); font-weight: 400; line-height: 1.1; margin-bottom: 14px; }
+.tier-gate-title em { font-style: normal; background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.tier-gate-text { font-size: var(--mk-text-md); color: var(--mk-text-secondary); line-height: var(--mk-lead-body); max-width: 560px; margin: 0 auto 28px; }
+.tier-gate-text strong { color: var(--mk-text-primary); }
+.tier-gate-cta-row { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; align-items: center; }
+
+/* ── PHILOSOPHY CLOSE ─────────────────────────────────────────────────── */
+.philosophy-section { padding: 96px 0; background: var(--mk-obsidian-950); text-align: center; border-top: var(--mk-border-hairline); border-bottom: var(--mk-border-hairline); }
+.philosophy-eyebrow { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); margin-bottom: 22px; }
+.philosophy-title { font-family: var(--mk-font-display); font-size: clamp(2.4rem, 5.4vw, 4.2rem); letter-spacing: var(--mk-track-display); line-height: 1.04; text-transform: uppercase; font-weight: 400; max-width: 880px; margin: 0 auto; }
+.philosophy-title em { font-style: normal; background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+/* ── FINAL CTA ───────────────────────────────────────────────────────── */
+.final-cta-section { padding: 96px 0; background: var(--mk-surface-page); text-align: center; }
+.final-cta-eyebrow { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); margin-bottom: 18px; }
+.final-cta-title { font-family: var(--mk-font-display); font-size: clamp(2.2rem, 4.6vw, 3.2rem); letter-spacing: var(--mk-track-display); line-height: 1.04; text-transform: uppercase; font-weight: 400; margin-bottom: 24px; max-width: 700px; margin-left: auto; margin-right: auto; }
+.final-cta-title em { font-style: normal; background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.final-cta-btn-wrap { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.final-cta-note { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: 0.04em; color: var(--mk-text-tertiary); }
+
+.sticky-bar { position: fixed; bottom: 0; left: 0; right: 0; z-index: 55; display: flex; align-items: center; justify-content: center; gap: 14px; padding: 10px 64px 10px 24px; background: rgba(13,15,20,.62); backdrop-filter: blur(20px) saturate(140%); border-top: 1px solid rgba(212,175,55,.35); transform: translateY(100%); transition: transform var(--mk-dur-med) var(--mk-ease-out); }
+.sticky-bar.visible { transform: translateY(0); }
+body:has(.sticky-bar.visible) { padding-bottom: 80px; }
+.sticky-bar-text { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); }
+.sticky-bar-text strong { color: var(--mk-text-primary); }
+.sticky-bar-form { display: flex; gap: 8px; align-items: center; }
+.sticky-bar-input { background: rgba(20,24,33,.85); border: 1px solid rgba(255,255,255,.12); color: var(--mk-text-primary); font-family: var(--mk-font-mono); font-size: var(--mk-mono-sm); padding: 8px 12px; border-radius: var(--mk-radius-input); outline: none; width: 220px; }
+.sticky-bar-input::placeholder { color: var(--mk-text-tertiary); }
+.sticky-bar-input:focus { border-color: var(--mk-brand); box-shadow: 0 0 0 3px rgba(212,175,55,.18); }
+.sticky-bar-form .btn-primary { padding: 8px 14px; font-size: var(--mk-text-xs); }
+.sticky-bar-close { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); background: transparent; border: 0; cursor: pointer; color: var(--mk-text-tertiary); font-size: 1.4rem; line-height: 1; padding: 4px; }
+.sticky-bar-close:hover { color: var(--mk-text-primary); }
+@media (max-width: 700px) { .sticky-bar { flex-direction: column; padding: 12px 36px 12px 12px; gap: 8px; } .sticky-bar-input { width: 100%; max-width: 280px; } }
+
+footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairline); padding: 56px 0 28px; }
+.footer-inner { max-width: var(--mk-container-marketing); margin: 0 auto; padding: 0 32px; }
+.footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; margin-bottom: 32px; padding-bottom: 32px; border-bottom: var(--mk-border-hairline); }
+.footer-logo-wrap { display: flex; flex-direction: column; align-items: flex-start; gap: 18px; margin-bottom: 12px; }
+.footer-logo-wrap .mk-brand-lockup { --mk-brand-lockup-mark-h: 40px; --mk-brand-lockup-wordmark-h: 20px; }
+.footer-tagline { font-size: var(--mk-text-sm); color: var(--mk-text-tertiary); line-height: var(--mk-lead-body); max-width: 360px; }
+.footer-tagline strong { display: block; color: var(--mk-text-primary); margin-bottom: 4px; }
+.footer-col-title { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); margin-bottom: 16px; }
+.footer-links { display: flex; flex-direction: column; gap: 10px; padding: 0; }
+.footer-links a { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); transition: color var(--mk-dur-fast); }
+.footer-links a:hover { color: var(--mk-text-primary); }
+.footer-bottom { display: flex; flex-direction: column; gap: 10px; }
+.footer-copy { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: 0.04em; color: var(--mk-text-tertiary); }
+.footer-disclaimer { font-size: var(--mk-text-xs); color: var(--mk-text-tertiary); line-height: var(--mk-lead-body); max-width: 900px; }
+@media (max-width: 800px) { .footer-grid { grid-template-columns: 1fr; gap: 24px; } }
+</style>
+</head>
+<body>
+
+<div class="bg-trading" aria-hidden="true">
+  <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+    <g stroke="#C9A84C" stroke-width="0.5" opacity="0.5">
+      <line x1="0" y1="150" x2="1440" y2="150"/><line x1="0" y1="300" x2="1440" y2="300"/><line x1="0" y1="450" x2="1440" y2="450"/><line x1="0" y1="600" x2="1440" y2="600"/>
+      <line x1="180" y1="0" x2="180" y2="900"/><line x1="360" y1="0" x2="360" y2="900"/><line x1="540" y1="0" x2="540" y2="900"/><line x1="720" y1="0" x2="720" y2="900"/><line x1="900" y1="0" x2="900" y2="900"/><line x1="1080" y1="0" x2="1080" y2="900"/><line x1="1260" y1="0" x2="1260" y2="900"/>
+    </g>
+  </svg>
+</div>
+
+<div class="mobile-overlay" id="mobileOverlay" onclick="closeDrawer()"></div>
+<div class="mobile-drawer" id="mobileDrawer">
+  <ul class="mobile-drawer-links">
+    <li><a href="system.html" onclick="closeDrawer()">The System</a></li>
+    <li><a href="journal.html" onclick="closeDrawer()">Journal</a></li>
+    <li><a href="edge.html" onclick="closeDrawer()">The Edge</a></li>
+    <li><a href="focus.html" onclick="closeDrawer()">Focus Room</a></li>
+    <li><a href="pricing.html" onclick="closeDrawer()">Get Started</a></li>
+    <li><a href="/app" onclick="closeDrawer()">Log In</a></li>
+  </ul>
+  <button class="mobile-drawer-cta" onclick="handleCheckout('price_1TUWVpJIDbUntZeXyQD23z8W',{preventDefault:()=>{},currentTarget:null});closeDrawer()">Start Free Trial &rarr;</button>
+</div>
+
+<nav id="mainNav">
+  <a href="index.html" class="nav-logo mk-brand-lockup">
+    <img class="mk-brand-lockup__mark" src="assets/logo-mark.png" alt="">
+    <img class="mk-brand-lockup__wordmark" src="assets/logo-wordmark.png" alt="MAKETZO">
+  </a>
+  <ul class="nav-links">
+    <li><a href="system.html">The System</a></li>
+    <li><a href="journal.html">Journal</a></li>
+    <li><a href="edge.html">The Edge</a></li>
+    <li><a href="focus.html" aria-current="page">Focus Room</a></li>
+    <li><a href="pricing.html">Get Started</a></li>
+    <li><a href="/app" class="nav-login-btn">Log In</a></li>
+    <li><button class="nav-cta" onclick="handleCheckout('price_1TUWVpJIDbUntZeXyQD23z8W',event)">Start Free Trial</button></li>
+  </ul>
+  <button class="hamburger" id="hamburger" onclick="toggleDrawer()" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+
+<!-- ─── PAGE HERO ────────────────────────────────────────────────── -->
+<section class="page-hero page-hero--right">
+  <div class="page-hero-inner">
+    <div class="page-hero-bg" aria-hidden="true">
+      <picture>
+        <source srcset="assets/focus-hero.avif" type="image/avif">
+        <source srcset="assets/focus-hero.webp" type="image/webp">
+        <img src="assets/focus-hero.png" alt="" fetchpriority="high" decoding="async">
+      </picture>
+      <div class="page-hero-stats">
+        <span class="page-hero-stat-chip is-gold">Focus Score &middot; <strong>98%</strong></span>
+        <span class="page-hero-stat-chip">Session Readiness &middot; <strong>OPTIMAL</strong></span>
+        <span class="page-hero-stat-chip is-warning">Cooldown &middot; <strong>ACTIVE</strong></span>
+      </div>
+    </div>
+    <div class="page-hero-text">
+      <p class="page-hero-eyebrow">04 · FOCUS ROOM <span class="page-hero-tier-chip">Pro+</span></p>
+      <h1 class="page-hero-title">Focus Room. <em>Train the most important edge in trading: your state of mind.</em></h1>
+      <p class="page-hero-sub">Strategy is the easy part. Following it under pressure is the work. Focus Room is the intervention layer of MAKETZO &mdash; the room your worst self walks into and your best self walks out of.</p>
+      <div class="mk-cta-repeat">
+        <button class="btn-primary" data-cta-source="page-hero" onclick="handleCheckout('price_1TUWVpJIDbUntZeXyQD23z8W',event)">Start 7-Day Free Trial &rarr;</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── WHY STATE MATTERS ─────────────────────────────────────────── -->
+<section class="section">
+  <div class="section-inner">
+    <p class="section-eyebrow reveal">WHY STATE MATTERS</p>
+    <h2 class="section-title reveal">Your worst trades <em>aren't analytical mistakes.</em></h2>
+    <p class="section-sub reveal">They're state failures. The trade looked fine. The chart was clean. The plan was right. But you were tired, angry, chasing &mdash; and the click happened anyway. State is the silent variable in every blow-up.</p>
+
+    <div class="why-grid">
+      <div class="why-card reveal" data-threat="overtrading">
+        <p class="why-tag">Threat 01</p>
+        <p class="why-name">Overtrading</p>
+        <p class="why-text">More clicks does not mean more edge. Boredom and screen-time pressure manufacture setups that don't exist.</p>
+      </div>
+      <div class="why-card reveal" data-threat="revenge">
+        <p class="why-tag">Threat 02</p>
+        <p class="why-name">Revenge Trading</p>
+        <p class="why-text">The trade after the loss is rarely a trade. It's a settlement with the market. The market doesn't owe you anything.</p>
+      </div>
+      <div class="why-card reveal" data-threat="fatigue">
+        <p class="why-tag">Threat 03</p>
+        <p class="why-name">Decision Fatigue</p>
+        <p class="why-text">By hour three the brain stops weighing setups and starts pattern-matching. Quality drops. Conviction stays. That is the danger zone.</p>
+      </div>
+      <div class="why-card reveal" data-threat="fomo">
+        <p class="why-tag">Threat 04</p>
+        <p class="why-name">FOMO</p>
+        <p class="why-text">The move you missed is not the move you would have caught. The replay in your head is louder than the chart in front of you.</p>
+      </div>
+    </div>
+
+    <div class="why-pullquote reveal">
+      <p>Your greatest edge is not your setup. <em>It is your ability to follow your setup.</em></p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── ZONE TRACKS · 5 mood states + 2 sample players ─────────────── -->
+<section class="section section-dark" id="zone-tracks">
+  <div class="section-inner">
+    <p class="section-eyebrow reveal">03 &mdash; FOCUS ROOM</p>
+    <h2 class="section-title reveal">Five Mood States. <em>One Disciplined Trader.</em></h2>
+    <p class="section-sub reveal">Your mental state determines whether you follow your rules or break them.</p>
+    <p class="section-sub reveal">Zone Tracks is a curated audio library designed to help you enter the zone, maintain focus, resist impulsive trades, and reinforce the behaviors that protect your capital.</p>
+
+    <div class="zone-grid">
+      <div class="zone-card reveal" data-mood="get-in-the-zone">
+        <span class="zone-tag">Mood 01</span>
+        <div class="zone-name">Get In The Zone</div>
+        <p class="zone-use">Prepare your mind before the opening bell. Calm, focused, and ready to execute your plan.</p>
+      </div>
+
+      <div class="zone-card reveal" data-mood="stay-locked">
+        <span class="zone-tag">Mood 02</span>
+        <div class="zone-name">Stay Locked</div>
+        <p class="zone-use">Maintain steady concentration during live trading without mental drift or distraction.</p>
+      </div>
+
+      <div class="zone-card reveal" data-mood="sit-on-hands">
+        <span class="zone-tag">Mood 03</span>
+        <div class="zone-name">Sit On Hands</div>
+        <p class="zone-use">Reduce FOMO and impulsive trades when no valid setup is present.</p>
+      </div>
+
+      <div class="zone-card reveal" data-mood="fire-me-up">
+        <span class="zone-tag">Mood 04</span>
+        <div class="zone-name">Fire Me Up</div>
+        <p class="zone-use">Increase conviction and energy when the opportunity is real and the setup is yours.</p>
+      </div>
+
+      <div class="zone-card reveal" data-mood="rule-programming">
+        <span class="zone-tag">Mood 05</span>
+        <div class="zone-name">Rule Programming</div>
+        <p class="zone-use">Reinforce trading principles through music designed to condition discipline and consistency.</p>
+      </div>
+    </div>
+
+    <div class="zone-samples reveal">
+      <h3 class="zone-samples-title">Sample Tracks</h3>
+      <p class="zone-samples-sub">Listen to a preview of the audio environments included with Focus Room.</p>
+      <div class="zone-samples-grid">
+        <div class="zone-sample" data-spotify-slot="zone-tracks-sample-1">
+          <span class="zone-pending-tag">Spotify embed &middot; launching soon</span>
+          <p class="zone-pending-text">Sample preview live shortly.</p>
+        </div>
+        <div class="zone-sample" data-spotify-slot="zone-tracks-sample-2">
+          <span class="zone-pending-tag">Spotify embed &middot; launching soon</span>
+          <p class="zone-pending-text">Sample preview live shortly.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="mk-cta-repeat">
+      <button class="btn-primary" data-cta-source="zone-tracks" onclick="handleCheckout('price_1TUWVpJIDbUntZeXyQD23z8W',event)">Start 7-Day Free Trial</button>
+    </div>
+  </div>
+</section>
+
+<!-- ─── MEDITATION ZONE · breathing reset ─────────────────────────── -->
+<section class="section">
+  <div class="section-inner">
+    <p class="section-eyebrow reveal">MEDITATION ZONE</p>
+    <h2 class="section-title reveal">The reset between <em>setups</em></h2>
+    <p class="section-sub reveal">A short, structured pause designed to prevent the mistakes that do the most damage.</p>
+    <p class="section-sub reveal">After two losses, rising fatigue, or a setup you don't fully trust, step into the room, reset your breathing, and return to baseline.</p>
+
+    <div class="med-wrap reveal">
+      <div class="med-visual">
+        <div class="med-orb" aria-hidden="true"></div>
+        <span class="med-orb-label">Inhale &middot; Hold &middot; Exhale</span>
+      </div>
+      <div class="med-copy">
+        <h3>A 5-minute reset. <em>A different trader walks back out.</em></h3>
+        <p>Two short sessions. One purpose: clear the emotional residue from the last decision before it affects the next one.</p>
+        <p>Step into the room, regulate your breathing, and return to the market calm, objective, and ready to follow your plan.</p>
+        <div class="med-controls">
+          <span class="med-pill">5 min reset</span>
+          <span class="med-pill">10 min reset</span>
+          <span class="med-controls-note">In-app · Pro</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── ANCHOR IMAGES · concept ───────────────────────────────────── -->
+<section class="section section-dark">
+  <div class="section-inner">
+    <p class="section-eyebrow reveal">ANCHOR IMAGES</p>
+    <h2 class="section-title reveal">Trade to protect <em>what matters most</em></h2>
+    <p class="section-sub reveal">Upload the images that remind you why the rule matters. Family, children, pets, memories, and the life this account is meant to support. Surface them when discipline is most likely to slip.</p>
+
+    <div class="anchor-wrap">
+      <div class="anchor-concept-row">
+        <span class="anchor-concept-tag">Pro feature &middot; In development</span>
+      </div>
+
+      <p class="anchor-examples-caption reveal">Examples of the personal anchors you can upload.</p>
+
+      <div class="anchor-grid reveal">
+        <div class="anchor-tile">
+          <picture>
+            <source srcset="assets/anchor-1.avif" type="image/avif">
+            <source srcset="assets/anchor-1.webp" type="image/webp">
+            <img src="assets/anchor-1.jpg" alt="" loading="lazy">
+          </picture>
+          <span class="anchor-tile-heart" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.3 2.6 4.5 6.2 4.5c2 0 3.6 1.1 4.6 2.7 1-1.6 2.6-2.7 4.6-2.7 3.6 0 5.3 3.8 3.8 7.3C19.5 16.4 12 21 12 21z"/></svg></span>
+        </div>
+        <div class="anchor-tile">
+          <picture>
+            <source srcset="assets/anchor-2.avif" type="image/avif">
+            <source srcset="assets/anchor-2.webp" type="image/webp">
+            <img src="assets/anchor-2.jpg" alt="" loading="lazy">
+          </picture>
+          <span class="anchor-tile-heart" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.3 2.6 4.5 6.2 4.5c2 0 3.6 1.1 4.6 2.7 1-1.6 2.6-2.7 4.6-2.7 3.6 0 5.3 3.8 3.8 7.3C19.5 16.4 12 21 12 21z"/></svg></span>
+        </div>
+        <div class="anchor-tile">
+          <picture>
+            <source srcset="assets/anchor-3.avif" type="image/avif">
+            <source srcset="assets/anchor-3.webp" type="image/webp">
+            <img src="assets/anchor-3.jpg" alt="" loading="lazy">
+          </picture>
+          <span class="anchor-tile-heart" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.3 2.6 4.5 6.2 4.5c2 0 3.6 1.1 4.6 2.7 1-1.6 2.6-2.7 4.6-2.7 3.6 0 5.3 3.8 3.8 7.3C19.5 16.4 12 21 12 21z"/></svg></span>
+        </div>
+      </div>
+
+      <p class="anchor-line reveal">A single image can restore perspective <em>faster than words</em>.</p>
+      <p class="anchor-subline reveal">The rule becomes clear in one glance.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── COACH SAYS · INTERVENTION CARDS ───────────────────────────── -->
+<section class="section">
+  <div class="section-inner">
+    <p class="section-eyebrow reveal">WHEN COACH SAYS DETECTS TILT</p>
+    <h2 class="section-title reveal">Focus Room <em>opens itself</em></h2>
+    <p class="section-sub reveal">You don't have to recognize the slip. The system does.</p>
+    <p class="section-sub reveal">When losses stack, order frequency accelerates, or your drawdown threshold is reached, Focus Room activates automatically and guides you back to a disciplined state.</p>
+
+    <div class="coach-int-grid">
+      <div class="coach-int-card reveal">
+        <span class="coach-int-trigger">Trigger &middot; <strong>Two strikes &middot; same session</strong></span>
+        <p class="coach-int-line">Two strikes in. <em>Step into the room.</em> Five-minute reset before the next entry.</p>
+        <span class="coach-int-action"><strong>Action:</strong> Order entry pauses. Sit On Hands queues. Breathing reset opens.</span>
+      </div>
+
+      <div class="coach-int-card reveal">
+        <span class="coach-int-trigger">Trigger &middot; <strong>Click-rate spike</strong></span>
+        <p class="coach-int-line">You are clicking <em>faster than you are thinking.</em> Slow the room down.</p>
+        <span class="coach-int-action"><strong>Action:</strong> Sit On Hands track surfaces. A 60-second hold opens before the next order.</span>
+      </div>
+
+      <div class="coach-int-card reveal">
+        <span class="coach-int-trigger">Trigger &middot; <strong>Drawdown line touched</strong></span>
+        <p class="coach-int-line">You are still allowed to trade. <em>But not from this state.</em></p>
+        <span class="coach-int-action"><strong>Action:</strong> Anchor image surfaces. 10-minute reset offered. Walk-Away one-click present.</span>
+      </div>
+    </div>
+
+    <div class="mk-cta-repeat">
+      <button class="btn-primary" data-cta-source="coach-int" onclick="handleCheckout('price_1TUWVpJIDbUntZeXyQD23z8W',event)">Start 7-Day Free Trial</button>
+    </div>
+  </div>
+</section>
+
+<!-- ─── PRO TIER GATE ─────────────────────────────────────────────── -->
+<section class="section section-dark">
+  <div class="section-inner">
+    <p class="section-eyebrow reveal">UNLOCK TRADER STATE MASTERY</p>
+    <h2 class="section-title reveal">Focus Room is on Pro <em>and Elite</em></h2>
+
+    <div class="tier-gate reveal">
+      <div class="tier-gate-lock" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="4" y="11" width="16" height="10" rx="2"/>
+          <path d="M8 11V7a4 4 0 0 1 8 0v4"/>
+        </svg>
+      </div>
+      <h3 class="tier-gate-title">Included with <em>Pro and Elite</em></h3>
+      <p class="tier-gate-text">Zone Tracks, Meditation Zone, Anchor Images, and Coach-triggered interventions are included with <strong>Pro</strong> and <strong>Elite</strong>.</p>
+      <p class="tier-gate-text">Build the mental discipline to enter the zone, protect your rules, and trade from a state of clarity.</p>
+      <div class="tier-gate-cta-row">
+        <button class="btn-primary" data-cta-source="tier-gate" onclick="handleCheckout('price_1TUWVpJIDbUntZeXyQD23z8W',event)">Start 7-Day Free Trial</button>
+        <a class="btn-secondary" href="pricing.html">Compare Tiers</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── PHILOSOPHY CLOSE ──────────────────────────────────────────── -->
+<hr class="mk-rule-gold--bold">
+<section class="philosophy-section">
+  <p class="philosophy-eyebrow reveal">THE ROOM BEHIND EVERY SESSION</p>
+  <h2 class="philosophy-title reveal">Protect the mind. <em>Protect the account.</em></h2>
+</section>
+
+<!-- ─── FINAL CTA ─────────────────────────────────────────────────── -->
+<section class="final-cta-section">
+  <p class="final-cta-eyebrow reveal">7-DAY FREE TRIAL &middot; FOCUS ROOM INCLUDED ON PRO</p>
+  <h2 class="final-cta-title reveal">Walk into the room. <em>Walk out a different trader.</em></h2>
+  <div class="final-cta-btn-wrap reveal">
+    <button class="btn-primary btn-primary--lg" data-cta-source="final" onclick="handleCheckout('price_1TUWVpJIDbUntZeXyQD23z8W',event)">Start 7-Day Free Trial</button>
+    <p class="final-cta-note">Pro &middot; $49/mo &middot; Focus Room + Edge + Pulse + System &middot; Cancel in one click</p>
+  </div>
+</section>
+
+<hr class="mk-rule-gold">
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-col-brand">
+        <div class="footer-logo-wrap">
+          <a href="index.html" class="mk-brand-lockup mk-brand-lockup--stacked">
+            <img class="mk-brand-lockup__mark" src="assets/logo-mark.png" alt="">
+            <img class="mk-brand-lockup__wordmark" src="assets/logo-wordmark.png" alt="MAKETZO">
+          </a>
+        </div>
+        <p class="footer-tagline"><strong>Built by traders, for traders.</strong>Discipline in every session. Edge in every trade. Accountability when it counts.</p>
+      </div>
+      <div><div class="footer-col-title">Product</div><ul class="footer-links"><li><a href="system.html">The System</a></li><li><a href="journal.html">Journal</a></li><li><a href="edge.html">The Edge</a></li><li><a href="focus.html">Focus Room</a></li><li><a href="pricing.html">Get Started</a></li><li><a href="why.html">Why MAKETZO</a></li></ul></div>
+      <div><div class="footer-col-title">Legal</div><ul class="footer-links"><li><a href="privacy.html">Privacy Policy</a></li><li><a href="terms.html">Terms of Service</a></li><li><a href="disclaimer.html">Risk Disclaimer</a></li><li><a href="contact.html">Contact Us</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">&copy; 2026 Abinic, LLC. All rights reserved. MAKETZO&reg; is a product of Abinic, LLC. maketzo.co</p>
+      <p class="footer-disclaimer">Trading securities, options, futures, forex, and cryptocurrencies involves substantial risk of loss and is not suitable for all investors. You may lose some or all of your capital. MAKETZO is a journaling, behavioral accountability, educational, and decision-support platform designed to help traders track performance, reinforce rules, and improve discipline. Neither Abinic, LLC nor MAKETZO provides investment advice, personalized financial advice, tax advice, legal advice, trade recommendations, or solicitations to buy or sell any security or financial instrument.</p>
+      <p class="footer-disclaimer">All indicators, analytics, alerts, scoring systems, coaching prompts, AI-generated insights, training modules, quizzes, and educational materials are provided for informational and educational purposes only. These tools may contain errors, omissions, delays, or inaccuracies and should not be relied upon as the sole basis for any trading, investing, or risk-management decision. No feature, signal, score, alert, prompt, or educational resource guarantees accuracy, suitability, profitability, or the prevention of losses.</p>
+      <p class="footer-disclaimer">Users remain solely responsible for evaluating all information, conducting independent research, managing risk, complying with applicable laws and regulations, and entering, modifying, or canceling orders. Abinic, LLC and MAKETZO do not execute trades, do not act as a broker-dealer or registered investment adviser, and do not have custody of customer funds. Past performance, simulated results, testimonials, and examples are illustrative only and do not guarantee future results.</p>
+    </div>
+  </div>
+</footer>
+
+<div class="sticky-bar" id="stickyBar">
+  <span class="sticky-bar-text"><strong>Trade sharper.</strong> Weekly discipline tips from MAKETZO.</span>
+  <form class="sticky-bar-form" onsubmit="event.preventDefault();handleStickyEmail()">
+    <input class="sticky-bar-input" id="stickyEmail" type="email" placeholder="your@email.com" required>
+    <button class="btn-primary" type="submit">Subscribe</button>
+  </form>
+  <button class="sticky-bar-close" onclick="closeStickyBar()" aria-label="Close">&times;</button>
+</div>
+
+<script>
+const API='https://api.maketzo.co';
+function toggleDrawer(){const d=document.getElementById('mobileDrawer');const o=document.getElementById('mobileOverlay');const h=document.getElementById('hamburger');d.classList.toggle('open');o.classList.toggle('open');h.classList.toggle('open');document.body.style.overflow=d.classList.contains('open')?'hidden':'';}
+function closeDrawer(){document.getElementById('mobileDrawer').classList.remove('open');document.getElementById('mobileOverlay').classList.remove('open');document.getElementById('hamburger').classList.remove('open');document.body.style.overflow='';}
+async function handleCheckout(priceId,e){
+  if(e&&e.preventDefault)e.preventDefault();
+  const btn=e&&e.currentTarget?e.currentTarget:null;
+  const finalId=(btn&&btn.dataset&&btn.dataset.priceId)?btn.dataset.priceId:priceId;
+  const orig=btn?btn.innerHTML:'';
+  if(btn){btn.innerHTML='Loading...';btn.disabled=true;}
+  const token=localStorage.getItem('maketzo_token');
+  if(!token){window.location.href=API+'/auth/google?checkout='+encodeURIComponent(finalId);return;}
+  try{
+    const res=await fetch(API+'/billing/create-checkout',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({priceId:finalId})});
+    const data=await res.json();
+    if(data.url){window.location.href=data.url;}else{throw new Error(data.error||'Checkout failed');}
+  }catch(err){alert('Something went wrong. Please try again.');if(btn){btn.innerHTML=orig;btn.disabled=false;}}
+}
+requestAnimationFrame(()=>document.body.classList.add('hero-loaded'));
+const reveals=document.querySelectorAll('.reveal');
+const obs=new IntersectionObserver((entries)=>{entries.forEach((e,i)=>{if(e.isIntersecting){setTimeout(()=>e.target.classList.add('visible'),i*50);obs.unobserve(e.target);}});},{threshold:0.06});
+reveals.forEach(el=>obs.observe(el));
+let stickyShown=false,stickyDismissed=false;
+window.addEventListener('scroll',()=>{
+  if(!stickyDismissed&&!stickyShown&&window.scrollY/(document.body.scrollHeight-window.innerHeight)>0.45){
+    document.getElementById('stickyBar').classList.add('visible');stickyShown=true;
+  }
+  document.getElementById('mainNav').style.borderBottomColor=window.scrollY>60?'rgba(201,168,76,0.25)':'rgba(201,168,76,0.12)';
+});
+function closeStickyBar(){document.getElementById('stickyBar').classList.remove('visible');stickyDismissed=true;}
+async function handleStickyEmail(){
+  const input=document.getElementById('stickyEmail');
+  const email=input.value.trim();
+  if(!email||!email.includes('@'))return;
+  try{await fetch(API+'/newsletter/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email})});}catch(e){}
+  input.value='';input.placeholder='Subscribed &#10003;';
+  setTimeout(closeStickyBar,1500);
+}
+</script>
+</body>
+</html>
