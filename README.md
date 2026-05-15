@@ -4,7 +4,7 @@ Static site for `maketzo.co` — landing pages, marketing detail pages, and the 
 
 ## Deploy
 
-Hostinger Git Deploy from this repo's `main` branch directly into `~/domains/maketzo.co/public_html/` on the shared host. Push to `main` → site updates automatically. No build step.
+Hostinger Git Deploy from this repo's `main` branch directly into `~/domains/maketzo.co/public_html/` on the shared host. Push to `main` → site updates automatically via GitHub webhook → Hostinger. No build step.
 
 ## Local preview
 
