@@ -1,5 +1,13 @@
 <!DOCTYPE html>
-<!-- signup — email+password create · Turnstile · sends verify email (Auth v2 PR4) -->
+<!-- signup — email+password create · Turnstile · sends verify email (Auth v2 PR4)
+     Plan-aware mode: when ?plan=<priceId> is present, the page becomes the
+     gateway to a Stripe trial. After successful signup the server returns a
+     one-shot `payToken` which we exchange at /billing/create-checkout to
+     reach Stripe Checkout without a session cookie (signup intentionally
+     does not log the user in; verify-email is the auth gate).
+     Existing-account detection: on email blur we call /auth/check-email and,
+     if the email already has an account, swap the form into sign-in mode so
+     the same flow continues to Stripe without creating a duplicate. -->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -33,32 +41,32 @@
   </a>
 
   <div class="auth-card">
-    <p class="auth-eyebrow">CREATE ACCOUNT</p>
-    <h1 class="auth-title">Start the <em>system.</em></h1>
-    <p class="auth-sub">Free to create. The trial starts when you pick a plan.</p>
+    <p class="auth-eyebrow" id="eyebrow">CREATE ACCOUNT</p>
+    <h1 class="auth-title" id="title">Start the <em>system.</em></h1>
+    <p class="auth-sub" id="sub">Free to create. The trial starts when you pick a plan.</p>
 
     <div id="banner" class="auth-banner" hidden></div>
 
     <button id="googleBtn" class="btn-google" type="button">
       <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/><path d="M3.964 10.706A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.706V4.962H.957A8.997 8.997 0 0 0 0 9c0 1.452.348 2.827.957 4.038l3.007-2.332z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.962L3.964 7.294C4.672 5.167 6.656 3.58 9 3.58z" fill="#EA4335"/></svg>
-      Continue with Google
+      <span id="googleBtnLabel">Continue with Google</span>
     </button>
 
-    <div class="auth-divider"><span>or</span></div>
+    <div class="auth-divider" id="divider"><span>or</span></div>
 
     <form id="signupForm" novalidate>
-      <div class="mk-form-field">
+      <div class="mk-form-field" id="nameField">
         <label for="name">Your name</label>
-        <input id="name" name="name" type="text" autocomplete="name" required maxlength="100">
+        <input id="name" name="name" type="text" autocomplete="name" maxlength="100">
       </div>
       <div class="mk-form-field">
         <label for="email">Email</label>
         <input id="email" name="email" type="email" autocomplete="email" required maxlength="200">
       </div>
-      <div class="mk-form-field">
+      <div class="mk-form-field" id="passwordField">
         <label for="password">Password</label>
-        <input id="password" name="password" type="password" autocomplete="new-password" required minlength="12">
-        <span class="mk-form-hint">At least 12 characters · No requirements on symbols or case</span>
+        <input id="password" name="password" type="password" autocomplete="new-password" minlength="12">
+        <span class="mk-form-hint" id="passwordHint">At least 12 characters · No requirements on symbols or case</span>
       </div>
 
       <div class="turnstile-wrap" id="turnstileWrap"></div>
@@ -66,8 +74,8 @@
       <button class="btn-primary auth-submit" type="submit" id="signupSubmit">Create account</button>
     </form>
 
-    <div class="auth-foot">
-      Already have an account? <a href="login.html">Sign in</a>
+    <div class="auth-foot" id="footLink">
+      Already have an account? <a href="login.html" id="footLinkAnchor">Sign in</a>
     </div>
   </div>
 
@@ -84,17 +92,40 @@ const API = (() => {
   return 'https://api.maketzo.co';
 })();
 
+// ── Plan-aware mode ──────────────────────────────────────────
+// When /signup is reached via a "Start Free Trial" click, the priceId is
+// carried in ?plan=<priceId>. We render tier-aware copy and, on success,
+// chain into Stripe Checkout via the one-shot pay token returned by
+// /auth/signup. The map below mirrors pricing.html — keep in sync.
+const TIER_BY_PRICE = {
+  'price_1TUWS7JIDbUntZeXg0a1Sgj5': { name: 'Journal', amount: '$19/mo' },
+  'price_1TUWUUJIDbUntZeX9CMTqV1D': { name: 'Journal', amount: '$159/yr' },
+  'price_1TUWVpJIDbUntZeXyQD23z8W': { name: 'Pro',     amount: '$49/mo' },
+  'price_1TUWZIJIDbUntZeXl4Xtfudj': { name: 'Pro',     amount: '$399/yr' },
+  'price_1TUWabJIDbUntZeXYh8IrvEa': { name: 'Elite',   amount: '$79/mo' },
+  'price_1TUWc2JIDbUntZeXOIkeHml4': { name: 'Elite',   amount: '$649/yr' }
+};
+
+const params = new URLSearchParams(window.location.search);
+const planId = params.get('plan') || '';
+const tier   = planId && TIER_BY_PRICE[planId] ? TIER_BY_PRICE[planId] : null;
+
+if (tier) {
+  document.getElementById('eyebrow').textContent = `START ${tier.name.toUpperCase()} TRIAL`;
+  document.getElementById('title').innerHTML = `Sign up for <em>${tier.name}.</em>`;
+  document.getElementById('sub').textContent = `${tier.amount} · 7-day free trial · no charge until day 8 · cancel anytime.`;
+  document.getElementById('signupSubmit').textContent = 'Start 7-day free trial';
+}
+
+// ── Turnstile ────────────────────────────────────────────────
 const TURNSTILE_SITE_KEY = document.querySelector('meta[name="turnstile-site-key"]').content;
 let turnstileWidgetId = null;
-
 window.onloadTurnstileCallback = function () {
   if (!TURNSTILE_SITE_KEY) return;
   turnstileWidgetId = window.turnstile.render('#turnstileWrap', {
-    sitekey: TURNSTILE_SITE_KEY,
-    theme: 'dark'
+    sitekey: TURNSTILE_SITE_KEY, theme: 'dark'
   });
 };
-// Manually invoke once the script is ready.
 const readyCheck = setInterval(() => {
   if (window.turnstile && TURNSTILE_SITE_KEY && turnstileWidgetId === null) {
     window.onloadTurnstileCallback();
@@ -104,55 +135,243 @@ const readyCheck = setInterval(() => {
   }
 }, 300);
 
+// ── UI helpers ───────────────────────────────────────────────
 const banner = document.getElementById('banner');
 function showBanner(text, type) {
   banner.textContent = text;
   banner.className = 'auth-banner auth-banner--' + (type || 'info');
   banner.hidden = false;
 }
+function clearBanner() { banner.hidden = true; banner.textContent = ''; }
 
+function getCsrfCookie() {
+  const m = document.cookie.match(/(?:^|;\s*)mkt_csrf=([^;]+)/);
+  return m ? decodeURIComponent(m[1]) : '';
+}
+
+// ── Mode switching ───────────────────────────────────────────
+// 'signup'         : new account, full form
+// 'login-password' : existing email-password account, show password only
+// 'login-google'   : existing Google-linked account, hide form, force Google
+let mode = 'signup';
+
+const nameField     = document.getElementById('nameField');
+const passwordField = document.getElementById('passwordField');
+const passwordHint  = document.getElementById('passwordHint');
+const turnstileWrap = document.getElementById('turnstileWrap');
+const submitBtn     = document.getElementById('signupSubmit');
+const googleLabel   = document.getElementById('googleBtnLabel');
+const divider       = document.getElementById('divider');
+const footLink      = document.getElementById('footLink');
+
+function applyMode(next) {
+  mode = next;
+  const nameInput = document.getElementById('name');
+  const passwordInput = document.getElementById('password');
+
+  if (mode === 'signup') {
+    nameField.hidden = false;
+    nameInput.required = true;
+    passwordField.hidden = false;
+    passwordInput.required = true;
+    passwordInput.minLength = 12;
+    passwordInput.autocomplete = 'new-password';
+    passwordHint.textContent = 'At least 12 characters · No requirements on symbols or case';
+    turnstileWrap.style.display = '';
+    divider.style.display = '';
+    submitBtn.textContent = tier ? 'Start 7-day free trial' : 'Create account';
+    googleLabel.textContent = tier ? `Continue with Google to start ${tier.name} trial` : 'Continue with Google';
+    footLink.innerHTML = 'Already have an account? <a href="login.html' + (planId ? '?plan=' + encodeURIComponent(planId) : '') + '">Sign in</a>';
+  } else if (mode === 'login-password') {
+    nameField.hidden = true;
+    nameInput.required = false;
+    passwordField.hidden = false;
+    passwordInput.required = true;
+    passwordInput.minLength = 0;
+    passwordInput.removeAttribute('minlength');
+    passwordInput.autocomplete = 'current-password';
+    passwordHint.textContent = '';
+    turnstileWrap.style.display = 'none';
+    divider.style.display = '';
+    submitBtn.textContent = tier ? 'Sign in & start trial' : 'Sign in';
+    googleLabel.textContent = 'Continue with Google instead';
+    footLink.innerHTML = 'Forgot your password? <a href="forgot-password.html">Reset it</a>';
+  } else if (mode === 'login-google') {
+    nameField.hidden = true;
+    document.getElementById('name').required = false;
+    passwordField.hidden = true;
+    document.getElementById('password').required = false;
+    turnstileWrap.style.display = 'none';
+    divider.style.display = 'none';
+    submitBtn.style.display = 'none';
+    googleLabel.textContent = tier ? `Continue with Google to start ${tier.name} trial` : 'Continue with Google';
+    footLink.innerHTML = 'Wrong account? <a href="login.html' + (planId ? '?plan=' + encodeURIComponent(planId) : '') + '">Sign in another way</a>';
+  }
+}
+
+// ── Existing-account live check ──────────────────────────────
+// Fires on email blur (and after explicit submit attempts) — the check
+// endpoint is rate-limited (30/min/IP) so debouncing isn't critical.
+let lastCheckedEmail = '';
+async function checkEmailExists() {
+  const email = document.getElementById('email').value.trim().toLowerCase();
+  if (!email || !email.includes('@') || email === lastCheckedEmail) return;
+  lastCheckedEmail = email;
+  try {
+    const res = await fetch(API + '/auth/check-email?email=' + encodeURIComponent(email));
+    const data = await res.json().catch(() => ({}));
+    if (data.exists) {
+      if (data.provider === 'google') {
+        applyMode('login-google');
+        showBanner('Looks like you signed up with Google. Continue with Google to ' + (tier ? 'start your trial.' : 'sign in.'), 'info');
+      } else {
+        applyMode('login-password');
+        showBanner(tier ? 'Looks like you already have an account — sign in to start your trial.' : 'Looks like you already have an account — sign in to continue.', 'info');
+      }
+    } else if (mode !== 'signup') {
+      applyMode('signup');
+      clearBanner();
+    }
+  } catch (err) {
+    // Network/rate-limit failures are silent — the form still works in signup mode
+    // and the server will catch existing-email collisions on submit.
+  }
+}
+document.getElementById('email').addEventListener('blur', checkEmailExists);
+
+// ── Google button ────────────────────────────────────────────
 document.getElementById('googleBtn').addEventListener('click', () => {
-  window.location.href = API + '/auth/google';
+  const url = API + '/auth/google' + (planId ? '?checkout=' + encodeURIComponent(planId) : '');
+  window.location.href = url;
 });
+
+// ── Submit ───────────────────────────────────────────────────
+async function startStripeCheckout(payToken) {
+  // Pay-token path: signup just happened, no session yet.
+  const res = await fetch(API + '/billing/create-checkout', {
+    method: 'POST',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ priceId: planId, payToken })
+  });
+  const data = await res.json().catch(() => ({}));
+  if (data.url) {
+    window.location.href = data.url;
+    return true;
+  }
+  showBanner(data.error || 'Could not start checkout. Please try again.', 'error');
+  return false;
+}
+
+async function startStripeCheckoutWithSession() {
+  const csrf = getCsrfCookie();
+  const res = await fetch(API + '/billing/create-checkout', {
+    method: 'POST',
+    credentials: 'include',
+    headers: Object.assign(
+      { 'Content-Type': 'application/json' },
+      csrf ? { 'X-CSRF-Token': csrf } : {}
+    ),
+    body: JSON.stringify({ priceId: planId })
+  });
+  const data = await res.json().catch(() => ({}));
+  if (data.url) {
+    window.location.href = data.url;
+    return true;
+  }
+  showBanner(data.error || 'Could not start checkout. Please try again.', 'error');
+  return false;
+}
 
 document.getElementById('signupForm').addEventListener('submit', async (e) => {
   e.preventDefault();
+  clearBanner();
+  await checkEmailExists();
+
   const btn = document.getElementById('signupSubmit');
-  const name = document.getElementById('name').value.trim();
   const email = document.getElementById('email').value.trim();
   const password = document.getElementById('password').value;
-
-  if (!name || !email || !password) { showBanner('Name, email and password are required.', 'error'); return; }
-  if (password.length < 12)         { showBanner('Password must be at least 12 characters.', 'error'); return; }
-
-  let turnstileToken = '';
-  if (TURNSTILE_SITE_KEY && window.turnstile && turnstileWidgetId !== null) {
-    turnstileToken = window.turnstile.getResponse(turnstileWidgetId) || '';
-    if (!turnstileToken) { showBanner('Please complete the captcha.', 'error'); return; }
-  }
+  if (!email)    { showBanner('Email is required.', 'error'); return; }
 
   const orig = btn.innerHTML;
-  btn.innerHTML = 'Creating account…'; btn.disabled = true;
+  btn.innerHTML = mode === 'signup' ? 'Creating account…' : 'Signing in…';
+  btn.disabled = true;
+
   try {
+    if (mode === 'login-password') {
+      // Existing user — sign in, then chain to Stripe if plan present.
+      if (!password) { showBanner('Password is required.', 'error'); return; }
+      const res = await fetch(API + '/auth/login', {
+        method: 'POST', credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.ok) {
+        if (res.status === 403 && data.code === 'PENDING_DELETION') {
+          showBanner('This account is scheduled for deletion. Email info@maketzo.co to restore it.', 'error');
+        } else {
+          showBanner(data.error || 'Invalid email or password.', 'error');
+        }
+        return;
+      }
+      if (planId) {
+        const ok = await startStripeCheckoutWithSession();
+        if (!ok) return;
+      } else {
+        window.location.href = '/app';
+      }
+      return;
+    }
+
+    // mode === 'signup'
+    const name = document.getElementById('name').value.trim();
+    if (!name)              { showBanner('Name is required.', 'error'); return; }
+    if (password.length < 12){ showBanner('Password must be at least 12 characters.', 'error'); return; }
+
+    let turnstileToken = '';
+    if (TURNSTILE_SITE_KEY && window.turnstile && turnstileWidgetId !== null) {
+      turnstileToken = window.turnstile.getResponse(turnstileWidgetId) || '';
+      if (!turnstileToken) { showBanner('Please complete the captcha.', 'error'); return; }
+    }
+
     const res = await fetch(API + '/auth/signup', {
       method: 'POST', credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, email, password, turnstileToken })
     });
     const data = await res.json().catch(() => ({}));
-    if (res.ok && data.ok) {
-      window.location.href = 'verify-email.html?status=sent&email=' + encodeURIComponent(email);
+    if (!(res.ok && data.ok)) {
+      if (res.status === 429) showBanner(data.error || 'Too many signup attempts. Please try again later.', 'error');
+      else                    showBanner(data.error || 'Signup failed. Please try again.', 'error');
+      if (TURNSTILE_SITE_KEY && window.turnstile && turnstileWidgetId !== null) window.turnstile.reset(turnstileWidgetId);
       return;
     }
-    if (res.status === 429) showBanner(data.error || 'Too many signup attempts. Please try again later.', 'error');
-    else                    showBanner(data.error || 'Signup failed. Please try again.', 'error');
-    if (TURNSTILE_SITE_KEY && window.turnstile && turnstileWidgetId !== null) window.turnstile.reset(turnstileWidgetId);
+
+    if (planId && data.payToken) {
+      // Brand-new account — chain into Stripe via pay token.
+      const ok = await startStripeCheckout(data.payToken);
+      if (!ok) return;
+      return;
+    }
+
+    if (planId && !data.payToken) {
+      // Existing-account branch returns identical `{ ok: true }` without payToken.
+      // The "you already have an account" email is on its way; surface that here.
+      showBanner('Looks like you already have a MAKETZO account. Check your inbox or sign in.', 'info');
+      applyMode('login-password');
+      return;
+    }
+
+    window.location.href = 'verify-email.html?status=sent&email=' + encodeURIComponent(email);
   } catch (err) {
     showBanner('Network error. Please try again.', 'error');
   } finally {
     btn.innerHTML = orig; btn.disabled = false;
   }
 });
+
+applyMode('signup');
 </script>
 </body>
 </html>
