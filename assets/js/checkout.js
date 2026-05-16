@@ -17,11 +17,17 @@
 (function () {
   'use strict';
 
+  // API base URL — derived from page host so adding a new tier needs no JS change.
+  //   localhost / 127.* → http://localhost:3000
+  //   maketzo.co (apex) → https://api.maketzo.co
+  //   <sub>.maketzo.co  → https://<sub>-api.maketzo.co   (dev → dev-api, etc.)
   const API = (function () {
     const h = window.location.hostname;
-    if (h === 'dev.maketzo.co' || h === 'staging.maketzo.co') return '';
+    if (h === 'localhost' || h.indexOf('127.') === 0) return 'http://localhost:3000';
     if (h === 'maketzo.co') return 'https://api.maketzo.co';
-    return 'https://api.maketzo.co';
+    const parts = h.split('.');
+    if (parts.length >= 3) return 'https://' + parts[0] + '-api.' + parts.slice(1).join('.');
+    return 'https://api.' + h;
   })();
 
   function getCsrfCookie() {
