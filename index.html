@@ -17,6 +17,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/tokens.css">
 <link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/css/audio-player.css">
+<script src="assets/js/checkout.js" defer></script>
+<script src="assets/js/audio-player.js" defer></script>
 <style>
 /* ====================================================================
    MAKETZO landing — page-specific styles.
@@ -1033,6 +1036,67 @@ hr.mk-rule-gold--bold {
 }
 .focus-closing-line em { font-style: normal; background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
 
+/* ── MAKETZO SOUNDTRACK · embedded album player ─────────────────────── */
+.mk-soundtrack-section { padding: 96px 0; }
+.mk-soundtrack-inner {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: 56px;
+  align-items: center;
+}
+.mk-soundtrack-title {
+  font-family: var(--mk-font-display);
+  font-size: clamp(2rem, 3.4vw, 2.75rem);
+  letter-spacing: var(--mk-track-display);
+  text-transform: uppercase;
+  line-height: 1.15;
+  margin: 14px 0 18px;
+}
+.mk-soundtrack-title em { font-style: normal; background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.mk-soundtrack-lede {
+  color: var(--mk-text-primary);
+  font-size: 1.15rem;
+  line-height: 1.5;
+  font-weight: 500;
+  margin-bottom: 18px;
+}
+.mk-soundtrack-body {
+  color: var(--mk-text-secondary);
+  font-size: 1rem;
+  line-height: 1.65;
+  margin-bottom: 14px;
+}
+.mk-soundtrack-cue {
+  color: var(--mk-text-primary);
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  margin: 18px 0;
+  padding: 14px 16px;
+  background: linear-gradient(90deg, rgba(212,175,55,.08), transparent 80%);
+  border-left: 3px solid var(--mk-brand);
+  border-radius: var(--mk-radius-card-sm);
+}
+.mk-soundtrack-cue em {
+  color: var(--mk-brand);
+  font-style: normal;
+  font-weight: 600;
+}
+.mk-soundtrack-tagline {
+  font-family: var(--mk-font-display);
+  font-size: clamp(1.1rem, 1.6vw, 1.35rem);
+  letter-spacing: var(--mk-track-display);
+  text-transform: uppercase;
+  color: var(--mk-brand);
+  line-height: 1.3;
+  margin: 24px 0 0;
+  padding-top: 20px;
+  border-top: 1px solid rgba(212, 175, 55, 0.18);
+}
+@media (max-width: 900px) {
+  .mk-soundtrack-section { padding: 64px 0; }
+  .mk-soundtrack-inner { grid-template-columns: 1fr; gap: 32px; }
+}
+
 /* ── REVIEWS ─────────────────────────────────────────────────── */
 .reviews-grid {
   display: grid;
@@ -2031,6 +2095,57 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
   </div>
 </section>
 
+<!-- MAKETZO SOUNDTRACK -->
+<hr class="mk-rule-gold">
+
+<section class="section section-dark mk-soundtrack-section">
+  <div class="section-inner mk-soundtrack-inner">
+    <div class="mk-soundtrack-copy reveal">
+      <p class="section-eyebrow">05 &middot; The Soundtrack</p>
+      <h2 class="mk-soundtrack-title">We turned trading mistakes <em>into music</em>.</h2>
+      <p class="mk-soundtrack-lede">Most traders know exactly what they should do. The hard part is actually doing it.</p>
+      <p class="mk-soundtrack-body">That&rsquo;s why Maketzo includes something you won&rsquo;t find anywhere else: a trading soundtrack designed to keep you focused, disciplined, and out of your own way.</p>
+      <p class="mk-soundtrack-body">The songs are catchy, painfully relatable, and built around the mistakes every trader knows too well &mdash; revenge trading, FOMO, overtrading, and paying &ldquo;tuition to the market.&rdquo;</p>
+      <p class="mk-soundtrack-cue">Hit play on <em>&ldquo;I Paid Tuition to the Market.&rdquo;</em> You&rsquo;ll laugh, cringe, and probably recognize yourself.</p>
+      <p class="mk-soundtrack-body">And the next time you&rsquo;re tempted to force a trade, the chorus may be the thing that keeps you sitting on your hands.</p>
+      <p class="mk-soundtrack-tagline">Mental conditioning, disguised as music.</p>
+    </div>
+    <div class="mk-audio-player mk-soundtrack-player reveal">
+      <audio preload="metadata">
+        <source src="assets/track-tuition.mp3" type="audio/mpeg">
+      </audio>
+      <div class="mk-audio-player__inner">
+        <div class="mk-audio-player__art">
+          <img src="assets/album-cover.jpg" alt="Earn the Right &mdash; MAKETZO" onerror="this.style.display='none'">
+        </div>
+        <div class="mk-audio-player__main">
+          <div class="mk-audio-player__meta">
+            <p class="mk-audio-player__eyebrow">MAKETZO &middot; Earn the Right</p>
+            <h3 class="mk-audio-player__title">I Paid Tuition to the Market</h3>
+          </div>
+          <div class="mk-audio-player__controls">
+            <button class="mk-audio-player__play" type="button" aria-label="Play / pause">
+              <svg class="mk-audio-player__icon mk-audio-player__icon--play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+              <svg class="mk-audio-player__icon mk-audio-player__icon--pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg>
+            </button>
+            <div class="mk-audio-player__bar" role="slider" tabindex="0" aria-label="Seek">
+              <div class="mk-audio-player__progress"></div>
+            </div>
+            <div class="mk-audio-player__time">
+              <span class="mk-audio-player__time-cur">0:00</span>
+              <span class="mk-audio-player__time-sep">/</span>
+              <span class="mk-audio-player__time-dur">0:00</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="mk-cta-repeat">
+      <button class="btn-primary" data-cta-source="soundtrack" onclick="handleCheckout('price_1TUWVpJIDbUntZeXyQD23z8W',event)">Start 7-Day Free Trial &rarr;</button>
+    </div>
+  </div>
+</section>
+
 <!-- SOCIAL PROOF -->
 <hr class="mk-rule-gold">
 
@@ -2404,21 +2519,7 @@ function setPricing(annual){
 }
 function togglePricing(){setPricing(!isAnnual);}
 
-async function handleCheckout(priceId,e){
-  e.preventDefault();
-  const btn=e.currentTarget;
-  const finalId=(btn&&btn.dataset&&btn.dataset.priceId)?btn.dataset.priceId:priceId;
-  const orig=btn?btn.innerHTML:'';
-  if(btn){btn.innerHTML='Loading...';btn.disabled=true;}
-  const token=localStorage.getItem('maketzo_token');
-  if(!token){window.location.href=API+'/auth/google?checkout='+encodeURIComponent(finalId);return;}
-  try{
-    const res=await fetch(API+'/billing/create-checkout',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({priceId:finalId})});
-    const data=await res.json();
-    if(data.url){window.location.href=data.url;}
-    else{throw new Error(data.error||'Checkout failed');}
-  }catch(err){alert('Something went wrong. Please try again.');if(btn){btn.innerHTML=orig;btn.disabled=false;}}
-}
+// handleCheckout moved to assets/js/checkout.js (cookie-aware, plan-routing).
 
 // TOAST
 const firstNames=['Marcus','Jason','Tyler','David','Sarah','Amanda','Chris','Ryan','Mike','Lisa','Kevin','Dana','James','Priya','Tom','Aisha','Brian','Kelly','Derek','Lauren','Andre','Megan','Carlos','Nicole','Steve','Rachel','Eric','Heather','Nathan','Jessica','Greg','Samantha','Adam','Olivia','Scott','Kyle','Troy','Monica','Luke','Crystal','Zach','Amber','Paul','Danielle'];
