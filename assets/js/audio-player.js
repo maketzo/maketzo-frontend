@@ -125,3 +125,146 @@
     init();
   }
 })();
+
+/*!
+ * MAKETZO Share Widget
+ * Hybrid: navigator.share() on mobile (when available), explicit platform
+ * dropdown on desktop. Platforms: Email, X, WhatsApp, Telegram, Facebook,
+ * Copy link. No external dependencies.
+ */
+(function () {
+  "use strict";
+
+  var SHARE_PAYLOAD = {
+    title: "Earn the Right — MAKETZO",
+    text: "There's a trading album now. 'Earn the Right' by MAKETZO — songs for the bell, the wait, the win, and the loss. Each one too accurate.",
+    url: "https://maketzo.co/soundtrack"
+  };
+
+  var PLATFORM_URLS = {
+    email:    function (t, u) { return "mailto:?subject=" + encodeURIComponent("There's a trading album. Yes, really.") + "&body=" + encodeURIComponent(t + "\n\n" + u); },
+    sms:      function (t, u) { return "sms:?&body=" + encodeURIComponent(t + " " + u); },
+    twitter:  function (t, u) { return "https://twitter.com/intent/tweet?text=" + encodeURIComponent(t) + "&url=" + encodeURIComponent(u); },
+    whatsapp: function (t, u) { return "https://wa.me/?text=" + encodeURIComponent(t + " " + u); },
+    telegram: function (t, u) { return "https://t.me/share/url?url=" + encodeURIComponent(u) + "&text=" + encodeURIComponent(t); },
+    facebook: function (t, u) { return "https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(u); }
+  };
+
+  var openWidget = null;
+  var MENU_WIDTH = 240;
+  var MENU_GAP = 10;
+  var VIEWPORT_PAD = 12;
+
+  function positionMenu(trigger, menu) {
+    var rect = trigger.getBoundingClientRect();
+    var menuRect = menu.getBoundingClientRect();
+    var menuHeight = menuRect.height || 280;
+    var left = rect.left + rect.width / 2 - MENU_WIDTH / 2;
+    left = Math.max(VIEWPORT_PAD, Math.min(left, window.innerWidth - MENU_WIDTH - VIEWPORT_PAD));
+    var top = rect.bottom + MENU_GAP;
+    if (top + menuHeight > window.innerHeight - VIEWPORT_PAD) {
+      top = Math.max(VIEWPORT_PAD, rect.top - menuHeight - MENU_GAP);
+    }
+    menu.style.left = left + "px";
+    menu.style.top = top + "px";
+  }
+
+  function closeAll() {
+    if (!openWidget) return;
+    var trigger = openWidget.querySelector(".mk-share__trigger");
+    var menu = openWidget._mkMenu;
+    if (trigger) trigger.setAttribute("aria-expanded", "false");
+    if (menu) menu.hidden = true;
+    openWidget = null;
+  }
+
+  function showToast(root) {
+    var toast = root.querySelector(".mk-share-toast");
+    if (!toast) return;
+    toast.hidden = false;
+    toast.classList.add("is-visible");
+    setTimeout(function () {
+      toast.classList.remove("is-visible");
+      setTimeout(function () { toast.hidden = true; }, 300);
+    }, 1800);
+  }
+
+  function handlePlatform(platform, root) {
+    if (platform === "copy") {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(SHARE_PAYLOAD.url).then(function () { showToast(root); });
+      } else {
+        var ta = document.createElement("textarea");
+        ta.value = SHARE_PAYLOAD.url;
+        ta.style.position = "fixed"; ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand("copy"); showToast(root); } catch (e) {}
+        document.body.removeChild(ta);
+      }
+      return;
+    }
+    var builder = PLATFORM_URLS[platform];
+    if (builder) {
+      var url = builder(SHARE_PAYLOAD.text, SHARE_PAYLOAD.url);
+      if (platform === "email" || platform === "sms") {
+        window.location.href = url;
+      } else {
+        window.open(url, "_blank", "noopener,noreferrer");
+      }
+    }
+  }
+
+  function initShareWidget(root) {
+    var trigger = root.querySelector(".mk-share__trigger");
+    var menu = root.querySelector(".mk-share__menu");
+    if (!trigger || !menu) return;
+
+    // Portal the menu out to document.body so no ancestor with transform/filter
+    // can act as the containing block for position:fixed (a well-known CSS gotcha
+    // that overrides viewport-relative positioning).
+    document.body.appendChild(menu);
+    root._mkMenu = menu;
+
+    trigger.addEventListener("click", function (e) {
+      e.stopPropagation();
+      var isOpen = trigger.getAttribute("aria-expanded") === "true";
+      closeAll();
+      if (!isOpen) {
+        trigger.setAttribute("aria-expanded", "true");
+        menu.hidden = false;
+        positionMenu(trigger, menu);
+        openWidget = root;
+      }
+    });
+
+    menu.addEventListener("click", function (e) {
+      var btn = e.target.closest("[data-platform]");
+      if (!btn) return;
+      e.stopPropagation();
+      handlePlatform(btn.getAttribute("data-platform"), root);
+      closeAll();
+    });
+  }
+
+  function init() {
+    var widgets = document.querySelectorAll(".mk-share");
+    widgets.forEach(initShareWidget);
+    document.addEventListener("click", function (e) {
+      if (!openWidget) return;
+      var menu = openWidget._mkMenu;
+      if (!openWidget.contains(e.target) && (!menu || !menu.contains(e.target))) closeAll();
+    });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") closeAll();
+    });
+    window.addEventListener("scroll", function () { closeAll(); }, { passive: true });
+    window.addEventListener("resize", function () { closeAll(); });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
+})();
