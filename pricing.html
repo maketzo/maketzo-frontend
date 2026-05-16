@@ -17,6 +17,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/tokens.css">
 <link rel="stylesheet" href="assets/css/components.css">
+<script src="assets/js/checkout.js" defer></script>
 <style>
 /* ====================================================================
    /pricing — page-specific styles.
@@ -1224,22 +1225,7 @@ function setPricing(annual){
 }
 function togglePricing(){setPricing(!isAnnual);}
 
-// CHECKOUT — same flow as index.html
-async function handleCheckout(priceId,e){
-  if(e&&e.preventDefault)e.preventDefault();
-  const btn=e&&e.currentTarget?e.currentTarget:null;
-  const finalId=(btn&&btn.dataset&&btn.dataset.priceId)?btn.dataset.priceId:priceId;
-  const orig=btn?btn.innerHTML:'';
-  if(btn){btn.innerHTML='Loading...';btn.disabled=true;}
-  const token=localStorage.getItem('maketzo_token');
-  if(!token){window.location.href=API+'/auth/google?checkout='+encodeURIComponent(finalId);return;}
-  try{
-    const res=await fetch(API+'/billing/create-checkout',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({priceId:finalId})});
-    const data=await res.json();
-    if(data.url){window.location.href=data.url;}
-    else{throw new Error(data.error||'Checkout failed');}
-  }catch(err){alert('Something went wrong. Please try again.');if(btn){btn.innerHTML=orig;btn.disabled=false;}}
-}
+// CHECKOUT logic moved to assets/js/checkout.js (cookie-aware, plan-routing).
 
 // REVEAL
 const reveals=document.querySelectorAll('.reveal');
