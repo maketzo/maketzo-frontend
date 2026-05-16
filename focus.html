@@ -335,6 +335,27 @@ body.hero-loaded .page-hero .page-hero-sub { opacity: 1; transform: translateY(0
 .zone-pending-tag { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); margin-bottom: 10px; }
 .zone-pending-text { font-size: var(--mk-text-sm); color: var(--mk-text-tertiary); line-height: 1.5; margin: 0; }
 
+.mk-spotify-frame {
+  position: relative;
+  border-radius: var(--mk-radius-card-lg);
+  background: linear-gradient(135deg, var(--mk-gold-500), var(--mk-brand-deep));
+  padding: 2px;
+  box-shadow:
+    0 12px 48px rgba(0, 0, 0, 0.40),
+    0 0 0 1px rgba(212, 175, 55, 0.15),
+    0 0 40px -16px rgba(212, 175, 55, 0.45);
+}
+.mk-spotify-frame iframe {
+  display: block;
+  width: 100%;
+  height: 352px;
+  border: 0;
+  border-radius: calc(var(--mk-radius-card-lg) - 2px);
+  background: var(--mk-obsidian-900);
+}
+.zone-samples-player { max-width: 720px; margin: 24px auto 0; }
+.mk-zone-album-cta { display: inline-block; margin-top: 28px; }
+
 @media (max-width: 1000px) { .zone-grid { grid-template-columns: repeat(2, 1fr); max-width: 720px; } }
 @media (max-width: 640px) {
   .zone-grid { grid-template-columns: 1fr; max-width: 480px; }
@@ -752,18 +773,23 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
     </div>
 
     <div class="zone-samples reveal">
-      <h3 class="zone-samples-title">Sample Tracks</h3>
-      <p class="zone-samples-sub">Listen to a preview of the audio environments included with Focus Room.</p>
-      <div class="zone-samples-grid">
-        <div class="zone-sample" data-spotify-slot="zone-tracks-sample-1">
-          <span class="zone-pending-tag">Spotify embed &middot; launching soon</span>
-          <p class="zone-pending-text">Sample preview live shortly.</p>
-        </div>
-        <div class="zone-sample" data-spotify-slot="zone-tracks-sample-2">
-          <span class="zone-pending-tag">Spotify embed &middot; launching soon</span>
-          <p class="zone-pending-text">Sample preview live shortly.</p>
-        </div>
+      <h3 class="zone-samples-title">The MAKETZO Soundtrack</h3>
+      <p class="zone-samples-sub">Five tracks written from inside the screen. Press play, or open the full album on Spotify.</p>
+      <div class="zone-samples-player mk-spotify-frame">
+        <iframe
+          title="Earn the Right &mdash; MAKETZO"
+          src="https://open.spotify.com/embed/album/53bEF2QXarb6e27FcvS6H7?utm_source=generator&amp;theme=0"
+          width="100%"
+          height="352"
+          frameborder="0"
+          loading="lazy"
+          allowfullscreen
+          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture">
+        </iframe>
       </div>
+      <a class="btn-ghost mk-zone-album-cta" href="https://open.spotify.com/album/53bEF2QXarb6e27FcvS6H7" target="_blank" rel="noopener">
+        Open <em>Earn the Right</em> on Spotify &rarr;
+      </a>
     </div>
 
     <div class="mk-cta-repeat">
