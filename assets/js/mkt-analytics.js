@@ -45,13 +45,14 @@
     return "https://api." + h;
   })();
 
-  // Ed fills these in after PostHog signup. Empty key = PostHog disabled
-  // for that tier (graceful no-op; backend analytics still fire).
+  // Single PostHog project for all tiers (filter by host in dashboards if
+  // dev/staging noise becomes a problem). Project token is write-only and
+  // safe to embed client-side per PostHog's docs.
   var POSTHOG_KEYS = {
-    "maketzo.co":         "",
-    "staging.maketzo.co": "",
-    "dev.maketzo.co":     "",
-    "localhost":          ""
+    "maketzo.co":         "phc_t4DFgxhUSgonk6g6FHBWaixHzMCnTeqTSKhZXW2rW65Q",
+    "staging.maketzo.co": "phc_t4DFgxhUSgonk6g6FHBWaixHzMCnTeqTSKhZXW2rW65Q",
+    "dev.maketzo.co":     "phc_t4DFgxhUSgonk6g6FHBWaixHzMCnTeqTSKhZXW2rW65Q",
+    "localhost":          "phc_t4DFgxhUSgonk6g6FHBWaixHzMCnTeqTSKhZXW2rW65Q"
   };
   var POSTHOG_HOST = "https://us.i.posthog.com";
 
@@ -199,6 +200,11 @@
       capture_pageview: false,   // We fire page_view manually with our anon_id.
       autocapture: false,         // We instrument explicitly via data-cta-*.
       disable_session_recording: true,
+      // Only create PostHog "person" records after MKT.identify(email). Anon
+      // visitors still fire events but don't burn through the free-tier
+      // person quota until they convert. Matches PostHog's privacy-first
+      // recommendation in their HTML snippet template.
+      person_profiles: 'identified_only',
       loaded: function () { posthogReady = true; drainQueue(); }
     });
   }
