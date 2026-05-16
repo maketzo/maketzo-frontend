@@ -22,7 +22,10 @@
   //   maketzo.co (apex) → https://api.maketzo.co
   //   <sub>.maketzo.co  → https://<sub>-api.maketzo.co   (dev → dev-api, etc.)
   const API = (function () {
-    const h = window.location.hostname;
+    // Chrome hides "www." in the URL bar but window.location.hostname returns
+    // it. Strip leading www. so the apex and www variants resolve identically.
+    const h0 = window.location.hostname;
+    const h = h0.indexOf('www.') === 0 ? h0.slice(4) : h0;
     if (h === 'localhost' || h.indexOf('127.') === 0) return 'http://localhost:3000';
     if (h === 'maketzo.co') return 'https://api.maketzo.co';
     const parts = h.split('.');
