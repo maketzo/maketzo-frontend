@@ -1,14 +1,17 @@
 # ──────────────────────────────────────────────────────────────────────────────
 # Basic-auth gate — dev preview tier only. Do NOT merge this block to main.
-# .htpasswd lives outside the deploy target so git deploys don't wipe it.
-# Ed must place /home/u775138918/.htpasswds/dev/.htpasswd via Hostinger File
-# Manager with contents: maketzo:{SHA}2Mr4BiVLp+Q122AnRsapza44cQs=
-# (SHA1 hash of "Ganda513!" — change here AND in .htpasswd to rotate.)
+# .htpasswd is committed alongside this file (hashed; safe to be in git for a
+# preview tier). The <Files> block below blocks public HTTP access to it.
+# To rotate: regenerate SHA1 hash, update .htpasswd, redeploy.
 # ──────────────────────────────────────────────────────────────────────────────
 AuthType Basic
 AuthName "MAKETZO Preview"
-AuthUserFile "/home/u775138918/.htpasswds/dev/.htpasswd"
+AuthUserFile "/home/u775138918/domains/maketzo.co/public_html/dev/.htpasswd"
 Require valid-user
+
+<Files ".htpasswd">
+    Require all denied
+</Files>
 
 # MIME types for modern image formats
 # Hostinger / LiteSpeed do not register these by default; without this block
