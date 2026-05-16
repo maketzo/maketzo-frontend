@@ -458,6 +458,10 @@
       title: "Earn the Right (Bossa Nova Redux) — MAKETZO",
       text:  "Same lesson, bossa nova. Try not to dance through your stop loss."
     },
+    jazz: {
+      title: "Earn the Right (Jazz Lounge Redux) — MAKETZO",
+      text:  "Earn the Right, after midnight. Same discipline, smoky bar lighting."
+    },
     goth: {
       title: "Earn the Right (Goth Redux) — MAKETZO",
       text:  "For when paying tuition feels like a funeral. Same song, darker."
@@ -470,22 +474,38 @@
       title: "Wait for Acceptance — MAKETZO",
       text:  "The hardest trade is the one you didn't take. A song about patience."
     },
+    stronger: {
+      title: "Stronger Than the Red — MAKETZO",
+      text:  "Red is just data. This song is about being stronger than it."
+    },
+    cushion: {
+      title: "Build a Cushion (Broadway) — MAKETZO",
+      text:  "A Broadway number about the only edge that matters: a bigger cushion."
+    },
     focus: {
       title: "Deep Focus Threshold — MAKETZO",
       text:  "A binaural focus track designed to help traders stay locked in during live trading."
+    },
+    "focus-redux": {
+      title: "Deep Focus Threshold (Redux) — MAKETZO",
+      text:  "Same binaural threshold, deeper drift. Engineered for the long session."
     }
   };
 
   // Email-subject lines are platform-specific because mailto: lets us set one.
   var ALBUM_EMAIL_SUBJECT = "There's a trading album. Yes, really.";
   var TRACK_EMAIL_SUBJECTS = {
-    tuition:  "Every trader has paid tuition",
-    earn:     "Earn the right — listen",
-    bossa:    "Earn the Right, but it's bossa nova",
-    goth:     "Earn the Right, but it's a funeral",
-    hairband: "Earn the Right, but it's a power ballad",
-    wait:     "A song about waiting for the right trade",
-    focus:    "Trading focus track — binaural"
+    tuition:       "Every trader has paid tuition",
+    earn:          "Earn the right — listen",
+    bossa:         "Earn the Right, but it's bossa nova",
+    jazz:          "Earn the Right, after midnight",
+    goth:          "Earn the Right, but it's a funeral",
+    hairband:      "Earn the Right, but it's a power ballad",
+    wait:          "A song about waiting for the right trade",
+    stronger:      "A song about being stronger than red",
+    cushion:       "A Broadway song about your account cushion",
+    focus:         "Trading focus track — binaural",
+    "focus-redux": "Deep Focus, deeper take"
   };
 
   var PLATFORM_URLS = {
