@@ -1,5 +1,9 @@
 <!DOCTYPE html>
-<!-- login — email+password · magic-link · Google · cookie session (Auth v2 PR4) -->
+<!-- login — email+password · magic-link · Google · cookie session (Auth v2 PR4)
+     Plan-aware mode: when ?plan=<priceId> is present, the page is the
+     return-customer path of a "Start Free Trial" click. After a successful
+     login we POST /billing/create-checkout (cookie session) and redirect
+     to Stripe instead of /app. -->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -31,9 +35,9 @@
   </a>
 
   <div class="auth-card">
-    <p class="auth-eyebrow">SIGN IN</p>
-    <h1 class="auth-title">Welcome back.</h1>
-    <p class="auth-sub">Sign in to keep your streak going.</p>
+    <p class="auth-eyebrow" id="eyebrow">SIGN IN</p>
+    <h1 class="auth-title" id="title">Welcome back.</h1>
+    <p class="auth-sub" id="sub">Sign in to keep your streak going.</p>
 
     <div id="banner" class="auth-banner" hidden></div>
 
@@ -63,7 +67,7 @@
     </div>
 
     <div class="auth-foot">
-      New to MAKETZO? <a href="signup.html">Create an account</a>
+      New to MAKETZO? <a href="signup.html" id="signupLink">Create an account</a>
     </div>
   </div>
 
@@ -80,7 +84,29 @@ const API = (() => {
   return 'https://api.maketzo.co';
 })();
 
+// ── Plan-aware mode ──────────────────────────────────────────
+// Mirror of signup.html — keep TIER_BY_PRICE in sync there.
+const TIER_BY_PRICE = {
+  'price_1TUWS7JIDbUntZeXg0a1Sgj5': { name: 'Journal', amount: '$19/mo' },
+  'price_1TUWUUJIDbUntZeX9CMTqV1D': { name: 'Journal', amount: '$159/yr' },
+  'price_1TUWVpJIDbUntZeXyQD23z8W': { name: 'Pro',     amount: '$49/mo' },
+  'price_1TUWZIJIDbUntZeXl4Xtfudj': { name: 'Pro',     amount: '$399/yr' },
+  'price_1TUWabJIDbUntZeXYh8IrvEa': { name: 'Elite',   amount: '$79/mo' },
+  'price_1TUWc2JIDbUntZeXOIkeHml4': { name: 'Elite',   amount: '$649/yr' }
+};
+
 const params = new URLSearchParams(window.location.search);
+const planId = params.get('plan') || '';
+const tier   = planId && TIER_BY_PRICE[planId] ? TIER_BY_PRICE[planId] : null;
+
+if (tier) {
+  document.getElementById('eyebrow').textContent = `START ${tier.name.toUpperCase()} TRIAL`;
+  document.getElementById('title').innerHTML = `Sign in to start <em>${tier.name}.</em>`;
+  document.getElementById('sub').textContent = `${tier.amount} · 7-day free trial · no charge until day 8.`;
+  document.getElementById('loginSubmit').textContent = 'Sign in & start trial';
+  document.getElementById('signupLink').setAttribute('href', 'signup.html?plan=' + encodeURIComponent(planId));
+}
+
 const banner = document.getElementById('banner');
 function showBanner(text, type) {
   banner.textContent = text;
@@ -91,8 +117,31 @@ if (params.get('magic') === 'invalid') showBanner('That magic link is invalid or
 if (params.get('reset') === 'ok')     showBanner('Password reset. You can sign in with your new password.', 'ok');
 if (params.get('verified') === '1')   showBanner('Email verified. Sign in to continue.', 'ok');
 
+function getCsrfCookie() {
+  const m = document.cookie.match(/(?:^|;\s*)mkt_csrf=([^;]+)/);
+  return m ? decodeURIComponent(m[1]) : '';
+}
+
+async function startStripeCheckoutWithSession() {
+  const csrf = getCsrfCookie();
+  const res = await fetch(API + '/billing/create-checkout', {
+    method: 'POST',
+    credentials: 'include',
+    headers: Object.assign(
+      { 'Content-Type': 'application/json' },
+      csrf ? { 'X-CSRF-Token': csrf } : {}
+    ),
+    body: JSON.stringify({ priceId: planId })
+  });
+  const data = await res.json().catch(() => ({}));
+  if (data.url) { window.location.href = data.url; return true; }
+  showBanner(data.error || 'Could not start checkout. Please try again.', 'error');
+  return false;
+}
+
 document.getElementById('googleBtn').addEventListener('click', () => {
-  window.location.href = API + '/auth/google';
+  const url = API + '/auth/google' + (planId ? '?checkout=' + encodeURIComponent(planId) : '');
+  window.location.href = url;
 });
 
 document.getElementById('loginForm').addEventListener('submit', async (e) => {
@@ -102,7 +151,8 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
   const password = document.getElementById('password').value;
   if (!email || !password) { showBanner('Email and password are required.', 'error'); return; }
   const orig = btn.innerHTML;
-  btn.innerHTML = 'Signing in…'; btn.disabled = true;
+  btn.innerHTML = planId ? 'Starting trial…' : 'Signing in…';
+  btn.disabled = true;
   try {
     const res = await fetch(API + '/auth/login', {
       method: 'POST', credentials: 'include',
@@ -111,6 +161,11 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
     });
     const data = await res.json().catch(() => ({}));
     if (res.ok && data.ok) {
+      if (planId) {
+        const ok = await startStripeCheckoutWithSession();
+        if (!ok) { btn.innerHTML = orig; btn.disabled = false; }
+        return;
+      }
       window.location.href = '/app';
       return;
     }
