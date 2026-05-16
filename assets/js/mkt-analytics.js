@@ -36,8 +36,11 @@
 
   // ── Configuration ────────────────────────────────────────────────────
   // Tier-aware API base — same derivation as checkout.js / audio-player.js.
+  // Chrome hides "www." in the URL bar but window.location.hostname returns
+  // it. Strip leading www. so the apex and www variants resolve identically.
   var API_BASE = (function () {
-    var h = window.location.hostname;
+    var h0 = window.location.hostname;
+    var h = h0.indexOf("www.") === 0 ? h0.slice(4) : h0;
     if (h === "localhost" || h.indexOf("127.") === 0) return "http://localhost:3000";
     if (h === "maketzo.co") return "https://api.maketzo.co";
     var parts = h.split(".");
