@@ -17,7 +17,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/tokens.css">
 <link rel="stylesheet" href="assets/css/components.css">
-<script src="assets/js/checkout.js" defer></script>
+<script src="assets/js/mkt-analytics.js?v=1" defer></script>
+<script src="assets/js/mkt-consent.js?v=1" defer></script>
+<script src="assets/js/checkout.js?v=2" defer></script>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
@@ -279,7 +281,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
         <h2 class="contact-form-title">Send us a message</h2>
         <p class="contact-form-sub">Fill it in and hit submit. It goes straight to info@maketzo.co.</p>
 
-        <form id="contactForm" novalidate>
+        <form id="contactForm" data-form-id="contact" novalidate>
           <div class="mk-form-field">
             <label for="cname">Your name</label>
             <input id="cname" name="name" type="text" autocomplete="name" required maxlength="120">
@@ -434,7 +436,10 @@ document.getElementById('contactForm').addEventListener('submit',async function(
   try{
     const res=await fetch(API+'/contact',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
     const json=await res.json();
-    if(res.ok&&json.ok){form.style.display='none';success.classList.add('show');}
+    if(res.ok&&json.ok){
+      if(window.MKT)window.MKT.trackEvent('form_submit',{form:'contact',subject:data.subject||null});
+      form.style.display='none';success.classList.add('show');
+    }
     else{throw new Error(json.error||'Send failed');}
   }catch(err){alert(err.message||'Something went wrong. Email info@maketzo.co directly.');submitBtn.innerHTML=orig;submitBtn.disabled=false;}
 });
