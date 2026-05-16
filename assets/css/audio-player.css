@@ -214,3 +214,137 @@
   .mk-audio-player__time { grid-area: time; text-align: center; min-width: 0; }
   .mk-audio-player__title { font-size: 1.1rem; }
 }
+
+/* ─────────────────────────────────────────────────────────────────
+   MAKETZO Share Widget
+   Trigger button + dropdown menu of platform options + copy toast.
+   ───────────────────────────────────────────────────────────────── */
+
+.mk-share {
+  position: relative;
+  display: inline-block;
+}
+.mk-share__trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+.mk-share__icon {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+  flex-shrink: 0;
+}
+.mk-share--primary .mk-share__trigger,
+.mk-share__trigger.mk-share__trigger--primary {
+  background: var(--mk-brand);
+  color: var(--mk-obsidian-900);
+  border: 0;
+  padding: 14px 28px;
+  border-radius: var(--mk-radius-card-sm);
+  font-family: var(--mk-font-display);
+  font-size: 1rem;
+  letter-spacing: var(--mk-track-display);
+  text-transform: uppercase;
+  font-weight: 600;
+  transition: transform var(--mk-dur-snap) var(--mk-ease-out), background var(--mk-dur-snap);
+}
+.mk-share--primary .mk-share__trigger:hover,
+.mk-share__trigger.mk-share__trigger--primary:hover {
+  transform: translateY(-1px);
+  background: var(--mk-gold-500);
+}
+
+.mk-share__menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  width: 320px;
+  padding: 12px;
+  background: var(--mk-obsidian-800);
+  border: 1px solid rgba(212, 175, 55, 0.24);
+  border-radius: var(--mk-radius-card);
+  box-shadow:
+    0 12px 36px rgba(0, 0, 0, 0.50),
+    0 0 0 1px rgba(212, 175, 55, 0.10);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  text-align: center;
+}
+.mk-share__menu[hidden] { display: none; }
+
+.mk-share__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 14px 8px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: var(--mk-radius-card-sm);
+  color: var(--mk-text-secondary);
+  font-family: var(--mk-font-sans);
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  width: 100%;
+  transition: background var(--mk-dur-snap), color var(--mk-dur-snap), border-color var(--mk-dur-snap);
+}
+.mk-share__item:hover {
+  background: rgba(212, 175, 55, 0.10);
+  color: var(--mk-text-primary);
+  border-color: rgba(212, 175, 55, 0.30);
+}
+.mk-share__item:focus-visible { outline: 2px solid var(--mk-brand); outline-offset: -2px; }
+.mk-share__item-icon {
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
+  flex-shrink: 0;
+}
+.mk-share__item--wide {
+  grid-column: 1 / -1;
+  flex-direction: row;
+  padding: 12px 14px;
+  gap: 10px;
+  font-size: 0.875rem;
+  background: rgba(212, 175, 55, 0.06);
+  border-color: rgba(212, 175, 55, 0.20);
+}
+.mk-share__item--wide .mk-share__item-icon { width: 18px; height: 18px; }
+
+.mk-share-toast {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  z-index: 200;
+  padding: 12px 24px;
+  background: var(--mk-obsidian-800);
+  border: 1px solid var(--mk-brand);
+  border-radius: var(--mk-radius-card);
+  color: var(--mk-text-primary);
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-sm);
+  letter-spacing: var(--mk-track-eyebrow);
+  text-transform: uppercase;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--mk-dur-snap), transform var(--mk-dur-snap) var(--mk-ease-out);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+.mk-share-toast[hidden] { display: none; }
+.mk-share-toast.is-visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+@media (max-width: 480px) {
+  .mk-share__menu {
+    width: 220px;
+  }
+}
