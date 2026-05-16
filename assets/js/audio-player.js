@@ -151,16 +151,17 @@
   };
 
   var openWidget = null;
-  var MENU_WIDTH = 240;
+  var MENU_WIDTH = 320;
   var MENU_GAP = 10;
   var VIEWPORT_PAD = 12;
 
   function positionMenu(trigger, menu) {
     var rect = trigger.getBoundingClientRect();
     var menuRect = menu.getBoundingClientRect();
+    var menuWidth = menuRect.width || MENU_WIDTH;
     var menuHeight = menuRect.height || 280;
-    var left = rect.left + rect.width / 2 - MENU_WIDTH / 2;
-    left = Math.max(VIEWPORT_PAD, Math.min(left, window.innerWidth - MENU_WIDTH - VIEWPORT_PAD));
+    var left = rect.left + rect.width / 2 - menuWidth / 2;
+    left = Math.max(VIEWPORT_PAD, Math.min(left, window.innerWidth - menuWidth - VIEWPORT_PAD));
     var top = rect.bottom + MENU_GAP;
     if (top + menuHeight > window.innerHeight - VIEWPORT_PAD) {
       top = Math.max(VIEWPORT_PAD, rect.top - menuHeight - MENU_GAP);
