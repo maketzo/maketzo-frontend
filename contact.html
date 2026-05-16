@@ -17,6 +17,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/tokens.css">
 <link rel="stylesheet" href="assets/css/components.css">
+<script src="assets/js/checkout.js" defer></script>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
@@ -408,20 +409,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 const API='https://api.maketzo.co';
 function toggleDrawer(){const d=document.getElementById('mobileDrawer');const o=document.getElementById('mobileOverlay');const h=document.getElementById('hamburger');d.classList.toggle('open');o.classList.toggle('open');h.classList.toggle('open');document.body.style.overflow=d.classList.contains('open')?'hidden':'';}
 function closeDrawer(){document.getElementById('mobileDrawer').classList.remove('open');document.getElementById('mobileOverlay').classList.remove('open');document.getElementById('hamburger').classList.remove('open');document.body.style.overflow='';}
-async function handleCheckout(priceId,e){
-  if(e&&e.preventDefault)e.preventDefault();
-  const btn=e&&e.currentTarget?e.currentTarget:null;
-  const finalId=(btn&&btn.dataset&&btn.dataset.priceId)?btn.dataset.priceId:priceId;
-  const orig=btn?btn.innerHTML:'';
-  if(btn){btn.innerHTML='Loading...';btn.disabled=true;}
-  const token=localStorage.getItem('maketzo_token');
-  if(!token){window.location.href=API+'/auth/google?checkout='+encodeURIComponent(finalId);return;}
-  try{
-    const res=await fetch(API+'/billing/create-checkout',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({priceId:finalId})});
-    const data=await res.json();
-    if(data.url){window.location.href=data.url;}else{throw new Error(data.error||'Checkout failed');}
-  }catch(err){alert('Something went wrong. Please try again.');if(btn){btn.innerHTML=orig;btn.disabled=false;}}
-}
+// handleCheckout moved to assets/js/checkout.js.
 const reveals=document.querySelectorAll('.reveal');
 const obs=new IntersectionObserver((entries)=>{entries.forEach((e,i)=>{if(e.isIntersecting){setTimeout(()=>e.target.classList.add('visible'),i*50);obs.unobserve(e.target);}});},{threshold:0.06});
 reveals.forEach(el=>obs.observe(el));
