@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<!-- soundtrack — MAKETZO Soundtrack: the album that surprises traders and helps them stay disciplined -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The MAKETZO Soundtrack — Music for Traders Who Want to Stay Disciplined</title>
+<meta name="description" content="A trading soundtrack engineered to help traders stay disciplined. Catchy, painfully relatable songs built around the mistakes every trader knows too well — revenge trading, FOMO, overtrading, and paying tuition to the market.">
+<meta name="theme-color" content="#06070A">
+<meta property="og:title" content="Earn the Right &mdash; MAKETZO">
+<meta property="og:description" content="There&rsquo;s a trading album now. &lsquo;Earn the Right&rsquo; by MAKETZO &mdash; songs for the bell, the wait, the win, and the loss. Each one too accurate.">
+<meta property="og:url" content="https://maketzo.co/soundtrack">
+<meta property="og:type" content="music.album">
+<meta property="og:image" content="https://maketzo.co/assets/album-cover.jpg">
+<meta property="og:image:width" content="600">
+<meta property="og:image:height" content="600">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Earn the Right &mdash; MAKETZO">
+<meta name="twitter:description" content="There&rsquo;s a trading album now. &lsquo;Earn the Right&rsquo; by MAKETZO &mdash; songs for the bell, the wait, the win, and the loss. Each one too accurate.">
+<meta name="twitter:image" content="https://maketzo.co/assets/album-cover.jpg">
+<link rel="canonical" href="https://maketzo.co/soundtrack">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/css/audio-player.css">
+<script src="assets/js/checkout.js" defer></script>
+<script src="assets/js/audio-player.js" defer></script>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--mk-surface-page); color: var(--mk-text-primary); font-family: var(--mk-font-sans); font-size: var(--mk-text-md); line-height: var(--mk-lead-body); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+a { color: inherit; text-decoration: none; }
+ul, ol { list-style: none; }
+img { display: block; max-width: 100%; }
+em, i { font-style: italic; }
+strong { color: var(--mk-text-primary); font-weight: 600; }
+
+/* ── Mobile drawer + overlay ─────────────────────────────────────── */
+.mobile-overlay { position: fixed; inset: 0; z-index: 90; background: rgba(0,0,0,.6); backdrop-filter: blur(6px); opacity: 0; pointer-events: none; transition: opacity var(--mk-dur-med); }
+.mobile-overlay.open { opacity: 1; pointer-events: auto; }
+.mobile-drawer { position: fixed; top: 0; right: 0; bottom: 0; z-index: 100; width: min(320px, 88%); background: var(--mk-surface-base); border-left: var(--mk-border-soft); padding: 80px 28px 28px; transform: translateX(100%); transition: transform var(--mk-dur-med) var(--mk-ease-out); display: flex; flex-direction: column; gap: 20px; }
+.mobile-drawer.open { transform: translateX(0); }
+.mobile-drawer-links li { padding: 12px 0; border-bottom: var(--mk-border-hairline); }
+.mobile-drawer-links a { font-family: var(--mk-font-display); font-size: var(--mk-display-md); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); }
+.mobile-drawer-cta { display: inline-flex; align-items: center; justify-content: center; background: var(--mk-gold-gradient); color: var(--mk-text-on-gold); font-family: var(--mk-font-sans); font-weight: 600; font-size: var(--mk-text-sm); letter-spacing: var(--mk-track-cap); text-transform: uppercase; padding: 14px 22px; border: 1px solid rgba(0,0,0,.18); border-radius: var(--mk-radius-button); cursor: pointer; margin-top: auto; }
+
+/* ── Nav ─────────────────────────────────────────────────────────── */
+#mainNav { position: fixed; top: 0; left: 0; right: 0; z-index: 50; background: rgba(6,7,10,.85); backdrop-filter: blur(20px) saturate(140%); border-bottom: 1px solid rgba(212,175,55,.12); transition: border-color var(--mk-dur-snap); display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 14px 32px 14px 64px; }
+.nav-logo.mk-brand-lockup { --mk-brand-lockup-mark-h: 44px; --mk-brand-lockup-wordmark-h: 22px; --mk-brand-lockup-gap: 10px; }
+.nav-links { display: flex; align-items: center; gap: 28px; margin: 0; padding: 0; }
+.nav-links > li > a:not(.nav-login-btn) { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); font-weight: 500; letter-spacing: 0.02em; transition: color var(--mk-dur-fast); }
+.nav-links > li > a:not(.nav-login-btn):hover { color: var(--mk-text-primary); }
+.nav-links > li > a[aria-current="page"] { color: var(--mk-brand); }
+.nav-login-btn { display: inline-flex; align-items: center; font-size: var(--mk-text-sm); font-weight: 600; letter-spacing: var(--mk-track-cap); text-transform: uppercase; padding: 7px 14px; color: var(--mk-text-secondary); border: 1px solid var(--mk-smoke-700); border-radius: var(--mk-radius-button); transition: color var(--mk-dur-fast), border-color var(--mk-dur-fast), background var(--mk-dur-fast); }
+.nav-login-btn:hover { color: var(--mk-text-primary); border-color: var(--mk-smoke-600); background: rgba(255,255,255,.03); }
+.nav-cta { display: inline-flex; align-items: center; justify-content: center; font-family: var(--mk-font-sans); font-size: var(--mk-text-sm); font-weight: 600; letter-spacing: var(--mk-track-cap); text-transform: uppercase; padding: 7px 14px; border: 1px solid rgba(0,0,0,.18); border-radius: var(--mk-radius-button); cursor: pointer; background: var(--mk-gold-gradient); color: var(--mk-text-on-gold); transition: transform var(--mk-dur-snap), box-shadow var(--mk-dur-snap); white-space: nowrap; }
+.nav-cta:hover { transform: translateY(-1px); box-shadow: var(--mk-glow-gold-sm); }
+.hamburger { display: none; background: transparent; border: 0; padding: 8px; cursor: pointer; flex-direction: column; gap: 5px; }
+.hamburger span { display: block; width: 24px; height: 2px; background: var(--mk-text-primary); transition: transform var(--mk-dur-snap), opacity var(--mk-dur-snap); }
+.hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+@media (max-width: 900px) { #mainNav { padding: 12px 20px; gap: 16px; } .nav-links { display: none; } .hamburger { display: flex; } }
+
+/* ── Buttons (shared with other pages) ───────────────────────────── */
+.btn-primary, .btn-secondary, .btn-ghost { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-family: var(--mk-font-sans); font-size: var(--mk-text-sm); font-weight: 600; letter-spacing: var(--mk-track-cap); text-transform: uppercase; padding: 12px 22px; border-radius: var(--mk-radius-button); border: 1px solid transparent; cursor: pointer; text-decoration: none; white-space: nowrap; transition: transform var(--mk-dur-snap), box-shadow var(--mk-dur-snap), background var(--mk-dur-snap), border-color var(--mk-dur-snap), color var(--mk-dur-snap); }
+.btn-primary { background: var(--mk-gold-gradient); color: var(--mk-text-on-gold); border-color: rgba(0,0,0,.18); }
+.btn-primary:hover { transform: translateY(-1px); box-shadow: var(--mk-glow-gold-md); color: var(--mk-text-on-gold); }
+.btn-secondary { background: transparent; color: var(--mk-text-primary); border: var(--mk-border-gold); }
+.btn-secondary:hover { color: var(--mk-brand); border-color: var(--mk-brand); background: rgba(212,175,55,.06); }
+.btn-ghost { background: transparent; color: var(--mk-text-secondary); border-color: var(--mk-smoke-700); padding: 10px 18px; font-size: var(--mk-text-xs); }
+.btn-ghost:hover { color: var(--mk-text-primary); border-color: var(--mk-smoke-600); background: rgba(255,255,255,.03); }
+
+/* ── Footer ──────────────────────────────────────────────────────── */
+footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairline); padding: 56px 0 28px; }
+.footer-inner { max-width: var(--mk-container-marketing); margin: 0 auto; padding: 0 32px; }
+.footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; margin-bottom: 32px; padding-bottom: 32px; border-bottom: var(--mk-border-hairline); }
+.footer-logo-wrap { display: flex; flex-direction: column; align-items: flex-start; gap: 18px; margin-bottom: 12px; }
+.footer-logo-wrap .mk-brand-lockup { --mk-brand-lockup-mark-h: 40px; --mk-brand-lockup-wordmark-h: 20px; }
+.footer-tagline { font-size: var(--mk-text-sm); color: var(--mk-text-tertiary); line-height: var(--mk-lead-body); max-width: 360px; }
+.footer-tagline strong { display: block; color: var(--mk-text-primary); margin-bottom: 4px; }
+.footer-col-title { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); margin-bottom: 16px; }
+.footer-links { display: flex; flex-direction: column; gap: 10px; padding: 0; }
+.footer-links a { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); transition: color var(--mk-dur-fast); }
+.footer-links a:hover { color: var(--mk-text-primary); }
+.footer-bottom { display: flex; flex-direction: column; gap: 10px; }
+.footer-copy { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: 0.04em; color: var(--mk-text-tertiary); }
+.footer-disclaimer { font-size: var(--mk-text-xs); color: var(--mk-text-tertiary); line-height: var(--mk-lead-body); max-width: 900px; }
+@media (max-width: 760px) { .footer-grid { grid-template-columns: 1fr; gap: 28px; } }
+
+/* ── Shared utility ──────────────────────────────────────────────── */
+hr.mk-rule-gold, hr.mk-rule-gold--bold { margin: 0 auto; max-width: 1180px; }
+.reveal { opacity: 0; transform: translateY(16px); transition: opacity var(--mk-dur-slow) var(--mk-ease-out), transform var(--mk-dur-slow) var(--mk-ease-out); }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ── Soundtrack page-specific layout ─────────────────────────────── */
+.soundtrack-hero {
+  padding: 120px 24px 64px;
+  text-align: center;
+  position: relative;
+}
+.soundtrack-hero-eyebrow {
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-xs);
+  letter-spacing: var(--mk-track-eyebrow);
+  text-transform: uppercase;
+  color: var(--mk-brand);
+  margin-bottom: 18px;
+}
+.soundtrack-hero-title {
+  font-family: var(--mk-font-display);
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  letter-spacing: var(--mk-track-display);
+  text-transform: uppercase;
+  line-height: 1.05;
+  color: var(--mk-text-primary);
+  margin-bottom: 22px;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.soundtrack-hero-title em { font-style: normal; background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.soundtrack-hero-sub {
+  font-size: 1.15rem;
+  color: var(--mk-text-secondary);
+  line-height: 1.5;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.soundtrack-player-section {
+  padding: 32px 24px 64px;
+}
+.soundtrack-player-wrap {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.soundtrack-story {
+  padding: 64px 24px;
+  max-width: 720px;
+  margin: 0 auto;
+  text-align: center;
+}
+.soundtrack-story h2 {
+  font-family: var(--mk-font-display);
+  font-size: clamp(1.6rem, 2.8vw, 2.1rem);
+  letter-spacing: var(--mk-track-display);
+  text-transform: uppercase;
+  color: var(--mk-text-primary);
+  margin-bottom: 28px;
+}
+.soundtrack-story h2 em { font-style: normal; background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.soundtrack-story p {
+  font-size: 1.0625rem;
+  color: var(--mk-text-secondary);
+  line-height: 1.65;
+  margin-bottom: 18px;
+}
+.soundtrack-story p em {
+  color: var(--mk-text-primary);
+  font-style: normal;
+  font-weight: 600;
+}
+.soundtrack-story-tagline {
+  font-family: var(--mk-font-display);
+  font-size: clamp(1.2rem, 2vw, 1.5rem);
+  letter-spacing: var(--mk-track-display);
+  text-transform: uppercase;
+  color: var(--mk-brand);
+  margin-top: 28px;
+  padding-top: 22px;
+  border-top: 1px solid rgba(212, 175, 55, 0.18);
+}
+
+.soundtrack-cta-section {
+  padding: 48px 24px 96px;
+  text-align: center;
+}
+.soundtrack-cta-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  max-width: 480px;
+  margin: 0 auto;
+}
+.soundtrack-cta-primary {
+  width: 100%;
+  max-width: 360px;
+}
+.soundtrack-cta-primary .mk-share__trigger { width: 100%; justify-content: center; }
+.soundtrack-cta-trial {
+  font-family: var(--mk-font-display);
+  font-size: 0.95rem;
+  letter-spacing: var(--mk-track-display);
+  text-transform: uppercase;
+  color: var(--mk-text-secondary);
+  padding: 12px 24px;
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  border-radius: var(--mk-radius-card-sm);
+  background: transparent;
+  cursor: pointer;
+  transition: border-color var(--mk-dur-snap), color var(--mk-dur-snap);
+}
+.soundtrack-cta-trial:hover {
+  border-color: var(--mk-brand);
+  color: var(--mk-text-primary);
+}
+.soundtrack-cta-hint {
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-xs);
+  letter-spacing: var(--mk-track-eyebrow);
+  text-transform: uppercase;
+  color: var(--mk-text-tertiary);
+  margin-top: 8px;
+}
+@media (max-width: 600px) {
+  .soundtrack-hero { padding: 96px 20px 48px; }
+  .soundtrack-player-section { padding: 24px 16px 48px; }
+}
+</style>
+</head>
+<body>
+
+<div class="mobile-overlay" id="mobileOverlay" onclick="closeDrawer()"></div>
+<div class="mobile-drawer" id="mobileDrawer">
+  <ul class="mobile-drawer-links">
+    <li><a href="system.html" onclick="closeDrawer()">The System</a></li>
+    <li><a href="journal.html" onclick="closeDrawer()">Journal</a></li>
+    <li><a href="edge.html" onclick="closeDrawer()">The Edge</a></li>
+    <li><a href="focus.html" onclick="closeDrawer()">Focus Room</a></li>
+    <li><a href="pricing.html" onclick="closeDrawer()">Get Started</a></li>
+    <li><a href="/app" onclick="closeDrawer()">Log In</a></li>
+  </ul>
+  <button class="mobile-drawer-cta" onclick="handleCheckout('price_1TUWVpJIDbUntZeXyQD23z8W',{preventDefault:()=>{},currentTarget:null});closeDrawer()">Start Free Trial &rarr;</button>
+</div>
+
+<nav id="mainNav">
+  <a href="index.html" class="nav-logo mk-brand-lockup">
+    <img class="mk-brand-lockup__mark" src="assets/logo-mark.png" alt="">
+    <img class="mk-brand-lockup__wordmark" src="assets/logo-wordmark.png" alt="MAKETZO">
+  </a>
+  <ul class="nav-links">
+    <li><a href="system.html">The System</a></li>
+    <li><a href="journal.html">Journal</a></li>
+    <li><a href="edge.html">The Edge</a></li>
+    <li><a href="focus.html">Focus Room</a></li>
+    <li><a href="pricing.html">Get Started</a></li>
+    <li><a href="/app" class="nav-login-btn">Log In</a></li>
+    <li><button class="nav-cta" onclick="handleCheckout('price_1TUWVpJIDbUntZeXyQD23z8W',event)">Start Free Trial</button></li>
+  </ul>
+  <button class="hamburger" id="hamburger" onclick="toggleDrawer()" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+
+<!-- ─── HERO ─────────────────────────────────────────────────────── -->
+<section class="soundtrack-hero">
+  <p class="soundtrack-hero-eyebrow reveal">The MAKETZO Soundtrack</p>
+  <h1 class="soundtrack-hero-title reveal">We turned trading mistakes <em>into music</em>.</h1>
+  <p class="soundtrack-hero-sub reveal">Press play. If you&rsquo;ve ever paid tuition to the market, the rest will explain itself.</p>
+</section>
+
+<!-- ─── PLAYER ───────────────────────────────────────────────────── -->
+<section class="soundtrack-player-section">
+  <div class="soundtrack-player-wrap reveal">
+    <div class="mk-audio-player">
+      <audio preload="metadata">
+        <source src="assets/track-tuition.mp3" type="audio/mpeg">
+      </audio>
+      <div class="mk-audio-player__inner">
+        <div class="mk-audio-player__art">
+          <img src="assets/album-cover.jpg" alt="Earn the Right &mdash; MAKETZO" onerror="this.style.display='none'">
+        </div>
+        <div class="mk-audio-player__main">
+          <div class="mk-audio-player__meta">
+            <p class="mk-audio-player__eyebrow">MAKETZO &middot; Earn the Right</p>
+            <h3 class="mk-audio-player__title">I Paid Tuition to the Market</h3>
+          </div>
+          <div class="mk-audio-player__controls">
+            <button class="mk-audio-player__play" type="button" aria-label="Play / pause">
+              <svg class="mk-audio-player__icon mk-audio-player__icon--play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+              <svg class="mk-audio-player__icon mk-audio-player__icon--pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg>
+            </button>
+            <div class="mk-audio-player__bar" role="slider" tabindex="0" aria-label="Seek">
+              <div class="mk-audio-player__progress"></div>
+            </div>
+            <div class="mk-audio-player__time">
+              <span class="mk-audio-player__time-cur">0:00</span>
+              <span class="mk-audio-player__time-sep">/</span>
+              <span class="mk-audio-player__time-dur">0:00</span>
+            </div>
+          </div>
+          <ol class="mk-audio-player__list">
+            <li class="mk-audio-player__item is-active" data-src="assets/track-tuition.mp3" data-title="I Paid Tuition to the Market" data-eyebrow="MAKETZO &middot; Earn the Right">
+              <span class="mk-audio-player__item-num">01</span>
+              <span class="mk-audio-player__item-title">I Paid Tuition to the Market</span>
+              <span class="mk-audio-player__item-dur"></span>
+            </li>
+            <li class="mk-audio-player__item" data-src="assets/track-earn-the-right.mp3" data-title="Earn the Right" data-eyebrow="MAKETZO &middot; Earn the Right">
+              <span class="mk-audio-player__item-num">02</span>
+              <span class="mk-audio-player__item-title">Earn the Right</span>
+              <span class="mk-audio-player__item-dur"></span>
+            </li>
+            <li class="mk-audio-player__item" data-src="assets/track-deep-focus.mp3" data-title="Deep Focus Threshold" data-eyebrow="MAKETZO &middot; Earn the Right">
+              <span class="mk-audio-player__item-num">03</span>
+              <span class="mk-audio-player__item-title">Deep Focus Threshold</span>
+              <span class="mk-audio-player__item-dur"></span>
+            </li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="mk-rule-gold">
+
+<!-- ─── WHY WE MADE THIS ─────────────────────────────────────────── -->
+<section class="soundtrack-story">
+  <h2 class="reveal">Mental conditioning, <em>disguised as music</em>.</h2>
+  <p class="reveal">Most traders know exactly what they should do. The hard part is actually doing it.</p>
+  <p class="reveal">That&rsquo;s why MAKETZO includes something you won&rsquo;t find anywhere else: a trading soundtrack designed to keep you focused, disciplined, and out of your own way. The songs are catchy, painfully relatable, and built around the mistakes every trader knows too well &mdash; revenge trading, FOMO, overtrading, and paying &ldquo;tuition to the market.&rdquo;</p>
+  <p class="reveal">These three tracks are samples from a growing library of music, focus tracks, and mental conditioning tools inside the <a href="focus.html" style="color:var(--mk-brand);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;">Focus Room</a>&mdash;MAKETZO&rsquo;s intervention layer for traders who want to stop sabotaging their own edge.</p>
+  <p class="soundtrack-story-tagline reveal">The best traders don&rsquo;t just know their rules. They condition them.</p>
+</section>
+
+<hr class="mk-rule-gold">
+
+<!-- ─── CTA ──────────────────────────────────────────────────────── -->
+<section class="soundtrack-cta-section">
+  <div class="soundtrack-cta-row reveal">
+    <div class="mk-share soundtrack-cta-primary">
+      <button class="mk-share__trigger mk-share__trigger--primary" type="button" data-share-source="soundtrack" aria-haspopup="true" aria-expanded="false">
+        <svg class="mk-share__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/></svg>
+        <span>Share with a trading friend</span>
+      </button>
+      <div class="mk-share__menu" role="menu" hidden>
+        <button class="mk-share__item" type="button" data-platform="email" role="menuitem"><svg class="mk-share__item-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg><span>Email</span></button>
+        <button class="mk-share__item" type="button" data-platform="sms" role="menuitem"><svg class="mk-share__item-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 11H7V9h2v2zm4 0h-2V9h2v2zm4 0h-2V9h2v2z"/></svg><span>Text / SMS</span></button>
+        <button class="mk-share__item" type="button" data-platform="twitter" role="menuitem"><svg class="mk-share__item-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg><span>X (Twitter)</span></button>
+        <button class="mk-share__item" type="button" data-platform="whatsapp" role="menuitem"><svg class="mk-share__item-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg><span>WhatsApp</span></button>
+        <button class="mk-share__item" type="button" data-platform="telegram" role="menuitem"><svg class="mk-share__item-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.139-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg><span>Telegram</span></button>
+        <button class="mk-share__item" type="button" data-platform="facebook" role="menuitem"><svg class="mk-share__item-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg><span>Facebook</span></button>
+        <button class="mk-share__item mk-share__item--wide" type="button" data-platform="copy" role="menuitem"><svg class="mk-share__item-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg><span>Copy link</span></button>
+      </div>
+    </div>
+    <button class="soundtrack-cta-trial" type="button" onclick="handleCheckout('price_1TUWVpJIDbUntZeXyQD23z8W',event)">Start 7-Day Free Trial &rarr;</button>
+    <p class="soundtrack-cta-hint">Or just listen. We don&rsquo;t mind.</p>
+  </div>
+  <div class="mk-share-toast" role="status" aria-live="polite" hidden>Link copied</div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-col-brand">
+        <div class="footer-logo-wrap">
+          <a href="index.html" class="mk-brand-lockup mk-brand-lockup--stacked">
+            <img class="mk-brand-lockup__mark" src="assets/logo-mark.png" alt="">
+            <img class="mk-brand-lockup__wordmark" src="assets/logo-wordmark.png" alt="MAKETZO">
+          </a>
+        </div>
+        <p class="footer-tagline"><strong>Built by traders, for traders.</strong>Discipline in every session. Edge in every trade. Accountability when it counts.</p>
+      </div>
+      <div><div class="footer-col-title">Product</div><ul class="footer-links"><li><a href="system.html">The System</a></li><li><a href="journal.html">Journal</a></li><li><a href="edge.html">The Edge</a></li><li><a href="focus.html">Focus Room</a></li><li><a href="pricing.html">Get Started</a></li><li><a href="why.html">Why MAKETZO</a></li></ul></div>
+      <div><div class="footer-col-title">Legal</div><ul class="footer-links"><li><a href="privacy.html">Privacy Policy</a></li><li><a href="terms.html">Terms of Service</a></li><li><a href="disclaimer.html">Risk Disclaimer</a></li><li><a href="contact.html">Contact Us</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">&copy; 2026 Abinic, LLC. All rights reserved. MAKETZO&reg; is a product of Abinic, LLC. maketzo.co</p>
+      <p class="footer-disclaimer">Trading securities, options, futures, forex, and cryptocurrencies involves substantial risk of loss and is not suitable for all investors. You may lose some or all of your capital. MAKETZO is a journaling, behavioral accountability, educational, and decision-support platform designed to help traders track performance, reinforce rules, and improve discipline. Neither Abinic, LLC nor MAKETZO provides investment advice, personalized financial advice, tax advice, legal advice, trade recommendations, or solicitations to buy or sell any security or financial instrument.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+const API='https://api.maketzo.co';
+function toggleDrawer(){const d=document.getElementById('mobileDrawer');const o=document.getElementById('mobileOverlay');const h=document.getElementById('hamburger');d.classList.toggle('open');o.classList.toggle('open');h.classList.toggle('open');document.body.style.overflow=d.classList.contains('open')?'hidden':'';}
+function closeDrawer(){document.getElementById('mobileDrawer').classList.remove('open');document.getElementById('mobileOverlay').classList.remove('open');document.getElementById('hamburger').classList.remove('open');document.body.style.overflow='';}
+requestAnimationFrame(()=>document.body.classList.add('hero-loaded'));
+const reveals=document.querySelectorAll('.reveal');
+const obs=new IntersectionObserver((entries)=>{entries.forEach((e,i)=>{if(e.isIntersecting){setTimeout(()=>e.target.classList.add('visible'),i*50);obs.unobserve(e.target);}});},{threshold:0.06});
+reveals.forEach(el=>obs.observe(el));
+window.addEventListener('scroll',()=>{document.getElementById('mainNav').style.borderBottomColor=window.scrollY>60?'rgba(201,168,76,0.25)':'rgba(201,168,76,0.12)';});
+</script>
+</body>
+</html>
