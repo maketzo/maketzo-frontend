@@ -23,9 +23,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/tokens.css">
 <link rel="stylesheet" href="assets/css/components.css">
-<link rel="stylesheet" href="assets/css/audio-player.css?v=4">
+<link rel="stylesheet" href="assets/css/audio-player.css?v=5">
 <script src="assets/js/checkout.js" defer></script>
-<script src="assets/js/audio-player.js?v=4" defer></script>
+<script src="assets/js/audio-player.js?v=5" defer></script>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
@@ -316,8 +316,16 @@ hr.mk-rule-gold, hr.mk-rule-gold--bold { margin: 0 auto; max-width: 1180px; }
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/></svg>
               </button>
             </li>
-            <li class="mk-audio-player__item" data-track-id="goth" data-src="assets/music/track-earn-goth.mp3" data-title="Earn the Right &mdash; Goth Redux" data-eyebrow="MAKETZO &middot; Earn the Right">
+            <li class="mk-audio-player__item" data-track-id="jazz" data-src="assets/music/track-jazz.mp3" data-title="Earn the Right &mdash; Jazz Lounge Redux" data-eyebrow="MAKETZO &middot; Earn the Right">
               <span class="mk-audio-player__item-num">04</span>
+              <span class="mk-audio-player__item-title">Earn the Right &mdash; Jazz Lounge Redux</span>
+              <span class="mk-audio-player__item-dur"></span>
+              <button class="mk-audio-player__share-trigger" type="button" data-share-source="track" data-track-id="jazz" data-tooltip="Share to friend" aria-label="Share Earn the Right Jazz Lounge Redux" aria-expanded="false">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/></svg>
+              </button>
+            </li>
+            <li class="mk-audio-player__item" data-track-id="goth" data-src="assets/music/track-earn-goth.mp3" data-title="Earn the Right &mdash; Goth Redux" data-eyebrow="MAKETZO &middot; Earn the Right">
+              <span class="mk-audio-player__item-num">05</span>
               <span class="mk-audio-player__item-title">Earn the Right &mdash; Goth Redux</span>
               <span class="mk-audio-player__item-dur"></span>
               <button class="mk-audio-player__share-trigger" type="button" data-share-source="track" data-track-id="goth" data-tooltip="Share to friend" aria-label="Share Earn the Right Goth Redux" aria-expanded="false">
@@ -325,7 +333,7 @@ hr.mk-rule-gold, hr.mk-rule-gold--bold { margin: 0 auto; max-width: 1180px; }
               </button>
             </li>
             <li class="mk-audio-player__item" data-track-id="hairband" data-src="assets/music/track-earn-hairband.mp3" data-title="Earn the Right &mdash; 80s Hair Band Redux" data-eyebrow="MAKETZO &middot; Earn the Right">
-              <span class="mk-audio-player__item-num">05</span>
+              <span class="mk-audio-player__item-num">06</span>
               <span class="mk-audio-player__item-title">Earn the Right &mdash; 80s Hair Band Redux</span>
               <span class="mk-audio-player__item-dur"></span>
               <button class="mk-audio-player__share-trigger" type="button" data-share-source="track" data-track-id="hairband" data-tooltip="Share to friend" aria-label="Share Earn the Right 80s Hair Band Redux" aria-expanded="false">
@@ -333,18 +341,42 @@ hr.mk-rule-gold, hr.mk-rule-gold--bold { margin: 0 auto; max-width: 1180px; }
               </button>
             </li>
             <li class="mk-audio-player__item" data-track-id="wait" data-src="assets/music/track-wait-for-acceptance.mp3" data-title="Wait for Acceptance" data-eyebrow="MAKETZO &middot; Earn the Right">
-              <span class="mk-audio-player__item-num">06</span>
+              <span class="mk-audio-player__item-num">07</span>
               <span class="mk-audio-player__item-title">Wait for Acceptance</span>
               <span class="mk-audio-player__item-dur"></span>
               <button class="mk-audio-player__share-trigger" type="button" data-share-source="track" data-track-id="wait" data-tooltip="Share to friend" aria-label="Share Wait for Acceptance" aria-expanded="false">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/></svg>
               </button>
             </li>
+            <li class="mk-audio-player__item" data-track-id="stronger" data-src="assets/music/track-stronger.mp3" data-title="Stronger Than the Red" data-eyebrow="MAKETZO &middot; Earn the Right">
+              <span class="mk-audio-player__item-num">08</span>
+              <span class="mk-audio-player__item-title">Stronger Than the Red</span>
+              <span class="mk-audio-player__item-dur"></span>
+              <button class="mk-audio-player__share-trigger" type="button" data-share-source="track" data-track-id="stronger" data-tooltip="Share to friend" aria-label="Share Stronger Than the Red" aria-expanded="false">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/></svg>
+              </button>
+            </li>
+            <li class="mk-audio-player__item" data-track-id="cushion" data-src="assets/music/track-cushion.mp3" data-title="Build a Cushion &mdash; Broadway" data-eyebrow="MAKETZO &middot; Earn the Right">
+              <span class="mk-audio-player__item-num">09</span>
+              <span class="mk-audio-player__item-title">Build a Cushion &mdash; Broadway</span>
+              <span class="mk-audio-player__item-dur"></span>
+              <button class="mk-audio-player__share-trigger" type="button" data-share-source="track" data-track-id="cushion" data-tooltip="Share to friend" aria-label="Share Build a Cushion Broadway" aria-expanded="false">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/></svg>
+              </button>
+            </li>
             <li class="mk-audio-player__item" data-track-id="focus" data-src="assets/music/track-deep-focus.mp3" data-title="Deep Focus Threshold" data-eyebrow="MAKETZO &middot; Earn the Right">
-              <span class="mk-audio-player__item-num">07</span>
+              <span class="mk-audio-player__item-num">10</span>
               <span class="mk-audio-player__item-title">Deep Focus Threshold</span>
               <span class="mk-audio-player__item-dur"></span>
               <button class="mk-audio-player__share-trigger" type="button" data-share-source="track" data-track-id="focus" data-tooltip="Share to friend" aria-label="Share Deep Focus Threshold" aria-expanded="false">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/></svg>
+              </button>
+            </li>
+            <li class="mk-audio-player__item" data-track-id="focus-redux" data-src="assets/music/track-focus-redux.mp3" data-title="Deep Focus Threshold &mdash; Redux" data-eyebrow="MAKETZO &middot; Earn the Right">
+              <span class="mk-audio-player__item-num">11</span>
+              <span class="mk-audio-player__item-title">Deep Focus Threshold &mdash; Redux</span>
+              <span class="mk-audio-player__item-dur"></span>
+              <button class="mk-audio-player__share-trigger" type="button" data-share-source="track" data-track-id="focus-redux" data-tooltip="Share to friend" aria-label="Share Deep Focus Threshold Redux" aria-expanded="false">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/></svg>
               </button>
             </li>
