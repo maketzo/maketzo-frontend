@@ -22,8 +22,10 @@
 <link rel="stylesheet" href="assets/css/tokens.css">
 <link rel="stylesheet" href="assets/css/components.css">
 <link rel="stylesheet" href="assets/css/audio-player.css?v=5">
-<script src="assets/js/checkout.js" defer></script>
-<script src="assets/js/audio-player.js?v=5" defer></script>
+<script src="assets/js/mkt-analytics.js?v=1" defer></script>
+<script src="assets/js/mkt-consent.js?v=1" defer></script>
+<script src="assets/js/checkout.js?v=2" defer></script>
+<script src="assets/js/audio-player.js?v=6" defer></script>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
@@ -1101,6 +1103,7 @@ async function handleStickyEmail(){
   const email=input.value.trim();
   if(!email||!email.includes('@'))return;
   try{await fetch(API+'/newsletter/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email})});}catch(e){}
+  if(window.MKT)window.MKT.trackEvent('newsletter_subscribe',{source:'sticky-bar'});
   input.value='';input.placeholder='Subscribed &#10003;';
   setTimeout(closeStickyBar,1500);
 }
