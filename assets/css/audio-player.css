@@ -153,7 +153,7 @@
 }
 .mk-audio-player__item {
   display: grid;
-  grid-template-columns: 32px 1fr auto;
+  grid-template-columns: 32px 1fr auto auto;
   gap: 16px;
   align-items: center;
   padding: 10px 14px;
@@ -166,6 +166,113 @@
 .mk-audio-player__item.is-active {
   background: rgba(212, 175, 55, 0.14);
   color: var(--mk-text-primary);
+}
+
+/* Per-row share trigger. Subtle by default, brightens on row hover / focus. */
+.mk-audio-player__share {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.mk-audio-player__share-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  color: var(--mk-text-tertiary);
+  cursor: pointer;
+  opacity: 0.45;
+  transition: opacity var(--mk-dur-snap), color var(--mk-dur-snap), background var(--mk-dur-snap), border-color var(--mk-dur-snap);
+}
+.mk-audio-player__share-trigger svg {
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+}
+.mk-audio-player__item:hover .mk-audio-player__share-trigger,
+.mk-audio-player__item:focus-within .mk-audio-player__share-trigger {
+  opacity: 1;
+  color: var(--mk-brand);
+}
+.mk-audio-player__share-trigger:hover {
+  background: rgba(212, 175, 55, 0.12);
+  border-color: rgba(212, 175, 55, 0.30);
+  color: var(--mk-brand);
+}
+.mk-audio-player__share-trigger:focus-visible {
+  outline: 2px solid var(--mk-brand);
+  outline-offset: 2px;
+  opacity: 1;
+}
+.mk-audio-player__share-trigger[aria-expanded="true"] {
+  opacity: 1;
+  color: var(--mk-brand);
+  background: rgba(212, 175, 55, 0.16);
+  border-color: rgba(212, 175, 55, 0.40);
+}
+/* On touch / no-hover devices the icon stays visible since there's no hover. */
+@media (hover: none) {
+  .mk-audio-player__share-trigger { opacity: 0.85; }
+}
+
+/* Tooltip on the per-row share icon. Custom CSS bubble (not the native
+   browser `title`) for consistent branding + no half-second delay. The
+   button keeps its aria-label as the accessible name so screen readers
+   read the same thing; the tooltip is purely a sighted-user affordance.
+   Hidden on touch (no hover = no tooltip useful), shown on :hover and
+   :focus-visible (keyboard nav). */
+.mk-audio-player__share-trigger[data-tooltip] {
+  position: relative;
+}
+.mk-audio-player__share-trigger[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  right: 0;
+  z-index: 50;
+  padding: 6px 10px;
+  background: var(--mk-obsidian-900);
+  border: 1px solid rgba(212, 175, 55, 0.30);
+  border-radius: var(--mk-radius-card-sm);
+  color: var(--mk-text-primary);
+  font-family: var(--mk-font-mono);
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: var(--mk-track-eyebrow);
+  text-transform: uppercase;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateY(2px);
+  pointer-events: none;
+  transition: opacity var(--mk-dur-snap) var(--mk-ease-out), transform var(--mk-dur-snap) var(--mk-ease-out);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.40);
+}
+.mk-audio-player__share-trigger[data-tooltip]:hover::after,
+.mk-audio-player__share-trigger[data-tooltip]:focus-visible::after {
+  opacity: 1;
+  transform: translateY(0);
+}
+/* Hide tooltip while the menu is open — redundant once the dropdown is showing. */
+.mk-audio-player__share-trigger[aria-expanded="true"]::after { opacity: 0 !important; }
+/* Touch devices: no hover, tooltip just adds noise on tap. */
+@media (hover: none) {
+  .mk-audio-player__share-trigger[data-tooltip]::after { display: none; }
+}
+
+/* Deep-link pulse — drawn on the round play button to signal "press me".
+   Class is added by JS on arrival and removed on first user play / 4s timeout. */
+@keyframes mk-deeplink-pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.65); }
+  70%  { box-shadow: 0 0 0 18px rgba(212, 175, 55, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
+}
+.mk-audio-player.is-deeplinked .mk-audio-player__play {
+  animation: mk-deeplink-pulse 1.6s ease-out infinite;
 }
 .mk-audio-player__item-num {
   font-family: var(--mk-font-mono);
@@ -316,6 +423,38 @@
   border-color: rgba(212, 175, 55, 0.20);
 }
 .mk-share__item--wide .mk-share__item-icon { width: 18px; height: 18px; }
+
+/* "Share at M:SS" toggle injected at the top of the per-track menu when the
+   triggering track is mid-play. Spans the full menu width, distinct treatment
+   so it reads as a modifier, not a platform pick. */
+.mk-share__timestamp {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  margin-bottom: 4px;
+  background: rgba(212, 175, 55, 0.10);
+  border: 1px solid rgba(212, 175, 55, 0.28);
+  border-radius: var(--mk-radius-card-sm);
+  color: var(--mk-text-primary);
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-xs);
+  letter-spacing: var(--mk-track-eyebrow);
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.mk-share__timestamp-input {
+  width: 14px;
+  height: 14px;
+  accent-color: var(--mk-brand);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.mk-share__timestamp:hover {
+  background: rgba(212, 175, 55, 0.16);
+  border-color: rgba(212, 175, 55, 0.40);
+}
 
 .mk-share-toast {
   position: fixed;
