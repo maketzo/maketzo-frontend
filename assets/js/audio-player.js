@@ -1,113 +1,21 @@
 /*!
- * MAKETZO Audio Player + Share + Analytics — v3
- * Vanilla JS, no deps. Three coordinated modules in one file:
- *   1. MaketzoAnalytics — session-scoped event dispatcher → POST /analytics/event
- *   2. Player           — single-track and multi-track HTML5 audio player,
+ * MAKETZO Audio Player + Share — v4
+ * Vanilla JS, no deps. Two coordinated modules in one file:
+ *   1. Player           — single-track and multi-track HTML5 audio player,
  *                         deep-link parser (?track=slug&t=42), per-row share
  *                         trigger synthesis on /soundtrack, track lifecycle
  *                         events for analytics.
- *   3. Share widget     — branded dropdown shared by album-level and per-track
+ *   2. Share widget     — branded dropdown shared by album-level and per-track
  *                         triggers. Per-trigger payload (title/text/url) is
  *                         resolved at click time so one menu serves both.
+ *
+ * Analytics goes through window.MaketzoAnalytics (provided by mkt-analytics.js,
+ * which dual-fires to PostHog + backend /analytics/event). The legacy direct
+ * dispatcher was removed in PR2 when the unified wrapper landed.
  */
 
 // ═════════════════════════════════════════════════════════════════════════
-// 1. Analytics — session id, event dispatcher, delegated CTA tracking
-// ═════════════════════════════════════════════════════════════════════════
-(function () {
-  "use strict";
-
-  // Tier-aware API base — mirrors assets/js/checkout.js so dev/staging
-  // analytics land in their own DBs (not prod). Format:
-  //   localhost / 127.*   → http://localhost:3000
-  //   maketzo.co (apex)   → https://api.maketzo.co
-  //   <sub>.maketzo.co    → https://<sub>-api.maketzo.co
-  var API_BASE = (function () {
-    var h = window.location.hostname;
-    if (h === "localhost" || h.indexOf("127.") === 0) return "http://localhost:3000";
-    if (h === "maketzo.co") return "https://api.maketzo.co";
-    var parts = h.split(".");
-    if (parts.length >= 3) return "https://" + parts[0] + "-api." + parts.slice(1).join(".");
-    return "https://api." + h;
-  })();
-  var SESSION_KEY = "mkt_sid";
-
-  function getSessionId() {
-    try {
-      var sid = sessionStorage.getItem(SESSION_KEY);
-      if (!sid) {
-        sid = (window.crypto && crypto.randomUUID)
-          ? crypto.randomUUID()
-          : ("sid_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 10));
-        sessionStorage.setItem(SESSION_KEY, sid);
-      }
-      return sid;
-    } catch (e) {
-      return "sid_no_storage";
-    }
-  }
-
-  function getUtm() {
-    var out = { utm_source: null, utm_campaign: null };
-    try {
-      var p = new URLSearchParams(window.location.search);
-      out.utm_source = p.get("utm_source") || null;
-      out.utm_campaign = p.get("utm_campaign") || null;
-    } catch (e) {}
-    return out;
-  }
-
-  function sendEvent(eventType, payload) {
-    payload = payload || {};
-    var utm = getUtm();
-    var ts = payload.timestamp_sec;
-    var body = {
-      event_type: eventType,
-      session_id: getSessionId(),
-      track_id: payload.track_id || null,
-      timestamp_sec: (typeof ts === "number" && isFinite(ts)) ? Math.floor(ts) : null,
-      platform: payload.platform || null,
-      target: payload.target || null,
-      page: window.location.pathname,
-      referrer: document.referrer || null,
-      utm_source: utm.utm_source,
-      utm_campaign: utm.utm_campaign
-    };
-    try {
-      fetch(API_BASE + "/analytics/event", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-        keepalive: true,
-        credentials: "omit",
-        mode: "cors"
-      }).catch(function () { /* fire-and-forget; never block UX */ });
-    } catch (e) { /* never throw */ }
-  }
-
-  function initCtaTracking() {
-    document.addEventListener("click", function (e) {
-      var a = e.target && e.target.closest && e.target.closest("a[href]");
-      if (!a) return;
-      var href = a.getAttribute("href") || "";
-      if (/(^|\/)pricing(\.html)?($|\?|#)/.test(href)) {
-        sendEvent("cta_click", { target: "pricing" });
-      }
-    }, true);
-  }
-
-  window.MaketzoAnalytics = { send: sendEvent, getSessionId: getSessionId };
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initCtaTracking);
-  } else {
-    initCtaTracking();
-  }
-})();
-
-
-// ═════════════════════════════════════════════════════════════════════════
-// 2. Player — multi-track HTML5 audio + deep-link + per-row share synth
+// 1. Player — multi-track HTML5 audio + deep-link + per-row share synth
 // ═════════════════════════════════════════════════════════════════════════
 (function () {
   "use strict";

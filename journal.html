@@ -17,7 +17,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/tokens.css">
 <link rel="stylesheet" href="assets/css/components.css">
-<script src="assets/js/checkout.js" defer></script>
+<script src="assets/js/mkt-analytics.js?v=1" defer></script>
+<script src="assets/js/mkt-consent.js?v=1" defer></script>
+<script src="assets/js/checkout.js?v=2" defer></script>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
@@ -557,8 +559,11 @@ async function handleStickyEmail(){
   const email=input.value.trim();
   if(!email)return;
   try{
-    const res=await fetch(API+'/newsletter',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,source:'sticky-bar-journal'})});
-    if(res.ok){input.value='';closeStickyBar();}
+    const res=await fetch(API+'/newsletter/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,source:'sticky-bar-journal'})});
+    if(res.ok){
+      if(window.MKT)window.MKT.trackEvent('newsletter_subscribe',{source:'sticky-bar-journal'});
+      input.value='';closeStickyBar();
+    }
   }catch(err){console.error(err);}
 }
 function closeStickyBar(){document.getElementById('stickyBar').classList.remove('visible');try{localStorage.setItem('mk_sticky_dismissed','1');}catch(e){}}
