@@ -1,3 +1,15 @@
+# ──────────────────────────────────────────────────────────────────────────────
+# Basic-auth gate — staging preview tier only. Do NOT merge this block to main.
+# .htpasswd lives outside the deploy target so git deploys don't wipe it.
+# Ed must place /home/u775138918/.htpasswds/staging/.htpasswd via Hostinger
+# File Manager with contents: maketzo:{SHA}2Mr4BiVLp+Q122AnRsapza44cQs=
+# (SHA1 hash of "Ganda513!" — change here AND in .htpasswd to rotate.)
+# ──────────────────────────────────────────────────────────────────────────────
+AuthType Basic
+AuthName "MAKETZO Preview"
+AuthUserFile "/home/u775138918/.htpasswds/staging/.htpasswd"
+Require valid-user
+
 # MIME types for modern image formats
 # Hostinger / LiteSpeed do not register these by default; without this block
 # AVIF is served as text/plain and some browsers refuse it.
