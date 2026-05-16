@@ -22,8 +22,10 @@
 <link rel="stylesheet" href="assets/css/tokens.css">
 <link rel="stylesheet" href="assets/css/components.css">
 <link rel="stylesheet" href="assets/css/audio-player.css?v=5">
-<script src="assets/js/checkout.js" defer></script>
-<script src="assets/js/audio-player.js?v=5" defer></script>
+<script src="assets/js/mkt-analytics.js?v=1" defer></script>
+<script src="assets/js/mkt-consent.js?v=1" defer></script>
+<script src="assets/js/checkout.js?v=2" defer></script>
+<script src="assets/js/audio-player.js?v=6" defer></script>
 <style>
 /* ====================================================================
    MAKETZO landing — page-specific styles.
@@ -2318,7 +2320,7 @@ document.addEventListener("DOMContentLoaded", function() {
       <p class="section-eyebrow reveal">09 &middot; Stay Sharp</p>
       <h2 class="section-title reveal">Trading discipline insights.</h2>
       <p class="section-sub reveal">Bi-weekly insights on trading psychology and how to get more from MAKETZO. No spam. Unsubscribe anytime.</p>
-      <form class="email-form reveal" id="emailForm" onsubmit="handleEmail(event)">
+      <form class="email-form reveal" id="emailForm" data-form-id="newsletter" onsubmit="handleEmail(event)">
         <input type="email" class="email-input" placeholder="your@email.com" required id="emailInput">
         <button type="submit" class="btn-primary" id="emailBtn">Subscribe &rarr;</button>
       </form>
@@ -2561,6 +2563,7 @@ async function handleEmail(e){
     const res=await fetch(API+'/newsletter/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email})});
     const data=await res.json();
     if(res.ok){
+      if(window.MKT)window.MKT.trackEvent('newsletter_subscribe',{source:'main-form'});
       document.getElementById('emailForm').style.display='none';
       document.getElementById('emailSuccess').classList.add('show');
     }else{throw new Error(data.error||'Failed');}
@@ -2581,6 +2584,7 @@ async function handleStickyEmail(){
   const email=input.value.trim();
   if(!email||!email.includes('@'))return;
   try{await fetch(API+'/newsletter/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email})});}catch(e){}
+  if(window.MKT)window.MKT.trackEvent('newsletter_subscribe',{source:'sticky-bar'});
   input.value='';input.placeholder='Subscribed \u2713';
   setTimeout(closeStickyBar,1500);
 }

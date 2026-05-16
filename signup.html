@@ -21,6 +21,7 @@
 <link rel="stylesheet" href="assets/css/tokens.css">
 <link rel="stylesheet" href="assets/css/components.css">
 <link rel="stylesheet" href="assets/css/auth.css">
+<script src="assets/js/mkt-analytics.js?v=1" defer></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
 <body class="auth-body">
@@ -54,7 +55,7 @@
 
     <div class="auth-divider" id="divider"><span>or</span></div>
 
-    <form id="signupForm" novalidate>
+    <form id="signupForm" data-form-id="signup" novalidate>
       <div class="mk-form-field" id="nameField">
         <label for="name">Your name</label>
         <input id="name" name="name" type="text" autocomplete="name" maxlength="100">
@@ -352,6 +353,13 @@ document.getElementById('signupForm').addEventListener('submit', async (e) => {
       else                    showBanner(data.error || 'Signup failed. Please try again.', 'error');
       if (TURNSTILE_SITE_KEY && window.turnstile && turnstileWidgetId !== null) window.turnstile.reset(turnstileWidgetId);
       return;
+    }
+
+    // Identity stitch: link the anon_id → email so all prior anonymous
+    // marketing-page events can be JOINed against the user after conversion.
+    if (window.MKT && window.MKT.identify) {
+      try { window.MKT.identify(email); } catch (_) {}
+      window.MKT.trackEvent('form_submit', { form: 'signup', plan: planId || null });
     }
 
     if (planId && data.payToken) {

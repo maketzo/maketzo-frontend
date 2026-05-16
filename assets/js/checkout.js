@@ -41,6 +41,19 @@
     const finalId = (btn && btn.dataset && btn.dataset.priceId) ? btn.dataset.priceId : priceId;
     if (!finalId) { console.error('[checkout] missing priceId'); return; }
 
+    // Analytics — fire BEFORE the network/redirect. If the button already has
+    // data-cta-source the wrapper will have fired cta_click on the same click;
+    // we still want a priceId-aware echo here so the analytics row carries the
+    // plan even on unsourced CTAs (mobile drawer, nav buttons, etc).
+    if (window.MKT && window.MKT.trackEvent) {
+      window.MKT.trackEvent('cta_click', {
+        source: btn && btn.dataset ? (btn.dataset.ctaSource || 'unsourced') : 'unsourced',
+        target: 'checkout',
+        priceId: finalId,
+        label: btn ? (btn.textContent || '').trim().slice(0, 64) : null
+      });
+    }
+
     const orig = btn ? btn.innerHTML : '';
     if (btn) { btn.innerHTML = 'Loading...'; btn.disabled = true; }
 
@@ -48,11 +61,17 @@
       const meRes = await fetch(API + '/auth/me', { credentials: 'include' });
 
       if (meRes.status !== 200) {
+        // Unauthenticated → signup. The signup page will fire identify() on
+        // success, which links the anon_id to the email.
         window.location.href = '/signup.html?plan=' + encodeURIComponent(finalId);
         return;
       }
 
       const csrf = getCsrfCookie();
+      // Thread anon_id + session_id + source_path so the Stripe webhook can
+      // backfill prior anonymous events with the new user_id on conversion.
+      const anonId = (window.MKT && window.MKT.getAnonId) ? window.MKT.getAnonId() : null;
+      const sessionId = (window.MKT && window.MKT.getSessionId) ? window.MKT.getSessionId() : null;
       const checkoutRes = await fetch(API + '/billing/create-checkout', {
         method: 'POST',
         credentials: 'include',
@@ -60,10 +79,23 @@
           { 'Content-Type': 'application/json' },
           csrf ? { 'X-CSRF-Token': csrf } : {}
         ),
-        body: JSON.stringify({ priceId: finalId })
+        body: JSON.stringify({
+          priceId: finalId,
+          mkt_anon_id: anonId,
+          mkt_session_id: sessionId,
+          mkt_source_path: window.location.pathname
+        })
       });
       const data = await checkoutRes.json().catch(function () { return {}; });
       if (data.url) {
+        // trial_started fires after the Stripe URL is in hand — most accurate
+        // signal short of the conversion webhook itself.
+        if (window.MKT && window.MKT.trackEvent) {
+          window.MKT.trackEvent('trial_started', {
+            priceId: finalId,
+            source_path: window.location.pathname
+          });
+        }
         window.location.href = data.url;
       } else {
         throw new Error(data.error || 'Checkout failed');
