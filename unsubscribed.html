@@ -65,18 +65,9 @@ strong { color: var(--mk-text-primary); font-weight: 600; }
 .unsub-card.is-error .unsub-eyebrow { color: var(--mk-loss-500, #ef4444); }
 .unsub-card.is-error .unsub-title em { background: none; -webkit-background-clip: initial; background-clip: initial; color: var(--mk-loss-500, #ef4444); }
 
-/* Inline resubscribe form — ALWAYS visible (no JS dependency for reveal) */
-.resub-form { display: flex; width: 100%; max-width: 420px; margin-top: 8px; flex-direction: column; gap: 10px; align-items: stretch; }
-.resub-form-label { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: 0.04em; color: var(--mk-text-tertiary); margin: 0; text-align: center; }
-.resub-form-row { display: flex; gap: 8px; align-items: stretch; flex-wrap: wrap; }
-.resub-form input[type="email"] { flex: 1; min-width: 200px; background: rgba(20,24,33,.85); border: 1px solid rgba(255,255,255,.12); color: var(--mk-text-primary); font-family: var(--mk-font-mono); font-size: var(--mk-mono-sm); padding: 10px 14px; border-radius: var(--mk-radius-input); outline: none; transition: border-color var(--mk-dur-snap), box-shadow var(--mk-dur-snap); }
-.resub-form input[type="email"]:focus { border-color: var(--mk-brand); box-shadow: 0 0 0 3px rgba(212,175,55,.18); }
-.resub-form input[type="email"].invalid { border-color: #ef4444; box-shadow: 0 0 0 3px rgba(239,68,68,.18); }
-.resub-form .btn-primary { padding: 10px 18px !important; font-size: var(--mk-text-sm) !important; }
-.resub-form-status { margin: 4px 0 0; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: 0.04em; text-align: center; }
-.resub-form-status[hidden] { display: none; }
-.resub-form-status.is-error { color: #ef4444; }
-.resub-form-status.is-success { color: #4ade80; }
+/* `hidden` attribute belt-and-suspenders — make sure nothing CSS reveals an
+   element that HTML/JS has explicitly hidden. */
+.unsub-actions [hidden] { display: none !important; }
 
 footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairline); padding: 56px 0 28px; }
 .footer-inner { max-width: var(--mk-container-marketing); margin: 0 auto; padding: 0 32px; }
@@ -135,19 +126,14 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
     <h1 class="unsub-title" id="unsubTitle">You're <em>unsubscribed.</em></h1>
     <p class="unsub-sub" id="unsubSub">You won't receive the bi-weekly MAKETZO newsletter anymore. No hard feelings &mdash; the door's always open if you change your mind.</p>
     <div class="unsub-actions">
-      <!-- One-click resubscribe — primary action. Always visible. JS sets
-           the right href when the URL identifies the user (?t=<token> or
-           ?email=<addr>); without an identifier, JS reveals the inline
-           email form below as the fallback. No trial CTA on this page —
-           wrong context for someone who just opted out. -->
-      <button type="button" id="oneClickResub" class="btn-primary">Resubscribe &rarr;</button>
-      <form id="resubForm" class="resub-form" novalidate hidden>
-        <div class="resub-form-row">
-          <input type="email" id="resubEmail" name="email" placeholder="your@email.com" autocomplete="email" required>
-          <button type="submit" class="btn-primary">Resubscribe &rarr;</button>
-        </div>
-        <p class="resub-form-status" id="resubStatus" hidden></p>
-      </form>
+      <!-- Two mutually-exclusive CTAs — anchor tags only, no <form>, no
+           submit buttons. Avoids the GET-submit-on-empty-input footgun that
+           produced ?email= URLs in the wild when JS preventDefault raced
+           the click. JS picks exactly one to reveal based on the URL.
+           Default state (no JS): homeLink shows — safe fallback to the
+           subscribe form on the homepage. -->
+      <a id="oneClickResub" href="#" class="btn-primary" hidden>Resubscribe &rarr;</a>
+      <a id="homeLink" href="https://maketzo.co/" class="btn-primary">Back to homepage &rarr;</a>
     </div>
   </div>
 </main>
@@ -174,33 +160,32 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 </footer>
 
 <script>
-const API='https://api.maketzo.co';
+// Nav chrome — drawer toggle + scroll-tinted border. Boilerplate shared
+// across the marketing pages.
 function toggleDrawer(){const d=document.getElementById('mobileDrawer');const o=document.getElementById('mobileOverlay');const h=document.getElementById('hamburger');d.classList.toggle('open');o.classList.toggle('open');h.classList.toggle('open');document.body.style.overflow=d.classList.contains('open')?'hidden':'';}
 function closeDrawer(){document.getElementById('mobileDrawer').classList.remove('open');document.getElementById('mobileOverlay').classList.remove('open');document.getElementById('hamburger').classList.remove('open');document.body.style.overflow='';}
 window.addEventListener('scroll',()=>{document.getElementById('mainNav').style.borderBottomColor=window.scrollY>60?'rgba(201,168,76,0.25)':'rgba(201,168,76,0.12)';});
 // handleCheckout moved to assets/js/checkout.js.
 
-// Query-param shapes from the backend:
-//   ?ok=1&t=<token>    — just unsubscribed (token lets us one-click them back)
-//   ?ok=1&email=<addr> — same, but only the email is known
-//   ?resub=1           — just resubscribed (full card swap to "back in")
-//   ?ok=0              — token invalid / missing / DB error
-//   (no params)        — direct URL nav / bookmark / stale cache
+// Query-param shapes the backend may redirect here with:
+//   ?ok=1&t=<64-hex token>  — just unsubscribed, token lets us one-click back
+//   ?resub=1                — just resubscribed, swap card to "back in"
+//   ?ok=0                   — token invalid / missing / DB error
+//   (anything else)         — direct nav / stale bookmark / GET-form leak;
+//                             treated identically to "no params" → home link
+//
+// Design notes:
+//   - Two anchor-tag CTAs only. No <form>, no submit button. Removes the
+//     class of bugs where a GET-submit on an empty input rewrote the URL
+//     to ?email= and produced the broken-looking screenshot.
+//   - homeLink is visible by default (works even if this script fails to
+//     load or throws); oneClickResub is hidden by default and only revealed
+//     when we have a valid token to act on.
+//   - Mutually exclusive: revealing one always hides the other. No state
+//     where both can show.
 var API = 'https://api.maketzo.co';
-var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+var TOKEN_RE = /^[a-f0-9]{64}$/i;
 
-function setStatus(msg, kind) {
-  var s = document.getElementById('resubStatus');
-  if (!s) return;
-  s.textContent = msg;
-  s.classList.remove('is-error', 'is-success');
-  if (kind) s.classList.add('is-' + kind);
-  s.removeAttribute('hidden');
-}
-function clearStatus() {
-  var s = document.getElementById('resubStatus');
-  if (s) { s.setAttribute('hidden', ''); s.textContent = ''; }
-}
 function swapToResubscribedCard() {
   var card = document.getElementById('unsubCard');
   if (card) card.classList.add('is-resubscribed');
@@ -210,23 +195,23 @@ function swapToResubscribedCard() {
   if (title) title.innerHTML = "You're <em>back in.</em>";
   var sub = document.getElementById('unsubSub');
   if (sub) sub.textContent = "Welcome back. We sent a quick confirmation to your inbox — your next bi-weekly newsletter will land on its normal schedule.";
+  // Hide the action area entirely — the page has done its job.
   var actions = document.querySelector('.unsub-actions');
-  if (actions) actions.style.display = 'none';
+  if (actions) actions.setAttribute('hidden', '');
 }
-function showFormFallback() {
-  var btn = document.getElementById('oneClickResub');
-  if (btn) btn.style.display = 'none';
-  var form = document.getElementById('resubForm');
-  if (form) form.removeAttribute('hidden');
+
+function showOneClick(token) {
+  var oneClick = document.getElementById('oneClickResub');
+  var homeLink = document.getElementById('homeLink');
+  oneClick.href = API + '/resubscribe?token=' + encodeURIComponent(token);
+  oneClick.removeAttribute('hidden');
+  if (homeLink) homeLink.setAttribute('hidden', '');
 }
 
 (function applyState(){
   var p = new URLSearchParams(window.location.search);
-  var token = p.get('t');
-  var email = p.get('email');
-  var oneClick = document.getElementById('oneClickResub');
 
-  // Terminal states first — they short-circuit the action area.
+  // Terminal states first.
   if (p.get('resub') === '1') { swapToResubscribedCard(); return; }
 
   if (p.get('ok') === '0') {
@@ -237,99 +222,18 @@ function showFormFallback() {
     var titleE = document.getElementById('unsubTitle');
     if (titleE) titleE.innerHTML = "That link's <em>not valid.</em>";
     var subE = document.getElementById('unsubSub');
-    if (subE) subE.textContent = "The link is either expired or has already been used. Enter your email below to resubscribe (or unsubscribe again).";
-    // No identifier we can trust in this case — fall back to the form.
-    showFormFallback();
+    if (subE) subE.textContent = "The link is either expired or has already been used. Head back to the homepage if you want to re-subscribe.";
+    // homeLink stays visible (its default state) — nothing else to do.
     return;
   }
 
-  // Wire the one-click button based on what we know about the user.
-  if (token && /^[a-f0-9]{64}$/i.test(token)) {
-    // Server-issued token — cleanest path. Single hop through the backend
-    // which clears unsubscribedAt and redirects back here with ?resub=1.
-    oneClick.addEventListener('click', function () {
-      oneClick.disabled = true;
-      oneClick.innerHTML = 'Resubscribing&hellip;';
-      window.location.href = API + '/resubscribe?token=' + encodeURIComponent(token);
-    });
+  var token = p.get('t');
+  if (token && TOKEN_RE.test(token)) {
+    showOneClick(token);
     return;
   }
 
-  if (email && EMAIL_RE.test(email)) {
-    // Fallback: we know the address but not the token. POST it to the
-    // subscribe endpoint, which doubles as resubscribe (clears unsubscribedAt
-    // and sends the welcome-back email).
-    oneClick.addEventListener('click', function () {
-      oneClick.disabled = true;
-      oneClick.innerHTML = 'Resubscribing&hellip;';
-      fetch(API + '/newsletter/subscribe', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email, source_path: '/unsubscribed' })
-      }).then(function (r) {
-        if (r.ok) { swapToResubscribedCard(); }
-        else {
-          oneClick.disabled = false;
-          oneClick.innerHTML = 'Resubscribe &rarr;';
-          showFormFallback();
-          setStatus('Something went wrong. Try entering your email below.', 'error');
-        }
-      }).catch(function () {
-        oneClick.disabled = false;
-        oneClick.innerHTML = 'Resubscribe &rarr;';
-        showFormFallback();
-        setStatus('Network error. Try entering your email below.', 'error');
-      });
-    });
-    return;
-  }
-
-  // No identifier at all (direct nav, bookmark, stripped query) — hide the
-  // one-click button and reveal the form. No way to one-click someone we
-  // can't name.
-  showFormFallback();
-})();
-
-// ── Inline form submit handler (fallback path) ────────────────────────
-(function wireForm(){
-  var form = document.getElementById('resubForm');
-  var input = document.getElementById('resubEmail');
-  if (!form || !input) return;
-  input.addEventListener('input', function () {
-    input.classList.remove('invalid');
-    clearStatus();
-  });
-  form.addEventListener('submit', function (e) {
-    e.preventDefault();
-    var email = (input.value || '').trim().toLowerCase();
-    if (!email || !EMAIL_RE.test(email)) {
-      input.classList.add('invalid');
-      setStatus('Please enter a valid email address.', 'error');
-      input.focus();
-      return;
-    }
-    var btn = form.querySelector('button[type="submit"]');
-    var originalText = btn ? btn.innerHTML : '';
-    if (btn) { btn.disabled = true; btn.innerHTML = 'Sending&hellip;'; }
-    clearStatus();
-    fetch(API + '/newsletter/subscribe', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: email, source_path: '/unsubscribed' })
-    }).then(function (r) {
-      if (r.ok) {
-        setStatus('You’re back in. Check your inbox for confirmation.', 'success');
-        input.value = '';
-        setTimeout(swapToResubscribedCard, 1200);
-      } else {
-        setStatus('Something went wrong. Please try again.', 'error');
-        if (btn) { btn.disabled = false; btn.innerHTML = originalText; }
-      }
-    }).catch(function () {
-      setStatus('Network error. Please try again.', 'error');
-      if (btn) { btn.disabled = false; btn.innerHTML = originalText; }
-    });
-  });
+  // No usable identifier → keep homeLink visible (default). Done.
 })();
 </script>
 </body>
