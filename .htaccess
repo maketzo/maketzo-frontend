@@ -25,12 +25,13 @@ AddType image/webp .webp
 # and analytics don't fork into /pricing and /pricing/.
 RewriteEngine On
 
-# Unsubscribe — forward the user-facing URL to the backend handler.
-# Email links use https://maketzo.co/unsubscribe?token=... so the visible URL
-# matches the brand and stays stable if the backend ever moves. The actual
-# token lookup, unsubscribedAt write, and redirect-to-/unsubscribed page all
-# happen on the backend (api.maketzo.co/unsubscribe). QSA preserves ?token=.
+# Unsubscribe + Resubscribe — forward user-facing URLs to the backend.
+# Email links and one-click reversal use https://maketzo.co/(un|re)subscribe
+# so visible URLs match the brand and stay stable if the backend ever moves.
+# Token lookup, DB write, and redirect-to-/unsubscribed all happen on the
+# backend (api.maketzo.co). QSA preserves ?token=...
 RewriteRule ^unsubscribe$ https://api.maketzo.co/unsubscribe [R=302,L,QSA]
+RewriteRule ^resubscribe$ https://api.maketzo.co/resubscribe [R=302,L,QSA]
 
 # Strip trailing slashes (except the bare /).
 RewriteCond %{REQUEST_FILENAME} !-d
