@@ -1,13 +1,34 @@
 # ──────────────────────────────────────────────────────────────────────────────
-# Basic-auth gate — dev preview tier only. Do NOT merge this block to main.
-# .htpasswd is committed alongside this file (hashed; safe to be in git for a
-# preview tier). The <Files> block below blocks public HTTP access to it.
-# To rotate: regenerate SHA1 hash, update .htpasswd, redeploy.
+# Host-conditional basic-auth gate. ONE file across all three branches
+# (dev / staging / main) — bit-identical, no per-branch divergence to strip
+# during promotion.
+#
+# Apache 2.4 / LiteSpeed evaluate the <If> blocks per-request: when the
+# inbound HTTP_HOST matches a preview tier, AuthType + AuthUserFile + Require
+# kick in. Prod (maketzo.co) doesn't match either, so no auth fires and the
+# tier stays public.
+#
+# AuthUserFile paths are tier-specific because the .htpasswd files live in
+# each tier's DOCUMENT_ROOT — that's a hardcoded literal path inside the <If>
+# branch for that host. The same .htaccess file evaluates both branches but
+# only the matching one's directives take effect, so it's safe.
+#
+# To rotate creds: regenerate SHA1 hash, update .htpasswd in BOTH dev+staging
+# tier folders, redeploy. (Or consolidate to a shared .htpasswd at the home
+# dir level in a future cleanup — out of scope for this refactor.)
 # ──────────────────────────────────────────────────────────────────────────────
-AuthType Basic
-AuthName "MAKETZO Preview"
-AuthUserFile "/home/u775138918/domains/maketzo.co/public_html/dev/.htpasswd"
-Require valid-user
+<If "%{HTTP_HOST} == 'dev.maketzo.co'">
+    AuthType Basic
+    AuthName "MAKETZO Preview"
+    AuthUserFile "/home/u775138918/domains/maketzo.co/public_html/dev/.htpasswd"
+    Require valid-user
+</If>
+<ElseIf "%{HTTP_HOST} == 'staging.maketzo.co'">
+    AuthType Basic
+    AuthName "MAKETZO Preview"
+    AuthUserFile "/home/u775138918/domains/maketzo.co/public_html/staging/.htpasswd"
+    Require valid-user
+</ElseIf>
 
 <Files ".htpasswd">
     Require all denied
