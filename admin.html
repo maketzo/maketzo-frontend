@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#06070A">
+<title>MAKETZO — Admin Console</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="icon" href="https://maketzo.co/assets/logo-mark.png">
+<style>
+  :root {
+    --bg: #06070A; --surface: #0D0F14; --surface-2: #14181F;
+    --text: #FFFFFF; --text-dim: #BFC7D5; --text-quiet: #7E8794; --text-quietest: #5A6470;
+    --gold: #D4AF37; --gold-dim: #806820;
+    --border: rgba(255,255,255,0.08); --border-strong: rgba(212,175,55,0.18);
+    --success: #4ade80; --error: #ef4444;
+    --font-display: 'Bebas Neue', 'Impact', 'Arial Narrow', sans-serif;
+    --font-sans: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-mono: 'DM Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+    --track-cap: 0.08em;
+    --track-display: 0.02em;
+    --track-eyebrow: 0.22em;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { min-height: 100vh; }
+  body { background: var(--bg); color: var(--text); font-family: var(--font-sans); font-size: 14px; line-height: 1.5; display: flex; flex-direction: column; -webkit-font-smoothing: antialiased; }
+
+  /* ── Header (MAKETZO masthead) ─────────────────────────── */
+  header {
+    background: rgba(6,7,10,0.92); backdrop-filter: blur(20px) saturate(140%);
+    border-bottom: 1px solid var(--border-strong);
+    padding: 16px 40px;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 10;
+  }
+  header .brand { display: flex; align-items: center; gap: 14px; text-decoration: none; }
+  header .brand img.mark { height: 36px; width: auto; display: block; }
+  header .brand img.wordmark { height: 18px; width: auto; display: block; }
+  header .console-label {
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: var(--track-eyebrow);
+    text-transform: uppercase; color: var(--gold);
+    padding-left: 14px; margin-left: 4px;
+    border-left: 1px solid var(--border-strong);
+  }
+  header .logout {
+    background: none; border: 1px solid var(--border); color: var(--text-quiet);
+    padding: 7px 14px; border-radius: 4px; cursor: pointer;
+    font-family: var(--font-sans); font-weight: 600; font-size: 12px;
+    letter-spacing: var(--track-cap); text-transform: uppercase;
+    transition: color 120ms, border-color 120ms;
+  }
+  header .logout:hover { color: var(--text); border-color: var(--text-quiet); }
+
+  /* ── Section nav ───────────────────────────────────────── */
+  nav {
+    background: var(--surface); border-bottom: 1px solid var(--border);
+    padding: 0 40px; display: flex; gap: 32px;
+  }
+  nav button {
+    background: none; border: 0; color: var(--text-quiet);
+    padding: 16px 0; cursor: pointer;
+    font-family: var(--font-sans); font-weight: 600; font-size: 12px;
+    letter-spacing: var(--track-cap); text-transform: uppercase;
+    border-bottom: 2px solid transparent;
+    transition: color 120ms, border-color 120ms;
+  }
+  nav button.active { color: var(--gold); border-bottom-color: var(--gold); }
+  nav button:hover:not(:disabled):not(.active) { color: var(--text); }
+  nav button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* ── Main content area ─────────────────────────────────── */
+  main { max-width: 980px; margin: 0 auto; padding: 40px; width: 100%; flex: 1; }
+  section { display: none; }
+  section.active { display: block; }
+
+  .section-eyebrow { font-family: var(--font-mono); font-size: 11px; letter-spacing: var(--track-eyebrow); text-transform: uppercase; color: var(--gold); margin-bottom: 8px; }
+  .section-title { font-family: var(--font-display); font-size: 38px; line-height: 1.05; letter-spacing: var(--track-display); text-transform: uppercase; font-weight: 400; color: var(--text); margin-bottom: 6px; }
+  .section-lead { color: var(--text-dim); font-size: 14px; line-height: 1.6; margin-bottom: 28px; max-width: 640px; }
+
+  /* ── Cards (action containers) ─────────────────────────── */
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 28px; margin-bottom: 20px; }
+  .card h2 { font-family: var(--font-display); font-size: 22px; line-height: 1.1; letter-spacing: var(--track-display); text-transform: uppercase; font-weight: 400; color: var(--text); margin-bottom: 6px; }
+  .card .desc { color: var(--text-quiet); font-size: 13px; line-height: 1.6; margin-bottom: 18px; }
+  .card .desc code { font-family: var(--font-mono); font-size: 12px; color: var(--gold); }
+
+  /* ── Form controls ─────────────────────────────────────── */
+  label { display: block; font-family: var(--font-mono); font-size: 11px; letter-spacing: var(--track-eyebrow); text-transform: uppercase; color: var(--text-quiet); margin-bottom: 8px; }
+  textarea, input[type="text"], input[type="password"] {
+    width: 100%; background: var(--bg); border: 1px solid var(--border);
+    border-radius: 4px; color: var(--text);
+    padding: 12px 14px;
+    font-family: var(--font-mono); font-size: 13px; line-height: 1.5;
+    resize: vertical;
+    transition: border-color 120ms, box-shadow 120ms;
+  }
+  textarea:focus, input:focus { border-color: var(--gold); outline: none; box-shadow: 0 0 0 3px rgba(212,175,55,0.16); }
+  textarea { min-height: 110px; }
+  textarea::placeholder, input::placeholder { color: var(--text-quietest); }
+
+  button.primary {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: linear-gradient(180deg, #E5C04A 0%, #D4AF37 100%);
+    color: var(--bg); border: 1px solid rgba(0,0,0,0.18);
+    padding: 12px 22px; border-radius: 4px;
+    font-family: var(--font-sans); font-weight: 700; font-size: 12px;
+    letter-spacing: var(--track-cap); text-transform: uppercase;
+    cursor: pointer; margin-top: 14px;
+    transition: opacity 120ms, transform 120ms;
+  }
+  button.primary:hover:not(:disabled) { opacity: 0.92; }
+  button.primary:active:not(:disabled) { transform: translateY(1px); }
+  button.primary:disabled { opacity: 0.45; cursor: not-allowed; }
+
+  /* ── Status messages ───────────────────────────────────── */
+  .status { margin-top: 14px; font-size: 13px; line-height: 1.6; padding: 12px 14px; border-radius: 4px; }
+  .status.success { color: var(--success); background: rgba(74,222,128,0.08); border: 1px solid rgba(74,222,128,0.24); }
+  .status.error { color: var(--error); background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.24); }
+  .status.info { color: var(--text-dim); background: var(--surface-2); border: 1px solid var(--border); }
+  .status pre { font-family: var(--font-mono); font-size: 12px; line-height: 1.5; white-space: pre-wrap; margin-top: 8px; color: var(--text-quiet); }
+
+  /* ── Issues table ──────────────────────────────────────── */
+  table { width: 100%; border-collapse: collapse; }
+  th, td { text-align: left; padding: 12px 8px; border-bottom: 1px solid var(--border); font-size: 13px; vertical-align: middle; }
+  th { color: var(--text-quiet); font-family: var(--font-mono); font-weight: 500; font-size: 10px; letter-spacing: var(--track-eyebrow); text-transform: uppercase; padding-bottom: 14px; }
+  td:first-child, th:first-child { font-family: var(--font-mono); color: var(--gold); font-weight: 500; }
+  td .status-pill { display: inline-block; padding: 3px 10px; border-radius: 10px; font-family: var(--font-mono); font-size: 10px; font-weight: 500; letter-spacing: var(--track-cap); text-transform: uppercase; }
+  td .status-draft { background: rgba(127,127,127,0.18); color: var(--text-dim); }
+  td .status-preview_sent { background: rgba(212,175,55,0.16); color: var(--gold); }
+  td .status-approved { background: rgba(74,222,128,0.14); color: var(--success); }
+  td .status-sending { background: rgba(74,222,128,0.14); color: var(--success); }
+  td .status-sent { background: rgba(74,222,128,0.22); color: var(--success); }
+  td .status-rejected { background: rgba(239,68,68,0.14); color: var(--error); }
+  td .status-failed { background: rgba(239,68,68,0.22); color: var(--error); }
+  td .status-active { background: rgba(74,222,128,0.16); color: var(--success); }
+  td .status-unsubscribed { background: rgba(127,127,127,0.2); color: var(--text-dim); }
+  td .email-cell { font-family: var(--font-mono); font-size: 12px; color: var(--text); word-break: break-all; max-width: 260px; }
+  td .source-cell { font-family: var(--font-mono); font-size: 11px; color: var(--text-quiet); max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  td .delete-btn { background: none; border: 1px solid rgba(239,68,68,0.3); color: var(--error); padding: 4px 10px; border-radius: 3px; font-family: var(--font-sans); font-size: 11px; font-weight: 600; letter-spacing: var(--track-cap); text-transform: uppercase; cursor: pointer; transition: background 120ms; }
+  td .delete-btn:hover:not(:disabled) { background: rgba(239,68,68,0.12); }
+  td .delete-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .placeholder { color: var(--text-quiet); text-align: center; padding: 36px; font-style: italic; font-size: 13px; }
+
+  /* ── List controls (search, filter pills, page size, pagination, bulk) ── */
+  .list-toolbar { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid var(--border); }
+  .filter-pills { display: flex; flex-wrap: wrap; gap: 6px; }
+  .filter-pill { background: transparent; border: 1px solid var(--border); color: var(--text-dim); padding: 6px 12px; border-radius: 14px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em; cursor: pointer; transition: background 120ms, border-color 120ms, color 120ms; }
+  .filter-pill:hover:not(.active) { color: var(--text); border-color: var(--text-quiet); }
+  .filter-pill.active { background: var(--gold); border-color: var(--gold); color: var(--bg); font-weight: 600; }
+  .filter-pill .count { opacity: 0.6; margin-left: 4px; }
+  .filter-pill.active .count { opacity: 0.8; }
+  .search-input { flex: 1; min-width: 200px; max-width: 320px; background: var(--bg); border: 1px solid var(--border); border-radius: 4px; color: var(--text); padding: 8px 12px; font-family: var(--font-mono); font-size: 13px; transition: border-color 120ms, box-shadow 120ms; }
+  .search-input:focus { border-color: var(--gold); outline: none; box-shadow: 0 0 0 2px rgba(212,175,55,0.16); }
+  .search-input::placeholder { color: var(--text-quietest); }
+  .page-size-select { background: var(--bg); border: 1px solid var(--border); border-radius: 4px; color: var(--text); padding: 7px 10px; font-family: var(--font-mono); font-size: 12px; cursor: pointer; }
+  .page-size-select:focus { border-color: var(--gold); outline: none; }
+
+  .bulk-actions { display: none; align-items: center; gap: 12px; margin-bottom: 12px; padding: 10px 14px; background: rgba(212,175,55,0.08); border: 1px solid rgba(212,175,55,0.22); border-radius: 4px; }
+  .bulk-actions.visible { display: flex; }
+  .bulk-actions .selected-count { font-family: var(--font-mono); font-size: 12px; color: var(--gold); letter-spacing: 0.04em; }
+  .bulk-actions button { background: rgba(239,68,68,0.14); border: 1px solid rgba(239,68,68,0.36); color: var(--error); padding: 6px 14px; border-radius: 3px; font-family: var(--font-sans); font-weight: 600; font-size: 11px; letter-spacing: var(--track-cap); text-transform: uppercase; cursor: pointer; transition: background 120ms; }
+  .bulk-actions button:hover:not(:disabled) { background: rgba(239,68,68,0.24); }
+  .bulk-actions button.secondary { background: transparent; border-color: var(--border); color: var(--text-quiet); }
+  .bulk-actions button.secondary:hover:not(:disabled) { background: var(--surface-2); color: var(--text); }
+  .bulk-actions button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  td.checkbox-cell, th.checkbox-cell { width: 28px; padding-left: 0; padding-right: 4px; }
+  input[type="checkbox"].row-check, input[type="checkbox"].all-check { width: 14px; height: 14px; accent-color: var(--gold); cursor: pointer; }
+  tr.selected td { background: rgba(212,175,55,0.05); }
+
+  .pagination { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; padding-top: 16px; margin-top: 6px; border-top: 1px solid var(--border); font-family: var(--font-mono); font-size: 12px; color: var(--text-quiet); }
+  .pagination .summary { letter-spacing: 0.04em; }
+  .pagination .summary strong { color: var(--text); font-weight: 500; }
+  .pagination .controls { display: flex; gap: 6px; }
+  .pagination button { background: transparent; border: 1px solid var(--border); color: var(--text-dim); padding: 6px 14px; border-radius: 3px; font-family: var(--font-sans); font-weight: 600; font-size: 11px; letter-spacing: var(--track-cap); text-transform: uppercase; cursor: pointer; transition: border-color 120ms, color 120ms; }
+  .pagination button:hover:not(:disabled) { border-color: var(--gold); color: var(--gold); }
+  .pagination button:disabled { opacity: 0.35; cursor: not-allowed; }
+
+  /* ── Login card ────────────────────────────────────────── */
+  .login-wrap { display: flex; align-items: center; justify-content: center; min-height: calc(100vh - 80px); padding: 32px; }
+  .login-card { max-width: 460px; width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 36px 32px; text-align: center; }
+  .login-card img.mark { height: 56px; margin-bottom: 20px; }
+  .login-card .login-eyebrow { font-family: var(--font-mono); font-size: 11px; letter-spacing: var(--track-eyebrow); text-transform: uppercase; color: var(--gold); margin-bottom: 10px; }
+  .login-card .login-title { font-family: var(--font-display); font-size: 28px; line-height: 1.05; letter-spacing: var(--track-display); text-transform: uppercase; font-weight: 400; color: var(--text); margin-bottom: 12px; }
+  .login-card .desc { color: var(--text-quiet); font-size: 13px; line-height: 1.6; margin-bottom: 24px; }
+  .login-card .desc code { font-family: var(--font-mono); font-size: 12px; color: var(--gold); }
+  .login-card label, .login-card input { text-align: left; }
+  .login-card input { text-align: center; }
+  .login-card button.primary { width: 100%; justify-content: center; }
+  .login-card .status { text-align: left; }
+
+  /* ── Footer ────────────────────────────────────────────── */
+  footer { background: var(--bg); border-top: 1px solid var(--border); padding: 24px 40px; text-align: center; }
+  footer p { color: var(--text-quietest); font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.04em; line-height: 1.6; margin-bottom: 6px; }
+  footer p.tagline { color: var(--gold); letter-spacing: var(--track-eyebrow); text-transform: uppercase; margin-bottom: 10px; font-weight: 500; }
+  footer a { color: var(--text-quiet); text-decoration: none; }
+  footer a:hover { color: var(--text); }
+
+  @media (max-width: 720px) {
+    header { padding: 14px 20px; gap: 12px; }
+    header .console-label { display: none; }
+    nav { padding: 0 20px; gap: 20px; overflow-x: auto; }
+    main { padding: 24px 20px; }
+    .section-title { font-size: 30px; }
+    .card { padding: 20px; }
+    footer { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LOGIN VIEW: shown when no secret is in sessionStorage -->
+<div id="loginView">
+  <div class="login-wrap">
+    <div class="login-card">
+      <img class="mark" src="https://maketzo.co/assets/logo-mark.png" alt="MAKETZO">
+      <p class="login-eyebrow">Internal · Restricted</p>
+      <h1 class="login-title">Admin Console</h1>
+      <p class="desc">Paste your <code>NEWSLETTER_ADMIN_SECRET</code> to unlock. The secret is held in this browser tab only and cleared when you close it.</p>
+      <label for="loginSecret">Admin secret</label>
+      <input type="password" id="loginSecret" autocomplete="off" placeholder="paste secret">
+      <button class="primary" id="loginBtn">Unlock console</button>
+      <div id="loginStatus" class="status" style="display:none;"></div>
+    </div>
+  </div>
+  <footer>
+    <p class="tagline">Built by traders, for traders.</p>
+    <p>&copy; 2026 Abinic, LLC. All rights reserved. MAKETZO&reg; is a product of Abinic, LLC.</p>
+    <p><a href="https://maketzo.co" target="_blank" rel="noopener">maketzo.co</a></p>
+  </footer>
+</div>
+
+<!-- CONSOLE VIEW: shown when secret is present -->
+<div id="consoleView" style="display:none;">
+  <header>
+    <a href="https://maketzo.co" class="brand" target="_blank" rel="noopener" aria-label="MAKETZO">
+      <img class="mark" src="https://maketzo.co/assets/logo-mark.png" alt="">
+      <img class="wordmark" src="https://maketzo.co/assets/logo-wordmark.png" alt="MAKETZO">
+      <span class="console-label">Admin Console</span>
+    </a>
+    <button class="logout" id="logoutBtn">Sign out</button>
+  </header>
+  <nav>
+    <button data-section="newsletter" class="active">Newsletter</button>
+    <button data-section="placeholder-billing" disabled title="Coming soon">Billing &amp; refunds</button>
+    <button data-section="placeholder-users" disabled title="Coming soon">Users</button>
+  </nav>
+
+  <main>
+    <section data-section="newsletter" class="active">
+      <p class="section-eyebrow">Editorial Pipeline</p>
+      <h1 class="section-title">Newsletter</h1>
+      <p class="section-lead">Generate the next bi-weekly issue, save feedback that shapes the next draft, and review delivery history. Auto-cron runs Saturday 22:00 UTC every two weeks — manual triggers here are for ad-hoc issues.</p>
+
+      <div class="card">
+        <h2>Generate next draft</h2>
+        <p class="desc">Calls Claude Opus 4.7, drafts an issue per the editorial prompt + accumulated feedback, and emails you a preview with approve/reject buttons. Topic hint is optional — leave blank to let Claude pick.</p>
+        <label for="topicHint">Topic hint (optional)</label>
+        <textarea id="topicHint" placeholder="e.g. 'Revenge trading after a red day — the neurochemical loop and how to break it'"></textarea>
+        <button class="primary" id="draftBtn">Generate draft</button>
+        <div id="draftStatus" class="status" style="display:none;"></div>
+      </div>
+
+      <div class="card">
+        <h2>Editorial feedback</h2>
+        <p class="desc">Notes append to <code>newsletter/feedback.md</code> and override the editorial prompt on every future generation. Be terse — longer notes mean a noisier prompt.</p>
+        <label for="feedbackNote">Note for next draft</label>
+        <textarea id="feedbackNote" placeholder="e.g. 'Tone is too academic. Shorter sentences. More second-person.'"></textarea>
+        <button class="primary" id="feedbackBtn">Save feedback</button>
+        <div id="feedbackStatus" class="status" style="display:none;"></div>
+      </div>
+
+      <div class="card">
+        <h2>Issues</h2>
+        <p class="desc">Newsletter issues across all states. State machine: draft → preview_sent → approved → sending → sent (or rejected / failed). Filter, search, and page through the history below.</p>
+        <div class="list-toolbar">
+          <div class="filter-pills" id="issuesFilterPills"></div>
+          <input type="text" class="search-input" id="issuesSearch" placeholder="Search topic or subject&hellip;" autocomplete="off">
+          <select class="page-size-select" id="issuesPageSize">
+            <option value="10">10 / page</option>
+            <option value="25" selected>25 / page</option>
+            <option value="50">50 / page</option>
+            <option value="100">100 / page</option>
+          </select>
+        </div>
+        <div id="issuesList"><div class="placeholder">Loading&hellip;</div></div>
+        <div class="pagination" id="issuesPagination" style="display:none;">
+          <div class="summary" id="issuesSummary"></div>
+          <div class="controls">
+            <button id="issuesPrev">&larr; Prev</button>
+            <button id="issuesNext">Next &rarr;</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Subscribers</h2>
+        <p class="desc">Filter, search, and clean up the newsletter list. Click <strong>Delete</strong> next to obvious garbage — typo domains, test addresses, disposable signups — or select multiple rows and bulk-delete. Hard delete; rows are gone immediately. Real opt-outs (<code>unsubscribed</code>) should generally stay so they can re-subscribe cleanly.</p>
+        <div class="list-toolbar">
+          <div class="filter-pills" id="subsFilterPills"></div>
+          <input type="text" class="search-input" id="subsSearch" placeholder="Search email&hellip;" autocomplete="off">
+          <select class="page-size-select" id="subsPageSize">
+            <option value="25">25 / page</option>
+            <option value="50" selected>50 / page</option>
+            <option value="100">100 / page</option>
+            <option value="200">200 / page</option>
+          </select>
+        </div>
+        <div class="bulk-actions" id="subsBulkActions">
+          <span class="selected-count" id="subsSelectedCount">0 selected</span>
+          <button id="subsBulkDelete">Delete selected</button>
+          <button class="secondary" id="subsClearSelection">Clear selection</button>
+        </div>
+        <div id="subscribersList"><div class="placeholder">Loading&hellip;</div></div>
+        <div class="pagination" id="subsPagination" style="display:none;">
+          <div class="summary" id="subsSummary"></div>
+          <div class="controls">
+            <button id="subsPrev">&larr; Prev</button>
+            <button id="subsNext">Next &rarr;</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p class="tagline">Built by traders, for traders.</p>
+    <p>&copy; 2026 Abinic, LLC. All rights reserved. MAKETZO&reg; is a product of Abinic, LLC.</p>
+    <p><a href="https://maketzo.co" target="_blank" rel="noopener">maketzo.co</a> &nbsp;&middot;&nbsp; <a href="https://maketzo.co/privacy" target="_blank" rel="noopener">Privacy</a> &nbsp;&middot;&nbsp; <a href="https://maketzo.co/terms" target="_blank" rel="noopener">Terms</a></p>
+  </footer>
+</div>
+
+<script>
+(function(){
+  var SECRET_KEY = 'mkAdminSecret';
+
+  function getSecret(){ return sessionStorage.getItem(SECRET_KEY); }
+  function setSecret(s){ sessionStorage.setItem(SECRET_KEY, s); }
+  function clearSecret(){ sessionStorage.removeItem(SECRET_KEY); }
+
+  function $(id){ return document.getElementById(id); }
+
+  function showStatus(el, kind, text, detail){
+    el.style.display = 'block';
+    el.className = 'status ' + kind;
+    el.textContent = text;
+    if (detail) {
+      var pre = document.createElement('pre');
+      pre.textContent = typeof detail === 'string' ? detail : JSON.stringify(detail, null, 2);
+      el.appendChild(pre);
+    }
+  }
+  function hideStatus(el){ el.style.display = 'none'; el.textContent = ''; }
+
+  // Derive backend API base from the current frontend hostname so the same
+  // admin.html works across all four tiers (local / dev / staging / prod).
+  // Mirrors the pattern in assets/js/newsletter.js + checkout.js — strip
+  // leading www. then map: maketzo.co -> api.maketzo.co, dev.* -> dev-api.*,
+  // staging.* -> staging-api.*, localhost -> localhost:3000. Cookies aren't
+  // used for admin auth (X-Admin-Secret header instead), so credentials:
+  // 'omit' is fine — keeps CORS preflight simple.
+  var API_BASE = (function(){
+    var h0 = window.location.hostname;
+    var h = h0.indexOf('www.') === 0 ? h0.slice(4) : h0;
+    if (h === 'localhost' || h.indexOf('127.') === 0) return 'http://localhost:3000';
+    if (h === 'maketzo.co') return 'https://api.maketzo.co';
+    var parts = h.split('.');
+    if (parts.length >= 3) return 'https://' + parts[0] + '-api.' + parts.slice(1).join('.');
+    return 'https://api.' + h;
+  })();
+
+  function api(method, path, body){
+    var secret = getSecret();
+    if (!secret) { renderLogin(); return Promise.reject(new Error('no secret')); }
+    return fetch(API_BASE + path, {
+      method: method,
+      headers: { 'Content-Type': 'application/json', 'X-Admin-Secret': secret },
+      body: body ? JSON.stringify(body) : undefined
+    }).then(function(r){
+      if (r.status === 401) { clearSecret(); renderLogin(); throw new Error('unauthorized — secret rejected'); }
+      return r.json().then(function(j){ return { status: r.status, body: j }; });
+    });
+  }
+
+  function renderLogin(){
+    $('loginView').style.display = '';
+    $('consoleView').style.display = 'none';
+    $('loginSecret').focus();
+  }
+  function renderConsole(){
+    $('loginView').style.display = 'none';
+    $('consoleView').style.display = '';
+    loadIssues();
+  }
+
+  // ── Login ───────────────────────────────────────────────────────────
+  $('loginBtn').addEventListener('click', function(){
+    var s = $('loginSecret').value.trim();
+    if (!s) { showStatus($('loginStatus'), 'error', 'Paste your secret first.'); return; }
+    setSecret(s);
+    hideStatus($('loginStatus'));
+    // Test by hitting issues endpoint — it'll 401 if the secret is wrong.
+    api('GET', '/admin/newsletter/issues').then(function(res){
+      if (res.status === 200) { renderConsole(); }
+      else { showStatus($('loginStatus'), 'error', 'Server returned ' + res.status); }
+    }).catch(function(e){
+      showStatus($('loginStatus'), 'error', e.message);
+    });
+  });
+  $('loginSecret').addEventListener('keydown', function(e){
+    if (e.key === 'Enter') $('loginBtn').click();
+  });
+  $('logoutBtn').addEventListener('click', function(){
+    clearSecret();
+    $('loginSecret').value = '';
+    renderLogin();
+  });
+
+  // ── Nav tabs ────────────────────────────────────────────────────────
+  document.querySelectorAll('nav button[data-section]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      if (btn.disabled) return;
+      document.querySelectorAll('nav button').forEach(function(b){ b.classList.remove('active'); });
+      document.querySelectorAll('section').forEach(function(s){ s.classList.remove('active'); });
+      btn.classList.add('active');
+      var sec = document.querySelector('section[data-section="' + btn.dataset.section + '"]');
+      if (sec) sec.classList.add('active');
+    });
+  });
+
+  // ── Generate draft ──────────────────────────────────────────────────
+  $('draftBtn').addEventListener('click', function(){
+    var hint = $('topicHint').value.trim();
+    var btn = $('draftBtn'); var status = $('draftStatus');
+    btn.disabled = true;
+    var originalText = btn.textContent;
+    btn.textContent = 'Generating… (~30-60s)';
+    showStatus(status, 'info', 'Calling Claude API. This typically takes 30-60 seconds. Do not refresh.');
+    api('POST', '/newsletter/admin/draft', { topicHint: hint || undefined }).then(function(res){
+      btn.disabled = false; btn.textContent = originalText;
+      if (res.status === 200 && res.body.ok) {
+        showStatus(status, 'success', 'Draft generated. Preview email sent. Check your inbox for [PREVIEW] subject.', res.body);
+        $('topicHint').value = '';
+        loadIssues();
+      } else {
+        showStatus(status, 'error', 'Draft failed.', res.body);
+      }
+    }).catch(function(e){
+      btn.disabled = false; btn.textContent = originalText;
+      showStatus(status, 'error', e.message);
+    });
+  });
+
+  // ── Save feedback ───────────────────────────────────────────────────
+  $('feedbackBtn').addEventListener('click', function(){
+    var note = $('feedbackNote').value.trim();
+    var btn = $('feedbackBtn'); var status = $('feedbackStatus');
+    if (!note) { showStatus(status, 'error', 'Type a note first.'); return; }
+    btn.disabled = true;
+    showStatus(status, 'info', 'Appending…');
+    api('POST', '/admin/newsletter/feedback', { note: note }).then(function(res){
+      btn.disabled = false;
+      if (res.status === 200 && res.body.ok) {
+        showStatus(status, 'success', 'Saved to feedback.md. Next draft will use it.');
+        $('feedbackNote').value = '';
+      } else {
+        showStatus(status, 'error', 'Save failed.', res.body);
+      }
+    }).catch(function(e){
+      btn.disabled = false;
+      showStatus(status, 'error', e.message);
+    });
+  });
+
+  // ── Shared helpers ─────────────────────────────────────────────────
+  function fmtDate(s){ if (!s) return '—'; var d = new Date(s); return d.toLocaleString('en-US', { month:'short', day:'numeric', hour:'numeric', minute:'2-digit' }); }
+  function escapeHtml(s){ return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function debounce(fn, ms){ var t; return function(){ var args = arguments, self = this; clearTimeout(t); t = setTimeout(function(){ fn.apply(self, args); }, ms); }; }
+  function qs(o){ return Object.keys(o).filter(function(k){ return o[k] !== '' && o[k] != null; }).map(function(k){ return encodeURIComponent(k) + '=' + encodeURIComponent(o[k]); }).join('&'); }
+  function renderPills(container, opts, activeValue, onClick){
+    container.innerHTML = '';
+    opts.forEach(function(o){
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'filter-pill' + (o.value === activeValue ? ' active' : '');
+      b.innerHTML = escapeHtml(o.label) + (o.count != null ? ' <span class="count">' + o.count + '</span>' : '');
+      b.addEventListener('click', function(){ onClick(o.value); });
+      container.appendChild(b);
+    });
+  }
+  function renderPagination(state, total, summaryEl, prevBtn, nextBtn, paginationEl){
+    if (total === 0) { paginationEl.style.display = 'none'; return; }
+    paginationEl.style.display = 'flex';
+    var totalPages = Math.max(1, Math.ceil(total / state.pageSize));
+    var first = (state.page - 1) * state.pageSize + 1;
+    var last = Math.min(total, state.page * state.pageSize);
+    summaryEl.innerHTML = '<strong>' + first + '&ndash;' + last + '</strong> of <strong>' + total + '</strong> &nbsp;&middot;&nbsp; page <strong>' + state.page + '</strong> of <strong>' + totalPages + '</strong>';
+    prevBtn.disabled = state.page <= 1;
+    nextBtn.disabled = state.page >= totalPages;
+  }
+
+  // ── Issues list ─────────────────────────────────────────────────────
+  var ISSUE_STATUSES = ['draft', 'preview_sent', 'approved', 'sending', 'sent', 'rejected', 'failed'];
+  var issuesState = { page: 1, pageSize: 25, search: '', status: 'all' };
+
+  function loadIssues(){
+    var container = $('issuesList');
+    var url = '/admin/newsletter/issues?' + qs({
+      page: issuesState.page,
+      pageSize: issuesState.pageSize,
+      search: issuesState.search,
+      status: issuesState.status === 'all' ? '' : issuesState.status
+    });
+    api('GET', url).then(function(res){
+      if (res.status !== 200 || !res.body.ok) {
+        container.innerHTML = '<div class="placeholder">Failed to load.</div>';
+        return;
+      }
+      var data = res.body;
+      // Pills (always render so counts update).
+      var pillOpts = [{ value: 'all', label: 'All', count: data.counts.all }];
+      ISSUE_STATUSES.forEach(function(s){
+        if (data.counts[s]) pillOpts.push({ value: s, label: s.replace('_', ' '), count: data.counts[s] });
+      });
+      renderPills($('issuesFilterPills'), pillOpts, issuesState.status, function(v){
+        issuesState.status = v; issuesState.page = 1; loadIssues();
+      });
+
+      if (!data.issues.length) {
+        container.innerHTML = '<div class="placeholder">' + (issuesState.search || issuesState.status !== 'all' ? 'No issues match the current filter.' : 'No issues yet. Generate the first one above.') + '</div>';
+        renderPagination(issuesState, 0, $('issuesSummary'), $('issuesPrev'), $('issuesNext'), $('issuesPagination'));
+        return;
+      }
+      var html = '<table><thead><tr><th>#</th><th>Topic</th><th>Subject</th><th>Status</th><th>Preview</th><th>Sent</th><th>Delivered</th></tr></thead><tbody>';
+      data.issues.forEach(function(i){
+        html += '<tr>'
+          + '<td>' + i.issueNumber + '</td>'
+          + '<td>' + escapeHtml(i.topicSlug) + '</td>'
+          + '<td>' + escapeHtml(i.subject) + '</td>'
+          + '<td><span class="status-pill status-' + i.status + '">' + escapeHtml(i.status) + '</span></td>'
+          + '<td>' + fmtDate(i.previewSentAt) + '</td>'
+          + '<td>' + fmtDate(i.sentAt) + '</td>'
+          + '<td>' + (i.sendCount || 0) + (i.sendErrorCount ? ' (' + i.sendErrorCount + ' err)' : '') + '</td>'
+          + '</tr>';
+      });
+      html += '</tbody></table>';
+      container.innerHTML = html;
+      renderPagination(issuesState, data.total, $('issuesSummary'), $('issuesPrev'), $('issuesNext'), $('issuesPagination'));
+    }).catch(function(e){
+      container.innerHTML = '<div class="placeholder">' + escapeHtml(e.message) + '</div>';
+    });
+  }
+  $('issuesSearch').addEventListener('input', debounce(function(){
+    issuesState.search = $('issuesSearch').value.trim();
+    issuesState.page = 1;
+    loadIssues();
+  }, 300));
+  $('issuesPageSize').addEventListener('change', function(){
+    issuesState.pageSize = parseInt($('issuesPageSize').value, 10) || 25;
+    issuesState.page = 1;
+    loadIssues();
+  });
+  $('issuesPrev').addEventListener('click', function(){ if (issuesState.page > 1) { issuesState.page--; loadIssues(); } });
+  $('issuesNext').addEventListener('click', function(){ issuesState.page++; loadIssues(); });
+
+  // ── Subscribers list ────────────────────────────────────────────────
+  var subsState = { page: 1, pageSize: 50, search: '', status: 'all', selected: new Set() };
+
+  function renderSubsBulkBar(){
+    var bar = $('subsBulkActions');
+    var n = subsState.selected.size;
+    if (n === 0) { bar.classList.remove('visible'); return; }
+    bar.classList.add('visible');
+    $('subsSelectedCount').textContent = n + ' selected';
+  }
+
+  function loadSubscribers(){
+    var container = $('subscribersList');
+    var url = '/admin/newsletter/subscribers?' + qs({
+      page: subsState.page,
+      pageSize: subsState.pageSize,
+      search: subsState.search,
+      status: subsState.status === 'all' ? '' : subsState.status
+    });
+    api('GET', url).then(function(res){
+      if (res.status !== 200 || !res.body.ok) {
+        container.innerHTML = '<div class="placeholder">Failed to load.</div>';
+        return;
+      }
+      var data = res.body;
+      renderPills($('subsFilterPills'), [
+        { value: 'all', label: 'All', count: data.counts.all },
+        { value: 'active', label: 'Active', count: data.counts.active },
+        { value: 'unsubscribed', label: 'Unsubscribed', count: data.counts.unsubscribed }
+      ], subsState.status, function(v){
+        subsState.status = v; subsState.page = 1; subsState.selected.clear(); loadSubscribers();
+      });
+
+      if (!data.subscribers.length) {
+        container.innerHTML = '<div class="placeholder">' + (subsState.search || subsState.status !== 'all' ? 'No subscribers match the current filter.' : 'No subscribers yet.') + '</div>';
+        renderPagination(subsState, 0, $('subsSummary'), $('subsPrev'), $('subsNext'), $('subsPagination'));
+        renderSubsBulkBar();
+        return;
+      }
+      var html = '<table><thead><tr><th class="checkbox-cell"><input type="checkbox" class="all-check" id="subsAllCheck"></th><th>Email</th><th>Status</th><th>Source</th><th>Signed up</th><th>Unsubscribed</th><th></th></tr></thead><tbody>';
+      data.subscribers.forEach(function(s){
+        var statusClass = s.unsubscribedAt ? 'status-unsubscribed' : 'status-active';
+        var statusText  = s.unsubscribedAt ? 'unsubscribed' : 'active';
+        var checked = subsState.selected.has(s.id) ? ' checked' : '';
+        var rowSelected = subsState.selected.has(s.id) ? ' class="selected"' : '';
+        html += '<tr data-sub-id="' + s.id + '"' + rowSelected + '>'
+          + '<td class="checkbox-cell"><input type="checkbox" class="row-check" data-id="' + s.id + '"' + checked + '></td>'
+          + '<td class="email-cell">' + escapeHtml(s.email) + '</td>'
+          + '<td><span class="status-pill ' + statusClass + '">' + statusText + '</span></td>'
+          + '<td class="source-cell" title="' + escapeHtml(s.sourcePath || '') + '">' + escapeHtml(s.sourcePath || '—') + '</td>'
+          + '<td>' + fmtDate(s.createdAt) + '</td>'
+          + '<td>' + fmtDate(s.unsubscribedAt) + '</td>'
+          + '<td><button class="delete-btn" data-id="' + s.id + '" data-email="' + escapeHtml(s.email) + '">Delete</button></td>'
+          + '</tr>';
+      });
+      html += '</tbody></table>';
+      container.innerHTML = html;
+
+      // Per-row checkbox handlers.
+      container.querySelectorAll('.row-check').forEach(function(cb){
+        cb.addEventListener('change', function(){
+          var id = parseInt(cb.dataset.id, 10);
+          if (cb.checked) subsState.selected.add(id); else subsState.selected.delete(id);
+          var row = cb.closest('tr');
+          if (row) row.classList.toggle('selected', cb.checked);
+          renderSubsBulkBar();
+          var allCb = $('subsAllCheck');
+          var rowChecks = container.querySelectorAll('.row-check');
+          var allChecked = Array.prototype.every.call(rowChecks, function(c){ return c.checked; });
+          if (allCb) allCb.checked = allChecked && rowChecks.length > 0;
+        });
+      });
+      // Select-all handler.
+      var allCheck = $('subsAllCheck');
+      if (allCheck) {
+        allCheck.addEventListener('change', function(){
+          container.querySelectorAll('.row-check').forEach(function(cb){
+            cb.checked = allCheck.checked;
+            var id = parseInt(cb.dataset.id, 10);
+            if (allCheck.checked) subsState.selected.add(id); else subsState.selected.delete(id);
+            var row = cb.closest('tr');
+            if (row) row.classList.toggle('selected', allCheck.checked);
+          });
+          renderSubsBulkBar();
+        });
+      }
+      // Single-row delete.
+      container.querySelectorAll('.delete-btn').forEach(function(btn){
+        btn.addEventListener('click', function(){
+          var id = parseInt(btn.dataset.id, 10);
+          var email = btn.dataset.email;
+          if (!confirm('Delete ' + email + ' from the newsletter list?\\n\\nHard delete — the row is removed immediately. They can re-subscribe from the marketing page if needed.')) return;
+          btn.disabled = true;
+          btn.textContent = 'Deleting…';
+          api('DELETE', '/admin/newsletter/subscribers/' + id).then(function(res){
+            if (res.status === 200 && res.body.ok) {
+              subsState.selected.delete(id);
+              loadSubscribers();
+            } else {
+              btn.disabled = false;
+              btn.textContent = 'Delete';
+              alert('Delete failed: ' + (res.body && res.body.error ? res.body.error : 'unknown'));
+            }
+          }).catch(function(e){
+            btn.disabled = false;
+            btn.textContent = 'Delete';
+            alert('Network error: ' + e.message);
+          });
+        });
+      });
+
+      renderPagination(subsState, data.total, $('subsSummary'), $('subsPrev'), $('subsNext'), $('subsPagination'));
+      renderSubsBulkBar();
+    }).catch(function(e){
+      container.innerHTML = '<div class="placeholder">' + escapeHtml(e.message) + '</div>';
+    });
+  }
+
+  $('subsSearch').addEventListener('input', debounce(function(){
+    subsState.search = $('subsSearch').value.trim();
+    subsState.page = 1;
+    loadSubscribers();
+  }, 300));
+  $('subsPageSize').addEventListener('change', function(){
+    subsState.pageSize = parseInt($('subsPageSize').value, 10) || 50;
+    subsState.page = 1;
+    loadSubscribers();
+  });
+  $('subsPrev').addEventListener('click', function(){ if (subsState.page > 1) { subsState.page--; loadSubscribers(); } });
+  $('subsNext').addEventListener('click', function(){ subsState.page++; loadSubscribers(); });
+  $('subsClearSelection').addEventListener('click', function(){ subsState.selected.clear(); loadSubscribers(); });
+  $('subsBulkDelete').addEventListener('click', function(){
+    var ids = Array.from(subsState.selected);
+    if (!ids.length) return;
+    if (!confirm('Delete ' + ids.length + ' selected subscriber(s)?\\n\\nHard delete — rows are removed immediately. They can re-subscribe from the marketing page if needed.')) return;
+    var btn = $('subsBulkDelete'); btn.disabled = true; btn.textContent = 'Deleting…';
+    api('DELETE', '/admin/newsletter/subscribers', { ids: ids }).then(function(res){
+      btn.disabled = false; btn.textContent = 'Delete selected';
+      if (res.status === 200 && res.body.ok) {
+        subsState.selected.clear();
+        loadSubscribers();
+      } else {
+        alert('Bulk delete failed: ' + (res.body && res.body.error ? res.body.error : 'unknown'));
+      }
+    }).catch(function(e){
+      btn.disabled = false; btn.textContent = 'Delete selected';
+      alert('Network error: ' + e.message);
+    });
+  });
+
+  // Wrap renderConsole to also load both lists on every console render.
+  var _origRenderConsole = renderConsole;
+  renderConsole = function(){
+    _origRenderConsole();
+    loadSubscribers();
+  };
+
+  // ── Boot ───────────────────────────────────────────────────────────
+  if (getSecret()) {
+    // Verify the stored secret is still valid by trying issues endpoint.
+    api('GET', '/admin/newsletter/issues').then(function(res){
+      if (res.status === 200) renderConsole();
+      else renderLogin();
+    }).catch(function(){ renderLogin(); });
+  } else {
+    renderLogin();
+  }
+})();
+</script>
+</body>
+</html>
