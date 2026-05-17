@@ -135,6 +135,7 @@
   td .status-failed { background: rgba(239,68,68,0.22); color: var(--error); }
   td .status-active { background: rgba(74,222,128,0.16); color: var(--success); }
   td .status-unsubscribed { background: rgba(127,127,127,0.2); color: var(--text-dim); }
+  td .status-bounced { background: rgba(239,68,68,0.14); color: var(--error); }
   td .email-cell { font-family: var(--font-mono); font-size: 12px; color: var(--text); word-break: break-all; max-width: 260px; }
   td .source-cell { font-family: var(--font-mono); font-size: 11px; color: var(--text-quiet); max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   td .delete-btn { background: none; border: 1px solid rgba(239,68,68,0.3); color: var(--error); padding: 4px 10px; border-radius: 3px; font-family: var(--font-sans); font-size: 11px; font-weight: 600; letter-spacing: var(--track-cap); text-transform: uppercase; cursor: pointer; transition: background 120ms; }
@@ -565,7 +566,9 @@
   $('issuesNext').addEventListener('click', function(){ issuesState.page++; loadIssues(); });
 
   // ── Subscribers list ────────────────────────────────────────────────
-  var subsState = { page: 1, pageSize: 50, search: '', status: 'all', selected: new Set() };
+  // Default filter = 'active' so bounced + unsubscribed rows DON'T pollute
+  // the operator's day-to-day view.
+  var subsState = { page: 1, pageSize: 50, search: '', status: 'active', selected: new Set() };
 
   function renderSubsBulkBar(){
     var bar = $('subsBulkActions');
@@ -590,9 +593,10 @@
       }
       var data = res.body;
       renderPills($('subsFilterPills'), [
-        { value: 'all', label: 'All', count: data.counts.all },
         { value: 'active', label: 'Active', count: data.counts.active },
-        { value: 'unsubscribed', label: 'Unsubscribed', count: data.counts.unsubscribed }
+        { value: 'unsubscribed', label: 'Unsubscribed', count: data.counts.unsubscribed },
+        { value: 'bounced', label: 'Bounced', count: data.counts.bounced },
+        { value: 'all', label: 'All', count: data.counts.all }
       ], subsState.status, function(v){
         subsState.status = v; subsState.page = 1; subsState.selected.clear(); loadSubscribers();
       });
@@ -603,19 +607,24 @@
         renderSubsBulkBar();
         return;
       }
-      var html = '<table><thead><tr><th class="checkbox-cell"><input type="checkbox" class="all-check" id="subsAllCheck"></th><th>Email</th><th>Status</th><th>Source</th><th>Signed up</th><th>Unsubscribed</th><th></th></tr></thead><tbody>';
+      var html = '<table><thead><tr><th class="checkbox-cell"><input type="checkbox" class="all-check" id="subsAllCheck"></th><th>Email</th><th>Status</th><th>Source</th><th>Signed up</th><th>Unsubscribed</th><th>Bounced</th><th></th></tr></thead><tbody>';
       data.subscribers.forEach(function(s){
-        var statusClass = s.unsubscribedAt ? 'status-unsubscribed' : 'status-active';
-        var statusText  = s.unsubscribedAt ? 'unsubscribed' : 'active';
+        // bouncedAt wins over unsubscribedAt for the status pill.
+        var statusClass, statusText;
+        if (s.bouncedAt) { statusClass = 'status-bounced'; statusText = 'bounced'; }
+        else if (s.unsubscribedAt) { statusClass = 'status-unsubscribed'; statusText = 'unsubscribed'; }
+        else { statusClass = 'status-active'; statusText = 'active'; }
+        var bouncedTitle = s.bounceReason ? ' title="' + escapeHtml(s.bounceReason) + '"' : '';
         var checked = subsState.selected.has(s.id) ? ' checked' : '';
         var rowSelected = subsState.selected.has(s.id) ? ' class="selected"' : '';
         html += '<tr data-sub-id="' + s.id + '"' + rowSelected + '>'
           + '<td class="checkbox-cell"><input type="checkbox" class="row-check" data-id="' + s.id + '"' + checked + '></td>'
           + '<td class="email-cell">' + escapeHtml(s.email) + '</td>'
-          + '<td><span class="status-pill ' + statusClass + '">' + statusText + '</span></td>'
+          + '<td><span class="status-pill ' + statusClass + '"' + bouncedTitle + '>' + statusText + '</span></td>'
           + '<td class="source-cell" title="' + escapeHtml(s.sourcePath || '') + '">' + escapeHtml(s.sourcePath || '—') + '</td>'
           + '<td>' + fmtDate(s.createdAt) + '</td>'
           + '<td>' + fmtDate(s.unsubscribedAt) + '</td>'
+          + '<td' + bouncedTitle + '>' + fmtDate(s.bouncedAt) + '</td>'
           + '<td><button class="delete-btn" data-id="' + s.id + '" data-email="' + escapeHtml(s.email) + '">Delete</button></td>'
           + '</tr>';
       });
