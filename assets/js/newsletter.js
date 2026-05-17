@@ -154,18 +154,29 @@
   function showSuccess(form) {
     var success = findSuccessSlot(form);
     if (success) {
-      // Hide the form chrome; show the success slot.
+      // Hide the form chrome; show the success slot (works for index.html
+      // main form — has a real .newsletter-success / .email-success element
+      // with full green-on-obsidian confirmation block).
       form.style.display = "none";
       success.classList.add("show");
       success.removeAttribute("hidden");
-    } else {
-      // Sticky-bar fallback when no .newsletter-success element exists:
-      // swap the input placeholder + auto-dismiss.
-      var input = findInput(form);
-      if (input) { input.value = ""; input.placeholder = "Subscribed ✓"; }
-      if (typeof window.closeStickyBar === "function") {
-        setTimeout(window.closeStickyBar, 1500);
-      }
+      return;
+    }
+    // Sticky-bar fallback: no dedicated success slot exists. Hide the
+    // form's children (input, button, error tooltip) and inject a green
+    // "Subscribed ✓" message in their place. The whole sticky bar
+    // auto-dismisses ~2s later. Replaces the older placeholder-swap
+    // behavior which inherited the grey tertiary text color.
+    form.classList.add("newsletter-subscribed");
+    Array.prototype.forEach.call(form.children, function (c) {
+      c.style.display = "none";
+    });
+    var msg = document.createElement("span");
+    msg.className = "newsletter-inline-success";
+    msg.textContent = "Subscribed ✓ Check your inbox.";
+    form.appendChild(msg);
+    if (typeof window.closeStickyBar === "function") {
+      setTimeout(window.closeStickyBar, 2000);
     }
   }
 
