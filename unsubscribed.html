@@ -65,6 +65,20 @@ strong { color: var(--mk-text-primary); font-weight: 600; }
 .unsub-card.is-error .unsub-eyebrow { color: var(--mk-loss-500, #ef4444); }
 .unsub-card.is-error .unsub-title em { background: none; -webkit-background-clip: initial; background-clip: initial; color: var(--mk-loss-500, #ef4444); }
 
+/* Inline resubscribe form — shown when no valid token in URL */
+.resub-form { display: none; width: 100%; max-width: 420px; margin-top: 8px; flex-direction: column; gap: 10px; align-items: stretch; }
+.resub-form.is-visible { display: flex; }
+.resub-form-label { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: 0.04em; color: var(--mk-text-tertiary); margin: 0; text-align: center; }
+.resub-form-row { display: flex; gap: 8px; align-items: stretch; flex-wrap: wrap; }
+.resub-form input[type="email"] { flex: 1; min-width: 200px; background: rgba(20,24,33,.85); border: 1px solid rgba(255,255,255,.12); color: var(--mk-text-primary); font-family: var(--mk-font-mono); font-size: var(--mk-mono-sm); padding: 10px 14px; border-radius: var(--mk-radius-input); outline: none; transition: border-color var(--mk-dur-snap), box-shadow var(--mk-dur-snap); }
+.resub-form input[type="email"]:focus { border-color: var(--mk-brand); box-shadow: 0 0 0 3px rgba(212,175,55,.18); }
+.resub-form input[type="email"].invalid { border-color: #ef4444; box-shadow: 0 0 0 3px rgba(239,68,68,.18); }
+.resub-form .btn-primary { padding: 10px 18px !important; font-size: var(--mk-text-sm) !important; }
+.resub-form-status { margin: 4px 0 0; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: 0.04em; text-align: center; }
+.resub-form-status[hidden] { display: none; }
+.resub-form-status.is-error { color: #ef4444; }
+.resub-form-status.is-success { color: #4ade80; }
+
 footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairline); padding: 56px 0 28px; }
 .footer-inner { max-width: var(--mk-container-marketing); margin: 0 auto; padding: 0 32px; }
 .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; margin-bottom: 32px; padding-bottom: 32px; border-bottom: var(--mk-border-hairline); }
@@ -123,7 +137,20 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
     <p class="unsub-sub" id="unsubSub">You won't receive the bi-weekly MAKETZO newsletter anymore. No hard feelings &mdash; the door's always open if you change your mind.</p>
     <div class="unsub-actions">
       <button class="btn-primary" onclick="handleCheckout('price_1TUWVpJIDbUntZeXyQD23z8W',event)">Start 7-Day Free Trial &rarr;</button>
-      <a class="btn-secondary" id="resubLink" href="index.html#emailForm">Resubscribe instead</a>
+      <!-- Token-driven one-click resubscribe (shown when ?t=<token> present). -->
+      <a class="btn-secondary" id="resubLink" href="#" style="display:none;">Resubscribe instead</a>
+      <!-- Fallback: inline email form. Shown when no valid token in URL.
+           Submits to the same POST /newsletter/subscribe endpoint as the
+           homepage form — which handles resubscribes (clears unsubscribedAt
+           and sends a welcome-back email) per the resubscribe-path fix. -->
+      <form id="resubForm" class="resub-form" novalidate>
+        <p class="resub-form-label">Resubscribe with your email:</p>
+        <div class="resub-form-row">
+          <input type="email" id="resubEmail" name="email" placeholder="your@email.com" autocomplete="email" required>
+          <button type="submit" class="btn-primary">Resubscribe &rarr;</button>
+        </div>
+        <p class="resub-form-status" id="resubStatus" hidden></p>
+      </form>
     </div>
   </div>
 </main>
@@ -157,23 +184,52 @@ window.addEventListener('scroll',()=>{document.getElementById('mainNav').style.b
 // handleCheckout moved to assets/js/checkout.js.
 
 // Backend redirects here with one of three query-param shapes:
-//   ?ok=1&t=<token>   — just unsubscribed (success); offer one-click resubscribe
-//   ?resub=1&t=<token> — just resubscribed (success); confirm and offer unsubscribe
+//   ?ok=1&t=<token>   — just unsubscribed (success); offer one-click resubscribe link
+//   ?resub=1&t=<token> — just resubscribed (success); confirm and offer unsubscribe link
 //   ?ok=0             — token invalid / missing / DB error; show "link expired"
-// Default markup matches ?ok=1 so a no-query visit looks reasonable.
+// No-query visits (direct URL, stale cache, bookmarked) fall through to the
+// inline-form path so the page is always actionable.
+//
+// Three visible-action shapes:
+//   • Valid token + ok=1 → "Resubscribe instead" one-click link
+//   • No valid token     → inline email form (calls /newsletter/subscribe)
+//   • resub=1            → success card swap; secondary action becomes
+//                          "Changed your mind? Unsubscribe again." (only if
+//                          token present), otherwise hidden
+//
+// The inline form is the safety net — it handles cached/legacy/no-token
+// states without bouncing the user to the homepage section.
+var API = 'https://api.maketzo.co';
+var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+function showInlineForm() {
+  var form = document.getElementById('resubForm');
+  if (form) form.classList.add('is-visible');
+}
+function hideInlineForm() {
+  var form = document.getElementById('resubForm');
+  if (form) form.classList.remove('is-visible');
+}
+function setStatus(msg, kind) {
+  var s = document.getElementById('resubStatus');
+  if (!s) return;
+  s.textContent = msg;
+  s.classList.remove('is-error', 'is-success');
+  if (kind) s.classList.add('is-' + kind);
+  s.removeAttribute('hidden');
+}
+function clearStatus() {
+  var s = document.getElementById('resubStatus');
+  if (s) { s.setAttribute('hidden', ''); s.textContent = ''; }
+}
+
 (function applyState(){
   var p = new URLSearchParams(window.location.search);
   var token = p.get('t') || '';
   var validToken = /^[a-f0-9]{64}$/i.test(token);
-
-  // Wire one-click resubscribe if we have a valid token (no email re-entry).
-  // Without a token (legacy link), the button falls back to the form anchor.
   var resubLink = document.getElementById('resubLink');
-  if (resubLink && validToken) {
-    resubLink.setAttribute('href', 'https://maketzo.co/resubscribe?token=' + encodeURIComponent(token));
-  }
 
-  // Resubscribed state — full card swap to confirmation.
+  // ── Resubscribed state — full card swap ─────────────────────────────
   if (p.get('resub') === '1') {
     var card = document.getElementById('unsubCard');
     if (card) card.classList.add('is-resubscribed');
@@ -183,18 +239,15 @@ window.addEventListener('scroll',()=>{document.getElementById('mainNav').style.b
     if (title) title.innerHTML = "You're <em>back in.</em>";
     var sub = document.getElementById('unsubSub');
     if (sub) sub.textContent = "Welcome back. We sent a quick confirmation to your inbox — your next bi-weekly newsletter will land on its normal schedule.";
-    if (resubLink) {
-      if (validToken) {
-        resubLink.setAttribute('href', 'https://maketzo.co/unsubscribe?token=' + encodeURIComponent(token));
-        resubLink.textContent = 'Changed your mind? Unsubscribe again.';
-      } else {
-        resubLink.style.display = 'none';
-      }
+    if (resubLink && validToken) {
+      resubLink.setAttribute('href', 'https://maketzo.co/unsubscribe?token=' + encodeURIComponent(token));
+      resubLink.textContent = 'Changed your mind? Unsubscribe again.';
+      resubLink.style.display = '';
     }
     return;
   }
 
-  // Error state — token bad / missing.
+  // ── Error state — invalid / missing token on /unsubscribe ──────────
   if (p.get('ok') === '0') {
     var cardE = document.getElementById('unsubCard');
     if (cardE) cardE.classList.add('is-error');
@@ -203,9 +256,71 @@ window.addEventListener('scroll',()=>{document.getElementById('mainNav').style.b
     var titleE = document.getElementById('unsubTitle');
     if (titleE) titleE.innerHTML = "That link's <em>not valid.</em>";
     var subE = document.getElementById('unsubSub');
-    if (subE) subE.textContent = "The link is either expired or has already been used. If you're still getting newsletters you don't want, email info@maketzo.co and we'll take care of it.";
-    if (resubLink) resubLink.style.display = 'none';
+    if (subE) subE.textContent = "The link is either expired or has already been used. If you'd like to resubscribe (or unsubscribe again), enter your email below.";
+    showInlineForm();
+    return;
   }
+
+  // ── Standard unsubscribed state ────────────────────────────────────
+  if (validToken) {
+    // One-click resubscribe (no typing needed).
+    resubLink.setAttribute('href', 'https://maketzo.co/resubscribe?token=' + encodeURIComponent(token));
+    resubLink.style.display = '';
+  } else {
+    // No token in URL — show inline form so the page is always actionable.
+    showInlineForm();
+  }
+})();
+
+// ── Inline form submit handler ────────────────────────────────────────
+(function wireForm(){
+  var form = document.getElementById('resubForm');
+  var input = document.getElementById('resubEmail');
+  if (!form || !input) return;
+  input.addEventListener('input', function () {
+    input.classList.remove('invalid');
+    clearStatus();
+  });
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var email = (input.value || '').trim().toLowerCase();
+    if (!email || !EMAIL_RE.test(email)) {
+      input.classList.add('invalid');
+      setStatus('Please enter a valid email address.', 'error');
+      input.focus();
+      return;
+    }
+    var btn = form.querySelector('button[type="submit"]');
+    var originalText = btn ? btn.innerHTML : '';
+    if (btn) { btn.disabled = true; btn.innerHTML = 'Sending&hellip;'; }
+    setStatus('', null);
+    fetch(API + '/newsletter/subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email, source_path: '/unsubscribed' })
+    }).then(function (r) {
+      if (r.ok) {
+        // Backend always returns {ok:true} on success — and our resubscribe
+        // path clears unsubscribedAt + sends a welcome-back email.
+        setStatus('You’re back in. Check your inbox for confirmation.', 'success');
+        input.value = '';
+        // Hide form chrome after a beat so the success message stands alone.
+        setTimeout(function () {
+          hideInlineForm();
+          var title = document.getElementById('unsubTitle');
+          if (title) title.innerHTML = "You're <em>back in.</em>";
+          var sub = document.getElementById('unsubSub');
+          if (sub) sub.textContent = "Welcome back. We sent a quick confirmation to your inbox — your next bi-weekly newsletter will land on its normal schedule.";
+        }, 1200);
+      } else {
+        setStatus('Something went wrong. Please try again.', 'error');
+        if (btn) { btn.disabled = false; btn.innerHTML = originalText; }
+      }
+    }).catch(function () {
+      setStatus('Network error. Please try again.', 'error');
+      if (btn) { btn.disabled = false; btn.innerHTML = originalText; }
+    });
+  });
 })();
 </script>
 </body>
