@@ -115,7 +115,22 @@
     return form.querySelector(".newsletter-error");
   }
   function findSuccessSlot(form) {
-    return form.querySelector(".newsletter-success") || document.getElementById("emailSuccess");
+    // First, look for a success element inside the form (the canonical
+    // contract). If found, use it.
+    var inside = form.querySelector(".newsletter-success");
+    if (inside) return inside;
+    // Special case: index.html's main #emailForm has its success element as
+    // a SIBLING (not a child) — `<div id="emailSuccess" class="newsletter-success">`.
+    // Only fall back to that global lookup for the main form. Doing it
+    // unconditionally would steal the sticky-bar's success path: sticky-bar
+    // forms have no scoped success element on purpose, so the lookup returned
+    // the main page's success div, which then got revealed somewhere far from
+    // the user's eye while the sticky-bar form was hidden -- producing the
+    // "Stay Sharp stays indefinitely" symptom Ed reported 2026-05-17.
+    if (form.id === "emailForm") {
+      return document.getElementById("emailSuccess");
+    }
+    return null;
   }
   function findInput(form) {
     return form.querySelector('input[type="email"]')
