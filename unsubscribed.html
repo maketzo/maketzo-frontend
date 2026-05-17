@@ -123,7 +123,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
     <p class="unsub-sub" id="unsubSub">You won't receive the bi-weekly MAKETZO newsletter anymore. No hard feelings &mdash; the door's always open if you change your mind.</p>
     <div class="unsub-actions">
       <button class="btn-primary" onclick="handleCheckout('price_1TUWVpJIDbUntZeXyQD23z8W',event)">Start 7-Day Free Trial &rarr;</button>
-      <a class="btn-secondary" href="index.html#emailForm">Resubscribe instead</a>
+      <a class="btn-secondary" id="resubLink" href="index.html#emailForm">Resubscribe instead</a>
     </div>
   </div>
 </main>
@@ -156,20 +156,56 @@ function closeDrawer(){document.getElementById('mobileDrawer').classList.remove(
 window.addEventListener('scroll',()=>{document.getElementById('mainNav').style.borderBottomColor=window.scrollY>60?'rgba(201,168,76,0.25)':'rgba(201,168,76,0.12)';});
 // handleCheckout moved to assets/js/checkout.js.
 
-// Backend's GET /unsubscribe redirects here with ?ok=1 (success) or ?ok=0
-// (token invalid / missing / DB error). Default markup is success state;
-// swap to error copy when ?ok=0.
-(function swapForErrorState(){
+// Backend redirects here with one of three query-param shapes:
+//   ?ok=1&t=<token>   — just unsubscribed (success); offer one-click resubscribe
+//   ?resub=1&t=<token> — just resubscribed (success); confirm and offer unsubscribe
+//   ?ok=0             — token invalid / missing / DB error; show "link expired"
+// Default markup matches ?ok=1 so a no-query visit looks reasonable.
+(function applyState(){
   var p = new URLSearchParams(window.location.search);
-  if (p.get('ok') !== '0') return;
-  var card = document.getElementById('unsubCard');
-  if (card) card.classList.add('is-error');
-  var eyebrow = document.getElementById('unsubEyebrow');
-  if (eyebrow) eyebrow.textContent = 'Link expired';
-  var title = document.getElementById('unsubTitle');
-  if (title) title.innerHTML = "That link's <em>not valid.</em>";
-  var sub = document.getElementById('unsubSub');
-  if (sub) sub.textContent = "The unsubscribe link is either expired or has already been used. If you're still getting newsletters you don't want, email info@maketzo.co and we'll take care of it.";
+  var token = p.get('t') || '';
+  var validToken = /^[a-f0-9]{64}$/i.test(token);
+
+  // Wire one-click resubscribe if we have a valid token (no email re-entry).
+  // Without a token (legacy link), the button falls back to the form anchor.
+  var resubLink = document.getElementById('resubLink');
+  if (resubLink && validToken) {
+    resubLink.setAttribute('href', 'https://maketzo.co/resubscribe?token=' + encodeURIComponent(token));
+  }
+
+  // Resubscribed state — full card swap to confirmation.
+  if (p.get('resub') === '1') {
+    var card = document.getElementById('unsubCard');
+    if (card) card.classList.add('is-resubscribed');
+    var eyebrow = document.getElementById('unsubEyebrow');
+    if (eyebrow) eyebrow.textContent = 'Newsletter';
+    var title = document.getElementById('unsubTitle');
+    if (title) title.innerHTML = "You're <em>back in.</em>";
+    var sub = document.getElementById('unsubSub');
+    if (sub) sub.textContent = "Welcome back. We sent a quick confirmation to your inbox — your next bi-weekly newsletter will land on its normal schedule.";
+    if (resubLink) {
+      if (validToken) {
+        resubLink.setAttribute('href', 'https://maketzo.co/unsubscribe?token=' + encodeURIComponent(token));
+        resubLink.textContent = 'Changed your mind? Unsubscribe again.';
+      } else {
+        resubLink.style.display = 'none';
+      }
+    }
+    return;
+  }
+
+  // Error state — token bad / missing.
+  if (p.get('ok') === '0') {
+    var cardE = document.getElementById('unsubCard');
+    if (cardE) cardE.classList.add('is-error');
+    var eyebrowE = document.getElementById('unsubEyebrow');
+    if (eyebrowE) eyebrowE.textContent = 'Link expired';
+    var titleE = document.getElementById('unsubTitle');
+    if (titleE) titleE.innerHTML = "That link's <em>not valid.</em>";
+    var subE = document.getElementById('unsubSub');
+    if (subE) subE.textContent = "The link is either expired or has already been used. If you're still getting newsletters you don't want, email info@maketzo.co and we'll take care of it.";
+    if (resubLink) resubLink.style.display = 'none';
+  }
 })();
 </script>
 </body>
