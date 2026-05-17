@@ -18,6 +18,7 @@
 <link rel="stylesheet" href="assets/css/tokens.css">
 <link rel="stylesheet" href="assets/css/components.css">
 <script src="assets/js/mkt-analytics.js?v=3" defer></script>
+<script src="assets/js/newsletter.js?v=1" defer></script>
 <script src="assets/js/mkt-consent.js?v=1" defer></script>
 <script src="assets/js/checkout.js?v=3" defer></script>
 <style>
@@ -687,7 +688,7 @@ hr.mk-rule-gold, hr.mk-rule-gold--bold { margin: 0 auto; max-width: 1180px; }
 body:has(.sticky-bar.visible) { padding-bottom: 80px; }
 .sticky-bar-text { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); }
 .sticky-bar-text strong { color: var(--mk-text-primary); }
-.sticky-bar-form { display: flex; gap: 8px; align-items: center; }
+.sticky-bar-form { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 .sticky-bar-input {
   background: rgba(20,24,33,.85);
   border: 1px solid rgba(255,255,255,.12);
@@ -701,6 +702,9 @@ body:has(.sticky-bar.visible) { padding-bottom: 80px; }
 }
 .sticky-bar-input::placeholder { color: var(--mk-text-tertiary); }
 .sticky-bar-input:focus { border-color: var(--mk-brand); box-shadow: 0 0 0 3px rgba(212,175,55,.18); }
+.sticky-bar-input.invalid { border-color: var(--mk-loss-500, #ef4444); box-shadow: 0 0 0 3px rgba(239,68,68,.18); }
+.sticky-bar-form .newsletter-error { flex-basis: 100%; margin-top: 8px; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs, 11px); letter-spacing: 0.04em; color: var(--mk-loss-500, #ef4444); text-align: center; }
+.sticky-bar-form .newsletter-error[hidden] { display: none; }
 .sticky-bar-form .btn-primary { padding: 8px 14px; font-size: var(--mk-text-xs); }
 .sticky-bar-close {
   position: absolute; right: 16px; top: 50%;
@@ -1193,9 +1197,10 @@ footer {
 <!-- STICKY EMAIL BAR -->
 <div class="sticky-bar" id="stickyBar">
   <span class="sticky-bar-text"><strong>Trade sharper.</strong> Weekly discipline tips from MAKETZO.</span>
-  <form class="sticky-bar-form" onsubmit="event.preventDefault();handleStickyEmail()">
-    <input class="sticky-bar-input" id="stickyEmail" type="email" placeholder="your@email.com" required>
+  <form class="sticky-bar-form" onsubmit="return MKTNewsletter.handleForm(event, 'sticky-bar')" novalidate>
+    <input class="sticky-bar-input" id="stickyEmail" name="email" type="email" placeholder="your@email.com" required autocomplete="email" aria-describedby="stickyEmailError">
     <button class="btn-primary" type="submit">Subscribe</button>
+    <div class="newsletter-error" id="stickyEmailError" hidden></div>
   </form>
   <button class="sticky-bar-close" onclick="closeStickyBar()" aria-label="Close">&times;</button>
 </div>
@@ -1267,15 +1272,7 @@ window.addEventListener('scroll',()=>{
   document.getElementById('mainNav').style.borderBottomColor=window.scrollY>60?'rgba(201,168,76,0.25)':'rgba(201,168,76,0.12)';
 });
 function closeStickyBar(){document.getElementById('stickyBar').classList.remove('visible');stickyDismissed=true;}
-async function handleStickyEmail(){
-  const input=document.getElementById('stickyEmail');
-  const email=input.value.trim();
-  if(!email||!email.includes('@'))return;
-  try{await fetch(API+'/newsletter/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email})});}catch(e){}
-  if(window.MKT)window.MKT.trackEvent('newsletter_subscribe',{source:'sticky-bar'});
-  input.value='';input.placeholder='Subscribed ✓';
-  setTimeout(closeStickyBar,1500);
-}
+// handleStickyEmail removed; see assets/js/newsletter.js (MKTNewsletter.handleForm)
 </script>
 </body>
 </html>

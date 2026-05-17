@@ -26,6 +26,7 @@
 <script src="assets/js/mkt-consent.js?v=1" defer></script>
 <script src="assets/js/checkout.js?v=3" defer></script>
 <script src="assets/js/audio-player.js?v=6" defer></script>
+<script src="assets/js/newsletter.js?v=1" defer></script>
 <style>
 /* ====================================================================
    MAKETZO landing — page-specific styles.
@@ -1461,6 +1462,23 @@ hr.mk-rule-gold--bold {
   font-size: var(--mk-text-sm);
 }
 .email-success.show { display: block; }
+/* Newsletter validation states — applied by assets/js/newsletter.js */
+.email-input.invalid,
+.sticky-bar-input.invalid {
+  border-color: var(--mk-loss-500, #ef4444);
+  box-shadow: 0 0 0 3px rgba(239,68,68,.18);
+}
+.newsletter-error {
+  display: block;
+  flex-basis: 100%;
+  margin-top: 10px;
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-xs, 11px);
+  letter-spacing: 0.04em;
+  color: var(--mk-loss-500, #ef4444);
+  text-align: left;
+}
+.newsletter-error[hidden] { display: none; }
 .email-note {
   margin-top: 14px;
   font-family: var(--mk-font-mono);
@@ -1823,10 +1841,11 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
 <!-- STICKY EMAIL BAR -->
 <div class="sticky-bar" id="stickyBar">
   <p class="sticky-bar-text"><strong>Stay Sharp.</strong> Bi-weekly trading discipline insights.</p>
-  <div class="sticky-bar-form">
-    <input type="email" class="sticky-bar-input" placeholder="your@email.com" id="stickyEmail">
-    <button class="btn-primary" onclick="handleStickyEmail()">Subscribe</button>
-  </div>
+  <form class="sticky-bar-form" onsubmit="return MKTNewsletter.handleForm(event, 'sticky-bar')" novalidate>
+    <input type="email" class="sticky-bar-input" placeholder="your@email.com" id="stickyEmail" name="email" required autocomplete="email" aria-describedby="stickyEmailError">
+    <button class="btn-primary" type="submit">Subscribe</button>
+    <div class="newsletter-error" id="stickyEmailError" hidden></div>
+  </form>
   <button class="sticky-bar-close" onclick="closeStickyBar()" aria-label="Close">&times;</button>
 </div>
 
@@ -2324,11 +2343,12 @@ document.addEventListener("DOMContentLoaded", function() {
       <p class="section-eyebrow reveal">09 &middot; Stay Sharp</p>
       <h2 class="section-title reveal">Trading discipline insights.</h2>
       <p class="section-sub reveal">Bi-weekly insights on trading psychology and how to get more from MAKETZO. No spam. Unsubscribe anytime.</p>
-      <form class="email-form reveal" id="emailForm" data-form-id="newsletter" onsubmit="handleEmail(event)">
-        <input type="email" class="email-input" placeholder="your@email.com" required id="emailInput">
+      <form class="email-form reveal" id="emailForm" data-form-id="newsletter" onsubmit="return MKTNewsletter.handleForm(event, 'main-form')" novalidate>
+        <input type="email" class="email-input" placeholder="your@email.com" required id="emailInput" name="email" autocomplete="email" aria-describedby="emailFormError">
         <button type="submit" class="btn-primary" id="emailBtn">Subscribe &rarr;</button>
+        <div class="newsletter-error" id="emailFormError" hidden></div>
       </form>
-      <div class="email-success" id="emailSuccess">&#10003;&nbsp; You're in. Check your inbox for a welcome note from MAKETZO.</div>
+      <div class="email-success newsletter-success" id="emailSuccess" hidden>&#10003;&nbsp; You're in. Check your inbox for a welcome note from MAKETZO.</div>
       <p class="email-note reveal">By subscribing you agree to receive email from MAKETZO. We never sell your data.</p>
     </div>
 
@@ -2561,22 +2581,7 @@ reveals.forEach(el=>obs.observe(el));
 function toggleFaq(btn){btn.classList.toggle('open');btn.nextElementSibling.classList.toggle('open');}
 
 // EMAIL — wired to backend
-async function handleEmail(e){
-  e.preventDefault();
-  const btn=document.getElementById('emailBtn');
-  const email=document.getElementById('emailInput').value.trim();
-  if(!email)return;
-  btn.innerHTML='Sending...';btn.disabled=true;
-  try{
-    const res=await fetch(API+'/newsletter/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email})});
-    const data=await res.json();
-    if(res.ok){
-      if(window.MKT)window.MKT.trackEvent('newsletter_subscribe',{source:'main-form'});
-      document.getElementById('emailForm').style.display='none';
-      document.getElementById('emailSuccess').classList.add('show');
-    }else{throw new Error(data.error||'Failed');}
-  }catch(err){alert('Something went wrong. Please try again.');btn.innerHTML='Subscribe \u2192';btn.disabled=false;}
-}
+// handleEmail removed \u2014 see assets/js/newsletter.js (MKTNewsletter.handleForm)
 
 // STICKY BAR
 let stickyShown=false,stickyDismissed=false;
@@ -2587,15 +2592,7 @@ window.addEventListener('scroll',()=>{
   document.getElementById('mainNav').style.borderBottomColor=window.scrollY>60?'rgba(201,168,76,0.25)':'rgba(201,168,76,0.12)';
 });
 function closeStickyBar(){document.getElementById('stickyBar').classList.remove('visible');stickyDismissed=true;}
-async function handleStickyEmail(){
-  const input=document.getElementById('stickyEmail');
-  const email=input.value.trim();
-  if(!email||!email.includes('@'))return;
-  try{await fetch(API+'/newsletter/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email})});}catch(e){}
-  if(window.MKT)window.MKT.trackEvent('newsletter_subscribe',{source:'sticky-bar'});
-  input.value='';input.placeholder='Subscribed \u2713';
-  setTimeout(closeStickyBar,1500);
-}
+// handleStickyEmail removed \u2014 see assets/js/newsletter.js (MKTNewsletter.handleForm)
 </script>
 </body>
 </html>
