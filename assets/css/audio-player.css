@@ -372,9 +372,11 @@
   max-width: calc(100vw - 32px);
   padding: 12px;
   background: var(--mk-obsidian-800);
-  border: 1px solid rgba(212, 175, 55, 0.45);
+  border: 1px solid rgba(212, 175, 55, 0.24);
   border-radius: var(--mk-radius-card);
-  box-shadow: 0 16px 44px rgba(0, 0, 0, 0.6);
+  box-shadow:
+    0 12px 36px rgba(0, 0, 0, 0.50),
+    0 0 0 1px rgba(212, 175, 55, 0.10);
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 6px;
@@ -419,13 +421,7 @@
   gap: 10px;
   font-size: 0.875rem;
   background: rgba(212, 175, 55, 0.06);
-  /* Subtle tint only — was rgba(0.20) which competed with the outer menu
-     border and made the bottom edge look doubled / misaligned on mobile. */
-  border-color: rgba(255, 255, 255, 0.04);
-}
-.mk-share__item--wide:hover {
-  background: rgba(212, 175, 55, 0.14);
-  border-color: rgba(212, 175, 55, 0.30);
+  border-color: rgba(212, 175, 55, 0.20);
 }
 .mk-share__item--wide .mk-share__item-icon { width: 18px; height: 18px; }
 
