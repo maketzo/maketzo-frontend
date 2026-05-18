@@ -428,7 +428,7 @@
   var openWidget = null;
   var MENU_WIDTH = 320;
   var MENU_GAP = 10;
-  var VIEWPORT_PAD = 12;
+  var VIEWPORT_PAD = 16;
 
   // Origin to use when building track-share URLs. On prod this is
   // https://maketzo.co; on dev/staging it's whatever the visitor is on (basic
@@ -529,11 +529,39 @@
     var menuRect = menu.getBoundingClientRect();
     var menuWidth = menuRect.width || MENU_WIDTH;
     var menuHeight = menuRect.height || 280;
+    var vw = window.innerWidth;
+    var vh = window.innerHeight;
+    // Horizontal: center under trigger, then clamp into the viewport.
     var left = rect.left + rect.width / 2 - menuWidth / 2;
-    left = Math.max(VIEWPORT_PAD, Math.min(left, window.innerWidth - menuWidth - VIEWPORT_PAD));
-    var top = rect.bottom + MENU_GAP;
-    if (top + menuHeight > window.innerHeight - VIEWPORT_PAD) {
-      top = Math.max(VIEWPORT_PAD, rect.top - menuHeight - MENU_GAP);
+    left = Math.max(VIEWPORT_PAD, Math.min(left, vw - menuWidth - VIEWPORT_PAD));
+    // Vertical: prefer below trigger; if it overflows the bottom, flip above.
+    // If neither side fits the menu fully (rare on small viewports), pin to
+    // the side that gives more room and we'll clamp the bottom so nothing
+    // clips off-screen.
+    var below = rect.bottom + MENU_GAP;
+    var aboveTop = rect.top - menuHeight - MENU_GAP;
+    var top;
+    if (below + menuHeight <= vh - VIEWPORT_PAD) {
+      top = below;
+    } else if (aboveTop >= VIEWPORT_PAD) {
+      top = aboveTop;
+    } else {
+      // Neither full fit — anchor wherever there's more space.
+      var spaceBelow = vh - rect.bottom;
+      var spaceAbove = rect.top;
+      if (spaceBelow >= spaceAbove) {
+        top = below;
+      } else {
+        top = Math.max(VIEWPORT_PAD, aboveTop);
+      }
+    }
+    // Final guard: clamp the menu's bottom edge inside the viewport so it
+    // never clips off-screen. If the menu is taller than the viewport-minus-
+    // padding, the only fix is to scroll the trigger up — but that's a
+    // surface issue, not a positioning issue, and won't happen in practice
+    // since our menu is ~270px tall and all phones have at least ~600px.
+    if (top + menuHeight > vh - VIEWPORT_PAD) {
+      top = Math.max(VIEWPORT_PAD, vh - menuHeight - VIEWPORT_PAD);
     }
     menu.style.left = left + "px";
     menu.style.top = top + "px";
