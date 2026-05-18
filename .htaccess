@@ -64,8 +64,12 @@ RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^ - [L]
 
 # Otherwise, if a matching .html file exists, serve it without revealing the suffix.
+# Pattern matches single-segment paths (/system -> system.html) AND multi-segment
+# paths (/blog/some-slug -> blog/some-slug.html). The [^.]+ excludes paths
+# containing a literal dot (so /assets/foo.png isn't rewritten), but allows
+# slashes — needed for the auto-published blog posts under /blog/<slug>.
 RewriteCond %{DOCUMENT_ROOT}/$1.html -f
-RewriteRule ^([^./]+)$ /$1.html [L]
+RewriteRule ^([^.]+)$ /$1.html [L]
 
 # Cache static assets aggressively. HTML stays fresh.
 <IfModule mod_expires.c>
