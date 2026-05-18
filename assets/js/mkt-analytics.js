@@ -15,7 +15,7 @@
  * Public API on window.MKT:
  *   trackEvent(name, props)         dual-fire when business-critical, else PostHog only
  *   trackPage()                     fired automatically on load; exposed for SPA-style nav
- *   identify(email)                 server-side via /analytics/identify + posthog.identify
+ *   identify(email, props)          server-side via /analytics/identify + posthog.identify(email, props)
  *   getAnonId() / getSessionId()    UUID accessors (read-only)
  *   isEuVisitor()                   resolves to bool once /geoinfo returns
  *   onReady(fn)                     fn fires after consent + ids resolved
@@ -254,9 +254,12 @@
     });
   }
 
-  function identify(email) {
+  function identify(email, props) {
     if (!email || typeof email !== "string") return;
-    // 1. Server-side: writes a SessionLink row (anon_id ↔ email_hash).
+    // 1. Server-side: writes a SessionLink row (anon_id ↔ email_hash). Props
+    //    are NOT sent to the backend — SessionLink is a binding table, not
+    //    a person store. PostHog person properties carry the structured
+    //    attributes (first/last name etc.).
     try {
       fetch(API_BASE + "/analytics/identify", {
         method: "POST",
@@ -267,9 +270,14 @@
         mode: "cors"
       }).catch(function () {});
     } catch (e) {}
-    // 2. PostHog: link anon → known user going forward.
+    // 2. PostHog: link anon → known user, attach any caller-provided person
+    //    properties (firstName/lastName from contact form, etc.). Existing
+    //    callers using identify(email) without props continue to work — the
+    //    Object.assign with `props || {}` defaults gracefully.
     if (posthogReady && window.posthog) {
-      try { window.posthog.identify(email, { anon_id: getAnonId() }); } catch (e) {}
+      try {
+        window.posthog.identify(email, Object.assign({ anon_id: getAnonId() }, props || {}));
+      } catch (e) {}
     }
   }
 

@@ -17,7 +17,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/tokens.css">
 <link rel="stylesheet" href="assets/css/components.css">
-<script src="assets/js/mkt-analytics.js?v=3" defer></script>
+<script src="assets/js/mkt-analytics.js?v=4" defer></script>
 <script src="assets/js/mkt-consent.js?v=1" defer></script>
 <script src="assets/js/checkout.js?v=3" defer></script>
 <style>
@@ -136,6 +136,18 @@ hr.mk-rule-gold, hr.mk-rule-gold--bold { margin: 0 auto; max-width: 1180px; }
 }
 .mk-form-field textarea { min-height: 140px; resize: vertical; font-family: var(--mk-font-sans); }
 .mk-form-field select { appearance: none; -webkit-appearance: none; background-image: linear-gradient(45deg, transparent 50%, var(--mk-text-tertiary) 50%), linear-gradient(135deg, var(--mk-text-tertiary) 50%, transparent 50%); background-position: calc(100% - 18px) 50%, calc(100% - 12px) 50%; background-size: 6px 6px, 6px 6px; background-repeat: no-repeat; padding-right: 36px; }
+
+.mk-form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+@media (max-width: 600px) { .mk-form-row-2 { grid-template-columns: 1fr; gap: 0; } }
+.mk-form-helper { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); color: var(--mk-text-tertiary); margin-top: 6px; letter-spacing: 0.02em; }
+.mk-form-label-optional { text-transform: none; color: var(--mk-text-tertiary); font-weight: 400; }
+
+.mk-form-consent { margin: 6px 0 18px; padding-top: 18px; border-top: 1px solid rgba(255,255,255,.08); display: flex; flex-direction: column; gap: 14px; }
+.mk-form-consent-row { display: flex; gap: 12px; align-items: flex-start; }
+.mk-form-consent-row input[type="checkbox"] { margin-top: 3px; width: 16px; height: 16px; flex-shrink: 0; accent-color: var(--mk-brand); cursor: pointer; }
+.mk-form-consent-row label { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); line-height: 1.5; text-transform: none; letter-spacing: normal; font-family: var(--mk-font-sans); margin-bottom: 0; cursor: pointer; }
+.mk-form-consent-row label a { color: var(--mk-brand); border-bottom: 1px solid rgba(212,175,55,.4); }
+.mk-form-consent-row label a:hover { color: var(--mk-text-primary); border-bottom-color: var(--mk-text-primary); }
 
 .honeypot { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
 
@@ -279,16 +291,27 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
     <div class="contact-grid">
       <div class="contact-form-card reveal">
         <h2 class="contact-form-title">Send us a message</h2>
-        <p class="contact-form-sub">Fill it in and hit submit. It goes straight to info@maketzo.co.</p>
+        <p class="contact-form-sub">Tell us who you are, pick the topic that fits best, and share as much detail as you can. The more context you give, the faster we can help. We typically reply within one trading day.</p>
 
-        <form id="contactForm" data-form-id="contact" novalidate>
-          <div class="mk-form-field">
-            <label for="cname">Your name</label>
-            <input id="cname" name="name" type="text" autocomplete="name" required maxlength="120">
+        <form id="contactForm" data-form-id="contact">
+          <div class="mk-form-row-2">
+            <div class="mk-form-field">
+              <label for="cfirstname">First name</label>
+              <input id="cfirstname" name="firstName" type="text" autocomplete="given-name" required maxlength="60">
+            </div>
+            <div class="mk-form-field">
+              <label for="clastname">Last name</label>
+              <input id="clastname" name="lastName" type="text" autocomplete="family-name" required maxlength="60">
+            </div>
           </div>
           <div class="mk-form-field">
             <label for="cemail">Email</label>
             <input id="cemail" name="email" type="email" autocomplete="email" required maxlength="200">
+          </div>
+          <div class="mk-form-field">
+            <label for="cphone">Phone <span class="mk-form-label-optional">(optional)</span></label>
+            <input id="cphone" name="phone" type="tel" autocomplete="tel" maxlength="32" placeholder="+1 555 123 4567">
+            <p class="mk-form-helper">Optional — speeds up account or billing replies if we need to call.</p>
           </div>
           <div class="mk-form-field">
             <label for="csubject">Subject</label>
@@ -310,8 +333,19 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 
           <input class="honeypot" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
 
+          <div class="mk-form-consent">
+            <div class="mk-form-consent-row">
+              <input type="checkbox" id="cprivacy" name="privacyAccepted" required>
+              <label for="cprivacy">I agree to the <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a> and <a href="terms.html" target="_blank" rel="noopener">Terms of Service</a>.</label>
+            </div>
+            <div class="mk-form-consent-row">
+              <input type="checkbox" id="cnewsletter" name="newsletterOptIn">
+              <label for="cnewsletter">Send me the MAKETZO weekly recap — discipline tips, market debriefs, member spotlights. Unsubscribe anytime.</label>
+            </div>
+          </div>
+
           <div class="contact-submit-row">
-            <span class="contact-note">No tracking · No autoresponders</span>
+            <span class="contact-note">We reply within one trading day.</span>
             <button class="btn-primary" type="submit" id="contactSubmit">Send Message</button>
           </div>
         </form>
@@ -360,7 +394,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
       <div class="trust-tile reveal">
         <div class="trust-tile-icon">●</div>
         <div class="trust-tile-title">Real People</div>
-        <div class="trust-tile-text">No autoresponders. No chatbots. The team reads and replies.</div>
+        <div class="trust-tile-text">Instant confirmation, then a real reply from a real person. No chatbots in the loop.</div>
       </div>
       <div class="trust-tile reveal">
         <div class="trust-tile-icon">★</div>
@@ -423,22 +457,38 @@ document.getElementById('contactForm').addEventListener('submit',async function(
   const form=e.currentTarget;
   const submitBtn=document.getElementById('contactSubmit');
   const success=document.getElementById('contactSuccess');
+  const firstName=form.firstName.value.trim();
+  const lastName=form.lastName.value.trim();
+  const email=form.email.value.trim();
+  const phone=form.phone.value.trim();
+  const newsletterOptIn=form.newsletterOptIn.checked;
+  const privacyAccepted=form.privacyAccepted.checked;
   const data={
-    name:form.name.value.trim(),
-    email:form.email.value.trim(),
+    firstName,
+    lastName,
+    name:`${firstName} ${lastName}`.trim(),
+    email,
+    phone,
     subject:form.subject.value,
     message:form.message.value.trim(),
+    newsletterOptIn,
+    privacyAccepted,
+    anon_id:(window.MKT&&window.MKT.getAnonId)?window.MKT.getAnonId():null,
     website:form.website.value
   };
-  if(!data.name||!data.email||!data.message){alert('Please fill in name, email, and message.');return;}
+  // HTML5 native validation catches the common cases; this is defense-in-depth.
+  if(!firstName||!lastName||!data.email||!data.message){alert('Please complete first name, last name, email, and message.');return;}
   if(!data.email.includes('@')){alert('Please enter a valid email.');return;}
+  if(!privacyAccepted){alert('Please agree to the Privacy Policy and Terms of Service.');return;}
   const orig=submitBtn.innerHTML;
   submitBtn.innerHTML='Sending...';submitBtn.disabled=true;
   try{
     const res=await fetch(API+'/contact',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
     const json=await res.json();
     if(res.ok&&json.ok){
-      if(window.MKT)window.MKT.trackEvent('form_submit',{form:'contact',subject:data.subject||null});
+      if(window.MKT&&window.MKT.trackEvent)window.MKT.trackEvent('form_submit',{form:'contact',subject:data.subject||null});
+      if(window.MKT&&window.MKT.identify)window.MKT.identify(email,{firstName,lastName});
+      if(newsletterOptIn&&window.MKT&&window.MKT.trackEvent)window.MKT.trackEvent('newsletter_subscribe',{source:'contact_form'});
       form.style.display='none';success.classList.add('show');
     }
     else{throw new Error(json.error||'Send failed');}
