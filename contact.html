@@ -451,6 +451,24 @@ const reveals=document.querySelectorAll('.reveal');
 const obs=new IntersectionObserver((entries)=>{entries.forEach((e,i)=>{if(e.isIntersecting){setTimeout(()=>e.target.classList.add('visible'),i*50);obs.unobserve(e.target);}});},{threshold:0.06});
 reveals.forEach(el=>obs.observe(el));
 
+// PHONE auto-format. US default: (xxx) xxx-xxxx as the user types.
+// International escape hatch: if the value starts with '+', leave it alone.
+// Soft validation only on submit (see below) — phone is optional, so format
+// errors should never block a high-intent submission.
+(function(){
+  var pi = document.getElementById('cphone');
+  if (!pi) return;
+  pi.addEventListener('input', function(){
+    var v = pi.value;
+    if (v.indexOf('+') === 0) return;          // international — accept any
+    var d = v.replace(/\D/g, '').slice(0, 10);
+    if (d.length > 6)      pi.value = '(' + d.slice(0,3) + ') ' + d.slice(3,6) + '-' + d.slice(6);
+    else if (d.length > 3) pi.value = '(' + d.slice(0,3) + ') ' + d.slice(3);
+    else if (d.length > 0) pi.value = '(' + d;
+    else                   pi.value = '';
+  });
+})();
+
 // CONTACT FORM
 document.getElementById('contactForm').addEventListener('submit',async function(e){
   e.preventDefault();
@@ -480,6 +498,13 @@ document.getElementById('contactForm').addEventListener('submit',async function(
   if(!firstName||!lastName||!data.email||!data.message){alert('Please complete first name, last name, email, and message.');return;}
   if(!data.email.includes('@')){alert('Please enter a valid email.');return;}
   if(!privacyAccepted){alert('Please agree to the Privacy Policy and Terms of Service.');return;}
+  // Phone is optional — only validate if non-empty. Soft check: at least 7
+  // digits. Don't enforce US 10-digit since rejecting a high-intent submitter
+  // over a phone format error is worse than accepting an unusable number.
+  if(phone){
+    var digits=phone.replace(/\D/g,'');
+    if(digits.length<7){alert('Phone number looks too short. Leave it blank or enter at least 7 digits.');return;}
+  }
   const orig=submitBtn.innerHTML;
   submitBtn.innerHTML='Sending...';submitBtn.disabled=true;
   try{
