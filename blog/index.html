@@ -84,6 +84,20 @@ strong { color: var(--mk-text-primary); font-weight: 600; }
 
 .blog-empty { text-align: center; padding: 80px 32px; color: var(--mk-text-tertiary); font-family: var(--mk-font-mono); font-size: var(--mk-mono-sm); letter-spacing: 0.04em; }
 
+/* ── Newsletter-CTA card (fills lone trailing slot when grid count is odd) ── */
+.blog-card--newsletter { display: flex; flex-direction: column; justify-content: center; background: linear-gradient(135deg, rgba(212,175,55,.08), rgba(6,7,10,.4)); border: 1px dashed rgba(212,175,55,.45); padding: 36px 28px; cursor: default; }
+.blog-card--newsletter:hover { transform: none; border-color: rgba(212,175,55,.6); box-shadow: none; }
+.blog-card-newsletter-eyebrow { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); margin-bottom: 14px; }
+.blog-card-newsletter-title { font-family: var(--mk-font-display); font-size: clamp(1.4rem, 2.4vw, 1.8rem); line-height: 1.08; letter-spacing: var(--mk-track-display); text-transform: uppercase; font-weight: 400; color: var(--mk-text-primary); margin-bottom: 12px; }
+.blog-card-newsletter-sub { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); line-height: var(--mk-lead-body); margin-bottom: 22px; }
+.blog-card-newsletter-form { display: flex; gap: 8px; flex-wrap: wrap; position: relative; }
+.blog-card-newsletter-form input[type="email"] { flex: 1 1 200px; min-width: 0; background: rgba(0,0,0,.32); border: 1px solid rgba(255,255,255,.14); color: var(--mk-text-primary); font-family: var(--mk-font-sans); font-size: var(--mk-text-sm); padding: 11px 14px; border-radius: var(--mk-radius-button); transition: border-color var(--mk-dur-fast); }
+.blog-card-newsletter-form input[type="email"]:focus { outline: none; border-color: rgba(212,175,55,.6); }
+.blog-card-newsletter-form input.invalid { border-color: rgba(220,80,80,.7); }
+.blog-card-newsletter-form button { background: var(--mk-gold-gradient); color: var(--mk-text-on-gold); font-family: var(--mk-font-sans); font-weight: 600; font-size: var(--mk-text-sm); letter-spacing: var(--mk-track-cap); text-transform: uppercase; padding: 11px 18px; border: 1px solid rgba(0,0,0,.18); border-radius: var(--mk-radius-button); cursor: pointer; white-space: nowrap; }
+.blog-card-newsletter-form .newsletter-error { width: 100%; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); color: rgba(220,80,80,.95); margin-top: 6px; letter-spacing: 0.02em; }
+.blog-card-newsletter-form .newsletter-inline-success { width: 100%; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); color: var(--mk-brand); margin-top: 8px; letter-spacing: 0.02em; }
+
 /* ── Featured (newest post auto-promoted by publisher) ─────── */
 .blog-card--featured {
   grid-column: 1 / -1;
@@ -263,6 +277,16 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
     <p class="blog-card-meta">John P. &middot; 2026-05-18</p>
   </a>
   <!-- BLOG_GRID_INSERT_ABOVE -->
+  <div class="blog-card blog-card--newsletter is-hidden" id="blogNewsletterCard">
+    <p class="blog-card-newsletter-eyebrow">Newsletter</p>
+    <h3 class="blog-card-newsletter-title">Get weekly discipline tips</h3>
+    <p class="blog-card-newsletter-sub">One short read per week. The mental side of trading. No pitches. Unsubscribe in one click.</p>
+    <form class="blog-card-newsletter-form" onsubmit="return MKTNewsletter.handleForm(event, 'blog-index-cta')" novalidate>
+      <input type="email" name="email" placeholder="you@example.com" required autocomplete="email" aria-label="Email address">
+      <button type="submit">Subscribe</button>
+      <div class="newsletter-error" hidden></div>
+    </form>
+  </div>
     </div>
     <p class="blog-filter-empty" id="blogFilterEmpty" hidden>No posts in this category yet.</p>
     <div class="blog-load-more-wrap" hidden><button type="button" class="blog-load-more" id="blogLoadMore" aria-controls="blogGrid">Load more posts &darr; <span class="blog-load-more-count"></span></button></div>
@@ -327,10 +351,12 @@ function closeDrawer(){
   // becomes a uniform grid of matching posts — pills feel like they
   // filter EVERYTHING, including what used to be the hero.
   var featuredCard = grid.querySelector('.blog-card--featured');
+  var ctaCard = document.getElementById('blogNewsletterCard');
 
   function gridCards(){
     // Include the featured card so pill counts reflect true totals.
-    return Array.prototype.slice.call(grid.querySelectorAll('.blog-card'));
+    // Exclude the newsletter CTA — it's a layout-filler, not a post.
+    return Array.prototype.slice.call(grid.querySelectorAll('.blog-card:not(.blog-card--newsletter)'));
   }
 
   function displayLabel(slug){
@@ -406,6 +432,13 @@ function closeDrawer(){
     });
     var totalMatching = matchIdx; // grid-card count (excludes featured)
     var remaining = Math.max(0, totalMatching - visibleCount);
+    // Newsletter CTA fills the trailing slot when the visible grid count
+    // is odd (otherwise the last row has a lone card next to empty space).
+    if (ctaCard) {
+      var visibleGridCount = Math.min(totalMatching, visibleCount);
+      var isOdd = (visibleGridCount % 2) === 1;
+      ctaCard.classList.toggle('is-hidden', !isOdd);
+    }
     if (empty) empty.hidden = totalMatching > 0 || featuredVisible;
     if (loadMoreWrap) {
       loadMoreWrap.hidden = remaining <= 0;
