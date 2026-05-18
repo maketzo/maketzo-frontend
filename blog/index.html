@@ -84,10 +84,44 @@ strong { color: var(--mk-text-primary); font-weight: 600; }
 
 .blog-empty { text-align: center; padding: 80px 32px; color: var(--mk-text-tertiary); font-family: var(--mk-font-mono); font-size: var(--mk-mono-sm); letter-spacing: 0.04em; }
 
+/* ── Featured (newest post auto-promoted by publisher) ─────── */
+.blog-card--featured { grid-column: 1 / -1; }
+.blog-card--featured .blog-card-eyebrow::before { content: "Featured \00b7  "; color: var(--mk-brand); font-weight: 700; }
+
+@media (min-width: 721px) {
+  .blog-card--featured { display: grid; grid-template-columns: 1.2fr 1fr; align-items: stretch; }
+  .blog-card--featured .blog-card-thumb { aspect-ratio: auto; height: 100%; min-height: 320px; }
+  .blog-card--featured .blog-card-eyebrow { margin: 36px 36px 12px; }
+  .blog-card--featured .blog-card-title { font-size: clamp(1.8rem, 3.2vw, 2.6rem); margin: 0 36px 18px; }
+  .blog-card--featured .blog-card-excerpt { font-size: var(--mk-text-md); margin: 0 36px 22px; }
+  .blog-card--featured .blog-card-meta { margin: 0 36px 36px; }
+}
+
+/* ── Filter pills (ports the proven admin filter pattern) ──── */
+.blog-filter { display: flex; flex-wrap: wrap; gap: 10px; margin: 36px 0 28px; }
+.filter-pill { display: inline-flex; align-items: center; gap: 8px; background: transparent; border: 1px solid rgba(255,255,255,.10); color: var(--mk-text-secondary); font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; padding: 9px 16px; border-radius: 999px; cursor: pointer; transition: color var(--mk-dur-fast), border-color var(--mk-dur-fast), background var(--mk-dur-fast); }
+.filter-pill:hover { color: var(--mk-text-primary); border-color: rgba(212,175,55,.32); }
+.filter-pill.is-active { background: var(--mk-gold-gradient); color: var(--mk-text-on-gold); border-color: transparent; }
+.filter-pill-count { font-size: 0.9em; opacity: 0.75; font-weight: 600; }
+.filter-pill.is-active .filter-pill-count { opacity: 1; }
+
+/* ── Load More + filter-empty ──────────────────────────────── */
+.blog-card.is-hidden, .blog-card.is-folded { display: none !important; }
+.blog-filter-empty { text-align: center; padding: 56px 24px; color: var(--mk-text-tertiary); font-family: var(--mk-font-mono); font-size: var(--mk-mono-sm); letter-spacing: 0.04em; }
+.blog-load-more-wrap { display: flex; justify-content: center; margin-top: 40px; }
+.blog-load-more { display: inline-flex; align-items: center; gap: 10px; background: transparent; color: var(--mk-text-primary); font-family: var(--mk-font-sans); font-weight: 600; font-size: var(--mk-text-sm); letter-spacing: var(--mk-track-cap); text-transform: uppercase; padding: 14px 28px; border: 1px solid rgba(212,175,55,.42); border-radius: var(--mk-radius-button); cursor: pointer; transition: background var(--mk-dur-fast), border-color var(--mk-dur-fast); }
+.blog-load-more:hover { background: rgba(212,175,55,.08); border-color: rgba(212,175,55,.72); }
+.blog-load-more-count { color: var(--mk-text-tertiary); font-family: var(--mk-font-mono); font-weight: 500; text-transform: none; letter-spacing: 0.04em; }
+
 @media (max-width: 720px) {
   .blog-grid { grid-template-columns: 1fr; gap: 28px; }
   .page-hero { padding: 120px 0 48px; }
   .section { padding: 40px 0 64px; }
+  .blog-card--featured .blog-card-eyebrow { margin: 22px 24px 8px; }
+  .blog-card--featured .blog-card-title { font-size: clamp(1.6rem, 5vw, 2rem); margin: 0 24px 12px; }
+  .blog-card--featured .blog-card-excerpt { font-size: var(--mk-text-sm); margin: 0 24px 16px; }
+  .blog-card--featured .blog-card-meta { margin: 0 24px 22px; }
+  .blog-filter { margin: 24px 0 20px; }
 }
 
 footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairline); padding: 56px 0 28px; }
@@ -153,22 +187,23 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 
 <section class="section">
   <div class="section-inner">
-    <div class="blog-grid">
-  <a class="blog-card" href="/blog/the-third-loss-cost" data-cta-source="blog-index" data-cta-target="blog-the-third-loss-cost">
+    <div class="blog-filter" id="blogFilter" role="group" aria-label="Filter posts by category"></div>
+    <div class="blog-grid" id="blogGrid" aria-live="polite">
+  <a class="blog-card blog-card--featured" href="/blog/the-third-loss-cost" data-cta-source="blog-index" data-cta-target="blog-the-third-loss-cost" data-eyebrow="psychology">
     <div class="blog-card-thumb"><img src="/assets/blog/the-third-loss-cost.jpg" alt="a row of books on a shelf in a library" loading="lazy"></div>
     <p class="blog-card-eyebrow">PSYCHOLOGY</p>
     <h3 class="blog-card-title">The Third Loss Is Where The Account Actually Dies</h3>
     <p class="blog-card-excerpt">The first two losses are just losses. The third one is when a disciplined trader becomes a desperate one, and the math stops mattering.</p>
     <p class="blog-card-meta">Kelly M &middot; 2026-05-18</p>
   </a>
-  <a class="blog-card" href="/blog/meditation-as-risk-management" data-cta-source="blog-index" data-cta-target="blog-meditation-as-risk-management">
+  <a class="blog-card" href="/blog/meditation-as-risk-management" data-cta-source="blog-index" data-cta-target="blog-meditation-as-risk-management" data-eyebrow="psychology">
     <div class="blog-card-thumb"><img src="/assets/blog/meditation-as-risk-management.jpg" alt="woman sitting on bench over viewing mountain" loading="lazy"></div>
     <p class="blog-card-eyebrow">PSYCHOLOGY</p>
     <h3 class="blog-card-title">Meditation isn't wellness — it's risk management</h3>
     <p class="blog-card-excerpt">The pre-market sit isn't about being centered. It's about keeping your cortisol curve below the line where your prefrontal cortex checks out at 10:14am.</p>
     <p class="blog-card-meta">Ludy D. &middot; 2026-05-18</p>
   </a>
-  <a class="blog-card" href="/blog/blue-belt-phase-every-trader" data-cta-source="blog-index" data-cta-target="blog-blue-belt-phase-every-trader">
+  <a class="blog-card" href="/blog/blue-belt-phase-every-trader" data-cta-source="blog-index" data-cta-target="blog-blue-belt-phase-every-trader" data-eyebrow="discipline">
     <div class="blog-card-thumb"><img src="/assets/blog/blue-belt-phase-every-trader.jpg" alt="man in brown t-shirt and brown pants lying on floor" loading="lazy"></div>
     <p class="blog-card-eyebrow">DISCIPLINE</p>
     <h3 class="blog-card-title">The blue belt phase every trader has to survive</h3>
@@ -177,6 +212,8 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
   </a>
   <!-- BLOG_GRID_INSERT_ABOVE -->
     </div>
+    <p class="blog-filter-empty" id="blogFilterEmpty" hidden>No posts in this category yet.</p>
+    <div class="blog-load-more-wrap"><button type="button" class="blog-load-more" id="blogLoadMore" aria-controls="blogGrid" hidden>Load more posts &darr; <span class="blog-load-more-count"></span></button></div>
   </div>
 </section>
 
@@ -212,6 +249,103 @@ function closeDrawer(){
   document.getElementById('mobileOverlay').classList.remove('open');
   document.getElementById('mobileDrawer').classList.remove('open');
 }
+</script>
+<script>
+// Blog index: filter pills + Load More. Featured card is exempt from
+// filtering (editorial "read first" signal). Pill counts and visibility
+// are computed from card [data-eyebrow] attrs at load — adding a new
+// eyebrow value via the publisher requires zero JS or template changes.
+(function(){
+  var grid = document.getElementById('blogGrid');
+  var filter = document.getElementById('blogFilter');
+  var empty = document.getElementById('blogFilterEmpty');
+  var loadMore = document.getElementById('blogLoadMore');
+  if (!grid || !filter) return;
+
+  var INITIAL_VISIBLE = 12;
+  var BATCH = 12;
+  var currentFilter = 'all';
+  var visibleCount = INITIAL_VISIBLE;
+
+  function gridCards(){
+    return Array.prototype.slice.call(grid.querySelectorAll('.blog-card:not(.blog-card--featured)'));
+  }
+
+  function displayLabel(slug){
+    return slug.toUpperCase().replace(/-/g, ' ');
+  }
+
+  function buildPills(){
+    var cards = gridCards();
+    var counts = {};
+    cards.forEach(function(card){
+      var eb = card.getAttribute('data-eyebrow') || '';
+      if (!eb) return;
+      counts[eb] = (counts[eb] || 0) + 1;
+    });
+    var labels = Object.keys(counts).sort();
+    var html = '<button type="button" class="filter-pill is-active" data-filter="all" aria-pressed="true">ALL <span class="filter-pill-count">' + cards.length + '</span></button>';
+    labels.forEach(function(label){
+      html += '<button type="button" class="filter-pill" data-filter="' + label + '" aria-pressed="false">' + displayLabel(label) + ' <span class="filter-pill-count">' + counts[label] + '</span></button>';
+    });
+    filter.innerHTML = html;
+  }
+
+  filter.addEventListener('click', function(e){
+    var btn = e.target.closest('.filter-pill');
+    if (!btn) return;
+    var f = btn.getAttribute('data-filter');
+    Array.prototype.forEach.call(filter.querySelectorAll('.filter-pill'), function(p){
+      var active = p === btn;
+      p.classList.toggle('is-active', active);
+      p.setAttribute('aria-pressed', active ? 'true' : 'false');
+    });
+    currentFilter = f;
+    visibleCount = INITIAL_VISIBLE;
+    reflow();
+  });
+
+  function reflow(){
+    var cards = gridCards();
+    var matchIdx = 0;
+    cards.forEach(function(card){
+      var eb = card.getAttribute('data-eyebrow') || '';
+      var matches = currentFilter === 'all' || eb === currentFilter;
+      if (!matches){
+        card.classList.add('is-hidden');
+        card.classList.remove('is-folded');
+        return;
+      }
+      card.classList.remove('is-hidden');
+      if (matchIdx < visibleCount){
+        card.classList.remove('is-folded');
+      } else {
+        card.classList.add('is-folded');
+      }
+      matchIdx++;
+    });
+    var totalMatching = matchIdx;
+    var remaining = Math.max(0, totalMatching - visibleCount);
+    if (empty) empty.hidden = totalMatching > 0;
+    if (loadMore){
+      if (remaining > 0){
+        loadMore.hidden = false;
+        var span = loadMore.querySelector('.blog-load-more-count');
+        if (span) span.textContent = '(' + remaining + ' more)';
+      } else {
+        loadMore.hidden = true;
+      }
+    }
+  }
+
+  if (loadMore) loadMore.addEventListener('click', function(){
+    visibleCount += BATCH;
+    reflow();
+  });
+
+  buildPills();
+  reflow();
+})();
 </script>
 </body>
 </html>
