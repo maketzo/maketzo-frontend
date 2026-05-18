@@ -85,16 +85,64 @@ strong { color: var(--mk-text-primary); font-weight: 600; }
 .blog-empty { text-align: center; padding: 80px 32px; color: var(--mk-text-tertiary); font-family: var(--mk-font-mono); font-size: var(--mk-mono-sm); letter-spacing: 0.04em; }
 
 /* ── Featured (newest post auto-promoted by publisher) ─────── */
-.blog-card--featured { grid-column: 1 / -1; }
-.blog-card--featured .blog-card-eyebrow::before { content: "Featured \00b7  "; color: var(--mk-brand); font-weight: 700; }
+.blog-card--featured {
+  grid-column: 1 / -1;
+  position: relative;
+  border: 1.5px solid rgba(212,175,55,.55);
+  box-shadow: 0 0 0 4px rgba(212,175,55,.07), 0 24px 60px rgba(0,0,0,.4);
+  margin-bottom: 36px;
+  overflow: visible;
+}
+.blog-card--featured:hover {
+  border-color: rgba(212,175,55,.85);
+  box-shadow: 0 0 0 4px rgba(212,175,55,.12), 0 28px 70px rgba(0,0,0,.5);
+  transform: translateY(-3px);
+}
+/* Corner FEATURED ribbon */
+.blog-card--featured::before {
+  content: "Featured";
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: var(--mk-gold-gradient);
+  color: var(--mk-text-on-gold);
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-xs);
+  letter-spacing: var(--mk-track-eyebrow);
+  font-weight: 700;
+  padding: 10px 22px;
+  border-radius: calc(var(--mk-radius-card) - 1.5px) 0 var(--mk-radius-card) 0;
+  z-index: 2;
+  text-transform: uppercase;
+}
+/* Gold rule below featured to separate from the filter+grid */
+.blog-card--featured::after {
+  content: "";
+  position: absolute;
+  bottom: -20px;
+  left: 8%;
+  right: 8%;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(212,175,55,.5), transparent);
+}
 
 @media (min-width: 721px) {
-  .blog-card--featured { display: grid; grid-template-columns: 1.2fr 1fr; align-items: stretch; }
-  .blog-card--featured .blog-card-thumb { aspect-ratio: auto; height: 100%; min-height: 320px; }
-  .blog-card--featured .blog-card-eyebrow { margin: 36px 36px 12px; }
-  .blog-card--featured .blog-card-title { font-size: clamp(1.8rem, 3.2vw, 2.6rem); margin: 0 36px 18px; }
-  .blog-card--featured .blog-card-excerpt { font-size: var(--mk-text-md); margin: 0 36px 22px; }
-  .blog-card--featured .blog-card-meta { margin: 0 36px 36px; }
+  .blog-card--featured {
+    display: grid;
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+    grid-template-rows: 1fr auto auto auto auto 1fr;
+  }
+  .blog-card--featured > .blog-card-thumb {
+    grid-column: 1;
+    grid-row: 1 / -1;
+    aspect-ratio: auto;
+    min-height: 420px;
+    height: 100%;
+  }
+  .blog-card--featured > .blog-card-eyebrow { grid-column: 2; grid-row: 2; margin: 0 44px 14px; }
+  .blog-card--featured > .blog-card-title   { grid-column: 2; grid-row: 3; margin: 0 44px 18px; font-size: clamp(1.8rem, 3.2vw, 2.6rem); }
+  .blog-card--featured > .blog-card-excerpt { grid-column: 2; grid-row: 4; margin: 0 44px 22px; font-size: var(--mk-text-md); }
+  .blog-card--featured > .blog-card-meta    { grid-column: 2; grid-row: 5; margin: 0 44px; }
 }
 
 /* ── Filter pills (ports the proven admin filter pattern) ──── */
@@ -112,6 +160,10 @@ strong { color: var(--mk-text-primary); font-weight: 600; }
 .blog-load-more { display: inline-flex; align-items: center; gap: 10px; background: transparent; color: var(--mk-text-primary); font-family: var(--mk-font-sans); font-weight: 600; font-size: var(--mk-text-sm); letter-spacing: var(--mk-track-cap); text-transform: uppercase; padding: 14px 28px; border: 1px solid rgba(212,175,55,.42); border-radius: var(--mk-radius-button); cursor: pointer; transition: background var(--mk-dur-fast), border-color var(--mk-dur-fast); }
 .blog-load-more:hover { background: rgba(212,175,55,.08); border-color: rgba(212,175,55,.72); }
 .blog-load-more-count { color: var(--mk-text-tertiary); font-family: var(--mk-font-mono); font-weight: 500; text-transform: none; letter-spacing: 0.04em; }
+/* The HTML `hidden` attribute is overridden by `display: inline-flex`/`flex`
+   above, so we re-assert it. Without this the Load More button + empty-state
+   stay visible even when JS sets hidden=true. */
+.blog-load-more[hidden], .blog-filter-empty[hidden], .blog-load-more-wrap[hidden] { display: none !important; }
 
 @media (max-width: 720px) {
   .blog-grid { grid-template-columns: 1fr; gap: 28px; }
@@ -213,7 +265,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
   <!-- BLOG_GRID_INSERT_ABOVE -->
     </div>
     <p class="blog-filter-empty" id="blogFilterEmpty" hidden>No posts in this category yet.</p>
-    <div class="blog-load-more-wrap"><button type="button" class="blog-load-more" id="blogLoadMore" aria-controls="blogGrid" hidden>Load more posts &darr; <span class="blog-load-more-count"></span></button></div>
+    <div class="blog-load-more-wrap" hidden><button type="button" class="blog-load-more" id="blogLoadMore" aria-controls="blogGrid">Load more posts &darr; <span class="blog-load-more-count"></span></button></div>
   </div>
 </section>
 
@@ -260,6 +312,7 @@ function closeDrawer(){
   var filter = document.getElementById('blogFilter');
   var empty = document.getElementById('blogFilterEmpty');
   var loadMore = document.getElementById('blogLoadMore');
+  var loadMoreWrap = loadMore ? loadMore.parentElement : null;
   if (!grid || !filter) return;
 
   var INITIAL_VISIBLE = 12;
@@ -267,8 +320,17 @@ function closeDrawer(){
   var currentFilter = 'all';
   var visibleCount = INITIAL_VISIBLE;
 
+  // Capture the featured card by reference at init so we can toggle the
+  // .blog-card--featured class on/off as the filter changes (querying by
+  // class would lose it once we strip the class). When a category filter
+  // is active the featured card renders as a regular card so the page
+  // becomes a uniform grid of matching posts — pills feel like they
+  // filter EVERYTHING, including what used to be the hero.
+  var featuredCard = grid.querySelector('.blog-card--featured');
+
   function gridCards(){
-    return Array.prototype.slice.call(grid.querySelectorAll('.blog-card:not(.blog-card--featured)'));
+    // Include the featured card so pill counts reflect true totals.
+    return Array.prototype.slice.call(grid.querySelectorAll('.blog-card'));
   }
 
   function displayLabel(slug){
@@ -306,6 +368,13 @@ function closeDrawer(){
   });
 
   function reflow(){
+    // Featured treatment only applies in the ALL view. In any category
+    // view the featured card collapses to a regular card so the page
+    // becomes a uniform grid of matching posts.
+    if (featuredCard) {
+      if (currentFilter === 'all') featuredCard.classList.add('blog-card--featured');
+      else featuredCard.classList.remove('blog-card--featured');
+    }
     var cards = gridCards();
     var matchIdx = 0;
     cards.forEach(function(card){
@@ -327,13 +396,11 @@ function closeDrawer(){
     var totalMatching = matchIdx;
     var remaining = Math.max(0, totalMatching - visibleCount);
     if (empty) empty.hidden = totalMatching > 0;
-    if (loadMore){
-      if (remaining > 0){
-        loadMore.hidden = false;
+    if (loadMoreWrap) {
+      loadMoreWrap.hidden = remaining <= 0;
+      if (remaining > 0) {
         var span = loadMore.querySelector('.blog-load-more-count');
         if (span) span.textContent = '(' + remaining + ' more)';
-      } else {
-        loadMore.hidden = true;
       }
     }
   }
