@@ -481,6 +481,29 @@
   }
 
   function getPayloadForTrigger(trigger, includeTimestamp) {
+    // Generic data-attr-driven path: any consumer (blog posts, future
+    // referral surfaces, anything that isn't a soundtrack track) can
+    // populate data-share-title / data-share-url / data-share-text /
+    // data-share-subject on the trigger and get tailored share copy
+    // without touching this file. Per
+    // memory/feedback-share-copy-references-container — copy references
+    // the container, never an item — these attrs are the container's
+    // self-description.
+    var dataTitle   = trigger.getAttribute("data-share-title");
+    var dataUrl     = trigger.getAttribute("data-share-url");
+    var dataText    = trigger.getAttribute("data-share-text");
+    var dataSubject = trigger.getAttribute("data-share-subject");
+    if (dataTitle || dataUrl || dataText) {
+      return {
+        title:   dataTitle   || ALBUM_PAYLOAD.title,
+        text:    dataText    || dataTitle || ALBUM_PAYLOAD.text,
+        url:     dataUrl     || ALBUM_PAYLOAD.url,
+        subject: dataSubject || dataTitle || ALBUM_EMAIL_SUBJECT,
+        track_id: null,
+        timestamp_sec: null
+      };
+    }
+
     var source = trigger.getAttribute("data-share-source") || "";
     if (source === "track") {
       var slug = trigger.getAttribute("data-track-id");
