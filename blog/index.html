@@ -377,6 +377,7 @@ function closeDrawer(){
     }
     var cards = gridCards();
     var matchIdx = 0;
+    var featuredVisible = false;
     cards.forEach(function(card){
       var eb = card.getAttribute('data-eyebrow') || '';
       var matches = currentFilter === 'all' || eb === currentFilter;
@@ -386,6 +387,16 @@ function closeDrawer(){
         return;
       }
       card.classList.remove('is-hidden');
+      // The featured card spans a full row in ALL view, so don't count
+      // it against visibleCount. Otherwise "12 visible" includes featured
+      // and you end up with 11 grid cards = 5.5 rows = a lone trailing
+      // card. Featured is always visible in ALL view; in category views
+      // it loses its featured class and counts as a regular grid item.
+      if (card === featuredCard && currentFilter === 'all') {
+        card.classList.remove('is-folded');
+        featuredVisible = true;
+        return;
+      }
       if (matchIdx < visibleCount){
         card.classList.remove('is-folded');
       } else {
@@ -393,9 +404,9 @@ function closeDrawer(){
       }
       matchIdx++;
     });
-    var totalMatching = matchIdx;
+    var totalMatching = matchIdx; // grid-card count (excludes featured)
     var remaining = Math.max(0, totalMatching - visibleCount);
-    if (empty) empty.hidden = totalMatching > 0;
+    if (empty) empty.hidden = totalMatching > 0 || featuredVisible;
     if (loadMoreWrap) {
       loadMoreWrap.hidden = remaining <= 0;
       if (remaining > 0) {
