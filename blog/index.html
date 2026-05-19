@@ -98,9 +98,15 @@ strong { color: var(--mk-text-primary); font-weight: 600; }
 .blog-card-newsletter-form .newsletter-error { width: 100%; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); color: rgba(220,80,80,.95); margin-top: 6px; letter-spacing: 0.02em; }
 .blog-card-newsletter-form .newsletter-inline-success { width: 100%; font-family: var(--mk-font-sans); font-size: var(--mk-text-sm); color: var(--mk-profit-500); background: var(--mk-profit-700); border: 1px solid rgba(74,222,128,.30); border-radius: var(--mk-radius-card-sm); padding: 12px 14px; margin-top: 10px; letter-spacing: 0; }
 
-/* ── Featured (newest post auto-promoted by publisher) ─────── */
+/* ── Featured (newest post auto-promoted by publisher OR admin pin) ─── */
+/* order:-1 forces featured to render first in the grid regardless of DOM
+   position. Required for the admin-override path where the pinned post is
+   not the most-recently-spliced (and therefore not at the top of the file).
+   Without this rule, CSS Grid renders cards in DOM order, leaving an empty
+   col 2 above the full-width featured row. */
 .blog-card--featured {
   grid-column: 1 / -1;
+  order: -1;
   position: relative;
   border: 1.5px solid rgba(212,175,55,.55);
   box-shadow: 0 0 0 4px rgba(212,175,55,.07), 0 24px 60px rgba(0,0,0,.4);
