@@ -445,3 +445,229 @@
   width: 240px;
   margin: 0 auto;
 }
+
+
+/* ── MODAL ────────────────────────────────────────────────────────────
+   Branded modal pattern for confirmations, especially destructive ones.
+   Replaces native window.confirm/alert (forbidden in product surfaces
+   per memory/feedback-no-native-browser-dialogs-in-app.md). Two parts:
+     .mk-modal-scrim — fixed backdrop, click-to-close
+     .mk-modal       — the card itself, centered, scale-in transition
+
+   Open: add .is-open to .mk-modal-scrim. Close: remove it.
+   Page JS is responsible for focus trap + Esc-key + click-outside-to-close. */
+
+.mk-modal-scrim {
+  position: fixed; inset: 0;
+  z-index: 100;
+  background: rgba(6,7,10,.68);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--mk-dur-med) var(--mk-ease-out);
+}
+.mk-modal-scrim.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.mk-modal {
+  width: 100%;
+  max-width: 520px;
+  background: var(--mk-surface-raised);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 14px;
+  padding: 32px;
+  box-shadow: 0 24px 64px rgba(0,0,0,.45);
+  transform: scale(.96);
+  transition: transform var(--mk-dur-med) var(--mk-ease-out);
+}
+.mk-modal-scrim.is-open .mk-modal { transform: scale(1); }
+
+.mk-modal--danger {
+  border-color: rgba(248,113,113,.35);
+}
+.mk-modal--danger .mk-modal__title {
+  color: var(--mk-danger-500);
+}
+
+.mk-modal__eyebrow {
+  font-family: var(--mk-font-sans);
+  font-size: var(--mk-text-xs);
+  letter-spacing: var(--mk-track-cap);
+  text-transform: uppercase;
+  color: var(--mk-text-tertiary);
+  margin: 0 0 8px 0;
+}
+.mk-modal__title {
+  font-family: var(--mk-font-display);
+  font-size: 28px;
+  line-height: 1.1;
+  letter-spacing: .01em;
+  color: var(--mk-text-primary);
+  margin: 0 0 16px 0;
+}
+.mk-modal__body {
+  font-family: var(--mk-font-sans);
+  font-size: var(--mk-text-sm);
+  line-height: 1.55;
+  color: var(--mk-text-secondary);
+  margin: 0 0 24px 0;
+}
+.mk-modal__actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+
+/* ── AVATAR ──────────────────────────────────────────────────────────
+   User photo display. Two modes:
+     img.mk-avatar          — for users with a real photo (Google OAuth
+                              backfilled User.avatar from profile.photos)
+     .mk-avatar.mk-avatar--initials — fallback for password-only users.
+                              Render initials in a gold-gradient circle.
+   v2 will add file-upload; v1 ships with these two paths only. */
+
+.mk-avatar {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  display: block;
+}
+.mk-avatar--initials {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--mk-gold-600) 0%, var(--mk-gold-500) 100%);
+  color: var(--mk-obsidian-900);
+  font-family: var(--mk-font-display);
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: .02em;
+  text-transform: uppercase;
+  user-select: none;
+}
+.mk-avatar--lg {
+  width: 96px; height: 96px;
+}
+.mk-avatar--lg.mk-avatar--initials {
+  font-size: 36px;
+}
+
+
+/* ── TAB NAV ─────────────────────────────────────────────────────────
+   Horizontal pill-bar tab nav, extending .mk-tabpill base. Used on
+   /account v1 (Profile · Security · Subscription · Referrals · Privacy).
+
+   Markup:
+     <nav class="mk-tab-nav" role="tablist">
+       <button class="mk-tab-nav__btn is-active" role="tab" aria-selected="true">Profile</button>
+       ...
+     </nav>
+     <section class="mk-tab-panel is-active" role="tabpanel">...</section>
+
+   Mobile (< 720px) — tabs collapse to vertical stacked sections; the
+   .mk-tab-nav hides and each .mk-tab-panel auto-shows with its own
+   header. Page JS keeps URL hash in sync (#profile, #security, etc.). */
+
+.mk-tab-nav {
+  display: flex;
+  gap: 8px;
+  padding: 0 0 16px 0;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+}
+.mk-tab-nav__btn {
+  font-family: var(--mk-font-sans);
+  font-size: var(--mk-text-xs);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  padding: 8px 16px;
+  border-radius: var(--mk-radius-pill);
+  border: 1px solid rgba(255,255,255,.10);
+  background: transparent;
+  color: var(--mk-text-secondary);
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: color var(--mk-dur-fast), background var(--mk-dur-fast), border-color var(--mk-dur-fast);
+}
+.mk-tab-nav__btn:hover {
+  color: var(--mk-text-primary);
+  border-color: rgba(255,255,255,.18);
+}
+.mk-tab-nav__btn.is-active {
+  background: rgba(212,175,55,.10);
+  color: var(--mk-brand);
+  border-color: rgba(212,175,55,.35);
+}
+.mk-tab-nav__btn:focus-visible {
+  outline: 2px solid var(--mk-brand);
+  outline-offset: 2px;
+}
+
+.mk-tab-panel {
+  display: none;
+}
+.mk-tab-panel.is-active {
+  display: block;
+}
+
+/* Mobile: each panel becomes its own block with a header, tabs hide. */
+@media (max-width: 720px) {
+  .mk-tab-nav { display: none; }
+  .mk-tab-panel { display: block; margin-bottom: 32px; }
+  .mk-tab-panel__mobile-header {
+    font-family: var(--mk-font-display);
+    font-size: 22px;
+    letter-spacing: .01em;
+    color: var(--mk-text-primary);
+    margin: 0 0 16px 0;
+  }
+}
+@media (min-width: 721px) {
+  .mk-tab-panel__mobile-header { display: none; }
+}
+
+
+/* ── EMPTY STATE ─────────────────────────────────────────────────────
+   For "No referrals yet", "No credits on file", etc. Centered icon
+   in a gold-tinted circle + title + sub. */
+
+.mk-empty-state {
+  text-align: center;
+  padding: 56px 32px;
+}
+.mk-empty-state__icon {
+  width: 72px; height: 72px;
+  margin: 0 auto 20px auto;
+  border-radius: 50%;
+  background: rgba(212,175,55,.08);
+  border: 1px solid rgba(212,175,55,.22);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--mk-brand);
+}
+.mk-empty-state__icon svg {
+  width: 28px; height: 28px;
+}
+.mk-empty-state__title {
+  font-family: var(--mk-font-sans);
+  font-size: var(--mk-text-lg);
+  font-weight: 600;
+  color: var(--mk-text-primary);
+  margin: 0 0 8px 0;
+}
+.mk-empty-state__sub {
+  font-family: var(--mk-font-sans);
+  font-size: var(--mk-text-sm);
+  color: var(--mk-text-tertiary);
+  max-width: 440px;
+  margin: 0 auto;
+  line-height: 1.5;
+}
