@@ -51,6 +51,24 @@
     </div>
   </div>
 
+  <div class="auth-card" id="emailChangedView" hidden>
+    <div class="auth-status">
+      <div class="auth-status-icon auth-status-icon--ok" aria-hidden="true">✓</div>
+      <h1 class="auth-title">Email updated.</h1>
+      <p class="auth-sub">Your email address has been changed. Use your new email the next time you sign in.</p>
+    </div>
+    <a class="btn-primary auth-submit" href="/app">Open dashboard →</a>
+  </div>
+
+  <div class="auth-card" id="emailTakenView" hidden>
+    <div class="auth-status">
+      <div class="auth-status-icon auth-status-icon--error" aria-hidden="true">!</div>
+      <h1 class="auth-title">Email already in use.</h1>
+      <p class="auth-sub">That email address is already linked to another MAKETZO account. Sign in to your account, or try a different email.</p>
+    </div>
+    <a class="btn-primary auth-submit" href="/app">Back to MAKETZO</a>
+  </div>
+
   <div class="auth-card" id="invalidView" hidden>
     <div class="auth-status">
       <div class="auth-status-icon auth-status-icon--error" aria-hidden="true">!</div>
@@ -74,6 +92,10 @@ if (status === 'ok') {
       'We sent an email to ' + email + ' with next steps. Open it and follow the instructions to sign in. Links are good for 24 hours.';
   }
   document.getElementById('sentView').hidden = false;
+} else if (status === 'email-changed') {
+  document.getElementById('emailChangedView').hidden = false;
+} else if (status === 'email-taken') {
+  document.getElementById('emailTakenView').hidden = false;
 } else {
   document.getElementById('invalidView').hidden = false;
 }
