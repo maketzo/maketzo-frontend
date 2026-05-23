@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<!-- zone — MAKETZO Meditation Zone: public, login-free 3-min breathing reset.
+     Designed as a viral wedge: traders share the link from inside the app
+     (Reset Protocols section), a friend lands here and experiences the
+     breathing protocol in full, with a soft 7-day-trial CTA at the end.
+     Hybrid UX pattern: breathing ring already animating on load, Begin
+     button kicks off the music + breath bed + countdown timer. -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A 3-Minute Reset for Tough Trading Moments &mdash; MAKETZO</title>
+<meta name="description" content="The breathing protocol day traders use to stop themselves before the trade they'd regret. 3 minutes. No signup. Audio + visuals included.">
+<meta name="theme-color" content="#06070A">
+<meta property="og:title" content="A 3-Minute Reset for Tough Trading Moments &mdash; MAKETZO">
+<meta property="og:description" content="The breathing protocol day traders use to stop themselves before the trade they&rsquo;d regret. 3 minutes. No signup.">
+<meta property="og:url" content="https://maketzo.co/zone">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://maketzo.co/assets/zone-og-1200.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="A 3-Minute Reset for Tough Trading Moments &mdash; MAKETZO">
+<meta name="twitter:description" content="The breathing protocol day traders use to stop themselves before the trade they&rsquo;d regret. 3 minutes. No signup.">
+<meta name="twitter:image" content="https://maketzo.co/assets/zone-og-1200.jpg">
+<link rel="canonical" href="https://maketzo.co/zone">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/css/audio-player.css?v=8">
+<script src="assets/js/mkt-analytics.js?v=4" defer></script>
+<script src="assets/js/mkt-consent.js?v=1" defer></script>
+<script src="assets/js/checkout.js?v=3" defer></script>
+<script src="assets/js/audio-player.js?v=8" defer></script>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--mk-surface-page); color: var(--mk-text-primary); font-family: var(--mk-font-sans); font-size: var(--mk-text-md); line-height: var(--mk-lead-body); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+a { color: inherit; text-decoration: none; }
+ul, ol { list-style: none; }
+img { display: block; max-width: 100%; }
+em, i { font-style: italic; }
+strong { color: var(--mk-text-primary); font-weight: 600; }
+
+/* ── Mobile drawer + overlay (reused from soundtrack.html) ───────── */
+.mobile-overlay { position: fixed; inset: 0; z-index: 90; background: rgba(0,0,0,.6); backdrop-filter: blur(6px); opacity: 0; pointer-events: none; transition: opacity var(--mk-dur-med); }
+.mobile-overlay.open { opacity: 1; pointer-events: auto; }
+.mobile-drawer { position: fixed; top: 0; right: 0; bottom: 0; z-index: 100; width: min(320px, 88%); background: var(--mk-surface-base); border-left: var(--mk-border-soft); padding: 80px 28px 28px; transform: translateX(100%); transition: transform var(--mk-dur-med) var(--mk-ease-out); display: flex; flex-direction: column; gap: 20px; }
+.mobile-drawer.open { transform: translateX(0); }
+.mobile-drawer-links li { padding: 12px 0; border-bottom: var(--mk-border-hairline); }
+.mobile-drawer-links a { font-family: var(--mk-font-display); font-size: var(--mk-display-md); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); }
+.mobile-drawer-cta { display: inline-flex; align-items: center; justify-content: center; background: var(--mk-gold-gradient); color: var(--mk-text-on-gold); font-family: var(--mk-font-sans); font-weight: 600; font-size: var(--mk-text-sm); letter-spacing: var(--mk-track-cap); text-transform: uppercase; padding: 14px 22px; border: 1px solid rgba(0,0,0,.18); border-radius: var(--mk-radius-button); cursor: pointer; margin-top: auto; }
+
+/* ── Nav (compact — fewer distractions on this page) ─────────────── */
+#mainNav { position: fixed; top: 0; left: 0; right: 0; z-index: 50; display: flex; align-items: center; justify-content: space-between; padding: 18px 32px; background: rgba(6,7,10,0.65); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(201,168,76,0.12); transition: border-bottom-color var(--mk-dur-med); }
+.nav-logo { display: inline-flex; align-items: center; gap: 10px; }
+.nav-logo .mk-brand-lockup__mark { height: 26px; width: auto; }
+.nav-logo .mk-brand-lockup__wordmark { height: 14px; width: auto; }
+.nav-cta { background: var(--mk-gold-gradient); color: var(--mk-text-on-gold); font-family: var(--mk-font-sans); font-weight: 600; font-size: 12px; letter-spacing: var(--mk-track-cap); text-transform: uppercase; padding: 10px 18px; border: 1px solid rgba(0,0,0,.18); border-radius: var(--mk-radius-button); cursor: pointer; }
+.nav-cta:hover { box-shadow: var(--mk-glow-gold-sm); transform: translateY(-1px); transition: all 180ms var(--mk-ease-out); }
+.hamburger { display: none; background: none; border: 0; padding: 8px; cursor: pointer; flex-direction: column; gap: 4px; }
+.hamburger span { display: block; width: 22px; height: 2px; background: var(--mk-text-primary); transition: transform var(--mk-dur-med), opacity var(--mk-dur-med); }
+.hamburger.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+@media (max-width: 720px) {
+  #mainNav { padding: 14px 20px; }
+  .nav-cta { display: none; }
+  .hamburger { display: flex; }
+}
+
+/* ── Hero — the breathing stage takes most of the first viewport ─── */
+.zone-hero { position: relative; min-height: 100vh; padding: 100px 24px 60px; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; }
+.zone-hero-bg { position: absolute; inset: 0; background-size: cover; background-position: center; transition: background-image 420ms ease; z-index: 0; }
+.zone-hero-bg[data-env="beach"]    { background-color: #1a3a4f; background-image: url("https://maketzo.co/assets/environments/beach-1920.jpg"), linear-gradient(180deg,#2d5872 0%,#0a1f2e 100%); }
+.zone-hero-bg[data-env="mountain"] { background-color: #2a2a3a; background-image: url("https://maketzo.co/assets/environments/mountain-1920.jpg"), linear-gradient(180deg,#4a4a5e 0%,#15151f 100%); }
+.zone-hero-scrim { position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 50%, rgba(0,0,0,0.50) 0%, rgba(0,0,0,0.78) 65%, rgba(0,0,0,0.92) 100%), linear-gradient(180deg, rgba(0,0,0,0.55), rgba(0,0,0,0.10) 28%, rgba(0,0,0,0.10) 72%, rgba(0,0,0,0.55)); pointer-events: none; z-index: 1; }
+
+/* ── Top chrome row: env picker (left) + audio cluster (right) ──── */
+.zone-chrome { position: relative; z-index: 3; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 8px 32px; width: 100%; max-width: 1080px; flex-wrap: wrap; }
+.zone-envs { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.zone-env-thumb { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 64px; height: 42px; border-radius: 8px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.14); background-size: cover; background-position: center; color: #fff; cursor: pointer; transition: all 200ms var(--mk-ease-out); overflow: hidden; }
+.zone-env-thumb[data-env="beach"]    { background-image: url("https://maketzo.co/assets/environments/beach-1920.jpg"), linear-gradient(135deg, #3e7a96, #0a1f2e); background-color: #2d5872; }
+.zone-env-thumb[data-env="mountain"] { background-image: url("https://maketzo.co/assets/environments/mountain-1920.jpg"), linear-gradient(135deg, #6a6a82, #15151f); background-color: #4a4a5e; }
+.zone-env-thumb::after { content: ""; position: absolute; inset: 0; background: rgba(0,0,0,0.35); transition: background 200ms ease; }
+.zone-env-thumb:hover::after { background: rgba(0,0,0,0.15); }
+.zone-env-thumb.is-active { border-color: var(--mk-brand); box-shadow: 0 0 0 1px var(--mk-brand), 0 0 18px rgba(212,175,55,0.40); }
+.zone-env-thumb.is-active::after { background: rgba(0,0,0,0.10); }
+.zone-env-thumb-label { position: relative; z-index: 1; font-family: var(--mk-font-mono); font-size: 9px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #fff; text-shadow: 0 1px 4px rgba(0,0,0,0.8); }
+
+.zone-audio { display: inline-flex; gap: 6px; background: rgba(0,0,0,0.40); border: 1px solid rgba(255,255,255,0.10); border-radius: 10px; padding: 4px; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+.zone-audio-toggle { display: inline-flex; align-items: center; gap: 6px; background: transparent; border: 0; border-radius: 6px; padding: 6px 10px; color: rgba(255,255,255,0.55); cursor: pointer; transition: all 180ms var(--mk-ease-out); font-family: var(--mk-font-mono); font-size: 10px; letter-spacing: 0.10em; text-transform: uppercase; }
+.zone-audio-toggle svg { width: 14px; height: 14px; }
+.zone-audio-toggle:hover { color: #fff; background: rgba(255,255,255,0.06); }
+.zone-audio-toggle.is-on { color: var(--mk-brand); background: rgba(212,175,55,0.10); }
+
+/* ── Hero copy (above the stage) ─────────────────────────────────── */
+.zone-hero-head { position: relative; z-index: 3; text-align: center; max-width: 680px; margin: 0 auto 32px; }
+.zone-eyebrow { font-family: var(--mk-font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.20em; color: var(--mk-brand); text-transform: uppercase; margin-bottom: 14px; text-shadow: 0 1px 6px rgba(0,0,0,0.7); }
+.zone-title { font-family: var(--mk-font-display); font-size: clamp(28px, 4.5vw, 44px); letter-spacing: 0.02em; color: #fff; line-height: 1.05; text-transform: uppercase; margin-bottom: 14px; text-shadow: 0 2px 16px rgba(0,0,0,0.85); }
+.zone-title em { font-style: normal; background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.zone-sub { font-size: 15px; color: rgba(255,255,255,0.80); line-height: 1.55; text-shadow: 0 1px 6px rgba(0,0,0,0.8); }
+
+/* ── The breathing stage (ring + countdown + commit + buttons) ───── */
+.zone-stage { position: relative; z-index: 3; display: flex; flex-direction: column; align-items: center; gap: 24px; }
+
+.zone-breathing { position: relative; width: 280px; height: 280px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle, rgba(251,191,36,0.10), transparent 65%); }
+.zone-breathing::before, .zone-breathing::after { content: ""; position: absolute; inset: 0; border-radius: 50%; border: 1px solid rgba(251,191,36,0.40); }
+.zone-breathing::after { border-color: rgba(251,191,36,0.22); }
+.zone-breathing-inner { width: 60%; height: 60%; border-radius: 50%; background: radial-gradient(circle, rgba(251,191,36,0.22), rgba(251,191,36,0.05) 70%); border: 1px solid rgba(251,191,36,0.55); box-shadow: 0 0 44px rgba(251,191,36,0.24); animation: zone-breathe 12s ease-in-out infinite; }
+@keyframes zone-breathe {
+  0%   { transform: scale(0.55); box-shadow: 0 0 24px rgba(251,191,36,0.16); }
+  33%  { transform: scale(1);    box-shadow: 0 0 64px rgba(251,191,36,0.36); }
+  50%  { transform: scale(1);    box-shadow: 0 0 64px rgba(251,191,36,0.36); }
+  100% { transform: scale(0.55); box-shadow: 0 0 24px rgba(251,191,36,0.16); }
+}
+.zone-breathing-label { position: absolute; font-family: var(--mk-font-mono); font-size: 15px; font-weight: 600; letter-spacing: 0.20em; color: var(--mk-brand); text-transform: uppercase; transition: opacity 240ms ease; text-shadow: 0 1px 6px rgba(0,0,0,0.8); }
+.zone-pace { font-family: var(--mk-font-mono); font-size: 11px; letter-spacing: 0.16em; color: rgba(255,255,255,0.55); text-transform: uppercase; text-shadow: 0 1px 4px rgba(0,0,0,0.7); }
+
+/* ── Countdown ring (hidden until Begin pressed) ─────────────────── */
+.zone-timer { position: relative; width: 108px; height: 108px; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 400ms ease; }
+.zone-timer.is-active { opacity: 1; }
+.zone-timer-ring { position: absolute; inset: 0; transform: rotate(-90deg); width: 100%; height: 100%; }
+.zone-timer-track { fill: none; stroke: rgba(255,255,255,0.10); stroke-width: 5; }
+.zone-timer-progress { fill: none; stroke: var(--mk-brand); stroke-width: 5; stroke-linecap: round; stroke-dasharray: 100 100; stroke-dashoffset: 0; filter: drop-shadow(0 0 6px rgba(212,175,55,0.5)); }
+@keyframes zone-timer-decay { from { stroke-dashoffset: 0; } to { stroke-dashoffset: 100; } }
+.zone-timer-text { font-family: var(--mk-font-mono); font-size: 22px; font-weight: 500; color: #fff; letter-spacing: 0.02em; text-shadow: 0 1px 8px rgba(0,0,0,0.8); }
+
+/* ── Begin CTA (the only button before session starts) ───────────── */
+.zone-begin { display: inline-flex; align-items: center; justify-content: center; gap: 10px; background: var(--mk-gold-gradient); color: var(--mk-text-on-gold); font-family: var(--mk-font-sans); font-weight: 700; font-size: 15px; letter-spacing: 0.06em; text-transform: uppercase; padding: 18px 36px; border: 1px solid rgba(0,0,0,0.18); border-radius: 999px; cursor: pointer; box-shadow: var(--mk-glow-gold-md), 0 8px 32px rgba(0,0,0,0.4); animation: zone-begin-pulse 2.4s ease-in-out infinite; transition: all 200ms var(--mk-ease-out); }
+.zone-begin:hover { transform: translateY(-2px); box-shadow: 0 0 0 2px rgba(212,175,55,0.45), 0 14px 40px rgba(212,175,55,0.32); }
+@keyframes zone-begin-pulse {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(212,175,55,0.35), 0 8px 24px rgba(212,175,55,0.18); }
+  50%      { box-shadow: 0 0 0 2px rgba(212,175,55,0.60), 0 14px 40px rgba(212,175,55,0.36); }
+}
+.zone-begin svg { width: 16px; height: 16px; }
+
+/* ── In-session: commit copy (hidden until Begin pressed) ────────── */
+.zone-commit { text-align: center; font-family: var(--mk-font-display); font-size: 18px; letter-spacing: 0.02em; color: #fff; text-transform: uppercase; line-height: 1.4; max-width: 480px; text-shadow: 0 2px 12px rgba(0,0,0,0.85); opacity: 0; transition: opacity 400ms ease; }
+.zone-commit.is-active { opacity: 1; }
+.zone-commit-sub { font-family: var(--mk-font-sans); font-size: 11px; letter-spacing: 0.12em; color: rgba(255,255,255,0.65); text-transform: uppercase; font-weight: 600; display: block; margin-top: 6px; }
+
+/* ── Below-fold: signup CTA section (revealed at 0:00) ───────────── */
+.zone-cta-section { background: var(--mk-surface-base); padding: 80px 24px; }
+.zone-cta-wrap { max-width: 720px; margin: 0 auto; text-align: center; }
+.zone-cta-eyebrow { font-family: var(--mk-font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.20em; color: var(--mk-brand); text-transform: uppercase; margin-bottom: 16px; }
+.zone-cta-title { font-family: var(--mk-font-display); font-size: clamp(28px, 4vw, 40px); letter-spacing: 0.02em; color: var(--mk-text-primary); text-transform: uppercase; line-height: 1.1; margin-bottom: 20px; }
+.zone-cta-title em { font-style: normal; background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.zone-cta-body { font-size: 16px; color: var(--mk-text-secondary); line-height: 1.65; margin-bottom: 32px; max-width: 560px; margin-left: auto; margin-right: auto; }
+.zone-cta-trial { display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: var(--mk-gold-gradient); color: var(--mk-text-on-gold); font-family: var(--mk-font-sans); font-weight: 700; font-size: 15px; letter-spacing: 0.06em; text-transform: uppercase; padding: 18px 36px; border: 1px solid rgba(0,0,0,0.18); border-radius: var(--mk-radius-button); cursor: pointer; box-shadow: var(--mk-glow-gold-sm); transition: all 200ms var(--mk-ease-out); }
+.zone-cta-trial:hover { transform: translateY(-2px); box-shadow: var(--mk-glow-gold-md); }
+.zone-cta-hint { font-family: var(--mk-font-mono); font-size: 11px; letter-spacing: 0.12em; color: var(--mk-text-tertiary); margin-top: 16px; text-transform: uppercase; }
+
+/* ── Footer (reused from soundtrack.html) ────────────────────────── */
+footer { background: var(--mk-surface-base); padding: 60px 24px 32px; border-top: 1px solid rgba(255,255,255,0.06); }
+.footer-inner { max-width: 1080px; margin: 0 auto; }
+.footer-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 48px; margin-bottom: 40px; }
+.footer-logo-wrap { margin-bottom: 16px; }
+.footer-tagline { font-size: 14px; color: var(--mk-text-secondary); line-height: 1.6; }
+.footer-tagline strong { display: block; margin-bottom: 6px; }
+.footer-col-title { font-family: var(--mk-font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.18em; color: var(--mk-brand); text-transform: uppercase; margin-bottom: 12px; }
+.footer-links li { margin-bottom: 8px; }
+.footer-links a { font-size: 13px; color: var(--mk-text-secondary); transition: color var(--mk-dur-fast); }
+.footer-links a:hover { color: var(--mk-text-primary); }
+.footer-bottom { border-top: 1px solid rgba(255,255,255,0.06); padding-top: 24px; }
+.footer-copy { font-size: 12px; color: var(--mk-text-tertiary); margin-bottom: 12px; }
+.footer-disclaimer { font-size: 11px; color: var(--mk-text-tertiary); line-height: 1.6; }
+@media (max-width: 720px) { .footer-grid { grid-template-columns: 1fr; gap: 32px; } }
+
+/* ── Reveal animation (scroll-in) ─────────────────────────────────── */
+.reveal { opacity: 0; transform: translateY(16px); transition: opacity 700ms var(--mk-ease-out), transform 700ms var(--mk-ease-out); }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ── In-session state toggles (Begin pressed) ─────────────────────── */
+.zone-stage.is-running .zone-begin { display: none; }
+
+/* ── Mobile tightening ───────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .zone-hero { padding: 80px 16px 40px; }
+  .zone-chrome { padding: 0 4px 24px; flex-direction: column; align-items: stretch; gap: 12px; }
+  .zone-envs { overflow-x: auto; flex-wrap: nowrap; padding-bottom: 4px; }
+  .zone-env-thumb { flex-shrink: 0; width: 52px; height: 36px; }
+  .zone-env-thumb-label { font-size: 8px; }
+  .zone-audio { align-self: flex-end; }
+  .zone-breathing { width: 220px; height: 220px; }
+  .zone-timer { width: 96px; height: 96px; }
+  .zone-timer-text { font-size: 18px; }
+  .zone-commit { font-size: 15px; }
+  .zone-cta-section { padding: 60px 16px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── Mobile drawer + overlay ─────────────────────────────────────── -->
+<div class="mobile-overlay" id="mobileOverlay" onclick="closeDrawer()"></div>
+<div class="mobile-drawer" id="mobileDrawer">
+  <ul class="mobile-drawer-links">
+    <li><a href="system.html" onclick="closeDrawer()">The System</a></li>
+    <li><a href="journal.html" onclick="closeDrawer()">Journal</a></li>
+    <li><a href="edge.html" onclick="closeDrawer()">The Edge</a></li>
+    <li><a href="focus.html" onclick="closeDrawer()">Focus Room</a></li>
+    <li><a href="/blog" onclick="closeDrawer()">Blog</a></li>
+    <li><a href="pricing.html" onclick="closeDrawer()">Get Started</a></li>
+    <li><a href="/app" onclick="closeDrawer()">Log In</a></li>
+  </ul>
+  <button class="mobile-drawer-cta" onclick="handleCheckout('price_1TUWVpJIDbUntZeXyQD23z8W',{preventDefault:()=>{},currentTarget:null});closeDrawer()">Start Free Trial &rarr;</button>
+</div>
+
+<!-- ── Compact nav: logo + single CTA (less distraction on Zone page) -->
+<nav id="mainNav">
+  <a href="index.html" class="nav-logo mk-brand-lockup">
+    <img class="mk-brand-lockup__mark" src="assets/logo-mark.png" alt="">
+    <img class="mk-brand-lockup__wordmark" src="assets/logo-wordmark.png" alt="MAKETZO">
+  </a>
+  <button class="nav-cta" onclick="handleCheckout('price_1TUWVpJIDbUntZeXyQD23z8W',event)">Start Free Trial</button>
+  <button class="hamburger" id="hamburger" onclick="toggleDrawer()" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+
+<!-- ── HERO: full-viewport breathing stage ────────────────────────── -->
+<section class="zone-hero">
+  <div class="zone-hero-bg" id="zoneHeroBg" data-env="beach" aria-hidden="true"></div>
+  <div class="zone-hero-scrim" aria-hidden="true"></div>
+
+  <!-- Top chrome: env picker (left) + audio cluster (right) -->
+  <div class="zone-chrome">
+    <div class="zone-envs" id="zoneEnvs" role="radiogroup" aria-label="Choose environment">
+      <button type="button" class="zone-env-thumb is-active" data-env="beach"    role="radio" aria-checked="true"  aria-label="Beach"><span class="zone-env-thumb-label">Beach</span></button>
+      <button type="button" class="zone-env-thumb"           data-env="mountain" role="radio" aria-checked="false" aria-label="Mountain"><span class="zone-env-thumb-label">Mountain</span></button>
+    </div>
+    <div class="zone-audio" id="zoneAudio">
+      <button type="button" class="zone-audio-toggle is-on" id="zoneAudioMusic"   aria-pressed="true" title="Ambient music">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+        <span>Music</span>
+      </button>
+      <button type="button" class="zone-audio-toggle is-on" id="zoneAudioBreath" aria-pressed="true" title="Breath cues">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2c-3 4-3 8 0 12s3 8 0 8"/><path d="M12 2c3 4 3 8 0 12s-3 8 0 8"/></svg>
+        <span>Breath</span>
+      </button>
+      <button type="button" class="zone-audio-toggle" id="zoneAudioSilence" aria-pressed="false" title="Silence">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5L6 9H3v6h3l5 4z"/><line x1="22" y1="9" x2="16" y2="15"/><line x1="16" y1="9" x2="22" y2="15"/></svg>
+        <span>Silence</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Hero copy -->
+  <div class="zone-hero-head">
+    <div class="zone-eyebrow">Behavioral OS &middot; Meditation Zone</div>
+    <h1 class="zone-title">A 3-minute reset for <em>tough moments</em>.</h1>
+    <p class="zone-sub">The breathing protocol day traders use to stop themselves before the trade they&rsquo;d regret. Press play. Breathe. Walk back out a different trader.</p>
+  </div>
+
+  <!-- The stage: ring + countdown + commit + begin button -->
+  <div class="zone-stage" id="zoneStage">
+    <div class="zone-breathing" id="zoneBreathing">
+      <div class="zone-breathing-inner"></div>
+      <div class="zone-breathing-label" id="zoneBreathingLabel">Inhale</div>
+    </div>
+    <div class="zone-pace">Inhale 4 &middot; Hold 2 &middot; Exhale 6</div>
+
+    <div class="zone-timer" id="zoneTimer">
+      <svg class="zone-timer-ring" viewBox="0 0 120 120" aria-hidden="true">
+        <circle class="zone-timer-track" cx="60" cy="60" r="54"/>
+        <circle class="zone-timer-progress" id="zoneTimerProgress" cx="60" cy="60" r="54" pathLength="100"/>
+      </svg>
+      <div class="zone-timer-text" id="zoneTimerText">3:00</div>
+    </div>
+
+    <div class="zone-commit" id="zoneCommit">
+      I will not trade for the next three minutes.
+      <span class="zone-commit-sub">The next trade is not the previous trade.</span>
+    </div>
+
+    <button type="button" class="zone-begin" id="zoneBegin">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+      <span>Begin 3-Minute Reset</span>
+    </button>
+  </div>
+
+  <!-- Hidden audio elements (primed on first user gesture per Chrome autoplay) -->
+  <audio id="zoneMusic" loop preload="auto" src="https://maketzo.co/assets/music/track-lotus-steam.mp3"></audio>
+  <audio id="zoneBreath" loop preload="auto" src="https://maketzo.co/assets/music/breath-bed.mp3"></audio>
+</section>
+
+<!-- ── Sign-up CTA section (always visible below the fold, emphasized after completion) -->
+<section class="zone-cta-section">
+  <div class="zone-cta-wrap reveal">
+    <div class="zone-cta-eyebrow">One protocol. There are five.</div>
+    <h2 class="zone-cta-title">MAKETZO is the discipline system day traders use to <em>stop themselves</em> before the trade they&rsquo;d regret.</h2>
+    <p class="zone-cta-body">Sessions, contracts, anchors, breathing resets, the soundtrack &mdash; all built around the moments traders get in their own way. The reset you just experienced is one of five. The system is the rest.</p>
+    <button class="zone-cta-trial" id="zoneCtaTrial" type="button" onclick="handleCheckout('price_1TUWVpJIDbUntZeXyQD23z8W',event)">Start 7-Day Free Trial &rarr;</button>
+    <p class="zone-cta-hint">No card required to start.</p>
+  </div>
+</section>
+
+<!-- ── Footer (reused from soundtrack.html) ────────────────────────── -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-col-brand">
+        <div class="footer-logo-wrap">
+          <a href="index.html" class="mk-brand-lockup mk-brand-lockup--stacked">
+            <img class="mk-brand-lockup__mark" src="assets/logo-mark.png" alt="">
+            <img class="mk-brand-lockup__wordmark" src="assets/logo-wordmark.png" alt="MAKETZO">
+          </a>
+        </div>
+        <p class="footer-tagline"><strong>Built by traders, for traders.</strong>Discipline in every session. Edge in every trade. Accountability when it counts.</p>
+      </div>
+      <div><div class="footer-col-title">Product</div><ul class="footer-links"><li><a href="system.html">The System</a></li><li><a href="journal.html">Journal</a></li><li><a href="edge.html">The Edge</a></li><li><a href="focus.html">Focus Room</a></li><li><a href="pricing.html">Pricing</a></li></ul></div>
+      <div><div class="footer-col-title">Explore</div><ul class="footer-links"><li><a href="why.html">Why MAKETZO</a></li><li><a href="soundtrack.html">Soundtrack</a></li><li><a href="contact.html">Contact Us</a></li></ul></div>
+      <div><div class="footer-col-title">Legal</div><ul class="footer-links"><li><a href="privacy.html">Privacy Policy</a></li><li><a href="terms.html">Terms of Service</a></li><li><a href="disclaimer.html">Risk Disclaimer</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">&copy; 2026 Abinic, LLC. All rights reserved. MAKETZO&reg; is a product of Abinic, LLC. maketzo.co</p>
+      <p class="footer-disclaimer">Trading securities, options, futures, forex, and cryptocurrencies involves substantial risk of loss and is not suitable for all investors. You may lose some or all of your capital. MAKETZO is a journaling, behavioral accountability, educational, and decision-support platform designed to help traders track performance, reinforce rules, and improve discipline. Neither Abinic, LLC nor MAKETZO provides investment advice, personalized financial advice, tax advice, legal advice, trade recommendations, or solicitations to buy or sell any security or financial instrument.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ── Shared: drawer toggle + scroll-reveal (matches soundtrack.html) ─
+function toggleDrawer(){const d=document.getElementById('mobileDrawer');const o=document.getElementById('mobileOverlay');const h=document.getElementById('hamburger');d.classList.toggle('open');o.classList.toggle('open');h.classList.toggle('open');document.body.style.overflow=d.classList.contains('open')?'hidden':'';}
+function closeDrawer(){document.getElementById('mobileDrawer').classList.remove('open');document.getElementById('mobileOverlay').classList.remove('open');document.getElementById('hamburger').classList.remove('open');document.body.style.overflow='';}
+const reveals=document.querySelectorAll('.reveal');
+const obs=new IntersectionObserver((entries)=>{entries.forEach((e,i)=>{if(e.isIntersecting){setTimeout(()=>e.target.classList.add('visible'),i*50);obs.unobserve(e.target);}});},{threshold:0.06});
+reveals.forEach(el=>obs.observe(el));
+window.addEventListener('scroll',()=>{document.getElementById('mainNav').style.borderBottomColor=window.scrollY>60?'rgba(201,168,76,0.25)':'rgba(201,168,76,0.12)';});
+
+// ── Zone-specific: breathing label rotation, timer, env + audio ─────
+(function(){
+  const RESET_DURATION_SEC = 180; // 3 minutes
+  const ENV_KEY = 'mk-zone-env';
+
+  // Cached refs
+  const stage = document.getElementById('zoneStage');
+  const beginBtn = document.getElementById('zoneBegin');
+  const breathingLabel = document.getElementById('zoneBreathingLabel');
+  const timerEl = document.getElementById('zoneTimer');
+  const timerText = document.getElementById('zoneTimerText');
+  const timerProgress = document.getElementById('zoneTimerProgress');
+  const commit = document.getElementById('zoneCommit');
+  const heroBg = document.getElementById('zoneHeroBg');
+  const musicEl = document.getElementById('zoneMusic');
+  const breathEl = document.getElementById('zoneBreath');
+
+  // ── Environment swap (persisted) ───────────────────────────────
+  function applyEnv(envKey){
+    if (!['beach','mountain'].includes(envKey)) envKey = 'beach';
+    heroBg.setAttribute('data-env', envKey);
+    document.querySelectorAll('#zoneEnvs .zone-env-thumb').forEach(t => {
+      const on = t.getAttribute('data-env') === envKey;
+      t.classList.toggle('is-active', on);
+      t.setAttribute('aria-checked', on ? 'true' : 'false');
+    });
+    try { localStorage.setItem(ENV_KEY, envKey); } catch(e){}
+    if (window.MKT && window.MKT.trackEvent) window.MKT.trackEvent('zone_environment_changed', { environment: envKey });
+  }
+  document.querySelectorAll('#zoneEnvs .zone-env-thumb').forEach(btn => {
+    btn.addEventListener('click', () => applyEnv(btn.getAttribute('data-env')));
+  });
+  // Restore persisted env on load
+  try { const saved = localStorage.getItem(ENV_KEY); if (saved) applyEnv(saved); } catch(e){}
+
+  // ── Audio toggle state ─────────────────────────────────────────
+  const musicBtn = document.getElementById('zoneAudioMusic');
+  const breathBtn = document.getElementById('zoneAudioBreath');
+  const silenceBtn = document.getElementById('zoneAudioSilence');
+
+  function setToggleState(btn, on){ btn.classList.toggle('is-on', on); btn.setAttribute('aria-pressed', on ? 'true' : 'false'); }
+  function isOn(btn){ return btn.classList.contains('is-on'); }
+
+  function fadeAudio(el, fromVol, toVol, durationMs, onDone){
+    if (!el) return;
+    const steps = 24;
+    const stepMs = Math.max(20, Math.floor(durationMs / steps));
+    let i = 0;
+    if (el._fadeHandle) clearInterval(el._fadeHandle);
+    el._fadeHandle = setInterval(() => {
+      i++;
+      const t = Math.min(1, i / steps);
+      el.volume = fromVol + (toVol - fromVol) * t;
+      if (t >= 1){ clearInterval(el._fadeHandle); el._fadeHandle = null; if (onDone) onDone(); }
+    }, stepMs);
+  }
+
+  function startMusic(){ const p = musicEl.play(); fadeAudio(musicEl, musicEl.volume || 0, 0.55, 1200); if (p && p.catch) p.catch(()=>{}); }
+  function stopMusic(){ fadeAudio(musicEl, musicEl.volume, 0, 800, () => { try { musicEl.pause(); } catch(e){} }); }
+  function startBreath(){ const p = breathEl.play(); fadeAudio(breathEl, breathEl.volume || 0, 0.55, 1200); if (p && p.catch) p.catch(()=>{}); }
+  function stopBreath(){ fadeAudio(breathEl, breathEl.volume, 0, 600, () => { try { breathEl.pause(); } catch(e){} }); }
+
+  musicBtn.addEventListener('click', () => {
+    const on = !isOn(musicBtn);
+    setToggleState(musicBtn, on);
+    setToggleState(silenceBtn, !on && !isOn(breathBtn));
+    if (on) startMusic(); else stopMusic();
+    if (window.MKT && window.MKT.trackEvent) window.MKT.trackEvent('zone_audio_toggle', { layer: 'music', on });
+  });
+  breathBtn.addEventListener('click', () => {
+    const on = !isOn(breathBtn);
+    setToggleState(breathBtn, on);
+    setToggleState(silenceBtn, !on && !isOn(musicBtn));
+    if (on) startBreath(); else stopBreath();
+    if (window.MKT && window.MKT.trackEvent) window.MKT.trackEvent('zone_audio_toggle', { layer: 'breath', on });
+  });
+  silenceBtn.addEventListener('click', () => {
+    const goingSilent = !isOn(silenceBtn);
+    if (goingSilent){
+      setToggleState(musicBtn, false); setToggleState(breathBtn, false); setToggleState(silenceBtn, true);
+      stopMusic(); stopBreath();
+    } else {
+      setToggleState(musicBtn, true); setToggleState(breathBtn, true); setToggleState(silenceBtn, false);
+      startMusic(); startBreath();
+    }
+    if (window.MKT && window.MKT.trackEvent) window.MKT.trackEvent('zone_audio_toggle', { layer: 'silence', on: goingSilent });
+  });
+
+  // ── Breathing label rotation (4-2-6 cycle, 12s loop) ───────────
+  let breatheHandle = null;
+  function startBreathingLabel(){
+    if (breatheHandle) clearInterval(breatheHandle);
+    const cycleStart = Date.now();
+    breatheHandle = setInterval(() => {
+      const t = ((Date.now() - cycleStart) / 1000) % 12;
+      let text;
+      if (t < 4) text = 'Inhale';
+      else if (t < 6) text = 'Hold';
+      else text = 'Exhale';
+      if (breathingLabel.textContent !== text){
+        breathingLabel.style.opacity = '0';
+        setTimeout(() => { breathingLabel.textContent = text; breathingLabel.style.opacity = '1'; }, 120);
+      }
+    }, 250);
+  }
+
+  // ── Session timer ──────────────────────────────────────────────
+  let timerHandle = null;
+  let sessionStartedMs = null;
+
+  function startSession(){
+    if (sessionStartedMs) return; // already running
+    sessionStartedMs = Date.now();
+    stage.classList.add('is-running');
+    timerEl.classList.add('is-active');
+    commit.classList.add('is-active');
+
+    // Begin audio if toggles are on
+    if (isOn(musicBtn)) startMusic();
+    if (isOn(breathBtn)) startBreath();
+
+    // CSS animation drives the ring (no JS per-tick stroke writes)
+    timerProgress.style.animation = 'none';
+    void timerProgress.getBoundingClientRect();
+    timerProgress.style.animation = `zone-timer-decay ${RESET_DURATION_SEC}s linear forwards`;
+
+    // Per-second text update
+    const tick = () => {
+      const elapsed = Math.min(RESET_DURATION_SEC, Math.floor((Date.now() - sessionStartedMs) / 1000));
+      const remaining = RESET_DURATION_SEC - elapsed;
+      const m = Math.floor(remaining / 60);
+      const s = remaining % 60;
+      timerText.textContent = m + ':' + String(s).padStart(2,'0');
+      if (remaining <= 0){
+        clearInterval(timerHandle);
+        timerText.textContent = '0:00';
+        onSessionComplete();
+      }
+    };
+    tick();
+    timerHandle = setInterval(tick, 1000);
+
+    startBreathingLabel();
+    if (window.MKT && window.MKT.trackEvent) window.MKT.trackEvent('zone_begin_click', {});
+  }
+
+  function onSessionComplete(){
+    if (window.MKT && window.MKT.trackEvent) window.MKT.trackEvent('zone_session_complete', {});
+    // Smooth-scroll to the CTA section to surface signup after completion
+    setTimeout(() => {
+      document.querySelector('.zone-cta-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 1200);
+  }
+
+  // ── Begin button ───────────────────────────────────────────────
+  beginBtn.addEventListener('click', startSession);
+
+  // ── CTA tracking ───────────────────────────────────────────────
+  document.getElementById('zoneCtaTrial').addEventListener('click', () => {
+    if (window.MKT && window.MKT.trackEvent) window.MKT.trackEvent('zone_signup_click', { source: 'zone_bottom_cta' });
+  });
+})();
+</script>
+</body>
+</html>
