@@ -385,9 +385,40 @@ window.addEventListener('scroll',()=>{document.getElementById('mainNav').style.b
     }, stepMs);
   }
 
-  function startMusic(){ const p = musicEl.play(); fadeAudio(musicEl, musicEl.volume || 0, 0.55, 1200); if (p && p.catch) p.catch(()=>{}); }
+  // Gesture-retry fallback: if play() rejects (Chrome's autoplay policy
+  // blocked it — happens on some page-reload paths even after a Begin click,
+  // or when the audio element isn't fully loaded by the time play() fires),
+  // arm a one-time pointerdown listener that retries on the next click.
+  let _audioRetryArmed = false;
+  function armAudioRetry(){
+    if (_audioRetryArmed) return;
+    _audioRetryArmed = true;
+    const retry = () => {
+      document.removeEventListener('pointerdown', retry, true);
+      _audioRetryArmed = false;
+      console.log('[zone] retrying blocked audio on user gesture');
+      if (isOn(musicBtn)  && musicEl.paused)  startMusic();
+      if (isOn(breathBtn) && breathEl.paused) startBreath();
+    };
+    document.addEventListener('pointerdown', retry, true);
+  }
+  function startMusic(){
+    const p = musicEl.play();
+    fadeAudio(musicEl, musicEl.volume || 0, 0.55, 1200);
+    if (p && p.catch) p.catch(err => {
+      console.warn('[zone] music autoplay blocked, will retry on next click', err.name);
+      armAudioRetry();
+    });
+  }
   function stopMusic(){ fadeAudio(musicEl, musicEl.volume, 0, 800, () => { try { musicEl.pause(); } catch(e){} }); }
-  function startBreath(){ const p = breathEl.play(); fadeAudio(breathEl, breathEl.volume || 0, 0.55, 1200); if (p && p.catch) p.catch(()=>{}); }
+  function startBreath(){
+    const p = breathEl.play();
+    fadeAudio(breathEl, breathEl.volume || 0, 0.55, 1200);
+    if (p && p.catch) p.catch(err => {
+      console.warn('[zone] breath autoplay blocked, will retry on next click', err.name);
+      armAudioRetry();
+    });
+  }
   function stopBreath(){ fadeAudio(breathEl, breathEl.volume, 0, 600, () => { try { breathEl.pause(); } catch(e){} }); }
 
   musicBtn.addEventListener('click', () => {
