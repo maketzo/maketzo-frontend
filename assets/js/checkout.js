@@ -63,8 +63,12 @@
       if (!me) return;
       const btns = document.querySelectorAll('a.nav-login-btn');
       for (let i = 0; i < btns.length; i++) {
-        btns[i].textContent = 'Account';
-        btns[i].setAttribute('href', '/app#/account');
+        // "LAUNCH" pairs with "Start Free Trial" as a sister-verb (both
+        // ignition verbs). "Account" was generic-SaaS / unclear.
+        // Source-uppercased per CLAUDE.md §3: when CSS text-transform:uppercase
+        // applies, the HTML source matches for source/visual parity.
+        btns[i].textContent = 'LAUNCH';
+        btns[i].setAttribute('href', '/app');
       }
     });
   }
@@ -104,7 +108,7 @@
         '<p style="margin:0 0 22px 0;font-size:14px;line-height:1.55;color:var(--mk-text-secondary,#9aa1ad);">Continue the trial on this account, or sign out and start a new one.</p>' +
         '<div style="display:flex;flex-direction:column;gap:10px;">' +
           '<button type="button" data-act="upgrade" style="appearance:none;border:none;cursor:pointer;background:var(--mk-gold,#c9a961);color:#0a0c12;font-weight:600;font-size:14px;padding:12px 16px;border-radius:8px;font-family:inherit;">Continue as ' + emailEsc + '</button>' +
-          '<button type="button" data-act="signout" style="appearance:none;cursor:pointer;background:transparent;color:var(--mk-text-primary,#e8eaee);border:1px solid var(--mk-border,rgba(255,255,255,0.14));font-weight:600;font-size:14px;padding:12px 16px;border-radius:8px;font-family:inherit;">Sign Out &amp; Sign Up as New</button>' +
+          '<button type="button" data-act="signout" style="appearance:none;cursor:pointer;background:transparent;color:var(--mk-text-primary,#e8eaee);border:1px solid var(--mk-border,rgba(255,255,255,0.14));font-weight:600;font-size:14px;padding:12px 16px;border-radius:8px;font-family:inherit;">Sign out &amp; sign up as new</button>' +
           '<button type="button" data-act="cancel" style="appearance:none;cursor:pointer;background:transparent;color:var(--mk-text-secondary,#9aa1ad);border:none;font-size:13px;padding:8px;font-family:inherit;margin-top:4px;">Cancel</button>' +
         '</div>';
 
