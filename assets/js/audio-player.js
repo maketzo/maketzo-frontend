@@ -1,18 +1,25 @@
 /*!
- * MAKETZO Audio Player + Share — v4
- * Vanilla JS, no deps. Two coordinated modules in one file:
+ * MAKETZO Audio Player + Share — v9
+ * Vanilla JS, no deps. Three coordinated modules in one file:
  *   1. Player           — single-track and multi-track HTML5 audio player,
  *                         deep-link parser (?track=slug&t=42), per-row share
- *                         trigger synthesis on /soundtrack, track lifecycle
- *                         events for analytics.
+ *                         trigger synthesis, track lifecycle analytics events.
  *   2. Share widget     — branded dropdown shared by album-level and per-track
  *                         triggers. Per-trigger payload (title/text/url) is
- *                         resolved at click time so one menu serves both.
+ *                         resolved at click time from data-share-* attributes.
+ *   3. API bootstrap    — for players with data-tracks-from="api" + a
+ *                         data-surface attribute (e.g. "soundtrack-page"),
+ *                         fetches the track list from /soundtrack?surface=...
+ *                         and injects <li> items into the existing <ol>.
+ *                         Replaces the prior hardcoded TRACK_COPY + per-page
+ *                         <li> source-of-truth with the admin DB.
  *
- * Analytics goes through window.MaketzoAnalytics (provided by mkt-analytics.js,
- * which dual-fires to PostHog + backend /analytics/event). The legacy direct
- * dispatcher was removed in PR2 when the unified wrapper landed.
+ * Analytics dual-fires to PostHog + backend /analytics/event via
+ * window.MaketzoAnalytics (from mkt-analytics.js, must load first).
  */
+
+// Single shared SVG keeps every share button visually identical.
+var MK_SHARE_ICON_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/></svg>';
 
 // ═════════════════════════════════════════════════════════════════════════
 // 1. Player — multi-track HTML5 audio + deep-link + per-row share synth
@@ -21,10 +28,7 @@
   "use strict";
 
   var activePlayer = null;
-  // Tracks which player owns the active deep-link (only one expected per page).
   var deepLinkedPlayer = null;
-  // Reused share-icon SVG for per-row triggers (kept here as a single source).
-  var SHARE_ICON_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/></svg>';
 
   function formatTime(seconds) {
     if (!isFinite(seconds) || seconds < 0) return "0:00";
@@ -35,7 +39,6 @@
 
   function trackIdFromLi(li) { return li.getAttribute("data-track-id") || null; }
 
-  // Parses ?track=slug&t=42 once, used by the soundtrack player only.
   function readDeepLink() {
     try {
       var p = new URLSearchParams(window.location.search);
@@ -49,6 +52,9 @@
   }
 
   function initPlayer(root) {
+    if (root._mkInitialized) return;
+    root._mkInitialized = true;
+
     var audio = root.querySelector("audio");
     var playBtn = root.querySelector(".mk-audio-player__play");
     var bar = root.querySelector(".mk-audio-player__bar");
@@ -61,7 +67,6 @@
 
     if (!audio || !playBtn || !bar) return;
 
-    // Per-(player, track) one-shot guards for analytics quartile events.
     var fired = {};
     function firedKey(slug, k) { return slug + ":" + k; }
     function markFired(slug, k) { fired[firedKey(slug, k)] = true; }
@@ -99,14 +104,12 @@
       return li ? trackIdFromLi(li) : null;
     }
 
-    // ── Public API exposed on the player for the share module to query ──
     root._maketzoPlayer = {
       getActiveSlug: getActiveSlug,
       getCurrentTime: function () { return audio.currentTime || 0; },
       isPlaying: function () { return !audio.paused; }
     };
 
-    // ── Core controls ──────────────────────────────────────────────────
     playBtn.addEventListener("click", function () {
       if (audio.paused) {
         pauseOthers();
@@ -118,7 +121,6 @@
 
     audio.addEventListener("play", function () {
       root.classList.add("is-playing");
-      // Drop the deep-link pulse the moment the user actually engages.
       root.classList.remove("is-deeplinked");
       var slug = getActiveSlug();
       if (slug && !alreadyFired(slug, "play")) {
@@ -160,7 +162,6 @@
 
       var slug = getActiveSlug();
       if (!slug || !window.MaketzoAnalytics) return;
-      // Quartile events: one-shot per (slug, quartile).
       if (pct >= 25 && !alreadyFired(slug, "q25")) {
         markFired(slug, "q25");
         window.MaketzoAnalytics.send("track_25", { track_id: slug });
@@ -188,9 +189,6 @@
 
     items.forEach(function (li) {
       li.addEventListener("click", function (e) {
-        // The per-row share trigger lives inside the li; let its own handler
-        // own the click (and the share module's stopPropagation prevents this
-        // listener from firing). Belt-and-braces guard for any descendant.
         if (e.target && e.target.closest(".mk-audio-player__share-trigger")) return;
         if (e.target && e.target.closest(".mk-share")) return;
         var wasActive = li.classList.contains("is-active");
@@ -212,29 +210,19 @@
       }
     });
 
-    // ── Per-row share synthesis: wrap each in-row trigger in a .mk-share
-    //    so the existing share widget init can bind it. We do this BEFORE
-    //    the share-widget IIFE's DOMContentLoaded listener runs, so the new
-    //    .mk-share elements get picked up in the same init pass.
     items.forEach(function (li) {
       var trigger = li.querySelector(".mk-audio-player__share-trigger");
       if (!trigger || trigger._mkWrapped) return;
       var slug = trackIdFromLi(li);
       if (!slug) return;
 
-      // Move the trigger inside a freshly created .mk-share wrapper.
       var wrap = document.createElement("div");
       wrap.className = "mk-share mk-audio-player__share";
       wrap.dataset.scope = "track";
-      // Carry the track slug on the wrapper too so share code can find it.
       wrap.dataset.trackId = slug;
-      // The wrapper takes the trigger's slot in the grid; insert and move.
       li.insertBefore(wrap, trigger);
       wrap.appendChild(trigger);
 
-      // Each wrapper gets its own menu (portaled to body by share init).
-      // The platform buttons are identical to the album-level menu; the
-      // payload is computed per-click from the trigger's data attributes.
       var menu = document.createElement("div");
       menu.className = "mk-share__menu mk-share__menu--track";
       menu.setAttribute("role", "menu");
@@ -245,12 +233,10 @@
       trigger._mkWrapped = true;
     });
 
-    // ── Deep-link handling (only meaningful when tracks have slugs) ────
     var hasSlugs = items.some(function (li) { return !!trackIdFromLi(li); });
     if (hasSlugs && !deepLinkedPlayer) {
       var dl = readDeepLink();
       if (dl) {
-        // Find the li whose slug matches.
         var target = null;
         for (var i = 0; i < items.length; i++) {
           if (trackIdFromLi(items[i]) === dl.slug) { target = items[i]; break; }
@@ -258,7 +244,6 @@
         if (target) {
           deepLinkedPlayer = root;
           loadTrack(target);
-          // Seek once metadata is loaded (currentTime needs duration to be set).
           if (dl.t > 0) {
             var onMeta = function () {
               try {
@@ -273,10 +258,8 @@
             };
             audio.addEventListener("loadedmetadata", onMeta);
           }
-          // Visual pulse on the play button — withdraw after the animation.
           root.classList.add("is-deeplinked");
           setTimeout(function () { root.classList.remove("is-deeplinked"); }, 4000);
-          // Scroll the player into view (deferred so layout has settled).
           requestAnimationFrame(function () {
             try { root.scrollIntoView({ behavior: "smooth", block: "center" }); } catch (e) { root.scrollIntoView(); }
           });
@@ -291,9 +274,6 @@
     }
   }
 
-  // Per-row share menus mirror the existing 7-platform set used on /focus
-  // and the album-level share. Kept here (rather than cloned from DOM) so
-  // every track always gets a complete menu even if the page omits one.
   function renderShareMenuItems() {
     return '' +
       '<button class="mk-share__item" type="button" data-platform="email" role="menuitem">' +
@@ -319,9 +299,15 @@
       '<span>Copy link</span></button>';
   }
 
+  // Static players get initialized at DOMContentLoaded. API-driven players
+  // (data-tracks-from="api") are skipped here — the bootstrap module below
+  // initializes them after the /soundtrack fetch resolves.
   function initAllPlayers() {
     var players = document.querySelectorAll(".mk-audio-player");
-    players.forEach(initPlayer);
+    players.forEach(function (p) {
+      if (p.getAttribute("data-tracks-from") === "api") return;
+      initPlayer(p);
+    });
   }
 
   if (document.readyState === "loading") {
@@ -329,92 +315,30 @@
   } else {
     initAllPlayers();
   }
+
+  // Public — the bootstrap below needs to call initPlayer after API injection.
+  window.__mkInitPlayer = initPlayer;
 })();
 
 
 // ═════════════════════════════════════════════════════════════════════════
-// 3. Share widget — branded dropdown shared by album and per-track triggers.
-//    Per-trigger payload (title/text/url) is resolved at click time from
-//    data-share-source. Track triggers also support an optional "Share at
-//    0:42" toggle when the player is currently mid-play on that same track.
+// 2. Share widget — branded dropdown shared by album and per-track triggers.
 // ═════════════════════════════════════════════════════════════════════════
 (function () {
   "use strict";
 
   // Album-level default — used by the page-bottom share button at
-  // soundtrack.html and any other .mk-share without data-share-source="track".
+  // soundtrack.html. Per-track copy lives ENTIRELY in data-share-* attributes
+  // on each trigger (populated by the API bootstrap or by inline HTML for
+  // non-API players). The hardcoded TRACK_COPY / TRACK_EMAIL_SUBJECTS maps
+  // that lived here through v8 are gone — the admin DB is now the single
+  // source of truth for marketing share copy.
   var ALBUM_PAYLOAD = {
     title: "Earn the Right — MAKETZO",
     text:  "There's a trading album now. 'Earn the Right' by MAKETZO — songs for the bell, the wait, the win, and the loss. Each one too accurate.",
     url:   "https://maketzo.co/soundtrack"
   };
-
-  // Per-track copy lives on the client (no server roundtrip). One entry per
-  // slug. Keep titles/text under ~140 chars so X doesn't trim. The three
-  // "Redux" entries are the same song reinterpreted; share text leans on the
-  // genre angle since the song itself is shared by the original.
-  var TRACK_COPY = {
-    tuition: {
-      title: "I Paid Tuition to the Market — MAKETZO",
-      text:  "Every trader has paid tuition to the market. This song is painfully relatable."
-    },
-    earn: {
-      title: "Earn the Right — MAKETZO",
-      text:  "The market rewards patience, discipline, and selective aggression."
-    },
-    bossa: {
-      title: "Earn the Right (Bossa Nova Redux) — MAKETZO",
-      text:  "Same lesson, bossa nova. Try not to dance through your stop loss."
-    },
-    jazz: {
-      title: "Earn the Right (Jazz Lounge Redux) — MAKETZO",
-      text:  "Earn the Right, after midnight. Same discipline, smoky bar lighting."
-    },
-    goth: {
-      title: "Earn the Right (Goth Redux) — MAKETZO",
-      text:  "For when paying tuition feels like a funeral. Same song, darker."
-    },
-    hairband: {
-      title: "Earn the Right (80s Hair Band Redux) — MAKETZO",
-      text:  "Discipline, with a guitar solo. Stadium-rock cope for blown trades."
-    },
-    wait: {
-      title: "Wait for Acceptance — MAKETZO",
-      text:  "The hardest trade is the one you didn't take. A song about patience."
-    },
-    stronger: {
-      title: "Stronger Than the Red — MAKETZO",
-      text:  "Red is just data. This song is about being stronger than it."
-    },
-    cushion: {
-      title: "Build a Cushion (Broadway) — MAKETZO",
-      text:  "A Broadway number about the only edge that matters: a bigger cushion."
-    },
-    focus: {
-      title: "Deep Focus Threshold — MAKETZO",
-      text:  "A binaural focus track designed to help traders stay locked in during live trading."
-    },
-    "focus-redux": {
-      title: "Deep Focus Threshold (Redux) — MAKETZO",
-      text:  "Same binaural threshold, deeper drift. Engineered for the long session."
-    }
-  };
-
-  // Email-subject lines are platform-specific because mailto: lets us set one.
   var ALBUM_EMAIL_SUBJECT = "There's a trading album. Yes, really.";
-  var TRACK_EMAIL_SUBJECTS = {
-    tuition:       "Every trader has paid tuition",
-    earn:          "Earn the right — listen",
-    bossa:         "Earn the Right, but it's bossa nova",
-    jazz:          "Earn the Right, after midnight",
-    goth:          "Earn the Right, but it's a funeral",
-    hairband:      "Earn the Right, but it's a power ballad",
-    wait:          "A song about waiting for the right trade",
-    stronger:      "A song about being stronger than red",
-    cushion:       "A Broadway song about your account cushion",
-    focus:         "Trading focus track — binaural",
-    "focus-redux": "Deep Focus, deeper take"
-  };
 
   var PLATFORM_URLS = {
     email:    function (t, u, subject) { return "mailto:?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(t + "\n\n" + u); },
@@ -430,10 +354,6 @@
   var MENU_GAP = 10;
   var VIEWPORT_PAD = 16;
 
-  // Origin to use when building track-share URLs. On prod this is
-  // https://maketzo.co; on dev/staging it's whatever the visitor is on (basic
-  // auth gates dev/staging so no risk of those leaking publicly). Using
-  // location.origin keeps shared URLs accurate for screenshots / QA.
   function shareOrigin() {
     if (window.location.protocol === "file:" || !window.location.origin) {
       return "https://maketzo.co";
@@ -441,36 +361,6 @@
     return window.location.origin;
   }
 
-  function trackPayload(slug, includeTimestamp, ts) {
-    var copy = TRACK_COPY[slug];
-    if (!copy) {
-      // Unknown slug — fall back to album payload so the share doesn't crash.
-      return {
-        title: ALBUM_PAYLOAD.title,
-        text: ALBUM_PAYLOAD.text,
-        url: ALBUM_PAYLOAD.url,
-        subject: ALBUM_EMAIL_SUBJECT,
-        track_id: null,
-        timestamp_sec: null
-      };
-    }
-    var url = shareOrigin() + "/soundtrack?track=" + encodeURIComponent(slug);
-    if (includeTimestamp && typeof ts === "number" && ts >= 1) {
-      url += "&t=" + Math.floor(ts);
-    }
-    return {
-      title: copy.title,
-      text: copy.text,
-      url: url,
-      subject: TRACK_EMAIL_SUBJECTS[slug] || ("Listen: " + copy.title),
-      track_id: slug,
-      timestamp_sec: includeTimestamp ? Math.floor(ts || 0) : null
-    };
-  }
-
-  // Walks up from the trigger to find the player root, then asks the
-  // player's exposed API for its current track + playhead. Returns null
-  // when not applicable (album-level trigger, or trigger outside a player).
   function getPlayerStateForTrigger(trigger) {
     var player = trigger.closest && trigger.closest(".mk-audio-player");
     if (!player || !player._maketzoPlayer) return null;
@@ -481,39 +371,42 @@
   }
 
   function getPayloadForTrigger(trigger, includeTimestamp) {
-    // Generic data-attr-driven path: any consumer (blog posts, future
-    // referral surfaces, anything that isn't a soundtrack track) can
-    // populate data-share-title / data-share-url / data-share-text /
-    // data-share-subject on the trigger and get tailored share copy
-    // without touching this file. Per
-    // memory/feedback-share-copy-references-container — copy references
-    // the container, never an item — these attrs are the container's
-    // self-description.
+    // Every share trigger (per-track or otherwise) carries its own copy via
+    // data-share-* attributes. Per-track triggers also get a timestamp
+    // appended to their URL when the player is mid-play and the toggle is on.
     var dataTitle   = trigger.getAttribute("data-share-title");
     var dataUrl     = trigger.getAttribute("data-share-url");
     var dataText    = trigger.getAttribute("data-share-text");
     var dataSubject = trigger.getAttribute("data-share-subject");
+    var slug        = trigger.getAttribute("data-track-id");
+    var source      = trigger.getAttribute("data-share-source") || "";
+
+    // Apply timestamp append for live-playing per-track triggers.
+    var finalUrl = dataUrl || ALBUM_PAYLOAD.url;
+    if (source === "track" && includeTimestamp) {
+      var state = getPlayerStateForTrigger(trigger);
+      if (state && state.activeSlug === slug && state.currentTime > 1) {
+        var ts = Math.floor(state.currentTime);
+        finalUrl += (finalUrl.indexOf("?") >= 0 ? "&" : "?") + "t=" + ts;
+      }
+    }
+
     if (dataTitle || dataUrl || dataText) {
       return {
         title:   dataTitle   || ALBUM_PAYLOAD.title,
         text:    dataText    || dataTitle || ALBUM_PAYLOAD.text,
-        url:     dataUrl     || ALBUM_PAYLOAD.url,
+        url:     finalUrl,
         subject: dataSubject || dataTitle || ALBUM_EMAIL_SUBJECT,
-        track_id: null,
-        timestamp_sec: null
+        track_id: slug || null,
+        timestamp_sec: includeTimestamp && source === "track"
+          ? (function () {
+              var st = getPlayerStateForTrigger(trigger);
+              return st && st.activeSlug === slug ? Math.floor(st.currentTime) : null;
+            })()
+          : null
       };
     }
-
-    var source = trigger.getAttribute("data-share-source") || "";
-    if (source === "track") {
-      var slug = trigger.getAttribute("data-track-id");
-      var state = getPlayerStateForTrigger(trigger);
-      // Timestamp is only meaningful when (a) the trigger's track IS the one
-      // currently selected and (b) the playhead is non-zero. Otherwise we
-      // share the bare /soundtrack?track=<slug> URL regardless of the toggle.
-      var useTs = !!(includeTimestamp && state && state.activeSlug === slug && state.currentTime > 1);
-      return trackPayload(slug, useTs, state ? state.currentTime : 0);
-    }
+    // Album-level trigger with no overrides.
     return {
       title: ALBUM_PAYLOAD.title,
       text: ALBUM_PAYLOAD.text,
@@ -531,13 +424,8 @@
     var menuHeight = menuRect.height || 280;
     var vw = window.innerWidth;
     var vh = window.innerHeight;
-    // Horizontal: center under trigger, then clamp into the viewport.
     var left = rect.left + rect.width / 2 - menuWidth / 2;
     left = Math.max(VIEWPORT_PAD, Math.min(left, vw - menuWidth - VIEWPORT_PAD));
-    // Vertical: prefer below trigger; if it overflows the bottom, flip above.
-    // If neither side fits the menu fully (rare on small viewports), pin to
-    // the side that gives more room and we'll clamp the bottom so nothing
-    // clips off-screen.
     var below = rect.bottom + MENU_GAP;
     var aboveTop = rect.top - menuHeight - MENU_GAP;
     var top;
@@ -546,7 +434,6 @@
     } else if (aboveTop >= VIEWPORT_PAD) {
       top = aboveTop;
     } else {
-      // Neither full fit — anchor wherever there's more space.
       var spaceBelow = vh - rect.bottom;
       var spaceAbove = rect.top;
       if (spaceBelow >= spaceAbove) {
@@ -555,11 +442,6 @@
         top = Math.max(VIEWPORT_PAD, aboveTop);
       }
     }
-    // Final guard: clamp the menu's bottom edge inside the viewport so it
-    // never clips off-screen. If the menu is taller than the viewport-minus-
-    // padding, the only fix is to scroll the trigger up — but that's a
-    // surface issue, not a positioning issue, and won't happen in practice
-    // since our menu is ~270px tall and all phones have at least ~600px.
     if (top + menuHeight > vh - VIEWPORT_PAD) {
       top = Math.max(VIEWPORT_PAD, vh - menuHeight - VIEWPORT_PAD);
     }
@@ -574,7 +456,6 @@
     if (trigger) trigger.setAttribute("aria-expanded", "false");
     if (menu) {
       menu.hidden = true;
-      // Clean up any injected timestamp toggle so the next open recomputes it.
       var ts = menu.querySelector(".mk-share__timestamp");
       if (ts) ts.remove();
     }
@@ -582,8 +463,6 @@
   }
 
   function showToast(root) {
-    // Toast is portaled at the page level (not inside the per-row widget),
-    // so we look for it on the document if the root doesn't have one.
     var toast = root.querySelector(".mk-share-toast") || document.querySelector(".mk-share-toast");
     if (!toast) return;
     toast.hidden = false;
@@ -596,15 +475,10 @@
 
   function handlePlatform(platform, root, trigger) {
     var menu = root._mkMenu;
-    // If the menu has a timestamp toggle and it's checked, include the
-    // current playhead in the share URL. The toggle only exists for track
-    // triggers when the playhead is non-zero on that track.
     var tsBox = menu ? menu.querySelector(".mk-share__timestamp-input") : null;
     var includeTimestamp = !!(tsBox && tsBox.checked);
     var payload = getPayloadForTrigger(trigger, includeTimestamp);
 
-    // Analytics — fire BEFORE the share opens (some platforms navigate the
-    // tab and may discard pending requests; `keepalive: true` covers it).
     if (window.MaketzoAnalytics) {
       window.MaketzoAnalytics.send("share_action", {
         track_id: payload.track_id,
@@ -640,9 +514,6 @@
     }
   }
 
-  // For per-track triggers, prepend a "Share at M:SS" toggle row to the menu
-  // when the trigger's track is the currently-playing one AND playhead > 1s.
-  // Done at open time so the timestamp shown is fresh, and pruned at close.
   function maybeAddTimestampToggle(trigger, menu) {
     if (trigger.getAttribute("data-share-source") !== "track") return;
     var slug = trigger.getAttribute("data-track-id");
@@ -659,18 +530,17 @@
     row.className = "mk-share__timestamp";
     row.innerHTML = '<input type="checkbox" class="mk-share__timestamp-input" checked>' +
                     '<span class="mk-share__timestamp-label">' + label + '</span>';
-    // Stop the menu's delegated click handler from treating this as a platform pick.
     row.addEventListener("click", function (e) { e.stopPropagation(); });
     menu.insertBefore(row, menu.firstChild);
   }
 
   function initShareWidget(root) {
+    if (root._mkShareInitialized) return;
     var trigger = root.querySelector(".mk-share__trigger, .mk-audio-player__share-trigger");
     var menu = root.querySelector(".mk-share__menu");
     if (!trigger || !menu) return;
+    root._mkShareInitialized = true;
 
-    // Portal the menu to <body> so no ancestor with transform/filter/contain
-    // can act as the containing block for position:fixed. Known CSS gotcha.
     document.body.appendChild(menu);
     root._mkMenu = menu;
 
@@ -688,8 +558,6 @@
           var slug = trigger.getAttribute("data-track-id") || null;
           window.MaketzoAnalytics.send("share_open", {
             track_id: slug,
-            // Pass current playhead even on open so even un-converted opens
-            // tell us how deep into the track the share intent appeared.
             timestamp_sec: (function () {
               var st = getPlayerStateForTrigger(trigger);
               return st ? st.currentTime : null;
@@ -727,5 +595,150 @@
     document.addEventListener("DOMContentLoaded", init);
   } else {
     init();
+  }
+
+  // Public — the API bootstrap calls this on newly-injected per-row triggers.
+  window.__mkInitShareWidgetsIn = function (root) {
+    if (!root) return;
+    var widgets = root.querySelectorAll(".mk-share");
+    widgets.forEach(initShareWidget);
+  };
+})();
+
+
+// ═════════════════════════════════════════════════════════════════════════
+// 3. API bootstrap — for players with data-tracks-from="api" + data-surface.
+//   Fetches /soundtrack?surface=<surface>, builds <li> items into the
+//   existing <ol class="mk-audio-player__list">, then initializes the
+//   player + share widgets. Replaces the prior hardcoded li source-of-truth.
+//   Marketing share copy comes from the per-track marketingShare* fields.
+//   On fetch failure, falls back to a <noscript> sibling if present so the
+//   page still functions (search-engine + JS-disabled fallback continues
+//   to work as a happy side-effect of the same noscript block).
+// ═════════════════════════════════════════════════════════════════════════
+(function () {
+  "use strict";
+
+  function deriveApiBase() {
+    var h0 = window.location.hostname;
+    var h = h0.indexOf("www.") === 0 ? h0.slice(4) : h0;
+    if (h === "localhost" || h.indexOf("127.") === 0) return "http://localhost:3000";
+    if (h === "maketzo.co") return "https://api.maketzo.co";
+    var parts = h.split(".");
+    if (parts.length >= 3) return "https://" + parts[0] + "-api." + parts.slice(1).join(".");
+    return "https://api." + h;
+  }
+
+  function escapeHtml(s) {
+    return String(s == null ? "" : s)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
+  }
+  function escapeAttr(s) {
+    return escapeHtml(s).replace(/"/g, "&quot;");
+  }
+
+  // Build one <li> row from an API track object. Marketing surfaces use the
+  // marketingShare* fields verbatim. Each share trigger gets the full copy
+  // payload as data-share-* attributes so the share widget never needs to
+  // look up anything from a client-side map.
+  function buildItemHtml(t, idx, fallbackEyebrow) {
+    var num = String(idx + 1);
+    if (num.length < 2) num = "0" + num;
+    var isActive = idx === 0;
+    var slug = t.slug || "";
+    var name = t.name || "";
+    var eyebrow = fallbackEyebrow || "MAKETZO · Earn the Right";
+    var shareUrl = window.location.origin + "/soundtrack?track=" + encodeURIComponent(slug);
+    var shareTitle = t.marketingShareTitle || (name + " — MAKETZO");
+    var shareText = t.marketingShareText || shareTitle;
+    var shareSubject = t.marketingShareSubject || ("Listen: " + name);
+
+    return ''
+      + '<li class="mk-audio-player__item' + (isActive ? ' is-active' : '') + '" '
+      +     'data-track-id="' + escapeAttr(slug) + '" '
+      +     'data-src="' + escapeAttr(t.src || '') + '" '
+      +     'data-title="' + escapeAttr(name) + '" '
+      +     'data-eyebrow="' + escapeAttr(eyebrow) + '">'
+      +   '<span class="mk-audio-player__item-num">' + num + '</span>'
+      +   '<span class="mk-audio-player__item-title">' + escapeHtml(name) + '</span>'
+      +   '<span class="mk-audio-player__item-dur"></span>'
+      +   '<button class="mk-audio-player__share-trigger" type="button" '
+      +           'data-share-source="track" '
+      +           'data-track-id="' + escapeAttr(slug) + '" '
+      +           'data-share-title="' + escapeAttr(shareTitle) + '" '
+      +           'data-share-text="' + escapeAttr(shareText) + '" '
+      +           'data-share-subject="' + escapeAttr(shareSubject) + '" '
+      +           'data-share-url="' + escapeAttr(shareUrl) + '" '
+      +           'data-tooltip="Share to friend" '
+      +           'aria-label="Share ' + escapeAttr(name) + '" '
+      +           'aria-expanded="false">'
+      +     MK_SHARE_ICON_SVG
+      +   '</button>'
+      + '</li>';
+  }
+
+  function bootstrapPlayer(player) {
+    var surface = player.getAttribute("data-surface") || "soundtrack-page";
+    var listEl = player.querySelector(".mk-audio-player__list");
+    if (!listEl) return;
+
+    // The hardcoded <li> items in the source HTML are the canonical fallback
+    // (SEO-visible, JS-disabled-friendly, fetch-failure-safe). Save them now
+    // so we can restore on failure. Hide them with a loading placeholder
+    // during the in-flight fetch — usually <500ms on prod.
+    var fallbackHtml = listEl.innerHTML;
+    listEl.innerHTML = '<li class="mk-audio-player__item mk-audio-player__item--loading"><span class="mk-audio-player__item-num">--</span><span class="mk-audio-player__item-title">Loading tracks&hellip;</span></li>';
+
+    var apiBase = deriveApiBase();
+    var url = apiBase + "/soundtrack?surface=" + encodeURIComponent(surface);
+
+    fetch(url, { credentials: "omit" })
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        var tracks = (data && data.tracks) || [];
+        if (!tracks.length) {
+          // Empty API response — restore the hardcoded fallback rather than
+          // showing an empty list. Acceptable degradation when the admin has
+          // accidentally unpublished all tracks for this surface.
+          listEl.innerHTML = fallbackHtml;
+          return;
+        }
+        var eyebrow = player.getAttribute("data-eyebrow") || "MAKETZO · Earn the Right";
+        listEl.innerHTML = tracks.map(function (t, i) {
+          return buildItemHtml(t, i, eyebrow);
+        }).join("");
+
+        // Sync the audio + title + eyebrow elements with the first track so
+        // the player isn't briefly showing stale hero copy before a click.
+        var audio = player.querySelector("audio");
+        var titleEl = player.querySelector(".mk-audio-player__title");
+        var eyebrowEl = player.querySelector(".mk-audio-player__eyebrow");
+        if (audio && tracks[0].src) audio.src = tracks[0].src;
+        if (titleEl && tracks[0].name) titleEl.textContent = tracks[0].name;
+        if (eyebrowEl) eyebrowEl.textContent = eyebrow;
+      })
+      .catch(function (err) {
+        if (window.console) console.warn("[audio-player] /soundtrack fetch failed", err);
+        listEl.innerHTML = fallbackHtml;
+      })
+      .then(function () {
+        // Wire up the now-populated DOM. initPlayer creates per-row .mk-share
+        // wrappers; the share-widget initializer then binds click handlers.
+        if (window.__mkInitPlayer) window.__mkInitPlayer(player);
+        if (window.__mkInitShareWidgetsIn) window.__mkInitShareWidgetsIn(player);
+      });
+  }
+
+  function bootstrapAll() {
+    var players = document.querySelectorAll('.mk-audio-player[data-tracks-from="api"]');
+    players.forEach(bootstrapPlayer);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", bootstrapAll);
+  } else {
+    bootstrapAll();
   }
 })();

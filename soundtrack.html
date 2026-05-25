@@ -23,11 +23,11 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/tokens.css">
 <link rel="stylesheet" href="assets/css/components.css">
-<link rel="stylesheet" href="assets/css/audio-player.css?v=8">
+<link rel="stylesheet" href="assets/css/audio-player.css?v=9">
 <script src="assets/js/mkt-analytics.js?v=4" defer></script>
 <script src="assets/js/mkt-consent.js?v=1" defer></script>
 <script src="assets/js/checkout.js?v=7" defer></script>
-<script src="assets/js/audio-player.js?v=8" defer></script>
+<script src="assets/js/audio-player.js?v=9" defer></script>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
@@ -268,7 +268,7 @@ hr.mk-rule-gold, hr.mk-rule-gold--bold { margin: 0 auto; max-width: 1180px; }
 <!-- ─── PLAYER ───────────────────────────────────────────────────── -->
 <section class="soundtrack-player-section">
   <div class="soundtrack-player-wrap reveal">
-    <div class="mk-audio-player">
+    <div class="mk-audio-player" data-tracks-from="api" data-surface="soundtrack-page">
       <audio preload="metadata">
         <source src="assets/music/track-tuition.mp3" type="audio/mpeg">
       </audio>
