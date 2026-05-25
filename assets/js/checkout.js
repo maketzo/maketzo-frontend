@@ -56,20 +56,60 @@
 
   // ── Auth-aware nav swap ───────────────────────────────────────────────
   // Static "Log In" link in every marketing-page nav misleads logged-in
-  // users (they think they're signed out). Three coordinated changes on
-  // signed-in detection:
+  // users. Coordinated changes on signed-in detection:
   //   1. "Log In" -> "LAUNCH" with href /app.
-  //   2. Treatment swap: LAUNCH adopts the gold `nav-cta` styling;
-  //      "Start Free Trial" drops to outlined `nav-login-btn` styling.
+  //   2. Treatment swap (via injected CSS scoped to .nav-signedin):
+  //      LAUNCH adopts gold; "Start Free Trial" drops to outlined.
   //      Principle: gold = "the user's primary action right now."
-  //      Signed-out primary = convert (Start Free Trial). Signed-in
-  //      primary = use the product (LAUNCH). Gold migrates with meaning.
+  //      Gold migrates with meaning; only one filled gold button exists.
   //   3. DOM reorder: LAUNCH's <li> moves AFTER the trial button's <li>
   //      so the gold-rightmost eye anchor is preserved across auth states.
+  //
+  // The injected CSS approach replaces an earlier failed attempt that
+  // swapped class names (nav-login-btn <-> nav-cta). That broke because:
+  //   (a) `.nav-links > li > a:not(.nav-login-btn)` clobbered LAUNCH's
+  //       text color when nav-login-btn was removed;
+  //   (b) `.nav-login-btn` was authored assuming the `<a>` element;
+  //       applied to the `<button>` element, browser-default styles
+  //       leaked through.
+  // Keeping the original classes and overriding via a marker scope is
+  // symmetric for both element types and high-specificity-safe.
+  //
   // See memory/feedback-checkout-must-disambiguate-logged-in-user.md.
+  const NAV_SIGNEDIN_CSS =
+    '.nav-links.nav-signedin > li > a.nav-login-btn{' +
+      'background:var(--mk-gold-gradient);color:var(--mk-text-on-gold);' +
+      'border:1px solid rgba(0,0,0,.18);justify-content:center;' +
+      'white-space:nowrap;text-decoration:none;' +
+    '}' +
+    '.nav-links.nav-signedin > li > a.nav-login-btn:hover{' +
+      'background:var(--mk-gold-gradient);color:var(--mk-text-on-gold);' +
+      'border-color:rgba(0,0,0,.18);transform:translateY(-1px);' +
+      'box-shadow:var(--mk-glow-gold-sm);' +
+    '}' +
+    '.nav-links.nav-signedin > li > button.nav-cta{' +
+      'background:transparent;color:var(--mk-text-secondary);' +
+      'border:1px solid var(--mk-smoke-700);box-shadow:none;transform:none;' +
+    '}' +
+    '.nav-links.nav-signedin > li > button.nav-cta:hover{' +
+      'background:rgba(255,255,255,.03);color:var(--mk-text-primary);' +
+      'border-color:var(--mk-smoke-600);transform:none;box-shadow:none;' +
+    '}';
+
+  let _navCssInjected = false;
+  function ensureNavCss() {
+    if (_navCssInjected) return;
+    _navCssInjected = true;
+    const s = document.createElement('style');
+    s.id = 'mkt-nav-signedin';
+    s.textContent = NAV_SIGNEDIN_CSS;
+    document.head.appendChild(s);
+  }
+
   function syncNav() {
     getMe().then(function (me) {
       if (!me) return;
+      ensureNavCss();
       const launches = document.querySelectorAll('a.nav-login-btn');
       for (let i = 0; i < launches.length; i++) {
         const launchA = launches[i];
@@ -79,19 +119,15 @@
         launchA.setAttribute('href', '/app');
 
         // Find the sibling Start Free Trial button inside the same <ul>
-        // so the swap is scoped to this nav instance (handles future
-        // multi-nav layouts without affecting unrelated buttons).
+        // so the swap is scoped to this nav instance.
         const launchLi = launchA.parentElement;
         const ul = launchLi && launchLi.parentElement;
         const trialBtn = ul ? ul.querySelector('button.nav-cta') : null;
-        if (!trialBtn) continue;
+        if (!ul || !trialBtn) continue;
         const trialLi = trialBtn.parentElement;
 
-        // Treatment swap.
-        launchA.classList.remove('nav-login-btn');
-        launchA.classList.add('nav-cta');
-        trialBtn.classList.remove('nav-cta');
-        trialBtn.classList.add('nav-login-btn');
+        // Mark the nav as signed-in so the injected CSS applies.
+        ul.classList.add('nav-signedin');
 
         // DOM reorder: gold (LAUNCH) ends up rightmost. insertBefore(_, null)
         // appends at the end if trialLi is already the last child.
