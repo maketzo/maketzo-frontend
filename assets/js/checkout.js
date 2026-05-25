@@ -56,19 +56,48 @@
 
   // ── Auth-aware nav swap ───────────────────────────────────────────────
   // Static "Log In" link in every marketing-page nav misleads logged-in
-  // users (they think they're signed out). Swap it on page load.
+  // users (they think they're signed out). Three coordinated changes on
+  // signed-in detection:
+  //   1. "Log In" -> "LAUNCH" with href /app.
+  //   2. Treatment swap: LAUNCH adopts the gold `nav-cta` styling;
+  //      "Start Free Trial" drops to outlined `nav-login-btn` styling.
+  //      Principle: gold = "the user's primary action right now."
+  //      Signed-out primary = convert (Start Free Trial). Signed-in
+  //      primary = use the product (LAUNCH). Gold migrates with meaning.
+  //   3. DOM reorder: LAUNCH's <li> moves AFTER the trial button's <li>
+  //      so the gold-rightmost eye anchor is preserved across auth states.
   // See memory/feedback-checkout-must-disambiguate-logged-in-user.md.
   function syncNav() {
     getMe().then(function (me) {
       if (!me) return;
-      const btns = document.querySelectorAll('a.nav-login-btn');
-      for (let i = 0; i < btns.length; i++) {
-        // "LAUNCH" pairs with "Start Free Trial" as a sister-verb (both
-        // ignition verbs). "Account" was generic-SaaS / unclear.
-        // Source-uppercased per CLAUDE.md §3: when CSS text-transform:uppercase
-        // applies, the HTML source matches for source/visual parity.
-        btns[i].textContent = 'LAUNCH';
-        btns[i].setAttribute('href', '/app');
+      const launches = document.querySelectorAll('a.nav-login-btn');
+      for (let i = 0; i < launches.length; i++) {
+        const launchA = launches[i];
+        // Source-uppercased per CLAUDE.md §3 (CSS text-transform:uppercase
+        // applies, so source matches visual).
+        launchA.textContent = 'LAUNCH';
+        launchA.setAttribute('href', '/app');
+
+        // Find the sibling Start Free Trial button inside the same <ul>
+        // so the swap is scoped to this nav instance (handles future
+        // multi-nav layouts without affecting unrelated buttons).
+        const launchLi = launchA.parentElement;
+        const ul = launchLi && launchLi.parentElement;
+        const trialBtn = ul ? ul.querySelector('button.nav-cta') : null;
+        if (!trialBtn) continue;
+        const trialLi = trialBtn.parentElement;
+
+        // Treatment swap.
+        launchA.classList.remove('nav-login-btn');
+        launchA.classList.add('nav-cta');
+        trialBtn.classList.remove('nav-cta');
+        trialBtn.classList.add('nav-login-btn');
+
+        // DOM reorder: gold (LAUNCH) ends up rightmost. insertBefore(_, null)
+        // appends at the end if trialLi is already the last child.
+        if (trialLi) {
+          ul.insertBefore(launchLi, trialLi.nextSibling);
+        }
       }
     });
   }
