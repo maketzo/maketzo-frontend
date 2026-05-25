@@ -5,10 +5,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Why MAKETZO — Discipline, Enforced</title>
-<meta name="description" content="You know exactly what to do. The challenge is doing it under pressure. Maketzo combines real-time intelligence, behavioral accountability, AI coaching, training, and analytics so you stop self-sabotage and execute your edge.">
+<meta name="description" content="Every trading tool reviews the damage. MAKETZO prevents it. A real-time discipline operating system for the moment your willpower cracks — not a journal, not a course, not a screener.">
 <meta name="theme-color" content="#06070A">
 <meta property="og:title" content="Why MAKETZO — Discipline, Enforced">
-<meta property="og:description" content="Knowledge is rarely the problem. Execution under pressure is. Maketzo enforces the discipline you've already designed.">
+<meta property="og:description" content="Every trading tool reviews the damage. MAKETZO prevents it. The real-time discipline operating system for the moment that matters most.">
 <meta property="og:url" content="https://maketzo.co/why">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
@@ -258,6 +258,94 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 .footer-copy { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: 0.04em; color: var(--mk-text-tertiary); }
 .footer-disclaimer { font-size: var(--mk-text-xs); color: var(--mk-text-tertiary); line-height: var(--mk-lead-body); max-width: 900px; }
 @media (max-width: 800px) { .footer-grid { grid-template-columns: 1fr; gap: 24px; } }
+
+/* ── HERO EYEBROW PULSING DOT (ambient motion) ─────────────────
+   Borrows the homepage's mk-pulse vocabulary but applied to a single
+   tiny dot before the eyebrow text. Restraint over decoration. */
+.page-hero-eyebrow-with-dot { display: inline-flex; align-items: center; gap: 10px; }
+.hero-eyebrow-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--mk-brand); box-shadow: 0 0 0 0 rgba(212,175,55,.6); animation: heroDotPulse 1.6s ease-in-out infinite; flex-shrink: 0; }
+@keyframes heroDotPulse {
+  0%,100% { box-shadow: 0 0 0 0 rgba(212,175,55,.55); }
+  60%     { box-shadow: 0 0 0 8px rgba(212,175,55,0); }
+}
+
+/* ── THREE MOMENTS GRID ────────────────────────────────────────
+   Replaces the prose-heavy "Why progress stalls" section with three
+   scannable vignettes. Gold left-border echoes the .pull-quote accent. */
+.moments-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; max-width: 1100px; margin: 0 auto; }
+.moment-card { padding: 32px 28px; background: linear-gradient(180deg, rgba(212,175,55,.03), transparent 60%), var(--mk-surface-raised); border: 1px solid rgba(255,255,255,.04); border-left: 2px solid var(--mk-brand); border-radius: var(--mk-radius-card); transition: transform var(--mk-dur-snap), border-color var(--mk-dur-snap); }
+.moment-card:hover { transform: translateY(-3px); border-color: rgba(212,175,55,.22); border-left-color: var(--mk-brand); }
+.moment-card-eyebrow { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); margin-bottom: 12px; }
+.moment-card-title { font-family: var(--mk-font-display); font-size: clamp(1.3rem, 2.2vw, 1.55rem); line-height: 1.12; letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); font-weight: 400; margin-bottom: 14px; }
+.moment-card-body { font-size: var(--mk-text-md); color: var(--mk-text-secondary); line-height: var(--mk-lead-body); }
+@media (max-width: 800px) {
+  .moments-grid { grid-template-columns: 1fr; gap: 16px; max-width: 540px; }
+  .moment-card { padding: 24px 22px; }
+}
+
+/* ── GAP BAND (typography-only chapter break, no photo) ────────
+   Editorial pause between problem and solution. Pure type, gold
+   ambient glow, generous vertical breathing room. */
+.gap-band { padding: clamp(80px, 14vw, 140px) 0; background: var(--mk-obsidian-950); position: relative; overflow: hidden; border-top: var(--mk-border-hairline); border-bottom: var(--mk-border-hairline); }
+.gap-band::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at center, rgba(212,175,55,.07), transparent 60%); pointer-events: none; }
+.gap-band-inner { position: relative; max-width: 940px; margin: 0 auto; padding: 0 32px; text-align: center; }
+.gap-band-line { font-family: var(--mk-font-display); font-size: clamp(2rem, 4.8vw, 3.6rem); line-height: 1.08; letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); font-weight: 400; }
+.gap-band-line em { font-style: normal; background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.gap-band-tag { display: block; margin-top: 26px; font-family: var(--mk-font-mono); font-size: var(--mk-mono-sm); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); }
+
+/* ── 4-PILLAR GRID ─────────────────────────────────────────────
+   Replaces "why other tools" + "MAKETZO difference". One scannable
+   grid of the four product pillars. Each card is a link. */
+.pillar-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; max-width: 1080px; margin: 0 auto; }
+.pillar-card { display: block; padding: 36px 32px; background: var(--mk-surface-raised); border: 1px solid rgba(255,255,255,.05); border-radius: var(--mk-radius-card); position: relative; overflow: hidden; transition: transform var(--mk-dur-snap), border-color var(--mk-dur-snap), box-shadow var(--mk-dur-snap); }
+.pillar-card::after { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(212,175,55,.06), transparent 55%); opacity: 0; transition: opacity var(--mk-dur-snap); pointer-events: none; }
+.pillar-card:hover { transform: translateY(-3px); border-color: rgba(212,175,55,.32); box-shadow: var(--mk-glow-gold-sm); }
+.pillar-card:hover::after { opacity: 1; }
+.pillar-card-num { display: inline-block; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); color: var(--mk-brand); padding: 4px 10px; border: var(--mk-border-gold-soft); border-radius: 999px; margin-bottom: 18px; }
+.pillar-card-title { font-family: var(--mk-font-display); font-size: clamp(1.5rem, 2.6vw, 1.85rem); line-height: 1.08; letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); font-weight: 400; margin-bottom: 12px; }
+.pillar-card-body { font-size: var(--mk-text-md); color: var(--mk-text-secondary); line-height: var(--mk-lead-body); margin-bottom: 18px; }
+.pillar-card-body strong { color: var(--mk-text-primary); }
+.pillar-card-link { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); }
+@media (max-width: 800px) {
+  .pillar-grid { grid-template-columns: 1fr; gap: 14px; }
+  .pillar-card { padding: 28px 24px; }
+}
+
+/* ── COMPARISON STRIP (Traditional Journals vs MAKETZO) ────────
+   The asymmetry IS the argument: left muted, right gold-accented.
+   On desktop the two columns share a single bordered box so rows
+   align horizontally — the eye can sweep left→right per row. */
+.compare-strip { display: grid; grid-template-columns: 1fr 1fr; max-width: 1080px; margin: 0 auto; border: 1px solid rgba(255,255,255,.06); border-radius: var(--mk-radius-card); overflow: hidden; background: var(--mk-surface-raised); }
+.compare-column { padding: 28px 32px; }
+.compare-column--them { background: transparent; border-right: 1px solid rgba(255,255,255,.06); }
+.compare-column--us { background: linear-gradient(180deg, rgba(212,175,55,.06), rgba(212,175,55,.02)); }
+.compare-col-head { padding-bottom: 18px; margin-bottom: 4px; border-bottom: 1px solid rgba(255,255,255,.06); display: flex; align-items: center; gap: 10px; }
+.compare-col-eyebrow { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; }
+.compare-column--them .compare-col-eyebrow { color: var(--mk-text-tertiary); }
+.compare-column--us .compare-col-eyebrow { color: var(--mk-brand); }
+.compare-col-title { font-family: var(--mk-font-display); font-size: clamp(1.2rem, 2vw, 1.5rem); letter-spacing: var(--mk-track-display); text-transform: uppercase; line-height: 1.08; font-weight: 400; }
+.compare-column--them .compare-col-title { color: var(--mk-text-tertiary); }
+.compare-column--us .compare-col-title { color: var(--mk-text-primary); }
+.compare-row { padding: 16px 0; border-bottom: 1px solid rgba(255,255,255,.04); font-size: var(--mk-text-md); line-height: 1.5; }
+.compare-row:last-child { border-bottom: 0; }
+.compare-column--them .compare-row { color: var(--mk-text-tertiary); }
+.compare-column--us .compare-row { color: var(--mk-text-primary); }
+.compare-column--us .compare-row em { font-style: normal; background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+@media (max-width: 800px) {
+  .compare-strip { grid-template-columns: 1fr; }
+  .compare-column--them { border-right: 0; border-bottom: 1px solid rgba(255,255,255,.06); }
+  .compare-column { padding: 24px 22px; }
+}
+
+/* ── AFFIRMATION STACK (3 progressive realizations) ────────────
+   Replaces the prose "Outcome" with three numbered editorial lines. */
+.affirm-stack { display: flex; flex-direction: column; gap: 28px; max-width: 720px; margin: 0 auto; }
+.affirm-line { display: flex; align-items: baseline; gap: 18px; font-family: var(--mk-font-display); font-size: clamp(1.3rem, 2.6vw, 1.85rem); line-height: 1.16; letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); font-weight: 400; }
+.affirm-line-num { flex-shrink: 0; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); color: var(--mk-brand); padding-top: 0.42em; }
+.affirm-line em { font-style: normal; background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+@media (max-width: 600px) {
+  .affirm-line { gap: 14px; }
+}
 </style>
 </head>
 <body>
@@ -306,159 +394,192 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 <!-- HERO -->
 <section class="page-hero">
   <div class="page-hero-inner">
-    <p class="page-hero-eyebrow reveal">WHY MAKETZO</p>
-    <h1 class="page-hero-title reveal">You know exactly <em>what to do.</em></h1>
-    <p class="page-hero-sub reveal">Cut losses quickly. Never average down. Wait for your best setups. Protect your capital.</p>
-    <span class="page-hero-known reveal">None of this is new to you.</span>
-    <div><span class="page-hero-tagline reveal">Stop self-sabotage · Execute your edge</span></div>
+    <p class="page-hero-eyebrow reveal">
+      <span class="page-hero-eyebrow-with-dot"><span class="hero-eyebrow-dot" aria-hidden="true"></span>WHY MAKETZO</span>
+    </p>
+    <h1 class="page-hero-title reveal">Every trading tool reviews the damage.<br>MAKETZO <em>prevents it.</em></h1>
+    <p class="page-hero-sub reveal">After-the-fact analytics show you what went wrong. MAKETZO shows you the moment you're about to repeat it.</p>
 
-    <div class="mk-cta-repeat">
-      <button class="btn-primary" data-cta-source="page-hero" onclick="handleCheckout('price_1TUWVpJIDbUntZeXyQD23z8W',event)">Start 7-Day Free Trial &rarr;</button>
+    <div class="final-cta-btn-wrap reveal" style="margin-top: 38px;">
+      <button class="btn-primary" data-cta-source="page-hero" style="padding:16px 32px;font-size:var(--mk-text-md);" onclick="handleCheckout('price_1TUWVpJIDbUntZeXyQD23z8W',event)">Start 7-Day Free Trial &rarr;</button>
+      <p class="final-cta-note">7 days free &middot; No charge until day 8 &middot; Cancel in one click.</p>
     </div>
   </div>
 </section>
 
 <hr class="mk-rule-gold">
 
-<!-- THE REAL ISSUE -->
+<!-- THE PATTERN -->
 <section class="section">
   <div class="section-inner">
-    <p class="section-eyebrow reveal">THE REAL ISSUE</p>
+    <p class="section-eyebrow reveal">THE PATTERN</p>
     <h2 class="section-title reveal">Knowledge is rarely <em>the problem.</em></h2>
 
     <div class="prose-wrap">
-      <p class="reveal">By the time most traders begin searching for a solution, they understand the fundamentals. They have studied strategies, developed rules, and know what disciplined trading should look like. What they lack is a reliable way to <strong>follow those rules when real money and real emotions are involved</strong>.</p>
+      <p class="reveal">By the time most traders search for a solution, they've already studied the strategies, developed the rules, and know what disciplined trading looks like. The gap is enacting it — when real money meets real emotion.</p>
 
       <div class="pull-quote reveal">That gap between knowing and doing <em>is where performance breaks down.</em></div>
     </div>
-
-    <div class="mk-cta-repeat">
-      <button class="btn-primary" data-cta-source="real-issue" onclick="handleCheckout('price_1TUWVpJIDbUntZeXyQD23z8W',event)">Start 7-Day Free Trial &rarr;</button>
-    </div>
   </div>
 </section>
 
 <hr class="mk-rule-gold">
 
-<!-- WHY PROGRESS STALLS -->
+<!-- WHEN DISCIPLINE CRACKS — three moments -->
 <section class="section section-dark">
   <div class="section-inner">
-    <div class="section-split">
-      <div class="section-split-head">
-        <p class="section-eyebrow reveal">WHY PROGRESS STALLS</p>
-        <h2 class="section-title reveal">Good intentions <em>are not enough.</em></h2>
-      </div>
-      <div class="section-split-body">
-        <p class="reveal">A stop ignored. Size added after a loss. A mediocre setup taken out of boredom. Every trader has been there.</p>
-        <p class="reveal">These moments seem small — but they compound into <strong>financial damage, inconsistency, and a quiet loss of confidence</strong>.</p>
-      </div>
-    </div>
+    <p class="section-eyebrow reveal">WHEN DISCIPLINE CRACKS</p>
+    <h2 class="section-title reveal">Three moments <em>every trader knows.</em></h2>
+    <p class="section-sub reveal">You don't need this list explained. You need it interrupted.</p>
 
-    <div class="mk-cta-repeat">
-      <button class="btn-primary" data-cta-source="progress-stalls" onclick="handleCheckout('price_1TUWVpJIDbUntZeXyQD23z8W',event)">Start 7-Day Free Trial &rarr;</button>
+    <div class="moments-grid">
+      <div class="moment-card reveal">
+        <p class="moment-card-eyebrow">01 &middot; THE REVENGE TRADE</p>
+        <h3 class="moment-card-title">One loss lands harder than the math says it should.</h3>
+        <p class="moment-card-body">So you re-enter the same setup to "earn it back" — and the third loss is the one that empties the day.</p>
+      </div>
+      <div class="moment-card reveal">
+        <p class="moment-card-eyebrow">02 &middot; THE SIZE-UP</p>
+        <h3 class="moment-card-title">Four green days in a row.</h3>
+        <p class="moment-card-body">The fifth trade goes in at 2&times; size — and quietly gives back the entire week. The green trade wasn't the reward. It was the setup.</p>
+      </div>
+      <div class="moment-card reveal">
+        <p class="moment-card-eyebrow">03 &middot; THE RULE YOU'LL BUY BACK</p>
+        <h3 class="moment-card-title">Written Sunday in clean handwriting.</h3>
+        <p class="moment-card-body">Broken by 9:42 Tuesday morning. The gap between those two moments is the whole game.</p>
+      </div>
     </div>
   </div>
 </section>
 
-<hr class="mk-rule-gold">
+<!-- THE GAP — typography-only chapter break -->
+<section class="gap-band">
+  <div class="gap-band-inner">
+    <p class="gap-band-line reveal">The gap between <em>knowing and doing</em> is where performance breaks down.</p>
+    <span class="gap-band-tag reveal">We built MAKETZO to close it.</span>
+  </div>
+</section>
 
-<!-- WHY OTHER TOOLS FEEL INCOMPLETE -->
+<!-- HOW MAKETZO CLOSES THE GAP — 4-pillar grid -->
 <section class="section">
   <div class="section-inner">
-    <p class="section-eyebrow reveal">WHY OTHER TOOLS FEEL INCOMPLETE</p>
-    <h2 class="section-title reveal">Looking backward <em>only gets you so far.</em></h2>
+    <p class="section-eyebrow reveal">HOW MAKETZO CLOSES THE GAP</p>
+    <h2 class="section-title reveal">Discipline, <em>enforced.</em></h2>
+    <p class="section-sub reveal">Four systems, one operating loop &mdash; between the rules you set and the rules you follow.</p>
 
-    <div class="prose-wrap">
-      <p class="reveal">Trading journals and analytics platforms can help you understand what happened after the market closes.</p>
-
-      <div class="pull-quote reveal">By then, the damage <em>has already been done.</em></div>
-
-      <p class="reveal">Maketzo is designed to support better decisions <strong>while they are unfolding</strong> — at the moment discipline matters most, not in a review window twelve hours later.</p>
-    </div>
-
-    <div class="mk-cta-repeat">
-      <button class="btn-primary" data-cta-source="tools-incomplete" onclick="handleCheckout('price_1TUWVpJIDbUntZeXyQD23z8W',event)">Start 7-Day Free Trial &rarr;</button>
+    <div class="pillar-grid">
+      <a href="system.html" class="pillar-card reveal" data-cta-source="why-pillar" data-cta-target="system">
+        <span class="pillar-card-num">01</span>
+        <h3 class="pillar-card-title">Behavioral Accountability</h3>
+        <p class="pillar-card-body">Set your rules when you're calm. <strong>MAKETZO enforces them when you're not.</strong> Strikes, lockouts, and live coach prompts intervene before the next click, not after the close.</p>
+        <span class="pillar-card-link">The System &rarr;</span>
+      </a>
+      <a href="edge.html" class="pillar-card reveal" data-cta-source="why-pillar" data-cta-target="edge">
+        <span class="pillar-card-num">02</span>
+        <h3 class="pillar-card-title">The Edge</h3>
+        <p class="pillar-card-body">Know exactly when your window is open. <strong>And when to sit on your hands.</strong> A signal designed for execution moments, not analysis paralysis.</p>
+        <span class="pillar-card-link">The Edge &rarr;</span>
+      </a>
+      <a href="system.html#training" class="pillar-card reveal" data-cta-source="why-pillar" data-cta-target="training">
+        <span class="pillar-card-num">03</span>
+        <h3 class="pillar-card-title">Training Engine</h3>
+        <p class="pillar-card-body">Turn your mistakes into drills. <strong>Repetition until the right move is the default.</strong> Targeted reinforcement built from your own broken rules.</p>
+        <span class="pillar-card-link">How it works &rarr;</span>
+      </a>
+      <a href="focus.html" class="pillar-card reveal" data-cta-source="why-pillar" data-cta-target="focus">
+        <span class="pillar-card-num">04</span>
+        <h3 class="pillar-card-title">Focus Room</h3>
+        <p class="pillar-card-body">A pre-market ritual, environment, and soundtrack that condition <strong>the state you trade from</strong> &mdash; not just the trades you take.</p>
+        <span class="pillar-card-link">Focus Room &rarr;</span>
+      </a>
     </div>
   </div>
 </section>
 
 <hr class="mk-rule-gold">
 
-<!-- THE MAKETZO DIFFERENCE -->
+<!-- NOT ANOTHER JOURNAL — comparison strip -->
 <section class="section section-dark">
   <div class="section-inner">
-    <p class="section-eyebrow reveal">THE MAKETZO DIFFERENCE</p>
-    <h2 class="section-title reveal">Discipline, <em>enforced.</em></h2>
+    <p class="section-eyebrow reveal">THE DIFFERENCE</p>
+    <h2 class="section-title reveal">Not another <em>journal.</em></h2>
+    <p class="section-sub reveal">If a journal could fix discipline, you'd already be fixed.</p>
 
-    <div class="diff-card reveal">
-      <p>Maketzo combines real-time trade intelligence, behavioral accountability, AI coaching, structured training, and performance analytics into a single operating system.</p>
-
-      <div class="diff-chips">
-        <span class="diff-chip">Real-Time Intelligence</span>
-        <span class="diff-chip">Behavioral Accountability</span>
-        <span class="diff-chip">AI Coaching</span>
-        <span class="diff-chip">Structured Training</span>
-        <span class="diff-chip">Performance Analytics</span>
+    <div class="compare-strip reveal">
+      <div class="compare-column compare-column--them">
+        <div class="compare-col-head">
+          <span class="compare-col-eyebrow">Traditional Journals</span>
+        </div>
+        <div class="compare-col-title" style="margin-bottom: 8px;">Review the damage.</div>
+        <div class="compare-row">Tell you what happened.</div>
+        <div class="compare-row">Activate after the trade closes.</div>
+        <div class="compare-row">Require you to review them.</div>
+        <div class="compare-row">Surface insights you can ignore.</div>
+        <div class="compare-row">Forget the rule you just broke.</div>
       </div>
-
-      <p>It does not replace your strategy. <strong>It helps you execute it.</strong></p>
-    </div>
-
-    <div class="mk-cta-repeat">
-      <button class="btn-primary" data-cta-source="maketzo-difference" onclick="handleCheckout('price_1TUWVpJIDbUntZeXyQD23z8W',event)">Start 7-Day Free Trial &rarr;</button>
+      <div class="compare-column compare-column--us">
+        <div class="compare-col-head">
+          <span class="compare-col-eyebrow">MAKETZO</span>
+        </div>
+        <div class="compare-col-title" style="margin-bottom: 8px;">Prevent the damage.</div>
+        <div class="compare-row">Tell you what's <em>about to happen.</em></div>
+        <div class="compare-row">Activate while the trade is <em>still open.</em></div>
+        <div class="compare-row">Enforce in <em>real time.</em></div>
+        <div class="compare-row">Block the rule you're <em>about to break.</em></div>
+        <div class="compare-row">Hold the line when <em>willpower doesn't.</em></div>
+      </div>
     </div>
   </div>
 </section>
 
 <hr class="mk-rule-gold">
 
-<!-- THE OUTCOME -->
+<!-- THE OUTCOME — affirmation stack -->
 <section class="section">
   <div class="section-inner">
     <p class="section-eyebrow reveal">THE OUTCOME</p>
     <h2 class="section-title reveal">Trading begins <em>to feel different.</em></h2>
 
-    <div class="outcome-prose">
-      <p class="reveal">Decisions become clearer. Risk becomes more consistent. Emotional swings become less disruptive.</p>
-      <p class="reveal">Instead of reacting impulsively, you follow a structured process with greater confidence and control.</p>
-
-      <div class="outcome-affirmation reveal">Over time, disciplined execution becomes <em>second nature.</em></div>
-    </div>
-
-    <div class="mk-cta-repeat">
-      <button class="btn-primary" data-cta-source="outcome" onclick="handleCheckout('price_1TUWVpJIDbUntZeXyQD23z8W',event)">Start 7-Day Free Trial &rarr;</button>
+    <div class="affirm-stack">
+      <div class="affirm-line reveal">
+        <span class="affirm-line-num">01</span>
+        <span>You stop trading the way you <em>didn't want to.</em></span>
+      </div>
+      <div class="affirm-line reveal">
+        <span class="affirm-line-num">02</span>
+        <span>You start trading the way you've <em>been describing.</em></span>
+      </div>
+      <div class="affirm-line reveal">
+        <span class="affirm-line-num">03</span>
+        <span>The trader you almost are &mdash; <em>that's the one who shows up.</em></span>
+      </div>
     </div>
   </div>
 </section>
 
 <hr class="mk-rule-gold">
 
-<!-- WHY WE BUILT MAKETZO -->
+<!-- A NOTE FROM THE TEAM -->
 <section class="section section-dark">
   <div class="section-inner">
     <p class="section-eyebrow reveal">A NOTE FROM THE TEAM</p>
-    <h2 class="section-title reveal">Why we built <em>Maketzo.</em></h2>
+    <h2 class="section-title reveal">Why we built <em>MAKETZO.</em></h2>
 
     <div class="founder-with-image">
       <div class="founder-card reveal">
-        <p>We created Maketzo after seeing the same pattern repeat over and over. Traders spent years studying strategies and refining their setups, yet continued to struggle with the same costly behaviors.</p>
-        <p>The issue was rarely a lack of knowledge. <strong>The real challenge was execution under pressure.</strong></p>
-        <p>Maketzo was built to close that gap and help traders protect their capital, eliminate self-sabotage, and develop the habits required for long-term success.</p>
-        <p>If you know what to do but find it difficult to do it consistently, <strong>Maketzo was built for you</strong>.</p>
-        <div class="founder-sign">— The Maketzo Team</div>
+        <p>We've all been on the wrong side of our own trades. The setup was right. The size was right. The rule was clear. And somehow the trade we took wasn't the one we wrote down.</p>
+        <p>We built MAKETZO because the gap between what a trader knows and what a trader does is the only gap that actually empties accounts. Everything else &mdash; strategy, indicators, market structure &mdash; is solvable with study. <strong>This one isn't.</strong></p>
+        <p>So we built a system that holds the line for you. Not a journal that reviews the damage. Not a course that explains the theory. <strong>A real-time enforcement layer between the rules you set and the rules you follow.</strong></p>
+        <div class="founder-sign">&mdash; The MAKETZO Team</div>
         <div class="founder-sign-sub">Abinic, LLC</div>
       </div>
       <figure class="founder-team-image reveal">
         <picture>
           <source type="image/avif" srcset="assets/team-photo.avif">
           <source type="image/webp" srcset="assets/team-photo.webp">
-          <img src="assets/team-photo.png" alt="The Maketzo team gathered at a summer offsite" loading="lazy">
+          <img src="assets/team-photo.png" alt="The MAKETZO team gathered at a summer offsite" loading="lazy">
         </picture>
       </figure>
-    </div>
-
-    <div class="mk-cta-repeat">
-      <button class="btn-primary" data-cta-source="why-we-built" onclick="handleCheckout('price_1TUWVpJIDbUntZeXyQD23z8W',event)">Start 7-Day Free Trial &rarr;</button>
     </div>
   </div>
 </section>
@@ -466,13 +587,12 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 <!-- FINAL CTA -->
 <hr class="mk-rule-gold mk-rule-gold--bold" aria-hidden="true">
 <section class="final-cta-section">
-  <p class="final-cta-eyebrow reveal">7-DAY FREE TRIAL · NO CHARGE UNTIL DAY 8</p>
-  <h2 class="final-cta-title reveal">You already have <em>the knowledge.</em></h2>
-  <p class="final-cta-sub reveal">What you need is a system that helps you apply it.</p>
-  <p class="final-cta-sub reveal">Trade with structure, discipline, and confidence.</p>
+  <p class="final-cta-eyebrow reveal">7-DAY FREE TRIAL &middot; NO CHARGE UNTIL DAY 8</p>
+  <h2 class="final-cta-title reveal">Become the trader <em>you almost are.</em></h2>
+  <p class="final-cta-sub reveal">MAKETZO is built for the trader you've been trying to be &mdash; the one with rules that hold, sessions that end on purpose, and a system that does the remembering.</p>
   <div class="final-cta-btn-wrap reveal">
-    <button class="btn-primary" style="padding:18px 44px;font-size:var(--mk-text-md);" onclick="handleCheckout('price_1TUWVpJIDbUntZeXyQD23z8W',event)">Start Trading With Discipline</button>
-    <p class="final-cta-note">Pro · $49/mo · Cancel in one click · Stripe-secured</p>
+    <button class="btn-primary" style="padding:18px 44px;font-size:var(--mk-text-md);" data-cta-source="final-cta" onclick="handleCheckout('price_1TUWVpJIDbUntZeXyQD23z8W',event)">Start 7-Day Free Trial &rarr;</button>
+    <p class="final-cta-note">Cancel in one click &middot; <a href="pricing.html" style="color: var(--mk-text-secondary); text-decoration: underline; text-decoration-color: rgba(212,175,55,.3);">See pricing</a></p>
   </div>
 </section>
 
