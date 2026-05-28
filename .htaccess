@@ -41,7 +41,7 @@ AddType image/avif .avif
 AddType image/webp .webp
 
 # Clean URLs for marketing pages
-# Maps /system -> system.html, /edge -> edge.html, etc. without the .html suffix.
+# Maps /system -> system.html, /indicators -> indicators.html, etc. without the .html suffix.
 # Trailing slashes get redirected (301) to the non-slash canonical form so SEO
 # and analytics don't fork into /pricing and /pricing/.
 RewriteEngine On
@@ -53,6 +53,13 @@ RewriteEngine On
 # backend (api.maketzo.co). QSA preserves ?token=...
 RewriteRule ^unsubscribe$ https://api.maketzo.co/unsubscribe [R=302,L,QSA]
 RewriteRule ^resubscribe$ https://api.maketzo.co/resubscribe [R=302,L,QSA]
+
+# Legacy /edge → /indicators (2026-05-28). edge.html was renamed to
+# indicators.html so Edge AND Pulse can be presented as first-class peers
+# on a single canonical page. Keeps every previously-shared /edge link
+# alive — newsletter footers, blog post bylines, social shares, etc.
+# 301 (permanent) so search engines update their index promptly.
+RewriteRule ^edge/?$ /indicators [R=301,L]
 
 # Tier-aware /app redirect. Every marketing page's "Log In" nav link points to
 # /app (relative). Same-domain link works for SEO + survives port changes, but

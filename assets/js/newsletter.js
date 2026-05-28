@@ -3,7 +3,7 @@
  *
  * Replaces the seven divergent inline handlers that previously lived in
  * index.html (handleEmail + handleStickyEmail), system.html, journal.html,
- * edge.html, focus.html, pricing.html, why.html. The pre-existing sticky-bar
+ * indicators.html, focus.html, pricing.html, why.html. The pre-existing sticky-bar
  * handlers all did `try { fetch(...) } catch(e){}` — error-swallowing that
  * showed "Subscribed ✓" regardless of whether the backend actually accepted
  * the email. This module fixes that:
