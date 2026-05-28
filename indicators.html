@@ -454,6 +454,28 @@ body.hero-loaded .page-hero .page-hero-sub { opacity: 1; transform: translateY(0
 .access-text { font-size: var(--mk-text-sm); color: var(--mk-text-tertiary); line-height: 1.55; }
 @media (max-width: 800px) { .access-grid { grid-template-columns: 1fr; max-width: 460px; } }
 
+/* ── TWO WAYS TO ACCESS — bundled (Pro) vs standalone ($29/mo) ── */
+.path-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 980px; margin: 0 auto; align-items: stretch; }
+.path-card { display: flex; flex-direction: column; padding: 32px 28px; background: var(--mk-surface-raised); border: 1px solid rgba(255,255,255,.08); border-radius: var(--mk-radius-card); position: relative; }
+.path-card--bundled { border-color: rgba(212,175,55,.42); box-shadow: 0 18px 48px rgba(0,0,0,.35), 0 0 0 1px rgba(212,175,55,.10); }
+.path-card-badge { display: inline-flex; align-self: flex-start; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; padding: 5px 11px; border-radius: 999px; border: 1px solid currentColor; margin-bottom: 18px; }
+.path-card--bundled .path-card-badge { color: var(--mk-brand); background: rgba(212,175,55,.06); }
+.path-card--standalone .path-card-badge { color: var(--mk-text-tertiary); }
+.path-card-tier { font-family: var(--mk-font-display); font-size: var(--mk-display-lg); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); line-height: 1.04; margin-bottom: 6px; font-weight: 400; }
+.path-card--bundled .path-card-tier em { font-style: normal; background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.path-card-price { font-family: var(--mk-font-mono); font-size: var(--mk-mono-md); color: var(--mk-text-secondary); letter-spacing: 0.04em; margin-bottom: 22px; }
+.path-card-includes { list-style: none; padding: 0; margin: 0 0 22px; display: flex; flex-direction: column; gap: 9px; }
+.path-card-includes li { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); line-height: 1.5; padding-left: 22px; position: relative; }
+.path-card-includes li::before { content: '✓'; position: absolute; left: 0; top: 0; color: var(--mk-profit-500); font-weight: 600; }
+.path-card-excludes { list-style: none; padding: 0 0 0 0; margin: 0 0 22px; display: flex; flex-direction: column; gap: 7px; border-top: var(--mk-border-hairline); padding-top: 18px; }
+.path-card-excludes-label { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-text-tertiary); margin-bottom: 4px; }
+.path-card-excludes li { font-size: var(--mk-text-sm); color: var(--mk-text-tertiary); line-height: 1.5; padding-left: 22px; position: relative; }
+.path-card-excludes li::before { content: '—'; position: absolute; left: 0; top: 0; color: var(--mk-text-tertiary); }
+.path-card-cta { margin-top: auto; display: flex; flex-direction: column; align-items: stretch; gap: 8px; }
+.path-card-cta .btn-primary, .path-card-cta .btn-secondary { width: 100%; justify-content: center; padding: 14px 22px; font-size: var(--mk-text-sm); }
+.path-card-cta-note { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: 0.04em; color: var(--mk-text-tertiary); text-align: center; }
+@media (max-width: 820px) { .path-grid { grid-template-columns: 1fr; max-width: 460px; } }
+
 /* ── TRUST STRIP ────────────────────────────────────────────── */
 .trust-card { max-width: 780px; margin: 0 auto; padding: 28px 36px; background: var(--mk-surface-raised); border: 1px solid rgba(212,175,55,.22); border-radius: var(--mk-radius-card); display: flex; align-items: center; gap: 20px; }
 .trust-stat { font-family: var(--mk-font-display); font-size: clamp(2.4rem, 4vw, 3rem); background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; line-height: 1; flex-shrink: 0; }
@@ -778,6 +800,57 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 
     <div class="mk-cta-repeat">
       <button class="btn-primary" data-cta-source="access" onclick="handleCheckout('price_1TUWVpJIDbUntZeXyQD23z8W',event)">Start 7-Day Free Trial &rarr;</button>
+    </div>
+  </div>
+</section>
+
+<hr class="mk-rule-gold">
+
+<!-- TWO WAYS TO ACCESS -->
+<section class="section">
+  <div class="section-inner">
+    <p class="section-eyebrow reveal">TWO WAYS TO ACCESS</p>
+    <h2 class="section-title reveal">Bundled with Pro. <em>Or standalone.</em></h2>
+    <p class="section-sub reveal">Edge and Pulse come included with every <strong>Pro</strong> and <strong>Elite</strong> subscription. If the full MAKETZO platform — journaling, Focus Room, COACH SAYS, Training Engine — isn't what you're shopping for, you can buy the indicators by themselves. Same invite pipeline, same 24-hour SLA.</p>
+
+    <div class="path-grid">
+      <div class="path-card path-card--bundled reveal">
+        <span class="path-card-badge">Recommended</span>
+        <div class="path-card-tier">Pro <em>Plan</em></div>
+        <div class="path-card-price">$49/mo · 7-day free trial</div>
+        <ul class="path-card-includes">
+          <li>Maketzo <strong>Edge</strong> + <strong>Pulse</strong> · TradingView invite within 24 hours</li>
+          <li>Trade journal · P&amp;L tracking · cents/share metrics · discipline score</li>
+          <li>COACH SAYS check-ins · State Machine · Strike System · Waiting Room</li>
+          <li>Focus Room · Zone Tracks · meditation reset</li>
+          <li>Training Engine — rule-based quizzes</li>
+        </ul>
+        <div class="path-card-cta">
+          <button class="btn-primary" data-cta-source="indicators-bundled" onclick="handleCheckout('price_1TUWVpJIDbUntZeXyQD23z8W',event)">Start 7-Day Free Trial &rarr;</button>
+          <p class="path-card-cta-note">7-day free trial · no charge until day 8 · cancel anytime</p>
+        </div>
+      </div>
+
+      <div class="path-card path-card--standalone reveal">
+        <span class="path-card-badge">Standalone</span>
+        <div class="path-card-tier">Edge + Pulse</div>
+        <div class="path-card-price">$29/mo · billed today</div>
+        <ul class="path-card-includes">
+          <li>Maketzo <strong>Edge</strong> · opportunity windows on TradingView</li>
+          <li>Maketzo <strong>Pulse</strong> · momentum confirmation on TradingView</li>
+          <li>TradingView invite within 24 hours · cancel anytime</li>
+          <li>Signal walkthroughs &amp; how-to tutorials in your account</li>
+        </ul>
+        <ul class="path-card-excludes">
+          <li class="path-card-excludes-label">Not included</li>
+          <li>Trade journal, P&amp;L tracking, discipline score</li>
+          <li>COACH SAYS, Focus Room, Training Engine</li>
+        </ul>
+        <div class="path-card-cta">
+          <button class="btn-secondary" data-cta-source="indicators-standalone" onclick="handleCheckout('price_1Tc8GNJIDbUntZeXS8JnCa3C',event)">Get Standalone Access &rarr;</button>
+          <p class="path-card-cta-note">$29/mo · charged today · no trial · cancel anytime</p>
+        </div>
+      </div>
     </div>
   </div>
 </section>
