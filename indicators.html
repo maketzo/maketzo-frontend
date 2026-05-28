@@ -474,6 +474,8 @@ body.hero-loaded .page-hero .page-hero-sub { opacity: 1; transform: translateY(0
 .path-card-cta { margin-top: auto; display: flex; flex-direction: column; align-items: stretch; gap: 8px; }
 .path-card-cta .btn-primary, .path-card-cta .btn-secondary { width: 100%; justify-content: center; padding: 14px 22px; font-size: var(--mk-text-sm); }
 .path-card-cta-note { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: 0.04em; color: var(--mk-text-tertiary); text-align: center; }
+.path-card-cta-yearly { color: var(--mk-brand); border-bottom: 1px solid rgba(212,175,55,.4); cursor: pointer; }
+.path-card-cta-yearly:hover { color: var(--mk-text-primary); border-bottom-color: var(--mk-brand); }
 @media (max-width: 820px) { .path-grid { grid-template-columns: 1fr; max-width: 460px; } }
 
 /* ── TRUST STRIP ────────────────────────────────────────────── */
@@ -848,7 +850,8 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
         </ul>
         <div class="path-card-cta">
           <button class="btn-secondary" data-cta-source="indicators-standalone" onclick="handleCheckout('price_1Tc8GNJIDbUntZeXS8JnCa3C',event)">Get Standalone Access &rarr;</button>
-          <p class="path-card-cta-note">$29/mo · charged today · no trial · cancel anytime</p>
+          <p class="path-card-cta-note">$29/mo &middot; charged today &middot; no trial &middot; cancel anytime</p>
+          <p class="path-card-cta-note"><a class="path-card-cta-yearly" href="#" data-cta-source="indicators-standalone-yearly" onclick="handleCheckout('price_1Tc8J0JIDbUntZeX1fYQ1ET6',event);return false;">Or pay annually &mdash; $290/yr (save ~17%)</a></p>
         </div>
       </div>
     </div>
