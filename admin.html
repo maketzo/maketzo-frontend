@@ -136,6 +136,33 @@
   td .status-active { background: rgba(74,222,128,0.16); color: var(--success); }
   td .status-unsubscribed { background: rgba(127,127,127,0.2); color: var(--text-dim); }
   td .status-bounced { background: rgba(239,68,68,0.14); color: var(--error); }
+  /* Indicator request statuses */
+  td .status-pending { background: rgba(212,175,55,0.16); color: var(--gold); }
+  td .status-invited { background: rgba(74,222,128,0.18); color: var(--success); }
+  td .status-revoke_pending { background: rgba(239,68,68,0.12); color: #fca5a5; }
+  td .status-revoked { background: rgba(127,127,127,0.2); color: var(--text-dim); }
+  /* Indicator action buttons (gold for positive, red for revoke, quiet for notes) */
+  td .ind-action { display: inline-block; margin-right: 6px; background: none; border: 1px solid var(--border); color: var(--text-dim); padding: 4px 10px; border-radius: 3px; font-family: var(--font-sans); font-size: 11px; font-weight: 600; letter-spacing: var(--track-cap); text-transform: uppercase; cursor: pointer; transition: background 120ms, border-color 120ms, color 120ms; }
+  td .ind-action:hover:not(:disabled) { color: var(--text); border-color: var(--text-quiet); }
+  td .ind-action:disabled { opacity: 0.4; cursor: not-allowed; }
+  td .ind-action.invite { color: var(--gold); border-color: rgba(212,175,55,0.36); }
+  td .ind-action.invite:hover:not(:disabled) { background: rgba(212,175,55,0.12); color: var(--gold); border-color: var(--gold); }
+  td .ind-action.revoke { color: var(--error); border-color: rgba(239,68,68,0.36); }
+  td .ind-action.revoke:hover:not(:disabled) { background: rgba(239,68,68,0.12); border-color: var(--error); }
+  td .ind-tv { font-family: var(--font-mono); font-size: 12px; color: var(--text); }
+  td .ind-age { font-family: var(--font-mono); font-size: 11px; color: var(--text-quiet); }
+  td .ind-age.warn { color: var(--gold); }
+  td .ind-age.alert { color: var(--error); }
+  .notes-modal { position: fixed; inset: 0; background: rgba(6,7,10,0.78); display: none; align-items: center; justify-content: center; z-index: 100; padding: 24px; }
+  .notes-modal.visible { display: flex; }
+  .notes-modal-card { background: var(--surface); border: 1px solid var(--border-strong); border-radius: 8px; padding: 28px; max-width: 520px; width: 100%; }
+  .notes-modal-card h3 { font-family: var(--font-display); font-size: 20px; letter-spacing: var(--track-display); text-transform: uppercase; font-weight: 400; color: var(--text); margin-bottom: 4px; }
+  .notes-modal-card p.context { color: var(--text-quiet); font-size: 12px; margin-bottom: 14px; font-family: var(--font-mono); }
+  .notes-modal-card .actions { display: flex; gap: 10px; margin-top: 14px; justify-content: flex-end; }
+  .notes-modal-card .actions button { background: transparent; border: 1px solid var(--border); color: var(--text-dim); padding: 8px 16px; border-radius: 3px; font-family: var(--font-sans); font-weight: 600; font-size: 11px; letter-spacing: var(--track-cap); text-transform: uppercase; cursor: pointer; transition: border-color 120ms, color 120ms; }
+  .notes-modal-card .actions button:hover { border-color: var(--text-quiet); color: var(--text); }
+  .notes-modal-card .actions button.primary { background: var(--gold); border-color: var(--gold); color: var(--bg); margin-top: 0; padding: 8px 16px; }
+  .notes-modal-card .actions button.primary:hover { opacity: 0.92; }
   td .email-cell { font-family: var(--font-mono); font-size: 12px; color: var(--text); word-break: break-all; max-width: 260px; }
   td .source-cell { font-family: var(--font-mono); font-size: 11px; color: var(--text-quiet); max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   td .delete-btn { background: none; border: 1px solid rgba(239,68,68,0.3); color: var(--error); padding: 4px 10px; border-radius: 3px; font-family: var(--font-sans); font-size: 11px; font-weight: 600; letter-spacing: var(--track-cap); text-transform: uppercase; cursor: pointer; transition: background 120ms; }
@@ -244,6 +271,7 @@
   </header>
   <nav>
     <button data-section="newsletter" class="active">Newsletter</button>
+    <button data-section="indicators">Indicators</button>
     <button data-section="placeholder-billing" disabled title="Coming soon">Billing &amp; refunds</button>
     <button data-section="placeholder-users" disabled title="Coming soon">Users</button>
   </nav>
@@ -323,7 +351,48 @@
         </div>
       </div>
     </section>
+
+    <section data-section="indicators">
+      <p class="section-eyebrow">TradingView Delivery Queue</p>
+      <h1 class="section-title">Indicators</h1>
+      <p class="section-lead">Edge + Pulse access requests. Pending rows need a TradingView invite within 24 hours. Upcoming revocations need to be removed from the script's Manage Access list on or after their cancel date. The daily reminder cron emails you a nudge if any pending row crosses 18 hours.</p>
+
+      <div class="card">
+        <h2>Access requests</h2>
+        <p class="desc">Each row is an <code>IndicatorAccessRequest</code> — append-only audit. The most recent row per user is the source of truth. After granting a TradingView invite, click <strong>Mark Invited</strong> to fire the access-live email. At period end after a cancel, click <strong>Mark Revoked</strong> to fire the revocation notice.</p>
+        <div class="list-toolbar">
+          <div class="filter-pills" id="indFilterPills"></div>
+          <select class="page-size-select" id="indPageSize">
+            <option value="25">25 / page</option>
+            <option value="50" selected>50 / page</option>
+            <option value="100">100 / page</option>
+            <option value="200">200 / page</option>
+          </select>
+        </div>
+        <div id="indList"><div class="placeholder">Loading&hellip;</div></div>
+        <div class="pagination" id="indPagination" style="display:none;">
+          <div class="summary" id="indSummary"></div>
+          <div class="controls">
+            <button id="indPrev">&larr; Prev</button>
+            <button id="indNext">Next &rarr;</button>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
+
+  <div class="notes-modal" id="indNotesModal">
+    <div class="notes-modal-card">
+      <h3>Notes</h3>
+      <p class="context" id="indNotesContext">&mdash;</p>
+      <label for="indNotesText">Admin-only freeform</label>
+      <textarea id="indNotesText" placeholder="e.g. 'Pinged in Slack — waiting on TV username change.'"></textarea>
+      <div class="actions">
+        <button id="indNotesCancel">Cancel</button>
+        <button class="primary" id="indNotesSave">Save</button>
+      </div>
+    </div>
+  </div>
 
   <footer>
     <p class="tagline">Stop the trade you'd regret.</p>
@@ -721,6 +790,205 @@
       btn.disabled = false; btn.textContent = 'Delete selected';
       alert('Network error: ' + e.message);
     });
+  });
+
+  // ── Indicators list ─────────────────────────────────────────────────
+  // Order/filter:
+  //   pending          → oldest at top (createdAt ASC) — SLA-risk first
+  //   revoke_pending   → next-due first (revokeAt ASC)
+  //   invited / all    → most recent first (createdAt DESC)
+  // Tabs surface: Pending · Upcoming Revocations · All. Counts come from
+  // the per-status aggregate the backend returns regardless of filter.
+  var IND_FILTER_TABS = [
+    { value: 'pending',        label: 'Pending invites' },
+    { value: 'revoke_pending', label: 'Upcoming revocations' },
+    { value: 'all',            label: 'All' }
+  ];
+  var indState = { page: 1, pageSize: 50, status: 'pending', activeNotesRow: null };
+
+  function indAgeHrs(createdAt){
+    return Math.floor((Date.now() - new Date(createdAt).getTime()) / (60 * 60 * 1000));
+  }
+  function indFmtAge(hrs){
+    if (hrs < 24) return hrs + 'h';
+    var d = Math.floor(hrs / 24);
+    return d + 'd ' + (hrs - d * 24) + 'h';
+  }
+
+  function loadIndicators(){
+    var container = $('indList');
+    var url = '/admin/indicators?' + qs({
+      page: indState.page,
+      pageSize: indState.pageSize,
+      status: indState.status === 'all' ? '' : indState.status
+    });
+    api('GET', url).then(function(res){
+      if (res.status !== 200 || !res.body.ok) {
+        container.innerHTML = '<div class="placeholder">Failed to load.</div>';
+        return;
+      }
+      var data = res.body;
+      // Render pills with backend-supplied counts; always show all three
+      // tabs even when count is 0 so the operator can swap freely.
+      var pillOpts = IND_FILTER_TABS.map(function(t){
+        var key = t.value === 'all' ? 'all' : t.value;
+        return { value: t.value, label: t.label, count: data.counts[key] || 0 };
+      });
+      renderPills($('indFilterPills'), pillOpts, indState.status, function(v){
+        indState.status = v; indState.page = 1; loadIndicators();
+      });
+
+      if (!data.requests.length) {
+        var msg = indState.status === 'pending'    ? 'No pending invites — queue is clear.'
+                : indState.status === 'revoke_pending' ? 'No upcoming revocations.'
+                : 'No indicator requests yet.';
+        container.innerHTML = '<div class="placeholder">' + msg + '</div>';
+        renderPagination(indState, 0, $('indSummary'), $('indPrev'), $('indNext'), $('indPagination'));
+        return;
+      }
+      var html = '<table><thead><tr>'
+        + '<th>TV username</th>'
+        + '<th>User</th>'
+        + '<th>Plan</th>'
+        + '<th>Status</th>'
+        + '<th>Age / Revoke</th>'
+        + '<th>Notes</th>'
+        + '<th></th>'
+        + '</tr></thead><tbody>';
+      data.requests.forEach(function(r){
+        var ageHrs = indAgeHrs(r.createdAt);
+        var ageClass = '';
+        // Surface SLA risk for pending rows.
+        if (r.status === 'pending') {
+          if (ageHrs >= 24) ageClass = 'alert';
+          else if (ageHrs >= 18) ageClass = 'warn';
+        }
+        var ageCellText;
+        if (r.status === 'revoke_pending' && r.revokeAt) {
+          ageCellText = 'revokes ' + fmtDate(r.revokeAt);
+        } else if (r.status === 'invited' && r.invitedAt) {
+          ageCellText = 'invited ' + fmtDate(r.invitedAt);
+        } else if (r.status === 'revoked' && r.revokedAt) {
+          ageCellText = 'revoked ' + fmtDate(r.revokedAt);
+        } else {
+          ageCellText = indFmtAge(ageHrs);
+        }
+        var userEmail = r.user ? r.user.email : '—';
+        var userPlan  = r.user ? r.user.plan  : '—';
+        var notesShort = r.notes ? (r.notes.length > 40 ? r.notes.slice(0, 40) + '…' : r.notes) : '';
+        var actions = '';
+        if (r.status === 'pending' || r.status === 'revoke_pending') {
+          actions += '<button class="ind-action invite" data-id="' + r.id + '">Mark Invited</button>';
+        }
+        if (r.status === 'invited' || r.status === 'revoke_pending') {
+          actions += '<button class="ind-action revoke" data-id="' + r.id + '">Mark Revoked</button>';
+        }
+        actions += '<button class="ind-action notes" data-id="' + r.id + '">Notes</button>';
+        html += '<tr data-ind-id="' + r.id + '">'
+          + '<td><span class="ind-tv">' + escapeHtml(r.tradingViewUsername || '—') + '</span></td>'
+          + '<td class="email-cell">' + escapeHtml(userEmail) + '</td>'
+          + '<td><span class="ind-age">' + escapeHtml(userPlan) + '</span></td>'
+          + '<td><span class="status-pill status-' + r.status + '">' + escapeHtml(r.status.replace('_', ' ')) + '</span></td>'
+          + '<td><span class="ind-age ' + ageClass + '">' + escapeHtml(ageCellText) + '</span></td>'
+          + '<td><span class="ind-age" title="' + escapeHtml(r.notes || '') + '">' + escapeHtml(notesShort) + '</span></td>'
+          + '<td>' + actions + '</td>'
+          + '</tr>';
+      });
+      html += '</tbody></table>';
+      container.innerHTML = html;
+
+      // Wire action buttons.
+      container.querySelectorAll('.ind-action.invite').forEach(function(btn){
+        btn.addEventListener('click', function(){
+          var id = parseInt(btn.dataset.id, 10);
+          if (!confirm('Mark this request as INVITED?\n\nThis fires the access-live email to the user. Do this AFTER you have added them on TradingView Manage Access.')) return;
+          btn.disabled = true; btn.textContent = 'Sending…';
+          api('POST', '/admin/indicators/' + id + '/mark-invited').then(function(res){
+            if (res.status === 200 && res.body.ok) {
+              loadIndicators();
+            } else {
+              btn.disabled = false; btn.textContent = 'Mark Invited';
+              alert('Failed: ' + (res.body && res.body.error ? res.body.error : 'unknown'));
+            }
+          }).catch(function(e){
+            btn.disabled = false; btn.textContent = 'Mark Invited';
+            alert('Network error: ' + e.message);
+          });
+        });
+      });
+      container.querySelectorAll('.ind-action.revoke').forEach(function(btn){
+        btn.addEventListener('click', function(){
+          var id = parseInt(btn.dataset.id, 10);
+          if (!confirm('Mark this request as REVOKED?\n\nThis fires the revocation email to the user. Do this AFTER removing them from TradingView Manage Access.')) return;
+          btn.disabled = true; btn.textContent = 'Sending…';
+          api('POST', '/admin/indicators/' + id + '/mark-revoked').then(function(res){
+            if (res.status === 200 && res.body.ok) {
+              loadIndicators();
+            } else {
+              btn.disabled = false; btn.textContent = 'Mark Revoked';
+              alert('Failed: ' + (res.body && res.body.error ? res.body.error : 'unknown'));
+            }
+          }).catch(function(e){
+            btn.disabled = false; btn.textContent = 'Mark Revoked';
+            alert('Network error: ' + e.message);
+          });
+        });
+      });
+      container.querySelectorAll('.ind-action.notes').forEach(function(btn){
+        btn.addEventListener('click', function(){
+          var id = parseInt(btn.dataset.id, 10);
+          var row = data.requests.find(function(r){ return r.id === id; });
+          if (!row) return;
+          indState.activeNotesRow = row;
+          $('indNotesContext').textContent = (row.user && row.user.email ? row.user.email : '—')
+            + ' · ' + (row.tradingViewUsername || '—');
+          $('indNotesText').value = row.notes || '';
+          $('indNotesModal').classList.add('visible');
+          $('indNotesText').focus();
+        });
+      });
+
+      renderPagination(indState, data.total, $('indSummary'), $('indPrev'), $('indNext'), $('indPagination'));
+    }).catch(function(e){
+      container.innerHTML = '<div class="placeholder">' + escapeHtml(e.message) + '</div>';
+    });
+  }
+  $('indPageSize').addEventListener('change', function(){
+    indState.pageSize = parseInt($('indPageSize').value, 10) || 50;
+    indState.page = 1;
+    loadIndicators();
+  });
+  $('indPrev').addEventListener('click', function(){ if (indState.page > 1) { indState.page--; loadIndicators(); } });
+  $('indNext').addEventListener('click', function(){ indState.page++; loadIndicators(); });
+
+  // Notes modal wiring.
+  $('indNotesCancel').addEventListener('click', function(){
+    $('indNotesModal').classList.remove('visible');
+    indState.activeNotesRow = null;
+  });
+  $('indNotesSave').addEventListener('click', function(){
+    var row = indState.activeNotesRow;
+    if (!row) return;
+    var notes = $('indNotesText').value.trim();
+    var btn = $('indNotesSave'); btn.disabled = true; var orig = btn.textContent; btn.textContent = 'Saving…';
+    api('POST', '/admin/indicators/' + row.id + '/notes', { notes: notes }).then(function(res){
+      btn.disabled = false; btn.textContent = orig;
+      if (res.status === 200 && res.body.ok) {
+        $('indNotesModal').classList.remove('visible');
+        indState.activeNotesRow = null;
+        loadIndicators();
+      } else {
+        alert('Save failed: ' + (res.body && res.body.error ? res.body.error : 'unknown'));
+      }
+    }).catch(function(e){
+      btn.disabled = false; btn.textContent = orig;
+      alert('Network error: ' + e.message);
+    });
+  });
+
+  // Hook into section nav: load indicators when the tab is first opened.
+  document.querySelector('nav button[data-section="indicators"]').addEventListener('click', function(){
+    loadIndicators();
   });
 
   // Wrap renderConsole to also load both lists on every console render.
