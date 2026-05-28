@@ -75,6 +75,19 @@ RewriteRule ^app/?$ https://staging-app.maketzo.co/ [R=302,L,QSA]
 RewriteCond %{HTTP_HOST} ^maketzo\.co$ [NC]
 RewriteRule ^app/?$ https://app.maketzo.co/ [R=302,L,QSA]
 
+# Tier-aware /admin redirect. The static admin.html in this repo is dead
+# code as of 2026-05-18 — the active admin console lives on the API origin
+# (cookie auth needs to set httpOnly cookies on the API domain). Without
+# this redirect, hostinger still serves the stale admin.html and operators
+# can land on the wrong page (see memory/reference-admin-console-lives-on-
+# api-origin.md). Permanent (R=301). QSA carries ?token=... for reset URLs.
+RewriteCond %{HTTP_HOST} ^dev\.maketzo\.co$ [NC]
+RewriteRule ^admin(/.*)?$ https://dev-api.maketzo.co/admin$1 [R=301,L,QSA]
+RewriteCond %{HTTP_HOST} ^staging\.maketzo\.co$ [NC]
+RewriteRule ^admin(/.*)?$ https://staging-api.maketzo.co/admin$1 [R=301,L,QSA]
+RewriteCond %{HTTP_HOST} ^maketzo\.co$ [NC]
+RewriteRule ^admin(/.*)?$ https://api.maketzo.co/admin$1 [R=301,L,QSA]
+
 # Strip trailing slashes (except the bare /).
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.+)/$ /$1 [R=301,L]
