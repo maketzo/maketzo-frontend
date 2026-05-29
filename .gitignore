@@ -4,3 +4,6 @@ Thumbs.db
 .vscode/
 .idea/
 .commit-msg.tmp
+
+# Design system — local visual source of truth, never shipped to public web
+design-system/
