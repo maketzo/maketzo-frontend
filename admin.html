@@ -211,19 +211,17 @@
 </head>
 <body>
 
-<!-- LOGIN VIEW: shown when there is no valid admin session cookie -->
+<!-- LOGIN VIEW: shown when no secret is in sessionStorage -->
 <div id="loginView">
   <div class="login-wrap">
     <div class="login-card">
       <img class="mark" src="https://maketzo.co/assets/logo-mark.png" alt="MAKETZO">
       <p class="login-eyebrow">Internal · Restricted</p>
       <h1 class="login-title">Admin Console</h1>
-      <p class="desc">Sign in with your admin email and password. Your session is held in a secure cookie. Forgot your password? Use <a href="#" id="forgotLink">Forgot password</a> to get a reset link.</p>
-      <label for="loginEmail">Email</label>
-      <input type="email" id="loginEmail" autocomplete="username" placeholder="you@maketzo.co">
-      <label for="loginPassword">Password</label>
-      <input type="password" id="loginPassword" autocomplete="current-password" placeholder="password">
-      <button class="primary" id="loginBtn">Sign in</button>
+      <p class="desc">Paste your <code>NEWSLETTER_ADMIN_SECRET</code> to unlock. The secret is held in this browser tab only and cleared when you close it.</p>
+      <label for="loginSecret">Admin secret</label>
+      <input type="password" id="loginSecret" autocomplete="off" placeholder="paste secret">
+      <button class="primary" id="loginBtn">Unlock console</button>
       <div id="loginStatus" class="status" style="display:none;"></div>
     </div>
   </div>
@@ -246,8 +244,8 @@
   </header>
   <nav>
     <button data-section="newsletter" class="active">Newsletter</button>
-    <button data-section="users">Users</button>
     <button data-section="placeholder-billing" disabled title="Coming soon">Billing &amp; refunds</button>
+    <button data-section="placeholder-users" disabled title="Coming soon">Users</button>
   </nav>
 
   <main>
@@ -325,24 +323,6 @@
         </div>
       </div>
     </section>
-
-    <section data-section="users">
-      <p class="section-eyebrow">Customer Care</p>
-      <h1 class="section-title">Users</h1>
-      <p class="section-lead">Look up any MAKETZO account, then take action: block an abusive user, send a password-reset link, email a data backup, or delete the account. Every action is logged against your admin login. Deletes use a 30-day grace and can be undone — nothing here is an instant, irreversible wipe.</p>
-
-      <div class="card">
-        <h2>Find a user</h2>
-        <p class="desc">Search by email or name, then click a result to open the account. Blocked and deleted accounts show a flag so you can spot them at a glance.</p>
-        <div class="list-toolbar">
-          <input type="text" class="search-input" id="userSearch" placeholder="Search email or name&hellip;" autocomplete="off">
-        </div>
-        <div id="userResults"><div class="placeholder">Type at least 2 characters to search.</div></div>
-      </div>
-
-      <!-- Detail panel — rendered by JS when a user is selected. -->
-      <div id="userDetail" style="display:none;"></div>
-    </section>
   </main>
 
   <footer>
@@ -354,11 +334,13 @@
 
 <script>
 (function(){
+  var SECRET_KEY = 'mkAdminSecret';
+
+  function getSecret(){ return sessionStorage.getItem(SECRET_KEY); }
+  function setSecret(s){ sessionStorage.setItem(SECRET_KEY, s); }
+  function clearSecret(){ sessionStorage.removeItem(SECRET_KEY); }
+
   function $(id){ return document.getElementById(id); }
-  function getCookie(name){
-    var m = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
-    return m ? decodeURIComponent(m.pop()) : '';
-  }
 
   function showStatus(el, kind, text, detail){
     el.style.display = 'block';
@@ -376,9 +358,9 @@
   // admin.html works across all four tiers (local / dev / staging / prod).
   // Mirrors the pattern in assets/js/newsletter.js + checkout.js — strip
   // leading www. then map: maketzo.co -> api.maketzo.co, dev.* -> dev-api.*,
-  // staging.* -> staging-api.*, localhost -> localhost:3000. Admin auth now
-  // rides in the httpOnly cookie (mkt_admin_sess) + CSRF cookie (mkt_admin_csrf),
-  // same registrable domain as the API, so credentials:'include' is required.
+  // staging.* -> staging-api.*, localhost -> localhost:3000. Cookies aren't
+  // used for admin auth (X-Admin-Secret header instead), so credentials:
+  // 'omit' is fine — keeps CORS preflight simple.
   var API_BASE = (function(){
     var h0 = window.location.hostname;
     var h = h0.indexOf('www.') === 0 ? h0.slice(4) : h0;
@@ -390,32 +372,22 @@
   })();
 
   function api(method, path, body){
-    var headers = { 'Content-Type': 'application/json' };
-    // CSRF double-submit: echo the readable csrf cookie back as a header on
-    // mutating requests. The session itself rides in the httpOnly cookie.
-    if (method !== 'GET' && method !== 'HEAD') {
-      headers['x-csrf-token'] = getCookie('mkt_admin_csrf');
-    }
+    var secret = getSecret();
+    if (!secret) { renderLogin(); return Promise.reject(new Error('no secret')); }
     return fetch(API_BASE + path, {
       method: method,
-      headers: headers,
-      credentials: 'include',
+      headers: { 'Content-Type': 'application/json', 'X-Admin-Secret': secret },
       body: body ? JSON.stringify(body) : undefined
     }).then(function(r){
-      // On the auth endpoints a 401 is "bad credentials" — let the caller read
-      // it. Anywhere else a 401 means the session lapsed: bounce to login.
-      if (r.status === 401 && path.indexOf('/admin/auth/') === -1) {
-        renderLogin();
-        throw new Error('Session expired — sign in again.');
-      }
-      return r.json().then(function(j){ return { status: r.status, body: j }; }, function(){ return { status: r.status, body: {} }; });
+      if (r.status === 401) { clearSecret(); renderLogin(); throw new Error('unauthorized — secret rejected'); }
+      return r.json().then(function(j){ return { status: r.status, body: j }; });
     });
   }
 
   function renderLogin(){
     $('loginView').style.display = '';
     $('consoleView').style.display = 'none';
-    $('loginEmail').focus();
+    $('loginSecret').focus();
   }
   function renderConsole(){
     $('loginView').style.display = 'none';
@@ -423,36 +395,27 @@
     loadIssues();
   }
 
-  // ── Login (AdminUser email + password → cookie session) ─────────────
-  function doLogin(){
-    var email = $('loginEmail').value.trim();
-    var password = $('loginPassword').value;
-    if (!email || !password) { showStatus($('loginStatus'), 'error', 'Enter your email and password.'); return; }
+  // ── Login ───────────────────────────────────────────────────────────
+  $('loginBtn').addEventListener('click', function(){
+    var s = $('loginSecret').value.trim();
+    if (!s) { showStatus($('loginStatus'), 'error', 'Paste your secret first.'); return; }
+    setSecret(s);
     hideStatus($('loginStatus'));
-    var btn = $('loginBtn'); btn.disabled = true; var orig = btn.textContent; btn.textContent = 'Signing in…';
-    api('POST', '/admin/auth/login', { email: email, password: password }).then(function(res){
-      btn.disabled = false; btn.textContent = orig;
-      if (res.status === 200 && res.body.ok) { $('loginPassword').value = ''; renderConsole(); }
-      else if (res.status === 423) { showStatus($('loginStatus'), 'error', 'Account temporarily locked after too many failed attempts. Try again in 15 minutes.'); }
-      else { showStatus($('loginStatus'), 'error', 'Invalid email or password.'); }
-    }).catch(function(e){ btn.disabled = false; btn.textContent = orig; showStatus($('loginStatus'), 'error', e.message); });
-  }
-  $('loginBtn').addEventListener('click', doLogin);
-  $('loginEmail').addEventListener('keydown', function(e){ if (e.key === 'Enter') $('loginPassword').focus(); });
-  $('loginPassword').addEventListener('keydown', function(e){ if (e.key === 'Enter') doLogin(); });
-  $('forgotLink').addEventListener('click', function(e){
-    e.preventDefault();
-    var email = $('loginEmail').value.trim();
-    if (!email) { showStatus($('loginStatus'), 'info', 'Enter your email above first, then click Forgot password.'); return; }
-    // Always-200 endpoint; show the same message regardless so we don't leak which emails exist.
-    api('POST', '/admin/auth/forgot-password', { email: email }).then(function(){
-      showStatus($('loginStatus'), 'success', 'If that email is registered, a reset link is on its way. Check your inbox.');
-    }).catch(function(){
-      showStatus($('loginStatus'), 'success', 'If that email is registered, a reset link is on its way. Check your inbox.');
+    // Test by hitting issues endpoint — it'll 401 if the secret is wrong.
+    api('GET', '/admin/newsletter/issues').then(function(res){
+      if (res.status === 200) { renderConsole(); }
+      else { showStatus($('loginStatus'), 'error', 'Server returned ' + res.status); }
+    }).catch(function(e){
+      showStatus($('loginStatus'), 'error', e.message);
     });
   });
+  $('loginSecret').addEventListener('keydown', function(e){
+    if (e.key === 'Enter') $('loginBtn').click();
+  });
   $('logoutBtn').addEventListener('click', function(){
-    api('POST', '/admin/auth/logout').then(function(){ renderLogin(); }).catch(function(){ renderLogin(); });
+    clearSecret();
+    $('loginSecret').value = '';
+    renderLogin();
   });
 
   // ── Nav tabs ────────────────────────────────────────────────────────
@@ -767,216 +730,16 @@
     loadSubscribers();
   };
 
-  // ── Users (customer-care console) ───────────────────────────────────
-  function fmtMoney(cents){ if (!cents) return '$0.00'; return '$' + (cents / 100).toFixed(2); }
-  var userState = { search: '', selectedId: null };
-
-  function userFlags(u){
-    var out = '';
-    if (u.blocked || u.blockedAt) out += '<span class="status-pill status-bounced">blocked</span> ';
-    if (u.deletedAt) out += '<span class="status-pill status-unsubscribed">pending deletion</span> ';
-    return out;
-  }
-
-  function loadUsers(){
-    var container = $('userResults');
-    var term = userState.search;
-    if (term.length < 2) { container.innerHTML = '<div class="placeholder">Type at least 2 characters to search.</div>'; return; }
-    api('GET', '/admin/users?' + qs({ search: term, limit: 25 })).then(function(res){
-      if (res.status !== 200 || !res.body.users) { container.innerHTML = '<div class="placeholder">Search failed.</div>'; return; }
-      var users = res.body.users;
-      if (!users.length) { container.innerHTML = '<div class="placeholder">No users match &ldquo;' + escapeHtml(term) + '&rdquo;.</div>'; return; }
-      var html = '<table><thead><tr><th>Email</th><th>Name</th><th>Plan</th><th>Status</th><th>Flags</th><th>Joined</th></tr></thead><tbody>';
-      users.forEach(function(u){
-        html += '<tr class="user-row" data-id="' + u.id + '" style="cursor:pointer;">'
-          + '<td class="email-cell">' + escapeHtml(u.email) + '</td>'
-          + '<td>' + escapeHtml(u.name || '—') + '</td>'
-          + '<td>' + escapeHtml(u.plan) + '</td>'
-          + '<td>' + escapeHtml(u.subscriptionStatus || '—') + '</td>'
-          + '<td>' + (userFlags(u) || '—') + '</td>'
-          + '<td>' + fmtDate(u.createdAt) + '</td>'
-          + '</tr>';
-      });
-      html += '</tbody></table>';
-      container.innerHTML = html;
-      container.querySelectorAll('.user-row').forEach(function(row){
-        row.addEventListener('click', function(){ openUser(parseInt(row.dataset.id, 10)); });
-      });
-    }).catch(function(e){ container.innerHTML = '<div class="placeholder">' + escapeHtml(e.message) + '</div>'; });
-  }
-
-  function openUser(id){
-    userState.selectedId = id;
-    var panel = $('userDetail');
-    panel.style.display = '';
-    panel.innerHTML = '<div class="card"><div class="placeholder">Loading account…</div></div>';
-    panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    api('GET', '/admin/users/' + id + '/summary').then(function(res){
-      if (res.status !== 200 || !res.body.user) { panel.innerHTML = '<div class="card"><div class="placeholder">Failed to load this account.</div></div>'; return; }
-      renderUserDetail(res.body);
-    }).catch(function(e){ panel.innerHTML = '<div class="card"><div class="placeholder">' + escapeHtml(e.message) + '</div></div>'; });
-  }
-  // Re-fetch + re-render the currently open account (after an action).
-  function reloadUser(){ if (userState.selectedId) openUser(userState.selectedId); }
-
-  function renderUserDetail(data){
-    var u = data.user, c = data.counts || {};
-    var panel = $('userDetail');
-    var blocked = !!(u.blocked || u.blockedAt);
-    var blockUntilTxt = u.blockedUntil ? ('until ' + fmtDate(u.blockedUntil)) : 'indefinitely';
-
-    // ── Overview card ──
-    var html = ''
-      + '<div class="card">'
-      + '<h2>' + escapeHtml(u.email) + ' ' + userFlags(u) + '</h2>'
-      + '<p class="desc">' + escapeHtml(u.name || 'No name') + ' &middot; user #' + u.id + ' &middot; joined ' + fmtDate(u.createdAt) + '</p>'
-      + '<table><tbody>'
-      + '<tr><th style="text-align:left;">Plan</th><td>' + escapeHtml(u.plan) + '</td></tr>'
-      + '<tr><th style="text-align:left;">Billing status</th><td>' + escapeHtml(u.subscriptionStatus || 'none') + (u.trialEndsAt ? ' &middot; trial ends ' + fmtDate(u.trialEndsAt) : '') + '</td></tr>'
-      + '<tr><th style="text-align:left;">Email verified</th><td>' + (u.emailVerified ? 'Yes' : 'No') + '</td></tr>'
-      + '<tr><th style="text-align:left;">Account credit</th><td>' + fmtMoney(u.creditBalanceCents) + '</td></tr>'
-      + '<tr><th style="text-align:left;">Activity</th><td>' + (c.trades||0) + ' trades &middot; ' + (c.journalEntries||0) + ' journal &middot; ' + (c.dailySessions||0) + ' sessions &middot; last ' + fmtDate(data.lastActivityAt) + '</td></tr>'
-      + '</tbody></table>'
-      + '</div>';
-
-    // ── Block / suspend card ──
-    if (blocked) {
-      html += '<div class="card">'
-        + '<h2>Blocked</h2>'
-        + '<p class="desc">This account is blocked <strong>' + blockUntilTxt + '</strong>'
-        + (u.blockReason ? ' — reason: <strong>' + escapeHtml(u.blockReason) + '</strong>' : '') + '. '
-        + 'They are signed out on their next request and cannot sign back in. Unblocking restores access immediately.</p>'
-        + '<button class="primary" id="uUnblockBtn">Unblock this user</button>'
-        + '<div id="uBlockStatus" class="status" style="display:none;"></div>'
-        + '</div>';
-    } else {
-      html += '<div class="card">'
-        + '<h2>Block / suspend</h2>'
-        + '<p class="desc">Blocking cuts off this account on its very next request — their data is untouched. Leave the end date <strong>empty to block indefinitely</strong> (for abuse); set a date to suspend temporarily, after which access returns on its own.</p>'
-        + '<label for="uBlockReason">Reason (logged, shown to no one)</label>'
-        + '<input type="text" id="uBlockReason" placeholder="e.g. abusive behavior, chargeback fraud">'
-        + '<label for="uBlockUntil">Block until (optional — empty = indefinite)</label>'
-        + '<input type="datetime-local" id="uBlockUntil">'
-        + '<button class="primary" id="uBlockBtn">Block this user</button>'
-        + '<div id="uBlockStatus" class="status" style="display:none;"></div>'
-        + '</div>';
-    }
-
-    // ── Password card ──
-    html += '<div class="card">'
-      + '<h2>Password</h2>';
-    if (data.hasPassword) {
-      html += '<p class="desc">Emails the user a secure password-reset link that expires in <strong>1 hour</strong>. It does <strong>not</strong> change their password — they choose a new one themselves. No password is ever sent in the email.</p>'
-        + '<button class="primary" id="uResetBtn">Send password-reset link</button>';
-    } else {
-      html += '<p class="desc">This user signs in with <strong>Google only</strong> — there is no password to reset. If they need a password, they can set one from the login page&rsquo;s &ldquo;Forgot password&rdquo; after adding email sign-in.</p>'
-        + '<button class="primary" id="uResetBtn" disabled>Send password-reset link</button>';
-    }
-    html += '<div id="uResetStatus" class="status" style="display:none;"></div></div>';
-
-    // ── Data backup card ──
-    html += '<div class="card">'
-      + '<h2>Data backup</h2>'
-      + '<p class="desc">Emails the user a one-time, 24-hour link to download a full JSON backup of their account (trades, journal, sessions, settings). They must sign in before the download starts, so the link alone is useless to anyone else.</p>'
-      + '<button class="primary" id="uBackupBtn">Send backup email</button>'
-      + '<div id="uBackupStatus" class="status" style="display:none;"></div></div>';
-
-    // ── Delete / restore card ──
-    if (u.deletedAt) {
-      html += '<div class="card">'
-        + '<h2>Pending deletion</h2>'
-        + '<p class="desc">This account is scheduled for permanent deletion on <strong>' + fmtDate(u.deletionScheduledFor) + '</strong>. Until then it is recoverable — nothing has been erased. Restore it to give the user their access and data back.</p>'
-        + '<button class="primary" id="uRestoreBtn">Restore this account</button>'
-        + '<div id="uDeleteStatus" class="status" style="display:none;"></div></div>';
-    } else {
-      html += '<div class="card">'
-        + '<h2>Delete account</h2>'
-        + '<p class="desc">Soft delete with a <strong>30-day grace</strong>. The user can&rsquo;t sign in, but nothing is erased — you can restore it here any time in the next 30 days. After that, the nightly cleanup purges it permanently. This is the same safe path the user gets when they delete their own account.</p>'
-        + '<button class="primary" id="uDeleteBtn">Delete this account</button>'
-        + '<div id="uDeleteStatus" class="status" style="display:none;"></div></div>';
-    }
-
-    panel.innerHTML = html;
-    wireUserDetailHandlers(u);
-  }
-
-  function wireUserDetailHandlers(u){
-    var id = u.id;
-    function busy(btn, on, txt){ btn.disabled = on; if (on) { btn.dataset._t = btn.textContent; btn.textContent = txt || 'Working…'; } else if (btn.dataset._t) { btn.textContent = btn.dataset._t; } }
-
-    var blockBtn = $('uBlockBtn');
-    if (blockBtn) blockBtn.addEventListener('click', function(){
-      var reason = ($('uBlockReason').value || '').trim();
-      var untilRaw = $('uBlockUntil').value;
-      var until = untilRaw ? new Date(untilRaw).toISOString() : undefined;
-      if (!confirm('Block ' + u.email + (until ? ' until ' + new Date(untilRaw).toLocaleString() : ' indefinitely') + '?\\n\\nThey are cut off on their next request.')) return;
-      busy(blockBtn, true, 'Blocking…');
-      api('POST', '/admin/users/' + id + '/block', { reason: reason, until: until }).then(function(res){
-        if (res.status === 200 && res.body.ok) reloadUser();
-        else { busy(blockBtn, false); showStatus($('uBlockStatus'), 'error', (res.body && res.body.error) || 'Block failed.'); }
-      }).catch(function(e){ busy(blockBtn, false); showStatus($('uBlockStatus'), 'error', e.message); });
-    });
-
-    var unblockBtn = $('uUnblockBtn');
-    if (unblockBtn) unblockBtn.addEventListener('click', function(){
-      busy(unblockBtn, true, 'Unblocking…');
-      api('POST', '/admin/users/' + id + '/unblock').then(function(res){
-        if (res.status === 200 && res.body.ok) reloadUser();
-        else { busy(unblockBtn, false); showStatus($('uBlockStatus'), 'error', (res.body && res.body.error) || 'Unblock failed.'); }
-      }).catch(function(e){ busy(unblockBtn, false); showStatus($('uBlockStatus'), 'error', e.message); });
-    });
-
-    var resetBtn = $('uResetBtn');
-    if (resetBtn && !resetBtn.disabled) resetBtn.addEventListener('click', function(){
-      busy(resetBtn, true, 'Sending…');
-      api('POST', '/admin/users/' + id + '/send-password-reset').then(function(res){
-        busy(resetBtn, false);
-        if (res.status === 200 && res.body.ok) showStatus($('uResetStatus'), 'success', 'Reset link sent to ' + res.body.emailedTo + '. It expires in 1 hour.');
-        else showStatus($('uResetStatus'), 'error', (res.body && res.body.message) || (res.body && res.body.error) || 'Send failed.');
-      }).catch(function(e){ busy(resetBtn, false); showStatus($('uResetStatus'), 'error', e.message); });
-    });
-
-    var backupBtn = $('uBackupBtn');
-    if (backupBtn) backupBtn.addEventListener('click', function(){
-      busy(backupBtn, true, 'Sending…');
-      api('POST', '/admin/users/' + id + '/send-backup-email').then(function(res){
-        busy(backupBtn, false);
-        if (res.status === 200 && res.body.ok) showStatus($('uBackupStatus'), 'success', 'Backup link emailed to ' + res.body.emailedTo + '. Valid 24 hours, one use.');
-        else showStatus($('uBackupStatus'), 'error', (res.body && res.body.error) || 'Send failed.');
-      }).catch(function(e){ busy(backupBtn, false); showStatus($('uBackupStatus'), 'error', e.message); });
-    });
-
-    var deleteBtn = $('uDeleteBtn');
-    if (deleteBtn) deleteBtn.addEventListener('click', function(){
-      if (!confirm('Delete ' + u.email + '?\\n\\nSoft delete with a 30-day grace — they lose access now, but you can restore it any time in the next 30 days. After that it is permanently purged.')) return;
-      busy(deleteBtn, true, 'Deleting…');
-      api('POST', '/admin/users/' + id + '/delete').then(function(res){
-        if (res.status === 200 && res.body.ok) reloadUser();
-        else { busy(deleteBtn, false); showStatus($('uDeleteStatus'), 'error', (res.body && res.body.error) || 'Delete failed.'); }
-      }).catch(function(e){ busy(deleteBtn, false); showStatus($('uDeleteStatus'), 'error', e.message); });
-    });
-
-    var restoreBtn = $('uRestoreBtn');
-    if (restoreBtn) restoreBtn.addEventListener('click', function(){
-      busy(restoreBtn, true, 'Restoring…');
-      api('POST', '/admin/users/' + id + '/restore').then(function(res){
-        if (res.status === 200 && res.body.ok) reloadUser();
-        else { busy(restoreBtn, false); showStatus($('uDeleteStatus'), 'error', (res.body && res.body.error) || 'Restore failed.'); }
-      }).catch(function(e){ busy(restoreBtn, false); showStatus($('uDeleteStatus'), 'error', e.message); });
-    });
-  }
-
-  $('userSearch').addEventListener('input', debounce(function(){
-    userState.search = $('userSearch').value.trim();
-    loadUsers();
-  }, 300));
-
   // ── Boot ───────────────────────────────────────────────────────────
-  // Resume an existing admin session if the cookie is still valid.
-  api('GET', '/admin/auth/me').then(function(res){
-    if (res.status === 200 && res.body.ok) renderConsole();
-    else renderLogin();
-  }).catch(function(){ renderLogin(); });
+  if (getSecret()) {
+    // Verify the stored secret is still valid by trying issues endpoint.
+    api('GET', '/admin/newsletter/issues').then(function(res){
+      if (res.status === 200) renderConsole();
+      else renderLogin();
+    }).catch(function(){ renderLogin(); });
+  } else {
+    renderLogin();
+  }
 })();
 </script>
 </body>
