@@ -359,7 +359,9 @@ document.getElementById('signupForm').addEventListener('submit', async (e) => {
     const res = await fetch(API + '/auth/signup', {
       method: 'POST', credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email, password, turnstileToken })
+      // intendsCheckout: a plan is selected, so the user is headed to Stripe and
+      // will be verified via payment — backend skips the (moot) verify email.
+      body: JSON.stringify({ name, email, password, turnstileToken, intendsCheckout: !!planId })
     });
     const data = await res.json().catch(() => ({}));
     if (!(res.ok && data.ok)) {
