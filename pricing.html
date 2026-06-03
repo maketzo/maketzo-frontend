@@ -449,7 +449,7 @@ hr.mk-rule-gold, hr.mk-rule-gold--bold { margin: 0 auto; max-width: 1180px; }
   min-height: 18px;
 }
 .tier-features {
-  display: flex; flex-direction: column; gap: 10px;
+  display: flex; flex-direction: column; gap: 15px;
   margin-bottom: 28px;
   flex-grow: 1;
 }
@@ -467,6 +467,9 @@ hr.mk-rule-gold, hr.mk-rule-gold--bold { margin: 0 auto; max-width: 1180px; }
 }
 .tier-features li.muted { color: var(--mk-text-tertiary); }
 .tier-features li.muted::before { content: '—'; color: var(--mk-smoke-600); }
+.tier-features .feat { display: flex; flex-direction: column; gap: 3px; }
+.tier-features .feat-name { font-size: var(--mk-text-md); font-weight: 600; color: var(--mk-text-primary); line-height: 1.3; }
+.tier-features .feat-desc { font-size: var(--mk-text-sm); color: var(--mk-text-tertiary); line-height: 1.45; }
 .tier-cta { width: 100%; padding: 14px 22px; }
 @media (max-width: 900px) {
   .tier-grid { grid-template-columns: 1fr; max-width: 460px; }
@@ -889,11 +892,11 @@ footer {
         </div>
         <div class="tier-sub" id="p1sub">or $290/yr — save 17%</div>
         <ul class="tier-features">
-          <li>Trade journal &amp; daily session log</li>
-          <li>P&amp;L tracking &amp; ¢/share metrics</li>
-          <li>Discipline score</li>
-          <li>Streak preservation</li>
-          <li>Rule pills (custom rules)</li>
+          <li><span class="feat"><span class="feat-name">Trade journal &amp; session log</span><span class="feat-desc">Every fill captured in seconds, before tomorrow blurs the details.</span></span></li>
+          <li><span class="feat"><span class="feat-name">P&amp;L &amp; ¢/share metrics</span><span class="feat-desc">See what each trade actually made or cost you, down to the penny.</span></span></li>
+          <li><span class="feat"><span class="feat-name">Discipline score</span><span class="feat-desc">One daily number that tells you the truth: did you trade your plan, or your emotions?</span></span></li>
+          <li><span class="feat"><span class="feat-name">Streak preservation</span><span class="feat-desc">Watch your green days stack up, and feel the pull not to break the chain.</span></span></li>
+          <li><span class="feat"><span class="feat-name">Custom rule pills</span><span class="feat-desc">Your own non-negotiables, pinned to every session where you can't ignore them.</span></span></li>
         </ul>
         <button class="btn-secondary tier-cta" id="cta1" data-price-id="price_1Te3geJIDbUntZeXZjubg0EW" onclick="handleCheckout(this.dataset.priceId,event)">Start 7-Day Free Trial</button>
       </div>
@@ -910,15 +913,14 @@ footer {
         </div>
         <div class="tier-sub" id="p2sub">or $399/yr — save 32%</div>
         <ul class="tier-features">
-          <li>Everything in Journal</li>
-          <li><strong>Maketzo Edge</strong> — opportunity windows</li>
-          <li><strong>Maketzo Pulse</strong> — momentum confirmation</li>
-          <li>COACH SAYS — 8:30 AM &amp; 10:30 AM check-ins</li>
-          <li>State Machine + Strike System + 24-hour lockout</li>
-          <li>Waiting Room — anti-overtrading</li>
-          <li>TradingView invite (within 24 hrs)</li>
-          <li>Focus Room — 5 Zone Tracks + meditation reset</li>
-          <li>Training Engine — rule-based quizzes</li>
+          <li><span class="feat"><span class="feat-name">Everything in Journal</span><span class="feat-desc">Plus the system that steps in while you trade, not just after.</span></span></li>
+          <li><span class="feat"><span class="feat-name">Maketzo Edge</span><span class="feat-desc">Surfaces the windows actually worth trading, so you stop forcing setups that aren't there.</span></span></li>
+          <li><span class="feat"><span class="feat-name">Maketzo Pulse</span><span class="feat-desc">Confirms momentum before you click, instead of after you're already underwater.</span></span></li>
+          <li><span class="feat"><span class="feat-name">COACH SAYS</span><span class="feat-desc">8:30 &amp; 10:30 AM check-ins that sit between you and the button.</span></span></li>
+          <li><span class="feat"><span class="feat-name">Strike System</span><span class="feat-desc">Three rule breaks and you're locked out for 24 hours, before one bad morning blows the account.</span></span></li>
+          <li><span class="feat"><span class="feat-name">Waiting Room</span><span class="feat-desc">A forced pause that kills the revenge trade at its source.</span></span></li>
+          <li><span class="feat"><span class="feat-name">TradingView invite</span><span class="feat-desc">Edge + Pulse live on your own charts, granted within 24 hours.</span></span></li>
+          <li><span class="feat"><span class="feat-name">Focus Room</span><span class="feat-desc">Mood-based Zone Tracks and a reset ritual to get your head right before the open.</span></span></li>
         </ul>
         <button class="btn-primary tier-cta" id="cta2" data-price-id="price_1TUWVpJIDbUntZeXyQD23z8W" onclick="handleCheckout(this.dataset.priceId,event)">Start 7-Day Free Trial</button>
       </div>
@@ -934,11 +936,11 @@ footer {
         </div>
         <div class="tier-sub" id="p3sub">or $649/yr — save 32%</div>
         <ul class="tier-features">
-          <li>Everything in Pro</li>
-          <li><strong>AI Training Engine</strong> — personalized drills</li>
-          <li>Concierge onboarding session</li>
-          <li>Founders' community circle</li>
-          <li>Early access to new features</li>
+          <li><span class="feat"><span class="feat-name">Everything in Pro</span><span class="feat-desc">The full discipline OS, dialed all the way in.</span></span></li>
+          <li><span class="feat"><span class="feat-name">AI Training Engine</span><span class="feat-desc">Drills that adapt to your actual mistakes, not generic lessons.</span></span></li>
+          <li><span class="feat"><span class="feat-name">Concierge onboarding</span><span class="feat-desc">A 1-on-1 session to wire MAKETZO to the exact way you trade.</span></span></li>
+          <li><span class="feat"><span class="feat-name">Founders' circle</span><span class="feat-desc">A private room with the team and the most serious traders on the platform.</span></span></li>
+          <li><span class="feat"><span class="feat-name">Early access</span><span class="feat-desc">New features land in your account first, before anyone else.</span></span></li>
         </ul>
         <button class="btn-secondary tier-cta" id="cta3" data-price-id="price_1TUWabJIDbUntZeXYh8IrvEa" onclick="handleCheckout(this.dataset.priceId,event)">Start 7-Day Free Trial</button>
       </div>
