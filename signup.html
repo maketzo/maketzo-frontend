@@ -46,6 +46,11 @@
     <h1 class="auth-title" id="title">Start the <em>system.</em></h1>
     <p class="auth-sub" id="sub">Free to create. The trial starts when you pick a plan.</p>
 
+    <div id="refGift" class="auth-gift" hidden>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
+      <span><strong>A friend invited you.</strong> Enjoy an extended 14-day free trial, 7 extra days on us.</span>
+    </div>
+
     <div id="banner" class="auth-banner" hidden></div>
 
     <button id="googleBtn" class="btn-google" type="button">
@@ -122,20 +127,39 @@ const params = new URLSearchParams(window.location.search);
 const planId = params.get('plan') || '';
 const tier   = planId && TIER_BY_PRICE[planId] ? TIER_BY_PRICE[planId] : null;
 
+// Referred friends get the extended 14-day trial (the double-sided gift). Read
+// the mkt_ref cookie DIRECTLY — this runs at parse time, before the deferred
+// mkt-analytics.js has defined window.MKT, so MKT.getRef() isn't ready yet.
+function readRefCode() {
+  try { var m = document.cookie.match(/(?:^|;\s*)mkt_ref=([^;]+)/); return m ? decodeURIComponent(m[1]) : ''; }
+  catch (e) { return ''; }
+}
+const isReferred = !!readRefCode();
+
 if (tier) {
   if (tier.isIndicator) {
     // No trial on standalone Edge + Pulse — charged today, TradingView
-    // invite manually granted within 24 hours.
+    // invite manually granted within 24 hours. (Referral gift doesn't apply.)
     document.getElementById('eyebrow').textContent = 'EDGE + PULSE STANDALONE';
     document.getElementById('title').innerHTML = `Get <em>Edge + Pulse.</em>`;
     document.getElementById('sub').textContent = `${tier.amount} · Charged today · TradingView invite within 24 hours · Cancel anytime.`;
     document.getElementById('signupSubmit').textContent = `Subscribe — ${tier.amount}`;
   } else {
+    // Referred → 14-day trial (no charge until day 15); everyone else → 7 (day 8).
+    const days = isReferred ? 14 : 7;
+    const chargeDay = isReferred ? 15 : 8;
     document.getElementById('eyebrow').textContent = `START ${tier.name.toUpperCase()} TRIAL`;
     document.getElementById('title').innerHTML = `Sign up for <em>${tier.name}.</em>`;
-    document.getElementById('sub').textContent = `${tier.amount} · 7-day free trial · no charge until day 8 · cancel anytime.`;
-    document.getElementById('signupSubmit').textContent = 'Start 7-day free trial';
+    document.getElementById('sub').textContent = `${tier.amount} · ${days}-day free trial · no charge until day ${chargeDay} · cancel anytime.`;
+    document.getElementById('signupSubmit').textContent = `Start ${days}-day free trial`;
   }
+}
+
+// Surface the gift banner whenever the visitor arrived via a referral link,
+// except on the no-trial indicator plan (where the gift doesn't apply).
+if (isReferred && !(tier && tier.isIndicator)) {
+  const g = document.getElementById('refGift');
+  if (g) g.hidden = false;
 }
 
 // ── Turnstile ────────────────────────────────────────────────

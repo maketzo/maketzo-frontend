@@ -82,6 +82,24 @@ html { scroll-behavior: smooth; }
 .auth-banner--ok    { background: rgba(74,222,128,.08); border-color: rgba(74,222,128,.32); color: var(--mk-text-primary); }
 .auth-banner--error { background: rgba(244,63,94,.08);  border-color: rgba(244,63,94,.32);  color: var(--mk-text-primary); }
 
+/* Referred-friend gift banner — celebrates the extended 14-day trial right at
+   the checkout entry. Gold treatment = reward, distinct from the info banner. */
+.auth-gift {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+  padding: 12px 14px;
+  border-radius: var(--mk-radius-input);
+  font-size: var(--mk-text-sm);
+  line-height: 1.45;
+  color: var(--mk-text-primary);
+  background: rgba(212,175,55,.10);
+  border: 1px solid rgba(212,175,55,.42);
+}
+.auth-gift svg { flex: 0 0 auto; color: var(--mk-gold-500, #C9A84C); }
+.auth-gift strong { color: var(--mk-gold-500, #C9A84C); }
+
 .mk-form-field { margin-bottom: 16px; }
 .mk-form-field label {
   display: block;
