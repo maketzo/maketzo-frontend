@@ -403,9 +403,54 @@
   }
 
   // ── Boot ──────────────────────────────────────────────────────────────
+  // ── Referral capture ──────────────────────────────────────────────────
+  // If the landing URL carries ?ref=CODE, persist it for a 30-day attribution
+  // window — as a cookie on the .maketzo.co PARENT domain (so app.maketzo.co's
+  // signup form AND the api.maketzo.co OAuth callback can read it) plus a
+  // localStorage mirror — and fire the top-of-funnel referral_link_clicked
+  // event. signup.html reads MKT.getRef() to attach it to the signup request.
+  var REF_KEY = "mkt_ref";
+  var REF_TTL_DAYS = 30;
+  function refCookieDomain() {
+    // Share across the maketzo.co apex + subdomains in prod. On dev-*/localhost
+    // there's no shared apex, so scope to the current host (omit Domain).
+    var h = window.location.hostname;
+    if (h === "maketzo.co" || h.slice(-12) === ".maketzo.co") return "; domain=.maketzo.co";
+    return "";
+  }
+  function setRefCookie(code) {
+    try {
+      var exp = new Date(Date.now() + REF_TTL_DAYS * 864e5).toUTCString();
+      document.cookie = REF_KEY + "=" + encodeURIComponent(code) +
+        "; expires=" + exp + "; path=/" + refCookieDomain() + "; SameSite=Lax";
+    } catch (e) {}
+  }
+  function readRefCookie() {
+    try {
+      var m = document.cookie.match(/(?:^|;\s*)mkt_ref=([^;]+)/);
+      return m ? decodeURIComponent(m[1]) : null;
+    } catch (e) { return null; }
+  }
+  function getRef() {
+    return readRefCookie() || safeLocal("get", REF_KEY) || null;
+  }
+  function captureReferral() {
+    try {
+      var params = new URLSearchParams(window.location.search || "");
+      var raw = params.get("ref");
+      if (!raw) return;
+      var code = String(raw).trim().toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 32);
+      if (!code) return;
+      setRefCookie(code);
+      try { safeLocal("set", REF_KEY, code); } catch (e) {}
+      trackEvent("referral_link_clicked", { code: code }); // queues until PostHog loads
+    } catch (e) {}
+  }
+
   function boot() {
     // Eager IDs — first thing so any subsequent code sees them.
     getAnonId(); getSessionId();
+    captureReferral();
 
     // Defer PostHog load until consent decision (or auto-decide non-EU).
     isEuVisitor().then(function (isEu) {
@@ -444,7 +489,8 @@
     identify: identify,
     getAnonId: getAnonId,
     getSessionId: getSessionId,
-    isEuVisitor: isEuVisitor
+    isEuVisitor: isEuVisitor,
+    getRef: getRef
   };
 
   // Compat shim — audio-player.js still calls MaketzoAnalytics.send().

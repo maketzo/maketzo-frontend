@@ -21,7 +21,7 @@
 <link rel="stylesheet" href="assets/css/tokens.css">
 <link rel="stylesheet" href="assets/css/components.css">
 <link rel="stylesheet" href="assets/css/auth.css">
-<script src="assets/js/mkt-analytics.js?v=4" defer></script>
+<script src="assets/js/mkt-analytics.js?v=5" defer></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
 <body class="auth-body">
@@ -356,12 +356,16 @@ document.getElementById('signupForm').addEventListener('submit', async (e) => {
       if (!turnstileToken) { showBanner('Please complete the captcha.', 'error'); return; }
     }
 
+    // Referral attribution — attach the stored ?ref code (captured site-wide by
+    // mkt-analytics.js into the .maketzo.co cookie + localStorage) so the backend
+    // can credit the referrer. undefined when there's no referral.
+    const refCode = (window.MKT && MKT.getRef && MKT.getRef()) || undefined;
     const res = await fetch(API + '/auth/signup', {
       method: 'POST', credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
       // intendsCheckout: a plan is selected, so the user is headed to Stripe and
       // will be verified via payment — backend skips the (moot) verify email.
-      body: JSON.stringify({ name, email, password, turnstileToken, intendsCheckout: !!planId })
+      body: JSON.stringify({ name, email, password, turnstileToken, intendsCheckout: !!planId, ref: refCode })
     });
     const data = await res.json().catch(() => ({}));
     if (!(res.ok && data.ok)) {
