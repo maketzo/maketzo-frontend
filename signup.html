@@ -224,7 +224,7 @@ function applyMode(next) {
     passwordHint.textContent = 'At least 12 characters · No requirements on symbols or case';
     turnstileWrap.style.display = '';
     divider.style.display = '';
-    submitBtn.textContent = tier ? (tier.isIndicator ? `Subscribe — ${tier.amount}` : 'Start 7-day free trial') : 'Create account';
+    submitBtn.textContent = tier ? (tier.isIndicator ? `Subscribe — ${tier.amount}` : `Start ${isReferred ? 14 : 7}-day free trial`) : 'Create account';
     googleLabel.textContent = tier ? (tier.isIndicator ? 'Continue with Google for Edge + Pulse' : `Continue with Google to start ${tier.name} trial`) : 'Continue with Google';
     footLink.innerHTML = 'Already have an account? <a href="login.html' + (planId ? '?plan=' + encodeURIComponent(planId) : '') + '">Sign in</a>';
   } else if (mode === 'login-password') {
