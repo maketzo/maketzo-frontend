@@ -649,20 +649,23 @@ var MK_SHARE_ICON_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1
     var isActive = idx === 0;
     var slug = t.slug || "";
     var name = t.name || "";
+    // Display name carries the style (variantTag) so the player shows "Song · Style"
+    // — the names themselves are now the pure song title (admin DB is normalized).
+    var displayName = name + (t.variantTag ? " · " + t.variantTag : "");
     var eyebrow = fallbackEyebrow || "MAKETZO · Earn the Right";
     var shareUrl = window.location.origin + "/soundtrack?track=" + encodeURIComponent(slug);
-    var shareTitle = t.marketingShareTitle || (name + " — MAKETZO");
+    var shareTitle = t.marketingShareTitle || (displayName + " — MAKETZO");
     var shareText = t.marketingShareText || shareTitle;
-    var shareSubject = t.marketingShareSubject || ("Listen: " + name);
+    var shareSubject = t.marketingShareSubject || ("Listen: " + displayName);
 
     return ''
       + '<li class="mk-audio-player__item' + (isActive ? ' is-active' : '') + '" '
       +     'data-track-id="' + escapeAttr(slug) + '" '
       +     'data-src="' + escapeAttr(t.src || '') + '" '
-      +     'data-title="' + escapeAttr(name) + '" '
+      +     'data-title="' + escapeAttr(displayName) + '" '
       +     'data-eyebrow="' + escapeAttr(eyebrow) + '">'
       +   '<span class="mk-audio-player__item-num">' + num + '</span>'
-      +   '<span class="mk-audio-player__item-title">' + escapeHtml(name) + '</span>'
+      +   '<span class="mk-audio-player__item-title">' + escapeHtml(displayName) + '</span>'
       +   '<span class="mk-audio-player__item-dur"></span>'
       +   '<button class="mk-audio-player__share-trigger" type="button" '
       +           'data-share-source="track" '
