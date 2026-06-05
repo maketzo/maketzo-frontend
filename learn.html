@@ -58,15 +58,22 @@ strong { color: var(--mk-text-primary); font-weight: 600; }
 .btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-family: var(--mk-font-sans); font-size: var(--mk-text-sm); font-weight: 600; letter-spacing: var(--mk-track-cap); text-transform: uppercase; padding: 14px 26px; border-radius: var(--mk-radius-button); border: 1px solid rgba(0,0,0,.18); cursor: pointer; text-decoration: none; white-space: nowrap; background: var(--mk-gold-gradient); color: var(--mk-text-on-gold); transition: transform var(--mk-dur-snap), box-shadow var(--mk-dur-snap); }
 .btn-primary:hover { transform: translateY(-1px); box-shadow: var(--mk-glow-gold-md); color: var(--mk-text-on-gold); }
 
-/* Page hero + prose (cloned) */
-.page-hero { position: relative; z-index: 1; padding: 132px 0 36px; background: var(--mk-obsidian-950); text-align: center; }
-.page-hero-inner { max-width: 760px; margin: 0 auto; padding: 0 32px; }
-.page-hero-eyebrow { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); margin-bottom: 18px; }
-.page-hero-title { font-family: var(--mk-font-display); font-size: clamp(2.2rem, 5vw, 3.4rem); letter-spacing: var(--mk-track-display); line-height: 1.04; text-transform: uppercase; font-weight: 400; }
-
-.learn-shared { background: var(--mk-obsidian-950); padding: 110px 0 0; }
-.learn-shared-inner { max-width: 760px; margin: 0 auto; padding: 0 32px; }
-.learn-shared-banner { display: inline-flex; align-items: center; gap: 10px; padding: 9px 16px; border: 1px solid rgba(212,175,55,.32); background: rgba(212,175,55,.06); border-radius: 999px; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: 0.08em; text-transform: uppercase; color: var(--mk-brand); }
+/* ── Editorial hero ──────────────────────────────────────────────────────
+   One unified masthead: ambient gold glow, an anchored recommendation chip,
+   eyebrow + title, a deck/standfirst, and a gold flourish into the body.
+   Replaces the old two-section stack (floating pill + dead whitespace). */
+.learn-hero { position: relative; overflow: hidden; padding: 150px 0 54px; background: var(--mk-obsidian-950); text-align: center; }
+.learn-hero::before { content: ''; position: absolute; top: -130px; left: 50%; width: 780px; height: 540px; transform: translateX(-50%); background: radial-gradient(ellipse at 50% 42%, rgba(212,175,55,.15), transparent 62%); pointer-events: none; z-index: 0; }
+.learn-hero::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: linear-gradient(to right, transparent, rgba(212,175,55,.22), transparent); pointer-events: none; }
+.learn-hero-inner { position: relative; z-index: 1; max-width: 800px; margin: 0 auto; padding: 0 32px; }
+.learn-rec { display: inline-flex; align-items: center; gap: 11px; padding: 7px 18px 7px 7px; border: 1px solid rgba(212,175,55,.26); background: rgba(212,175,55,.05); border-radius: 999px; margin-bottom: 30px; box-shadow: 0 8px 30px rgba(0,0,0,.28); }
+.learn-rec-ic { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; background: var(--mk-gold-gradient); color: var(--mk-text-on-gold); flex-shrink: 0; }
+.learn-rec-ic svg { width: 14px; height: 14px; fill: currentColor; }
+.learn-rec-txt { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: 0.09em; text-transform: uppercase; color: var(--mk-brand); }
+.learn-hero-eyebrow { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); margin-bottom: 14px; }
+.learn-hero-title { font-family: var(--mk-font-display); font-size: clamp(2.4rem, 5.5vw, 3.6rem); letter-spacing: var(--mk-track-display); line-height: 1.02; text-transform: uppercase; font-weight: 400; }
+.learn-hero-lead { max-width: 600px; margin: 20px auto 0; font-size: var(--mk-text-lg); color: var(--mk-text-secondary); line-height: 1.5; }
+.learn-hero-rule { display: block; width: 44px; height: 2px; margin: 34px auto 0; background: var(--mk-gold-gradient); border-radius: 2px; opacity: .9; }
 
 .section { position: relative; z-index: 1; padding: 36px 0 72px; background: var(--mk-surface-page); }
 .prose-wrap { max-width: 660px; margin: 0 auto; padding: 0 32px; }
@@ -208,18 +215,29 @@ function slugFromPath(){
 function esc(s){ return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 function hasRef(){ try { return !!(window.MKT && MKT.getRef && MKT.getRef()); } catch (e) { return false; } }
 
+// Recommendation chip glyphs: a paper-plane when a trader sent it (warm,
+// personal "this was handed to you"); a sparkle for an organic KC visit.
+var REC_PLANE = 'M2 21l21-9L2 3v7l15 2-15 2z';
+var REC_SPARK = 'M12 2l1.7 6.3L20 10l-6.3 1.7L12 18l-1.7-6.3L4 10l6.3-1.7z';
+
 function renderArticle(a){
   var main = document.getElementById('learnMain');
-  var sharedLabel = hasRef() ? 'Your trading partner thought you should read this' : 'From the MAKETZO Knowledge Center';
+  var referred = hasRef();
+  var recTxt = referred ? 'Your trading partner thought you should read this' : 'From the MAKETZO Knowledge Center';
+  var recIc = referred ? REC_PLANE : REC_SPARK;
   try { document.title = a.title + ' — MAKETZO'; } catch (e) {}
 
+  var deck = a.summary ? '<p class="learn-hero-lead">' + esc(a.summary) + '</p>' : '';
   var head =
-    '<section class="learn-shared"><div class="learn-shared-inner">' +
-      '<span class="learn-shared-banner">' + esc(sharedLabel) + '</span>' +
-    '</div></section>' +
-    '<section class="page-hero"><div class="page-hero-inner">' +
-      '<p class="page-hero-eyebrow">' + esc(a.eyebrow || 'Knowledge Center') + '</p>' +
-      '<h1 class="page-hero-title">' + esc(a.title) + '</h1>' +
+    '<section class="learn-hero"><div class="learn-hero-inner">' +
+      '<span class="learn-rec">' +
+        '<span class="learn-rec-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="' + recIc + '"/></svg></span>' +
+        '<span class="learn-rec-txt">' + esc(recTxt) + '</span>' +
+      '</span>' +
+      '<p class="learn-hero-eyebrow">' + esc(a.eyebrow || 'Knowledge Center') + '</p>' +
+      '<h1 class="learn-hero-title">' + esc(a.title) + '</h1>' +
+      deck +
+      '<span class="learn-hero-rule"></span>' +
     '</div></section>';
 
   if (a.full) {
