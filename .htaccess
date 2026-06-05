@@ -97,6 +97,13 @@ RewriteCond %{REQUEST_FILENAME} -f [OR]
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^ - [L]
 
+# Knowledge Center public teaser pages (Phase B). ONE template (learn.html)
+# serves every /learn/<slug>: it reads the slug from the URL path and fetches
+# the teaser from api.maketzo.co/kb/public/<slug>. Must precede the generic
+# .html rule (there are no per-slug files under /learn/). The URL stays
+# /learn/<slug> for the browser; learn.html parses location.pathname.
+RewriteRule ^learn/[a-z0-9][a-z0-9-]*$ /learn.html [L]
+
 # Otherwise, if a matching .html file exists, serve it without revealing the suffix.
 # Pattern matches single-segment paths (/system -> system.html) AND multi-segment
 # paths (/blog/some-slug -> blog/some-slug.html). The [^.]+ excludes paths

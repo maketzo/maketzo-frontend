@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From the MAKETZO Knowledge Center</title>
+<meta name="description" content="A trader shared this with you. Real, in-depth guidance on the discipline side of trading — from the MAKETZO Knowledge Center.">
+<meta name="theme-color" content="#06070A">
+<meta property="og:title" content="A trader shared this with you — MAKETZO">
+<meta property="og:description" content="In-depth guidance on the discipline side of trading, from the MAKETZO Knowledge Center.">
+<meta property="og:url" content="https://maketzo.co/learn">
+<meta property="og:type" content="article">
+<meta property="og:image" content="https://maketzo.co/assets/album-cover.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://maketzo.co/assets/css/tokens.css">
+<link rel="stylesheet" href="https://maketzo.co/assets/css/components.css">
+<script src="https://maketzo.co/assets/js/mkt-analytics.js?v=5" defer></script>
+<script src="https://maketzo.co/assets/js/mkt-consent.js?v=1" defer></script>
+<script src="https://maketzo.co/assets/js/checkout.js?v=7" defer></script>
+<style>
+/* Chrome cloned from the marketing/blog pages (nav · drawer · buttons ·
+   sections · prose · footer) so /learn stays bit-consistent with the site. */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--mk-surface-page); color: var(--mk-text-primary); font-family: var(--mk-font-sans); font-size: var(--mk-text-md); line-height: var(--mk-lead-body); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+a { color: inherit; text-decoration: none; }
+ul, ol { list-style: none; }
+img { display: block; max-width: 100%; }
+em, i { font-style: italic; }
+strong { color: var(--mk-text-primary); font-weight: 600; }
+
+.mobile-overlay { position: fixed; inset: 0; z-index: 90; background: rgba(0,0,0,.6); backdrop-filter: blur(6px); opacity: 0; pointer-events: none; transition: opacity var(--mk-dur-med); }
+.mobile-overlay.open { opacity: 1; pointer-events: auto; }
+.mobile-drawer { position: fixed; top: 0; right: 0; bottom: 0; z-index: 100; width: min(320px, 88%); background: var(--mk-surface-base); border-left: var(--mk-border-soft); padding: 80px 28px 28px; transform: translateX(100%); transition: transform var(--mk-dur-med) var(--mk-ease-out); display: flex; flex-direction: column; gap: 20px; }
+.mobile-drawer.open { transform: translateX(0); }
+.mobile-drawer-links li { padding: 12px 0; border-bottom: var(--mk-border-hairline); }
+.mobile-drawer-links a { font-family: var(--mk-font-display); font-size: var(--mk-display-md); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); }
+.mobile-drawer-cta { display: inline-flex; align-items: center; justify-content: center; background: var(--mk-gold-gradient); color: var(--mk-text-on-gold); font-family: var(--mk-font-sans); font-weight: 600; font-size: var(--mk-text-sm); letter-spacing: var(--mk-track-cap); text-transform: uppercase; padding: 14px 22px; border: 1px solid rgba(0,0,0,.18); border-radius: var(--mk-radius-button); cursor: pointer; margin-top: auto; }
+
+#mainNav { position: fixed; top: 0; left: 0; right: 0; z-index: 50; background: rgba(6,7,10,.6); backdrop-filter: blur(20px) saturate(140%); border-bottom: 1px solid rgba(212,175,55,.12); display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 14px 32px 14px 64px; }
+.nav-logo.mk-brand-lockup { --mk-brand-lockup-mark-h: 44px; --mk-brand-lockup-wordmark-h: 22px; --mk-brand-lockup-gap: 10px; }
+.nav-links { display: flex; align-items: center; gap: 28px; margin: 0; padding: 0; }
+.nav-links > li > a:not(.nav-login-btn) { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); font-weight: 500; letter-spacing: 0.02em; transition: color var(--mk-dur-fast); }
+.nav-links > li > a:not(.nav-login-btn):hover { color: var(--mk-text-primary); }
+.nav-login-btn { display: inline-flex; align-items: center; font-size: var(--mk-text-sm); font-weight: 600; letter-spacing: var(--mk-track-cap); text-transform: uppercase; padding: 7px 14px; color: var(--mk-text-secondary); border: 1px solid var(--mk-smoke-700); border-radius: var(--mk-radius-button); transition: color var(--mk-dur-fast), border-color var(--mk-dur-fast), background var(--mk-dur-fast); }
+.nav-login-btn:hover { color: var(--mk-text-primary); border-color: var(--mk-smoke-600); background: rgba(255,255,255,.03); }
+.nav-cta { display: inline-flex; align-items: center; justify-content: center; font-family: var(--mk-font-sans); font-size: var(--mk-text-sm); font-weight: 600; letter-spacing: var(--mk-track-cap); text-transform: uppercase; padding: 7px 14px; border: 1px solid rgba(0,0,0,.18); border-radius: var(--mk-radius-button); cursor: pointer; background: var(--mk-gold-gradient); color: var(--mk-text-on-gold); transition: transform var(--mk-dur-snap), box-shadow var(--mk-dur-snap); white-space: nowrap; }
+.nav-cta:hover { transform: translateY(-1px); box-shadow: var(--mk-glow-gold-sm); }
+.hamburger { display: none; background: transparent; border: 0; padding: 8px; cursor: pointer; flex-direction: column; gap: 5px; }
+.hamburger span { display: block; width: 24px; height: 2px; background: var(--mk-text-primary); transition: transform var(--mk-dur-snap), opacity var(--mk-dur-snap); }
+.hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+@media (max-width: 900px) { #mainNav { padding: 12px 20px; gap: 16px; } .nav-links { display: none; } .hamburger { display: flex; } }
+
+.btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-family: var(--mk-font-sans); font-size: var(--mk-text-sm); font-weight: 600; letter-spacing: var(--mk-track-cap); text-transform: uppercase; padding: 14px 26px; border-radius: var(--mk-radius-button); border: 1px solid rgba(0,0,0,.18); cursor: pointer; text-decoration: none; white-space: nowrap; background: var(--mk-gold-gradient); color: var(--mk-text-on-gold); transition: transform var(--mk-dur-snap), box-shadow var(--mk-dur-snap); }
+.btn-primary:hover { transform: translateY(-1px); box-shadow: var(--mk-glow-gold-md); color: var(--mk-text-on-gold); }
+
+/* Page hero + prose (cloned) */
+.page-hero { position: relative; z-index: 1; padding: 132px 0 36px; background: var(--mk-obsidian-950); text-align: center; }
+.page-hero-inner { max-width: 760px; margin: 0 auto; padding: 0 32px; }
+.page-hero-eyebrow { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); margin-bottom: 18px; }
+.page-hero-title { font-family: var(--mk-font-display); font-size: clamp(2.2rem, 5vw, 3.4rem); letter-spacing: var(--mk-track-display); line-height: 1.04; text-transform: uppercase; font-weight: 400; }
+
+.learn-shared { background: var(--mk-obsidian-950); padding: 110px 0 0; }
+.learn-shared-inner { max-width: 760px; margin: 0 auto; padding: 0 32px; }
+.learn-shared-banner { display: inline-flex; align-items: center; gap: 10px; padding: 9px 16px; border: 1px solid rgba(212,175,55,.32); background: rgba(212,175,55,.06); border-radius: 999px; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: 0.08em; text-transform: uppercase; color: var(--mk-brand); }
+
+.section { position: relative; z-index: 1; padding: 36px 0 72px; background: var(--mk-surface-page); }
+.prose-wrap { max-width: 660px; margin: 0 auto; padding: 0 32px; }
+.prose-wrap h2, .prose-wrap h3 { font-family: var(--mk-font-display); font-size: clamp(1.5rem, 3vw, 2rem); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); font-weight: 400; line-height: 1.08; margin: 40px 0 16px; }
+.prose-wrap p { font-size: var(--mk-text-md); color: var(--mk-text-secondary); line-height: var(--mk-lead-body); margin-bottom: 18px; }
+.prose-wrap p.kb-def { font-size: var(--mk-text-lg); color: var(--mk-text-primary); }
+.prose-wrap p strong { color: var(--mk-text-primary); }
+.prose-wrap ul, .prose-wrap ol { padding-left: 24px; margin-bottom: 18px; color: var(--mk-text-secondary); list-style: revert; }
+.prose-wrap li { margin-bottom: 10px; line-height: var(--mk-lead-body); }
+.prose-wrap blockquote { border-left: 3px solid var(--mk-brand); margin: 24px 0; padding: 4px 0 4px 18px; color: var(--mk-text-primary); }
+.prose-wrap .kb-note { color: var(--mk-text-tertiary); font-size: var(--mk-text-sm); border-top: var(--mk-border-hairline); padding-top: 16px; margin-top: 20px; }
+
+/* Gated teaser fade + unlock card */
+.learn-gate-wrap { position: relative; }
+.learn-gate-fade { position: relative; }
+.learn-gate-fade::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 160px; background: linear-gradient(to bottom, transparent, var(--mk-surface-page)); pointer-events: none; }
+.learn-unlock { max-width: 600px; margin: 8px auto 0; padding: 36px 32px; text-align: center; background: linear-gradient(135deg, rgba(212,175,55,.06), transparent 70%), var(--mk-surface-raised); border: 1px solid rgba(212,175,55,.22); border-radius: var(--mk-radius-card); }
+.learn-unlock-title { font-family: var(--mk-font-display); font-size: clamp(1.4rem, 3vw, 1.9rem); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); font-weight: 400; line-height: 1.1; margin-bottom: 12px; }
+.learn-unlock-sub { font-size: var(--mk-text-md); color: var(--mk-text-secondary); line-height: var(--mk-lead-body); margin-bottom: 24px; }
+.learn-unlock-note { margin-top: 14px; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: 0.04em; color: var(--mk-text-tertiary); }
+
+/* End-of-article CTA (for open / full reads) */
+.final-cta-section { padding: 72px 0 80px; background: var(--mk-obsidian-950); text-align: center; border-top: var(--mk-border-hairline); }
+.final-cta-inner { max-width: 640px; margin: 0 auto; padding: 0 32px; }
+.final-cta-eyebrow { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); margin-bottom: 16px; }
+.final-cta-title { font-family: var(--mk-font-display); font-size: clamp(1.8rem, 4vw, 2.6rem); letter-spacing: var(--mk-track-display); line-height: 1.04; text-transform: uppercase; font-weight: 400; margin-bottom: 16px; }
+.final-cta-sub { font-size: var(--mk-text-md); color: var(--mk-text-secondary); max-width: 520px; margin: 0 auto 28px; line-height: var(--mk-lead-body); }
+.final-cta-note { margin-top: 14px; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: 0.04em; color: var(--mk-text-tertiary); }
+
+.learn-state { max-width: 640px; margin: 0 auto; padding: 160px 32px 120px; text-align: center; color: var(--mk-text-tertiary); }
+.learn-state a { color: var(--mk-brand); text-decoration: underline; }
+
+/* Footer (cloned) */
+footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairline); padding: 56px 0 28px; }
+.footer-inner { max-width: var(--mk-container-marketing); margin: 0 auto; padding: 0 32px; }
+.footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 32px; padding-bottom: 32px; border-bottom: var(--mk-border-hairline); }
+.footer-logo-wrap { display: flex; flex-direction: column; align-items: flex-start; gap: 18px; margin-bottom: 12px; }
+.footer-logo-wrap .mk-brand-lockup { --mk-brand-lockup-mark-h: 40px; --mk-brand-lockup-wordmark-h: 20px; }
+.footer-tagline { font-size: var(--mk-text-sm); color: var(--mk-text-tertiary); line-height: var(--mk-lead-body); max-width: 360px; }
+.footer-tagline strong { display: block; color: var(--mk-text-primary); margin-bottom: 4px; }
+.footer-col-title { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); margin-bottom: 16px; }
+.footer-links { display: flex; flex-direction: column; gap: 10px; padding: 0; }
+.footer-links a { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); transition: color var(--mk-dur-fast); }
+.footer-links a:hover { color: var(--mk-text-primary); }
+.footer-bottom { display: flex; flex-direction: column; gap: 10px; }
+.footer-copy { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: 0.04em; color: var(--mk-text-tertiary); }
+.footer-disclaimer { font-size: var(--mk-text-xs); color: var(--mk-text-tertiary); line-height: var(--mk-lead-body); }
+@media (max-width: 800px) { .footer-grid { grid-template-columns: 1fr; gap: 24px; } }
+</style>
+</head>
+<body>
+
+<div class="mobile-overlay" id="mobileOverlay" onclick="closeDrawer()"></div>
+<div class="mobile-drawer" id="mobileDrawer">
+  <ul class="mobile-drawer-links">
+    <li><a href="https://maketzo.co/system" onclick="closeDrawer()">The System</a></li>
+    <li><a href="https://maketzo.co/journal" onclick="closeDrawer()">Journal</a></li>
+    <li><a href="https://maketzo.co/indicators" onclick="closeDrawer()">Indicators</a></li>
+    <li><a href="https://maketzo.co/focus" onclick="closeDrawer()">Focus Room</a></li>
+    <li><a href="https://maketzo.co/blog" onclick="closeDrawer()">Blog</a></li>
+    <li><a href="https://maketzo.co/pricing" onclick="closeDrawer()">Get Started</a></li>
+    <li><a href="https://maketzo.co/app" onclick="closeDrawer()">Log In</a></li>
+  </ul>
+  <button class="mobile-drawer-cta" onclick="startTrial();closeDrawer()">Start Free Trial &rarr;</button>
+</div>
+
+<nav id="mainNav">
+  <a href="https://maketzo.co" class="nav-logo mk-brand-lockup">
+    <img class="mk-brand-lockup__mark" src="https://maketzo.co/assets/logo-mark.png" alt="">
+    <img class="mk-brand-lockup__wordmark" src="https://maketzo.co/assets/logo-wordmark.png" alt="MAKETZO">
+  </a>
+  <ul class="nav-links">
+    <li><a href="https://maketzo.co/system">The System</a></li>
+    <li><a href="https://maketzo.co/journal">Journal</a></li>
+    <li><a href="https://maketzo.co/indicators">Indicators</a></li>
+    <li><a href="https://maketzo.co/focus">Focus Room</a></li>
+    <li><a href="https://maketzo.co/blog">Blog</a></li>
+    <li><a href="https://maketzo.co/pricing">Get Started</a></li>
+    <li><a href="https://maketzo.co/app" class="nav-login-btn">Log In</a></li>
+    <li><button class="nav-cta" onclick="startTrial()">Start Free Trial</button></li>
+  </ul>
+  <button class="hamburger" id="hamburger" onclick="toggleDrawer()" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+
+<main id="learnMain">
+  <div class="learn-state" id="learnLoading">Loading…</div>
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-col-brand">
+        <div class="footer-logo-wrap">
+          <a href="https://maketzo.co" class="mk-brand-lockup mk-brand-lockup--stacked">
+            <img class="mk-brand-lockup__mark" src="https://maketzo.co/assets/logo-mark.png" alt="">
+            <img class="mk-brand-lockup__wordmark" src="https://maketzo.co/assets/logo-wordmark.png" alt="MAKETZO">
+          </a>
+        </div>
+        <p class="footer-tagline"><strong>Stop the trade you'd regret.</strong>Discipline in every session. Edge in every trade. Accountability when it counts.</p>
+      </div>
+      <div><div class="footer-col-title">Product</div><ul class="footer-links"><li><a href="https://maketzo.co/system">The System</a></li><li><a href="https://maketzo.co/journal">Journal</a></li><li><a href="https://maketzo.co/indicators">Indicators</a></li><li><a href="https://maketzo.co/focus">Focus Room</a></li><li><a href="https://maketzo.co/pricing">Pricing</a></li></ul></div>
+      <div><div class="footer-col-title">Explore</div><ul class="footer-links"><li><a href="https://maketzo.co/why">Why MAKETZO</a></li><li><a href="https://maketzo.co/blog">Blog</a></li><li><a href="https://maketzo.co/contact">Contact Us</a></li></ul></div>
+      <div><div class="footer-col-title">Legal</div><ul class="footer-links"><li><a href="https://maketzo.co/privacy">Privacy</a></li><li><a href="https://maketzo.co/terms">Terms</a></li><li><a href="https://maketzo.co/disclaimer">Disclaimer</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">&copy; 2026 Abinic, LLC. All rights reserved. MAKETZO&reg; is a product of Abinic, LLC. maketzo.co</p>
+      <p class="footer-disclaimer">Trading involves substantial risk of loss. MAKETZO is a journaling, behavioral accountability, educational, and decision-support platform — not investment advice, not a broker-dealer, not a registered investment adviser. See full disclaimer at <a href="https://maketzo.co/disclaimer">maketzo.co/disclaimer</a>.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+// 7-day free-trial Stripe price (same as every "Start Free Trial" CTA site-wide).
+var TRIAL_PRICE = 'price_1TUWVpJIDbUntZeXyQD23z8W';
+
+function toggleDrawer(){ ['mobileDrawer','mobileOverlay','hamburger'].forEach(function(id){ document.getElementById(id).classList.toggle('open'); }); }
+function closeDrawer(){ ['mobileDrawer','mobileOverlay','hamburger'].forEach(function(id){ document.getElementById(id).classList.remove('open'); }); }
+
+// Kick off the trial via the shared checkout flow (mkt_ref cookie is read by
+// checkout.js / backfilled on the Stripe webhook, so the referrer gets credit).
+function startTrial(){
+  try { if (typeof handleCheckout === 'function') return handleCheckout(TRIAL_PRICE, { preventDefault: function(){}, currentTarget: null }); } catch (e) {}
+  window.location.href = 'https://maketzo.co/pricing';
+}
+
+function apiBase(){
+  var h = location.hostname;
+  if (h.indexOf('dev') === 0 || h.indexOf('dev-') === 0) return 'https://dev-api.maketzo.co';
+  if (h.indexOf('staging') === 0) return 'https://staging-api.maketzo.co';
+  if (h === 'localhost' || h.indexOf('127.') === 0) return 'https://dev-api.maketzo.co';
+  return 'https://api.maketzo.co';
+}
+function slugFromPath(){
+  var m = location.pathname.match(/\/learn\/([a-z0-9][a-z0-9-]*)/i);
+  if (m) return m[1];
+  var q = new URLSearchParams(location.search).get('a');
+  return q || null;
+}
+function esc(s){ return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function hasRef(){ try { return !!(window.MKT && MKT.getRef && MKT.getRef()); } catch (e) { return false; } }
+
+function renderArticle(a){
+  var main = document.getElementById('learnMain');
+  var sharedLabel = hasRef() ? 'Your trading partner thought you should read this' : 'From the MAKETZO Knowledge Center';
+  try { document.title = a.title + ' — MAKETZO'; } catch (e) {}
+
+  var head =
+    '<section class="learn-shared"><div class="learn-shared-inner">' +
+      '<span class="learn-shared-banner">' + esc(sharedLabel) + '</span>' +
+    '</div></section>' +
+    '<section class="page-hero"><div class="page-hero-inner">' +
+      '<p class="page-hero-eyebrow">' + esc(a.eyebrow || 'Knowledge Center') + '</p>' +
+      '<h1 class="page-hero-title">' + esc(a.title) + '</h1>' +
+    '</div></section>';
+
+  if (a.full) {
+    // Open article — full read + a soft end CTA.
+    main.innerHTML = head +
+      '<section class="section"><div class="prose-wrap">' + (a.bodyHtml || '') + '</div></section>' +
+      '<section class="final-cta-section"><div class="final-cta-inner">' +
+        '<p class="final-cta-eyebrow">Earn the right</p>' +
+        '<h2 class="final-cta-title">Knowing It Is One Thing. <em>Doing It</em> Is MAKETZO.</h2>' +
+        '<p class="final-cta-sub">This is the kind of clarity MAKETZO is built on — but the article tells you what to do, the product is what actually holds you to it. Try it free.</p>' +
+        '<button class="btn-primary" onclick="startTrial()">Start Your Free Trial &rarr;</button>' +
+        '<p class="final-cta-note">7 days free · cancel anytime</p>' +
+      '</div></section>';
+  } else {
+    // Gated teaser — preview fades, unlock via trial.
+    main.innerHTML = head +
+      '<section class="section"><div class="prose-wrap learn-gate-wrap">' +
+        '<div class="learn-gate-fade">' + (a.teaserHtml || '') + '</div>' +
+        '<div class="learn-unlock">' +
+          '<p class="final-cta-eyebrow">Read the full piece</p>' +
+          '<h2 class="learn-unlock-title">Start Your Free Trial to Keep Reading</h2>' +
+          '<p class="learn-unlock-sub">This is one piece of the MAKETZO Knowledge Center — a full library on the discipline side of trading, inside the product that helps you live it. Read the rest free.</p>' +
+          '<button class="btn-primary" onclick="startTrial()">Start Your Free Trial &rarr;</button>' +
+          '<p class="learn-unlock-note">7 days free · cancel anytime</p>' +
+        '</div>' +
+      '</div></section>';
+  }
+  try { if (window.MKT && MKT.trackEvent) MKT.trackEvent('learn_page_view', { slug: a.slug, shareMode: a.shareMode, referred: hasRef() }); } catch (e) {}
+}
+
+function renderMissing(){
+  document.getElementById('learnMain').innerHTML =
+    '<div class="learn-state">' +
+      '<p>This article isn’t available to preview.</p>' +
+      '<p style="margin-top:12px">Explore the <a href="https://maketzo.co/blog">MAKETZO blog</a> or <a href="https://maketzo.co/why">see what MAKETZO is</a>.</p>' +
+    '</div>';
+}
+
+(function init(){
+  var slug = slugFromPath();
+  if (!slug) { renderMissing(); return; }
+  fetch(apiBase() + '/kb/public/' + encodeURIComponent(slug), { credentials: 'omit' })
+    .then(function(r){ if (!r.ok) throw new Error('status ' + r.status); return r.json(); })
+    .then(function(a){ renderArticle(a); })
+    .catch(function(){ renderMissing(); });
+})();
+</script>
+</body>
+</html>
