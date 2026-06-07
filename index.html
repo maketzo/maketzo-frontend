@@ -60,7 +60,7 @@
    ==================================================================== */
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; overflow-y: scroll; } /* permanent scrollbar gutter — stops the fixed nav from shifting 15px when page height crosses the scrollbar threshold (e.g. while the sim animates) */
 body {
   background: var(--mk-surface-page);
   color: var(--mk-text-primary);
@@ -1796,7 +1796,7 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
   border-radius: var(--mk-radius-card-sm);
   font-size: var(--mk-text-sm);
   color: var(--mk-text-primary);
-  min-height: 44px;
+  min-height: 64px;            /* reserve 2 lines so a longer event line never grows the panel */
   transition: border-color var(--mk-dur-med);
 }
 .sim-event-tag {
@@ -1843,6 +1843,9 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
   animation: mk-pulse 1.4s infinite;
 }
 .sim-state {
+  flex-shrink: 0;
+  min-width: 188px;            /* fixed footprint so the changing state text never resizes the row */
+  text-align: center;
   font-family: var(--mk-font-mono);
   font-size: var(--mk-mono-md);
   font-weight: 500;
@@ -1899,6 +1902,8 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
   background: var(--mk-surface-elevated);
   border-left: 3px solid var(--mk-brand);
   border-radius: var(--mk-radius-card-sm);
+  min-height: 132px;           /* reserve for the longest COACH SAYS message so beat changes don't reflow the page */
+  justify-content: center;
 }
 .sim-coach-label {
   font-family: var(--mk-font-mono);
@@ -2033,6 +2038,8 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
   .sim-screen { padding: 22px 18px; }
   .sim-controls { flex-wrap: wrap; }
   .sim-btn { width: 100%; }
+  .sim-state { min-width: 148px; font-size: var(--mk-mono-sm); padding: 6px 12px; }
+  .sim-coach { min-height: 156px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .sim-clock-dot { animation: none; }
