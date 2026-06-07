@@ -1998,29 +1998,41 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
 .sim-ghost-d { font-size: var(--mk-text-xs); color: var(--mk-text-tertiary); line-height: var(--mk-lead-snug); }
 /* spotlight ring — drawn over the active element inside the screen, glides
    between targets as the story advances */
+/* The narration layer (spotlight ring + annotation card) is TEAL — a distinct
+   "guide" color so the eye reads ring + card as one connected system, separate
+   from the gold/green/red session content. */
 .sim-spot {
   position: absolute; z-index: 4;
-  border: 2px solid var(--mk-brand);
+  border: 2px solid rgb(45,212,191);
   border-radius: 14px;
-  box-shadow: 0 0 0 3px rgba(212,175,55,.16), 0 0 26px rgba(212,175,55,.34);
+  box-shadow: 0 0 0 3px rgba(45,212,191,.16), 0 0 26px rgba(45,212,191,.42);
   pointer-events: none;
+  animation: simSpotPulse 1.9s var(--mk-ease-in-out) infinite;
   transition: left .45s var(--mk-ease-out), top .45s var(--mk-ease-out),
               width .45s var(--mk-ease-out), height .45s var(--mk-ease-out), opacity .3s ease;
 }
-/* annotation card — sits below the screen, names what's circled + why it matters */
+@keyframes simSpotPulse {
+  0%,100% { box-shadow: 0 0 0 3px rgba(45,212,191,.14), 0 0 22px rgba(45,212,191,.30); }
+  50%     { box-shadow: 0 0 0 4px rgba(45,212,191,.22), 0 0 34px rgba(45,212,191,.52); }
+}
+/* annotation card — teal to match the ring; names what's circled + why it matters */
 .sim-note {
   margin-top: 16px;
   padding: 18px 20px;
-  background: linear-gradient(135deg, rgba(212,175,55,.07), transparent 60%), var(--mk-surface-raised);
-  border: 1px solid rgba(212,175,55,.28);
-  border-left: 3px solid var(--mk-brand);
+  background: linear-gradient(135deg, rgba(45,212,191,.08), transparent 60%), var(--mk-surface-raised);
+  border: 1px solid rgba(45,212,191,.30);
+  border-left: 3px solid rgb(45,212,191);
   border-radius: var(--mk-radius-card);
   min-height: 124px;
 }
 .sim-note-eyebrow {
-  display: block; margin-bottom: 8px;
+  display: flex; align-items: center; gap: 8px; margin-bottom: 8px;
   font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs);
-  letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand);
+  letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: rgb(45,212,191);
+}
+.sim-note-dot {
+  width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0;
+  background: rgb(45,212,191); box-shadow: 0 0 10px rgba(45,212,191,.75);
 }
 .sim-note-title {
   font-family: var(--mk-font-display); font-size: var(--mk-display-md);
@@ -2037,12 +2049,19 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
   border: var(--mk-border-gold); cursor: pointer; font-size: 13px; line-height: 1;
   transition: color var(--mk-dur-snap), border-color var(--mk-dur-snap), background var(--mk-dur-snap);
 }
-.sim-tbtn:hover { color: var(--mk-brand); border-color: var(--mk-brand); background: rgba(212,175,55,.06); }
+.sim-tbtn:hover { color: var(--mk-brand); border-color: var(--mk-brand); background: rgba(212,175,55,.08); }
+.sim-tbtn svg { width: 14px; height: 14px; fill: currentColor; display: block; }
 .sim-tbtn--play {
-  width: 46px; height: 46px; font-size: 15px;
+  width: 46px; height: 46px;
   background: var(--mk-gold-gradient); color: var(--mk-text-on-gold); border-color: rgba(0,0,0,.18);
 }
-.sim-tbtn--play:hover { color: var(--mk-text-on-gold); box-shadow: var(--mk-glow-gold-sm); }
+.sim-tbtn--play svg { width: 16px; height: 16px; }
+.sim-tbtn--play:hover {
+  background: var(--mk-gold-gradient);   /* keep the gold — don't let the generic hover tint blacken it */
+  color: var(--mk-text-on-gold);
+  border-color: rgba(0,0,0,.18);
+  box-shadow: var(--mk-glow-gold-sm);
+}
 .sim-scrub { flex: 1; display: flex; gap: 6px; }
 .sim-seg {
   flex: 1; height: 6px; border-radius: var(--mk-radius-pill);
@@ -2267,14 +2286,14 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
         <div class="sim-spot" id="simSpot" hidden></div>
       </div>
       <div class="sim-note" id="simNote">
-        <span class="sim-note-eyebrow">Why this matters</span>
+        <span class="sim-note-eyebrow"><span class="sim-note-dot"></span><span id="simNoteLabel">Status band</span></span>
         <div class="sim-note-title" id="simNoteTitle">It reads your state, live</div>
         <div class="sim-note-body" id="simNoteBody">Every trade re-scores your session in real time. The status band always knows whether you're in control or starting to drift.</div>
       </div>
       <div class="sim-transport">
-        <button class="sim-tbtn" id="simPrev" type="button" aria-label="Previous step">&#9198;</button>
-        <button class="sim-tbtn sim-tbtn--play" id="simPlay" type="button" aria-label="Play or pause">&#9654;</button>
-        <button class="sim-tbtn" id="simNext" type="button" aria-label="Next step">&#9197;</button>
+        <button class="sim-tbtn" id="simPrev" type="button" aria-label="Previous step"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 6h2.2v12H7zM20 6v12l-9-6z"/></svg></button>
+        <button class="sim-tbtn sim-tbtn--play" id="simPlay" type="button" aria-label="Play or pause"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></button>
+        <button class="sim-tbtn" id="simNext" type="button" aria-label="Next step"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.8 6H17v12h-2.2zM4 6l9 6-9 6z"/></svg></button>
         <div class="sim-scrub" id="simScrub"></div>
         <div class="sim-step" id="simStep">1 / 5</div>
       </div>
@@ -2316,6 +2335,7 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
       elSpot   = document.getElementById('simSpot'),
       elNoteTitle = document.getElementById('simNoteTitle'),
       elNoteBody  = document.getElementById('simNoteBody'),
+      elNoteLabel = document.getElementById('simNoteLabel'),
       elPrev   = document.getElementById('simPrev'),
       elPlay   = document.getElementById('simPlay'),
       elNext   = document.getElementById('simNext'),
@@ -2329,7 +2349,8 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
       breathLabel = document.getElementById('simBreathLabel'),
       strikes  = sim.querySelectorAll('.sim-strike');
 
-  var ICON_PLAY = '&#9654;', ICON_PAUSE = '&#10073;&#10073;';
+  var ICON_PLAY  = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>';
+  var ICON_PAUSE = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg>';
 
   // ── Breathing engine — ported from app.js startBreathing (WAAPI scale + glow
   // on the inner ring). Same math as the real Reset Protocol; quicker cadence
@@ -2368,23 +2389,23 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
     { time:'9:30 AM', tag:'9:30', pnl:'+$120', tone:'good', state:'In Rhythm', strikes:0, spot:'status',
       event:"Clean open — you're trading the setups you planned.",
       coach:"Green and disciplined out of the gate. Protect it — don't give it back chasing the next candle.",
-      note:{ t:'It reads your state, live', b:"Every trade re-scores your session in real time. The status band always knows whether you're in control or starting to drift — before you do." } },
+      note:{ label:'Status band', t:'It reads your state, live', b:"Every trade re-scores your session in real time. The status band always knows whether you're in control or starting to drift — before you do." } },
     { time:'9:52 AM', tag:'9:52', pnl:'+$40', tone:'warn', state:'Caution', strikes:1, spot:'strikes',
       event:"You chased an extended move that wasn't your setup.",
       coach:"That wasn't one of your setups — strike one. One impulsive trade is human; the second is where good days unravel.",
-      note:{ t:'The Strike System fires', b:"Break a rule and you earn a strike, tracked automatically. Three locks the day. No willpower required — the count is kept for you." } },
+      note:{ label:'Strike System', t:'The Strike System fires', b:"Break a rule and you earn a strike, tracked automatically. Three locks the day. No willpower required — the count is kept for you." } },
     { time:'10:18 AM', tag:'10:18', pnl:'−$160', tone:'bad', state:'Elevated', strikes:2, warn:true, spot:'coach',
       event:"A revenge trade to win it back fast. Now you're tilted.",
       coach:"Stop. Down and forcing it is tilt, not a setup. One more rule-break and I lock the session.",
-      note:{ t:'COACH SAYS steps in', b:"The blunt warning you'd never give yourself — delivered the instant your behavior turns, not buried in tomorrow's journal." } },
+      note:{ label:'Coach Says', t:'COACH SAYS steps in', b:"The blunt warning you'd never give yourself — delivered the instant your behavior turns, not buried in tomorrow's journal." } },
     { time:'10:31 AM', tag:'10:31', pnl:'−$160', tone:'warn', state:'Reset', strikes:2, warn:true, reset:true, spot:'reset',
       event:"You reach for the mouse again — the Reset Protocol steps in.",
       coach:"Hands off. One slow breath before you do real damage.",
-      note:{ t:'One tool, not the whole pitch', b:"A short guided reset is just one protocol. The real win: the system caught you here, before the damage — something a breathing app can't do." } },
+      note:{ label:'Reset Protocol', t:'One tool, not the whole pitch', b:"A short guided reset is just one protocol. The real win: the system caught you here, before the damage — something a breathing app can't do." } },
     { time:'10:58 AM', tag:'10:58', pnl:'+$89', tone:'good', state:'In Control', strikes:2, spot:'pnl', ghost:true, cta:true,
       event:"Calm again, you take one clean setup and close green.",
       coach:"That's discipline, not luck — a blow-up morning turned green.",
-      note:{ t:'The morning, contained', b:"Same trader, same mistakes — but it ends +$89 instead of −$840. That's what a journal can't do: change the trade while it's still happening." } }
+      note:{ label:'Session P&L', t:'The morning, contained', b:"Same trader, same mistakes — but it ends +$89 instead of −$840. That's what a journal can't do: change the trade while it's still happening." } }
   ];
   var durs = [5500, 5800, 6200, 6000, 6500];
   var N = beats.length;
@@ -2416,7 +2437,10 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
     elCoach.textContent = b.coach;
     setStrikes(b.strikes, b.warn);
     elReset.hidden = !b.reset; elGhost.hidden = !b.ghost; elCta.hidden = !b.cta;
-    if (b.note){ elNoteTitle.textContent = b.note.t; elNoteBody.textContent = b.note.b; }
+    if (b.note){
+      if (elNoteLabel) elNoteLabel.textContent = b.note.label || 'Why this matters';
+      elNoteTitle.textContent = b.note.t; elNoteBody.textContent = b.note.b;
+    }
     if (b.reset) startBreath(); else stopBreath();
     requestAnimationFrame(function(){ spotlight(b); });
   }
