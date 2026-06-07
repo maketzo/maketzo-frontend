@@ -1844,7 +1844,7 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
 }
 .sim-state {
   flex-shrink: 0;
-  min-width: 188px;            /* fixed footprint so the changing state text never resizes the row */
+  min-width: 132px;            /* fixed footprint so the changing state text never resizes the row */
   text-align: center;
   font-family: var(--mk-font-mono);
   font-size: var(--mk-mono-md);
@@ -1996,34 +1996,65 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
 .sim-ghost-col.bad .sim-ghost-v  { color: var(--mk-danger-500); }
 .sim-ghost-col.good .sim-ghost-v { color: var(--mk-profit-500); }
 .sim-ghost-d { font-size: var(--mk-text-xs); color: var(--mk-text-tertiary); line-height: var(--mk-lead-snug); }
-.sim-controls {
-  display: flex; align-items: center; gap: 16px;
-  margin-top: 22px;
+/* spotlight ring — drawn over the active element inside the screen, glides
+   between targets as the story advances */
+.sim-spot {
+  position: absolute; z-index: 4;
+  border: 2px solid var(--mk-brand);
+  border-radius: 14px;
+  box-shadow: 0 0 0 3px rgba(212,175,55,.16), 0 0 26px rgba(212,175,55,.34);
+  pointer-events: none;
+  transition: left .45s var(--mk-ease-out), top .45s var(--mk-ease-out),
+              width .45s var(--mk-ease-out), height .45s var(--mk-ease-out), opacity .3s ease;
 }
-.sim-btn {
-  flex-shrink: 0;
-  font-family: var(--mk-font-sans);
-  font-size: var(--mk-text-sm); font-weight: 600;
-  letter-spacing: var(--mk-track-cap);
-  text-transform: uppercase;
-  padding: 11px 20px;
-  border-radius: var(--mk-radius-button);
-  background: transparent;
-  color: var(--mk-text-primary);
-  border: var(--mk-border-gold);
-  cursor: pointer;
+/* annotation card — sits below the screen, names what's circled + why it matters */
+.sim-note {
+  margin-top: 16px;
+  padding: 18px 20px;
+  background: linear-gradient(135deg, rgba(212,175,55,.07), transparent 60%), var(--mk-surface-raised);
+  border: 1px solid rgba(212,175,55,.28);
+  border-left: 3px solid var(--mk-brand);
+  border-radius: var(--mk-radius-card);
+  min-height: 124px;
+}
+.sim-note-eyebrow {
+  display: block; margin-bottom: 8px;
+  font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs);
+  letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand);
+}
+.sim-note-title {
+  font-family: var(--mk-font-display); font-size: var(--mk-display-md);
+  letter-spacing: var(--mk-track-display); text-transform: uppercase;
+  color: var(--mk-text-primary); line-height: 1.1; margin-bottom: 8px;
+}
+.sim-note-body { font-size: var(--mk-text-md); color: var(--mk-text-secondary); line-height: var(--mk-lead-body); }
+/* transport / scrubber — prev · play/pause · next + clickable beat segments */
+.sim-transport { display: flex; align-items: center; gap: 12px; margin-top: 18px; }
+.sim-tbtn {
+  flex-shrink: 0; width: 38px; height: 38px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 50%; background: transparent; color: var(--mk-text-primary);
+  border: var(--mk-border-gold); cursor: pointer; font-size: 13px; line-height: 1;
   transition: color var(--mk-dur-snap), border-color var(--mk-dur-snap), background var(--mk-dur-snap);
 }
-.sim-btn:hover { color: var(--mk-brand); border-color: var(--mk-brand); background: rgba(212,175,55,.06); }
-.sim-progress {
-  flex: 1; height: 4px;
-  background: rgba(255,255,255,.08);
-  border-radius: var(--mk-radius-pill);
-  overflow: hidden;
+.sim-tbtn:hover { color: var(--mk-brand); border-color: var(--mk-brand); background: rgba(212,175,55,.06); }
+.sim-tbtn--play {
+  width: 46px; height: 46px; font-size: 15px;
+  background: var(--mk-gold-gradient); color: var(--mk-text-on-gold); border-color: rgba(0,0,0,.18);
 }
-.sim-progress-fill {
-  height: 100%; width: 0;
-  background: var(--mk-gold-gradient);
+.sim-tbtn--play:hover { color: var(--mk-text-on-gold); box-shadow: var(--mk-glow-gold-sm); }
+.sim-scrub { flex: 1; display: flex; gap: 6px; }
+.sim-seg {
+  flex: 1; height: 6px; border-radius: var(--mk-radius-pill);
+  background: rgba(255,255,255,.10); cursor: pointer; position: relative; overflow: hidden;
+  transition: background .3s ease;
+}
+.sim-seg:hover { background: rgba(255,255,255,.20); }
+.sim-seg.done { background: var(--mk-brand); }
+.sim-seg-fill { position: absolute; inset: 0; width: 0; background: var(--mk-gold-gradient); }
+.sim-step {
+  flex-shrink: 0; min-width: 44px; text-align: right;
+  font-family: var(--mk-font-mono); font-size: var(--mk-mono-sm); color: var(--mk-text-tertiary);
 }
 .sim-cta {
   text-align: center;
@@ -2036,10 +2067,12 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
 .sim-cta .btn-primary { padding: 14px 26px; font-size: var(--mk-text-md); }
 @media (max-width: 600px) {
   .sim-screen { padding: 22px 18px; }
-  .sim-controls { flex-wrap: wrap; }
-  .sim-btn { width: 100%; }
-  .sim-state { min-width: 148px; font-size: var(--mk-mono-sm); padding: 6px 12px; }
-  .sim-coach { min-height: 156px; }
+  .sim-state { min-width: 104px; font-size: var(--mk-mono-sm); padding: 6px 12px; }
+  .sim-coach { min-height: 150px; }
+  .sim-note { min-height: 150px; }
+  .sim-breathing-ring { width: 180px; height: 180px; }
+  .sim-transport { flex-wrap: wrap; row-gap: 10px; }
+  .sim-step { width: 100%; text-align: center; order: 3; }
 }
 @media (prefers-reduced-motion: reduce) {
   .sim-clock-dot { animation: none; }
@@ -2199,7 +2232,7 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
   <div class="section-inner">
     <p class="section-eyebrow reveal">01&frac12; &middot; See It Work</p>
     <h2 class="section-title reveal">Watch a good day <em>go red.</em><br>Then watch the system pull it back.</h2>
-    <p class="section-sub reveal">One real MAKETZO session, sped up. Same trader, same mistakes every trader makes &mdash; but this time the rules hold the line. <strong>Press play.</strong></p>
+    <p class="section-sub reveal">One real MAKETZO session, sped up. Same trader, same mistakes every trader makes &mdash; but this time the rules hold the line. <strong>Press play, or scrub through it yourself.</strong></p>
     <div class="sim reveal" id="sim">
       <div class="sim-screen" id="simScreen" data-tone="good">
         <p class="sim-eyebrow-in">A real session &middot; one morning, sped up</p>
@@ -2231,9 +2264,21 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
           </div>
           <div class="sim-reset-text">Reset Protocol &middot; breathe with the ring</div>
         </div>
+        <div class="sim-spot" id="simSpot" hidden></div>
+      </div>
+      <div class="sim-note" id="simNote">
+        <span class="sim-note-eyebrow">Why this matters</span>
+        <div class="sim-note-title" id="simNoteTitle">It reads your state, live</div>
+        <div class="sim-note-body" id="simNoteBody">Every trade re-scores your session in real time. The status band always knows whether you're in control or starting to drift.</div>
+      </div>
+      <div class="sim-transport">
+        <button class="sim-tbtn" id="simPrev" type="button" aria-label="Previous step">&#9198;</button>
+        <button class="sim-tbtn sim-tbtn--play" id="simPlay" type="button" aria-label="Play or pause">&#9654;</button>
+        <button class="sim-tbtn" id="simNext" type="button" aria-label="Next step">&#9197;</button>
+        <div class="sim-scrub" id="simScrub"></div>
+        <div class="sim-step" id="simStep">1 / 5</div>
       </div>
       <div class="sim-ghost" id="simGhost" hidden>
-        <p class="sim-eyebrow-in">How the same morning ends</p>
         <div class="sim-ghost-row">
           <div class="sim-ghost-col bad">
             <div class="sim-ghost-k">Without MAKETZO</div>
@@ -2246,10 +2291,6 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
             <div class="sim-ghost-d">reset after strike two, came back calm, closed the day <span class="sim-saved">green</span></div>
           </div>
         </div>
-      </div>
-      <div class="sim-controls">
-        <button class="sim-btn" id="simPlay" type="button">&#9654; Play the session</button>
-        <div class="sim-progress"><div class="sim-progress-fill" id="simProgressFill"></div></div>
       </div>
       <div class="sim-cta" id="simCta" hidden>
         <p class="sim-cta-line">The morning you'd have blown up &mdash; <strong>back in the green.</strong> That's the whole product.</p>
@@ -2272,147 +2313,157 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
       elReset  = document.getElementById('simReset'),
       elGhost  = document.getElementById('simGhost'),
       elCta    = document.getElementById('simCta'),
+      elSpot   = document.getElementById('simSpot'),
+      elNoteTitle = document.getElementById('simNoteTitle'),
+      elNoteBody  = document.getElementById('simNoteBody'),
+      elPrev   = document.getElementById('simPrev'),
       elPlay   = document.getElementById('simPlay'),
-      elFill   = document.getElementById('simProgressFill'),
+      elNext   = document.getElementById('simNext'),
+      elScrub  = document.getElementById('simScrub'),
+      elStep   = document.getElementById('simStep'),
+      elStrikesWrap = document.getElementById('simStrikes'),
+      elCoachBox    = sim.querySelector('.sim-coach'),
+      elPnlWrap     = sim.querySelector('.sim-pnl-wrap'),
       breathRing  = document.getElementById('simBreathRing'),
       breathInner = breathRing && breathRing.querySelector('.sim-breathing-ring-inner'),
       breathLabel = document.getElementById('simBreathLabel'),
       strikes  = sim.querySelectorAll('.sim-strike');
 
-  // ── Breathing engine — ported from app.js startBreathing (WAAPI scale +
-  // glow on the inner ring, resonant 5.5-5.5 cadence = the Reset Protocol's
-  // "coherent/meditate" pattern). Same math as the real app so the marketing
-  // ring breathes identically to a live reset. Do NOT reinvent this.
+  var ICON_PLAY = '&#9654;', ICON_PAUSE = '&#10073;&#10073;';
+
+  // ── Breathing engine — ported from app.js startBreathing (WAAPI scale + glow
+  // on the inner ring). Same math as the real Reset Protocol; quicker cadence
+  // here (3-3) so the breathing is ONE beat of the story, not the headline. ──
   var PHASE_RGB = { inhale:'251,191,36', hold:'56,189,248', exhale:'110,231,183' };
-  var BREATH = [
-    { k:'inhale', label:'Inhale', sec:5.5, scale:1.0  },
-    { k:'exhale', label:'Exhale', sec:5.5, scale:0.55 }
-  ];
-  function _visScale(s){ return 0.46 + (s - 0.55) / 0.45 * 0.66; }      // 0.46 .. 1.12
-  function _glowPx(v){ return 18 + (v - 0.46) / 0.66 * 92; }            // 18 .. 110
-  function _glowA(v){ return 0.12 + (v - 0.46) / 0.66 * 0.34; }         // 0.12 .. 0.46
-  function _ringShadow(v, rgb){ return '0 0 ' + _glowPx(v).toFixed(0) + 'px rgba(' + rgb + ',' + _glowA(v).toFixed(2) + ')'; }
-  var _breathTimer = null, _breathLast = _visScale(0.55);
+  var BREATH = [ { k:'inhale', label:'Inhale', sec:3, scale:1.0 }, { k:'exhale', label:'Exhale', sec:3, scale:0.55 } ];
+  function _vis(s){ return 0.46 + (s - 0.55) / 0.45 * 0.66; }
+  function _gpx(v){ return 18 + (v - 0.46) / 0.66 * 92; }
+  function _ga(v){ return 0.12 + (v - 0.46) / 0.66 * 0.34; }
+  function _shadow(v, rgb){ return '0 0 ' + _gpx(v).toFixed(0) + 'px rgba(' + rgb + ',' + _ga(v).toFixed(2) + ')'; }
+  var _bt = null, _bl = _vis(0.55);
   function stopBreath(){
-    if (_breathTimer){ clearTimeout(_breathTimer); _breathTimer = null; }
-    if (breathInner && breathInner.getAnimations){
-      breathInner.getAnimations().forEach(function(a){ try { a.cancel(); } catch(e){} });
-    }
+    if (_bt){ clearTimeout(_bt); _bt = null; }
+    if (breathInner && breathInner.getAnimations) breathInner.getAnimations().forEach(function(a){ try { a.cancel(); } catch(e){} });
   }
   function startBreath(){
-    stopBreath();
-    if (!breathRing || !breathInner) return;
-    _breathLast = _visScale(0.55); // start at the trough; first inhale swells up
-    var i = 0;
-    (function step(){
-      var ph = BREATH[i % BREATH.length];
-      breathRing.setAttribute('data-phase', ph.k);
-      var rgb = PHASE_RGB[ph.k] || '251,191,36';
-      var vis = _visScale(ph.scale);
-      if (breathInner.animate){
-        breathInner.animate(
-          [ { transform: 'scale(' + _breathLast.toFixed(3) + ')', boxShadow: _ringShadow(_breathLast, rgb) },
-            { transform: 'scale(' + vis.toFixed(3) + ')',         boxShadow: _ringShadow(vis, rgb) } ],
-          { duration: ph.sec * 1000, easing: 'ease-in-out', fill: 'forwards' }
-        );
-      }
-      _breathLast = vis;
+    stopBreath(); if (!breathRing || !breathInner) return;
+    _bl = _vis(0.55); var i = 0;
+    (function s(){
+      var ph = BREATH[i % BREATH.length]; breathRing.setAttribute('data-phase', ph.k);
+      var rgb = PHASE_RGB[ph.k] || '251,191,36', v = _vis(ph.scale);
+      if (breathInner.animate) breathInner.animate(
+        [ { transform:'scale('+_bl.toFixed(3)+')', boxShadow:_shadow(_bl,rgb) },
+          { transform:'scale('+v.toFixed(3)+')',  boxShadow:_shadow(v,rgb) } ],
+        { duration: ph.sec*1000, easing:'ease-in-out', fill:'forwards' });
+      _bl = v;
       if (breathLabel && breathLabel.textContent !== ph.label){
         breathLabel.style.opacity = '0';
         setTimeout(function(){ breathLabel.textContent = ph.label; breathLabel.style.opacity = '1'; }, 140);
       }
-      _breathTimer = setTimeout(function(){ i++; step(); }, ph.sec * 1000);
+      _bt = setTimeout(function(){ i++; s(); }, ph.sec*1000);
     })();
   }
 
   var beats = [
-    { time:'9:30 AM',  tag:'9:30',  pnl:'+$120', tone:'good', state:'In Rhythm',     strikes:0,
-      event:"Clean open. You're up early and trading the setups you planned last night.",
-      coach:"You're green early and trading clean — exactly the start you want. Now protect it. Don't give it back chasing the next candle." },
-    { time:'9:52 AM',  tag:'9:52',  pnl:'+$40',  tone:'warn', state:'Caution',       strikes:1,
-      event:"You chased an extended move that wasn't on your plan, and gave most of the morning back.",
-      coach:"That wasn't one of your setups — that's strike one. One impulsive trade is human. The second is where good days quietly fall apart." },
-    { time:'10:18 AM', tag:'10:18', pnl:'−$160', tone:'bad',  state:'Elevated Risk', strikes:2, warn:true,
-      event:"A revenge trade to win it back fast. You're red and tilted now — this is where the day usually dies.",
-      coach:"Stop. You're down and trying to get it back in one trade — that's tilt, not a setup. One more rule-break and I lock the session." },
-    { time:'10:31 AM', tag:'10:31', pnl:'−$160', tone:'warn', state:'Reset',  strikes:2, warn:true, reset:true,
-      event:"You reach for the mouse again — and the Reset Protocol steps in before strike three.",
-      coach:"Hands off the mouse. Before you take another trade, breathe with the ring and let your heart rate settle. The setup will still be there in five minutes." },
-    { time:'10:58 AM', tag:'10:58', pnl:'+$89',  tone:'good', state:'Back in Control', strikes:2,
-      event:"Calm again, you wait for one clean A-plus setup — and close the morning back in the green.",
-      coach:"That's how it's done. You reset, waited for one clean setup, and turned a blow-up morning into a green day. That's discipline, not luck.", ghost:true, cta:true }
+    { time:'9:30 AM', tag:'9:30', pnl:'+$120', tone:'good', state:'In Rhythm', strikes:0, spot:'status',
+      event:"Clean open — you're trading the setups you planned.",
+      coach:"Green and disciplined out of the gate. Protect it — don't give it back chasing the next candle.",
+      note:{ t:'It reads your state, live', b:"Every trade re-scores your session in real time. The status band always knows whether you're in control or starting to drift — before you do." } },
+    { time:'9:52 AM', tag:'9:52', pnl:'+$40', tone:'warn', state:'Caution', strikes:1, spot:'strikes',
+      event:"You chased an extended move that wasn't your setup.",
+      coach:"That wasn't one of your setups — strike one. One impulsive trade is human; the second is where good days unravel.",
+      note:{ t:'The Strike System fires', b:"Break a rule and you earn a strike, tracked automatically. Three locks the day. No willpower required — the count is kept for you." } },
+    { time:'10:18 AM', tag:'10:18', pnl:'−$160', tone:'bad', state:'Elevated', strikes:2, warn:true, spot:'coach',
+      event:"A revenge trade to win it back fast. Now you're tilted.",
+      coach:"Stop. Down and forcing it is tilt, not a setup. One more rule-break and I lock the session.",
+      note:{ t:'COACH SAYS steps in', b:"The blunt warning you'd never give yourself — delivered the instant your behavior turns, not buried in tomorrow's journal." } },
+    { time:'10:31 AM', tag:'10:31', pnl:'−$160', tone:'warn', state:'Reset', strikes:2, warn:true, reset:true, spot:'reset',
+      event:"You reach for the mouse again — the Reset Protocol steps in.",
+      coach:"Hands off. One slow breath before you do real damage.",
+      note:{ t:'One tool, not the whole pitch', b:"A short guided reset is just one protocol. The real win: the system caught you here, before the damage — something a breathing app can't do." } },
+    { time:'10:58 AM', tag:'10:58', pnl:'+$89', tone:'good', state:'In Control', strikes:2, spot:'pnl', ghost:true, cta:true,
+      event:"Calm again, you take one clean setup and close green.",
+      coach:"That's discipline, not luck — a blow-up morning turned green.",
+      note:{ t:'The morning, contained', b:"Same trader, same mistakes — but it ends +$89 instead of −$840. That's what a journal can't do: change the trade while it's still happening." } }
   ];
-  var durs = [3400, 3400, 3800, 11500, 4200]; /* reset beat = one full resonant breath (5.5 in + 5.5 out) + lead */
-  var startDelay = 900;
-  var total = durs.reduce(function(a,b){ return a+b; }, 0);
-  var timers = [], playing = false;
+  var durs = [5500, 5800, 6200, 6000, 6500];
+  var N = beats.length;
+  var cur = 0, playing = false, timer = null;
+  var segs = [];
 
-  function clearTimers(){ timers.forEach(clearTimeout); timers = []; }
   function setStrikes(n, warn){
-    strikes.forEach(function(s){
-      var i = +s.dataset.i;
-      s.classList.toggle('hit', i <= n);
-      s.classList.toggle('warn', !!warn && i === n);
-    });
+    strikes.forEach(function(s){ var i = +s.dataset.i; s.classList.toggle('hit', i <= n); s.classList.toggle('warn', !!warn && i === n); });
+  }
+  function spotlight(b){
+    var tgt = null;
+    if (b.spot === 'status') tgt = elState;
+    else if (b.spot === 'strikes') tgt = elStrikesWrap;
+    else if (b.spot === 'coach') tgt = elCoachBox;
+    else if (b.spot === 'pnl') tgt = elPnlWrap;
+    if (!tgt || b.reset){ elSpot.hidden = true; return; }   // reset beat: the breathing ring is the focus
+    var pad = 8;
+    elSpot.hidden = false;
+    elSpot.style.left   = (tgt.offsetLeft - pad) + 'px';
+    elSpot.style.top    = (tgt.offsetTop - pad) + 'px';
+    elSpot.style.width  = (tgt.offsetWidth + pad*2) + 'px';
+    elSpot.style.height = (tgt.offsetHeight + pad*2) + 'px';
   }
   function applyBeat(b){
     elClock.textContent = b.time;
-    elState.textContent = b.state; elState.dataset.tone = b.tone;
-    elScreen.dataset.tone = b.tone;
-    elPnl.textContent = b.pnl;   elPnl.dataset.tone = b.tone;
-    elEvent.textContent = b.event;
-    if (elEventTag) elEventTag.textContent = b.tag;
+    elState.textContent = b.state; elState.dataset.tone = b.tone; elScreen.dataset.tone = b.tone;
+    elPnl.textContent = b.pnl; elPnl.dataset.tone = b.tone;
+    elEvent.textContent = b.event; if (elEventTag) elEventTag.textContent = b.tag;
     elCoach.textContent = b.coach;
     setStrikes(b.strikes, b.warn);
-    elReset.hidden = !b.reset;
-    elGhost.hidden = !b.ghost;
-    elCta.hidden   = !b.cta;
+    elReset.hidden = !b.reset; elGhost.hidden = !b.ghost; elCta.hidden = !b.cta;
+    if (b.note){ elNoteTitle.textContent = b.note.t; elNoteBody.textContent = b.note.b; }
     if (b.reset) startBreath(); else stopBreath();
+    requestAnimationFrame(function(){ spotlight(b); });
   }
-  function showFinal(){
-    clearTimers(); playing = false;
-    applyBeat(beats[beats.length - 1]);
-    elFill.style.transition = 'none';
-    elFill.style.width = '100%';
-    elPlay.innerHTML = '&#8635; Replay';
+  function paintScrub(){
+    for (var i = 0; i < N; i++){
+      segs[i].classList.toggle('done', i < cur);
+      var f = segs[i].firstChild; f.style.transition = 'none'; f.style.width = (i < cur ? '100%' : '0');
+    }
+    elStep.textContent = (cur + 1) + ' / ' + N;
   }
-  function play(){
-    if (playing) return;
-    playing = true;
-    clearTimers();
-    elPlay.textContent = 'Running…';
-    /* show the starting state and HOLD on it so the viewer can read the
-       baseline (clean +$120 open) before anything starts moving. */
-    applyBeat(beats[0]);
-    elFill.style.transition = 'none';
-    elFill.style.width = '0';
-    void elFill.offsetWidth; /* force reflow so the width reset takes */
-    timers.push(setTimeout(function(){
-      elFill.style.transition = 'width ' + total + 'ms linear';
-      elFill.style.width = '100%';
-      var t = 0;
-      for (var i = 1; i < beats.length; i++) {
-        t += durs[i - 1];
-        (function(b){ timers.push(setTimeout(function(){ applyBeat(b); }, t)); })(beats[i]);
-      }
-      timers.push(setTimeout(function(){
-        playing = false;
-        elPlay.innerHTML = '&#8635; Replay';
-      }, total));
-    }, startDelay));
+  function setPlayIcon(p){ elPlay.innerHTML = p ? ICON_PAUSE : ICON_PLAY; }
+  function clearT(){ if (timer){ clearTimeout(timer); timer = null; } }
+  function goTo(i){ clearT(); playing = false; setPlayIcon(false); stopBreath(); cur = Math.max(0, Math.min(N-1, i)); applyBeat(beats[cur]); paintScrub(); }
+  function pause(){
+    playing = false; clearT(); stopBreath(); setPlayIcon(false);
+    var f = segs[cur].firstChild; var w = getComputedStyle(f).width; f.style.transition = 'none'; f.style.width = w;
+  }
+  function runStep(){
+    applyBeat(beats[cur]);
+    for (var i = 0; i < N; i++){ segs[i].classList.toggle('done', i < cur); var ff = segs[i].firstChild; ff.style.transition = 'none'; ff.style.width = (i < cur ? '100%' : '0'); }
+    elStep.textContent = (cur + 1) + ' / ' + N;
+    var f = segs[cur].firstChild; void f.offsetWidth; f.style.transition = 'width ' + durs[cur] + 'ms linear'; f.style.width = '100%';
+    timer = setTimeout(function(){ if (cur < N-1){ cur++; runStep(); } else { playing = false; setPlayIcon(false); } }, durs[cur]);
+  }
+  function play(){ if (playing) return; if (cur >= N-1) { cur = 0; } playing = true; setPlayIcon(true); runStep(); }
+  function toggle(){ playing ? pause() : play(); }
+
+  for (var i = 0; i < N; i++){
+    var seg = document.createElement('div'); seg.className = 'sim-seg';
+    var fill = document.createElement('div'); fill.className = 'sim-seg-fill'; seg.appendChild(fill);
+    (function(idx){ seg.addEventListener('click', function(){ goTo(idx); }); })(i);
+    elScrub.appendChild(seg); segs.push(seg);
   }
 
-  elPlay.addEventListener('click', play);
+  elPlay.addEventListener('click', toggle);
+  elPrev.addEventListener('click', function(){ goTo(cur - 1); });
+  elNext.addEventListener('click', function(){ goTo(cur + 1); });
+  window.addEventListener('resize', function(){ spotlight(beats[cur]); });
 
+  goTo(0);
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (reduce) {
-    showFinal();
+    goTo(N - 1); // show the full outcome statically; user can still scrub
   } else if ('IntersectionObserver' in window) {
     var once = false;
     var io = new IntersectionObserver(function(entries){
-      entries.forEach(function(e){
-        if (e.isIntersecting && !once) { once = true; play(); io.disconnect(); }
-      });
+      entries.forEach(function(e){ if (e.isIntersecting && !once){ once = true; setTimeout(function(){ if (!playing && cur === 0) play(); }, 1200); io.disconnect(); } });
     }, { threshold: 0.5 });
     io.observe(sim);
   }
