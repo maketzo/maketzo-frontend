@@ -201,21 +201,50 @@
     });
   }
 
-  async function handleCheckout(priceId, e) {
+  // ── Plan resolution ──────────────────────────────────────────────────
+  // Stripe-LIVE decoupling: CTAs name a TIER (+ optional interval); the backend
+  // resolves the real, mode-specific Stripe price from its per-tier env. The page
+  // never hardcodes a price ID, so the LIVE flip is a backend-only change. A raw
+  // priceId is still accepted (legacy CTAs) and forwarded as-is for back-compat.
+  const TIERS = ['journal', 'pro', 'elite', 'indicators'];
+  function isTier(s) { return typeof s === 'string' && TIERS.indexOf(s) !== -1; }
+  function isPriceId(s) { return typeof s === 'string' && s.indexOf('price_') === 0; }
+  function isEventLike(o) { return o && typeof o === 'object' && ('currentTarget' in o || typeof o.preventDefault === 'function'); }
+
+  // handleCheckout accepts: (event) | (tier, event) | (tier, fakeEvent) | (priceId, event) [legacy].
+  async function handleCheckout(a, b) {
+    // Normalize args. If the first arg is the event itself, there's no hint.
+    let hint, e;
+    if (isEventLike(a) && b === undefined) { hint = null; e = a; }
+    else { hint = a; e = b; }
     if (e && e.preventDefault) e.preventDefault();
+
     const btn = e && e.currentTarget ? e.currentTarget : null;
-    const finalId = (btn && btn.dataset && btn.dataset.priceId) ? btn.dataset.priceId : priceId;
-    if (!finalId) { console.error('[checkout] missing priceId'); return; }
+    const ds = (btn && btn.dataset) ? btn.dataset : {};
+
+    // Resolve tier+interval (preferred) or a legacy priceId.
+    const tier = ds.tier || (isTier(hint) ? hint : null);
+    const interval = (ds.interval || 'month');
+    const priceId = tier ? null : (ds.priceId || (isPriceId(hint) ? hint : null));
+    if (!tier && !priceId) { console.error('[checkout] missing tier/priceId'); return; }
+
+    // Build the create-checkout payload + the signup routing param once.
+    const planBody = tier ? { tier: tier, interval: interval } : { priceId: priceId };
+    const signupQuery = tier
+      ? ('tier=' + encodeURIComponent(tier) + '&interval=' + encodeURIComponent(interval))
+      : ('plan=' + encodeURIComponent(priceId));
 
     // Analytics — fire BEFORE the network/redirect. If the button already has
     // data-cta-source the wrapper will have fired cta_click on the same click;
-    // we still want a priceId-aware echo here so the analytics row carries the
-    // plan even on unsourced CTAs (mobile drawer, nav buttons, etc).
+    // we still want a plan-aware echo here so the analytics row carries the plan
+    // even on unsourced CTAs (mobile drawer, nav buttons, etc).
     if (window.MKT && window.MKT.trackEvent) {
       window.MKT.trackEvent('cta_click', {
         source: btn && btn.dataset ? (btn.dataset.ctaSource || 'unsourced') : 'unsourced',
         target: 'checkout',
-        priceId: finalId,
+        tier: tier || null,
+        interval: tier ? interval : null,
+        priceId: priceId || null,
         label: btn ? (btn.textContent || '').trim().slice(0, 64) : null
       });
     }
@@ -233,7 +262,7 @@
       if (!me) {
         // Unauthenticated → signup. The signup page will fire identify() on
         // success, which links the anon_id to the email.
-        window.location.href = '/signup.html?plan=' + encodeURIComponent(finalId);
+        window.location.href = '/signup.html?' + signupQuery;
         return;
       }
 
@@ -256,7 +285,7 @@
         try {
           await fetch(API + '/auth/logout', { credentials: 'include', redirect: 'manual' });
         } catch (_) { /* clear cookies regardless of network outcome */ }
-        window.location.href = '/signup.html?plan=' + encodeURIComponent(finalId);
+        window.location.href = '/signup.html?' + signupQuery;
         return;
       }
 
@@ -274,22 +303,20 @@
           { 'Content-Type': 'application/json' },
           csrf ? { 'X-CSRF-Token': csrf } : {}
         ),
-        body: JSON.stringify({
-          priceId: finalId,
+        body: JSON.stringify(Object.assign({}, planBody, {
           mkt_anon_id: anonId,
           mkt_session_id: sessionId,
           mkt_source_path: window.location.pathname
-        })
+        }))
       });
       const data = await checkoutRes.json().catch(function () { return {}; });
       if (data.url) {
         // trial_started fires after the Stripe URL is in hand — most accurate
         // signal short of the conversion webhook itself.
         if (window.MKT && window.MKT.trackEvent) {
-          window.MKT.trackEvent('trial_started', {
-            priceId: finalId,
+          window.MKT.trackEvent('trial_started', Object.assign({
             source_path: window.location.pathname
-          });
+          }, planBody));
         }
         window.location.href = data.url;
       } else {

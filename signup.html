@@ -105,27 +105,49 @@ const API = (() => {
 })();
 
 // ── Plan-aware mode ──────────────────────────────────────────
-// When /signup is reached via a "Start Free Trial" click, the priceId is
-// carried in ?plan=<priceId>. We render tier-aware copy and, on success,
-// chain into Stripe Checkout via the one-shot pay token returned by
-// /auth/signup. The map below mirrors pricing.html — keep in sync.
+// When /signup is reached via a "Start Free Trial" click, the plan is carried as
+// ?tier=<tier>&interval=<month|year>. The backend resolves the real (mode-specific)
+// Stripe price from tier+interval — nothing here hardcodes a price ID, so the LIVE
+// flip is a backend-only change. Legacy ?plan=<priceId> links/bookmarks are still
+// honored and mapped back to tier+interval. On success we chain into Stripe Checkout
+// via the one-shot pay token returned by /auth/signup.
 const TIER_BY_PRICE = {
-  'price_1Te3geJIDbUntZeXZjubg0EW': { name: 'Journal', amount: '$29/mo' },
-  'price_1Te3h3JIDbUntZeXLemKAiqu': { name: 'Journal', amount: '$290/yr' },
-  'price_1TUWVpJIDbUntZeXyQD23z8W': { name: 'Pro',     amount: '$49/mo' },
-  'price_1TUWZIJIDbUntZeXl4Xtfudj': { name: 'Pro',     amount: '$399/yr' },
-  'price_1TUWabJIDbUntZeXYh8IrvEa': { name: 'Elite',   amount: '$79/mo' },
-  'price_1TUWc2JIDbUntZeXOIkeHml4': { name: 'Elite',   amount: '$649/yr' },
-  // Standalone Maketzo Edge + Pulse — billed immediately, no trial.
-  // Backend skips trial_period_days for these specific price IDs (see
-  // startStripeCheckout in maketzo-backend/server.js).
-  'price_1Tc8GNJIDbUntZeXS8JnCa3C': { name: 'Edge + Pulse', amount: '$29/mo',  isIndicator: true },
-  'price_1Tc8J0JIDbUntZeX1fYQ1ET6': { name: 'Edge + Pulse', amount: '$290/yr', isIndicator: true }
+  'price_1Te3geJIDbUntZeXZjubg0EW': { tier: 'journal',    interval: 'month' },
+  'price_1Te3h3JIDbUntZeXLemKAiqu': { tier: 'journal',    interval: 'year'  },
+  'price_1TUWVpJIDbUntZeXyQD23z8W': { tier: 'pro',        interval: 'month' },
+  'price_1TUWZIJIDbUntZeXl4Xtfudj': { tier: 'pro',        interval: 'year'  },
+  'price_1TUWabJIDbUntZeXYh8IrvEa': { tier: 'elite',      interval: 'month' },
+  'price_1TUWc2JIDbUntZeXOIkeHml4': { tier: 'elite',      interval: 'year'  },
+  'price_1Tc8GNJIDbUntZeXS8JnCa3C': { tier: 'indicators', interval: 'month' },
+  'price_1Tc8J0JIDbUntZeX1fYQ1ET6': { tier: 'indicators', interval: 'year'  }
+};
+// Display copy per tier. Edge + Pulse (indicators) is charged immediately (no trial).
+const TIER_INFO = {
+  journal:    { name: 'Journal',      month: '$29/mo', year: '$290/yr' },
+  pro:        { name: 'Pro',          month: '$49/mo', year: '$399/yr' },
+  elite:      { name: 'Elite',        month: '$79/mo', year: '$649/yr' },
+  indicators: { name: 'Edge + Pulse', month: '$29/mo', year: '$290/yr', isIndicator: true }
 };
 
 const params = new URLSearchParams(window.location.search);
-const planId = params.get('plan') || '';
-const tier   = planId && TIER_BY_PRICE[planId] ? TIER_BY_PRICE[planId] : null;
+let activeTier = (params.get('tier') || '').toLowerCase();
+let activeInterval = (params.get('interval') || 'month').toLowerCase() === 'year' ? 'year' : 'month';
+const legacyPlanId = params.get('plan') || '';
+if (!activeTier && legacyPlanId && TIER_BY_PRICE[legacyPlanId]) {
+  activeTier = TIER_BY_PRICE[legacyPlanId].tier;
+  activeInterval = TIER_BY_PRICE[legacyPlanId].interval;
+}
+const hasPlan = !!(activeTier && TIER_INFO[activeTier]);
+// `tier` = the display object the copy below renders (name/amount/isIndicator).
+const tier = hasPlan
+  ? { name: TIER_INFO[activeTier].name, amount: TIER_INFO[activeTier][activeInterval], isIndicator: !!TIER_INFO[activeTier].isIndicator }
+  : null;
+// What we POST to /billing/create-checkout (it resolves the env-configured price).
+// A legacy priceId is forwarded as-is for back-compat.
+function planBody() { return hasPlan ? { tier: activeTier, interval: activeInterval } : (legacyPlanId ? { priceId: legacyPlanId } : {}); }
+// Carry-over token for the Google OAuth checkout hand-off + sign-in links.
+const checkoutToken = hasPlan ? (activeTier + ':' + activeInterval) : legacyPlanId;
+const planQuery = hasPlan ? ('tier=' + activeTier + '&interval=' + activeInterval) : (legacyPlanId ? ('plan=' + encodeURIComponent(legacyPlanId)) : '');
 
 // Referred friends get the extended 14-day trial (the double-sided gift). Read
 // the mkt_ref cookie DIRECTLY — this runs at parse time, before the deferred
@@ -226,7 +248,7 @@ function applyMode(next) {
     divider.style.display = '';
     submitBtn.textContent = tier ? (tier.isIndicator ? `Subscribe — ${tier.amount}` : `Start ${isReferred ? 14 : 7}-day free trial`) : 'Create account';
     googleLabel.textContent = tier ? (tier.isIndicator ? 'Continue with Google for Edge + Pulse' : `Continue with Google to start ${tier.name} trial`) : 'Continue with Google';
-    footLink.innerHTML = 'Already have an account? <a href="login.html' + (planId ? '?plan=' + encodeURIComponent(planId) : '') + '">Sign in</a>';
+    footLink.innerHTML = 'Already have an account? <a href="login.html' + (planQuery ? '?' + planQuery : '') +'">Sign in</a>';
   } else if (mode === 'login-password') {
     nameField.hidden = true;
     nameInput.required = false;
@@ -250,7 +272,7 @@ function applyMode(next) {
     divider.style.display = 'none';
     submitBtn.style.display = 'none';
     googleLabel.textContent = tier ? (tier.isIndicator ? 'Continue with Google for Edge + Pulse' : `Continue with Google to start ${tier.name} trial`) : 'Continue with Google';
-    footLink.innerHTML = 'Wrong account? <a href="login.html' + (planId ? '?plan=' + encodeURIComponent(planId) : '') + '">Sign in another way</a>';
+    footLink.innerHTML = 'Wrong account? <a href="login.html' + (planQuery ? '?' + planQuery : '') +'">Sign in another way</a>';
   }
 }
 
@@ -286,7 +308,7 @@ document.getElementById('email').addEventListener('blur', checkEmailExists);
 
 // ── Google button ────────────────────────────────────────────
 document.getElementById('googleBtn').addEventListener('click', () => {
-  const url = API + '/auth/google' + (planId ? '?checkout=' + encodeURIComponent(planId) : '');
+  const url = API + '/auth/google' + (checkoutToken ? '?checkout=' + encodeURIComponent(checkoutToken) : '');
   window.location.href = url;
 });
 
@@ -297,7 +319,7 @@ async function startStripeCheckout(payToken) {
     method: 'POST',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ priceId: planId, payToken })
+    body: JSON.stringify(Object.assign(planBody(), { payToken }))
   });
   const data = await res.json().catch(() => ({}));
   if (data.url) {
@@ -317,7 +339,7 @@ async function startStripeCheckoutWithSession() {
       { 'Content-Type': 'application/json' },
       csrf ? { 'X-CSRF-Token': csrf } : {}
     ),
-    body: JSON.stringify({ priceId: planId })
+    body: JSON.stringify(planBody())
   });
   const data = await res.json().catch(() => ({}));
   if (data.url) {
@@ -360,7 +382,7 @@ document.getElementById('signupForm').addEventListener('submit', async (e) => {
         }
         return;
       }
-      if (planId) {
+      if (hasPlan) {
         const ok = await startStripeCheckoutWithSession();
         if (!ok) return;
       } else {
@@ -389,7 +411,7 @@ document.getElementById('signupForm').addEventListener('submit', async (e) => {
       headers: { 'Content-Type': 'application/json' },
       // intendsCheckout: a plan is selected, so the user is headed to Stripe and
       // will be verified via payment — backend skips the (moot) verify email.
-      body: JSON.stringify({ name, email, password, turnstileToken, intendsCheckout: !!planId, ref: refCode })
+      body: JSON.stringify({ name, email, password, turnstileToken, intendsCheckout: hasPlan, ref: refCode })
     });
     const data = await res.json().catch(() => ({}));
     if (!(res.ok && data.ok)) {
@@ -403,17 +425,17 @@ document.getElementById('signupForm').addEventListener('submit', async (e) => {
     // marketing-page events can be JOINed against the user after conversion.
     if (window.MKT && window.MKT.identify) {
       try { window.MKT.identify(email); } catch (_) {}
-      window.MKT.trackEvent('form_submit', { form: 'signup', plan: planId || null });
+      window.MKT.trackEvent('form_submit', { form: 'signup', plan: (hasPlan ? (activeTier + '/' + activeInterval) : null) });
     }
 
-    if (planId && data.payToken) {
+    if (hasPlan && data.payToken) {
       // Brand-new account — chain into Stripe via pay token.
       const ok = await startStripeCheckout(data.payToken);
       if (!ok) return;
       return;
     }
 
-    if (planId && !data.payToken) {
+    if (hasPlan && !data.payToken) {
       // Existing-account branch returns identical `{ ok: true }` without payToken.
       // The "you already have an account" email is on its way; surface that here.
       showBanner('Looks like you already have a MAKETZO account. Check your inbox or sign in.', 'info');

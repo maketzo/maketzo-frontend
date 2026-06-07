@@ -91,26 +91,47 @@ const API = (() => {
 })();
 
 // ── Plan-aware mode ──────────────────────────────────────────
-// Mirror of signup.html — keep TIER_BY_PRICE in sync there.
+// Mirror of signup.html — keep TIER_BY_PRICE / TIER_INFO in sync there. The backend
+// resolves the real Stripe price from tier+interval; ?plan=<priceId> stays supported.
 const TIER_BY_PRICE = {
-  'price_1Te3geJIDbUntZeXZjubg0EW': { name: 'Journal', amount: '$29/mo' },
-  'price_1Te3h3JIDbUntZeXLemKAiqu': { name: 'Journal', amount: '$290/yr' },
-  'price_1TUWVpJIDbUntZeXyQD23z8W': { name: 'Pro',     amount: '$49/mo' },
-  'price_1TUWZIJIDbUntZeXl4Xtfudj': { name: 'Pro',     amount: '$399/yr' },
-  'price_1TUWabJIDbUntZeXYh8IrvEa': { name: 'Elite',   amount: '$79/mo' },
-  'price_1TUWc2JIDbUntZeXOIkeHml4': { name: 'Elite',   amount: '$649/yr' }
+  'price_1Te3geJIDbUntZeXZjubg0EW': { tier: 'journal',    interval: 'month' },
+  'price_1Te3h3JIDbUntZeXLemKAiqu': { tier: 'journal',    interval: 'year'  },
+  'price_1TUWVpJIDbUntZeXyQD23z8W': { tier: 'pro',        interval: 'month' },
+  'price_1TUWZIJIDbUntZeXl4Xtfudj': { tier: 'pro',        interval: 'year'  },
+  'price_1TUWabJIDbUntZeXYh8IrvEa': { tier: 'elite',      interval: 'month' },
+  'price_1TUWc2JIDbUntZeXOIkeHml4': { tier: 'elite',      interval: 'year'  },
+  'price_1Tc8GNJIDbUntZeXS8JnCa3C': { tier: 'indicators', interval: 'month' },
+  'price_1Tc8J0JIDbUntZeX1fYQ1ET6': { tier: 'indicators', interval: 'year'  }
+};
+const TIER_INFO = {
+  journal:    { name: 'Journal',      month: '$29/mo', year: '$290/yr' },
+  pro:        { name: 'Pro',          month: '$49/mo', year: '$399/yr' },
+  elite:      { name: 'Elite',        month: '$79/mo', year: '$649/yr' },
+  indicators: { name: 'Edge + Pulse', month: '$29/mo', year: '$290/yr', isIndicator: true }
 };
 
 const params = new URLSearchParams(window.location.search);
-const planId = params.get('plan') || '';
-const tier   = planId && TIER_BY_PRICE[planId] ? TIER_BY_PRICE[planId] : null;
+let activeTier = (params.get('tier') || '').toLowerCase();
+let activeInterval = (params.get('interval') || 'month').toLowerCase() === 'year' ? 'year' : 'month';
+const legacyPlanId = params.get('plan') || '';
+if (!activeTier && legacyPlanId && TIER_BY_PRICE[legacyPlanId]) {
+  activeTier = TIER_BY_PRICE[legacyPlanId].tier;
+  activeInterval = TIER_BY_PRICE[legacyPlanId].interval;
+}
+const hasPlan = !!(activeTier && TIER_INFO[activeTier]);
+const tier = hasPlan
+  ? { name: TIER_INFO[activeTier].name, amount: TIER_INFO[activeTier][activeInterval], isIndicator: !!TIER_INFO[activeTier].isIndicator }
+  : null;
+function planBody() { return hasPlan ? { tier: activeTier, interval: activeInterval } : (legacyPlanId ? { priceId: legacyPlanId } : {}); }
+const checkoutToken = hasPlan ? (activeTier + ':' + activeInterval) : legacyPlanId;
+const planQuery = hasPlan ? ('tier=' + activeTier + '&interval=' + activeInterval) : (legacyPlanId ? ('plan=' + encodeURIComponent(legacyPlanId)) : '');
 
 if (tier) {
   document.getElementById('eyebrow').textContent = `START ${tier.name.toUpperCase()} TRIAL`;
   document.getElementById('title').innerHTML = `Sign in to start <em>${tier.name}.</em>`;
   document.getElementById('sub').textContent = `${tier.amount} · 7-day free trial · no charge until day 8.`;
   document.getElementById('loginSubmit').textContent = 'Sign in & start trial';
-  document.getElementById('signupLink').setAttribute('href', 'signup.html?plan=' + encodeURIComponent(planId));
+  document.getElementById('signupLink').setAttribute('href', 'signup.html?' + planQuery);
 }
 
 const banner = document.getElementById('banner');
@@ -137,7 +158,7 @@ async function startStripeCheckoutWithSession() {
       { 'Content-Type': 'application/json' },
       csrf ? { 'X-CSRF-Token': csrf } : {}
     ),
-    body: JSON.stringify({ priceId: planId })
+    body: JSON.stringify(planBody())
   });
   const data = await res.json().catch(() => ({}));
   if (data.url) { window.location.href = data.url; return true; }
@@ -146,7 +167,7 @@ async function startStripeCheckoutWithSession() {
 }
 
 document.getElementById('googleBtn').addEventListener('click', () => {
-  const url = API + '/auth/google' + (planId ? '?checkout=' + encodeURIComponent(planId) : '');
+  const url = API + '/auth/google' + (checkoutToken ? '?checkout=' + encodeURIComponent(checkoutToken) : '');
   window.location.href = url;
 });
 
@@ -157,7 +178,7 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
   const password = document.getElementById('password').value;
   if (!email || !password) { showBanner('Email and password are required.', 'error'); return; }
   const orig = btn.innerHTML;
-  btn.innerHTML = planId ? 'Starting trial…' : 'Signing in…';
+  btn.innerHTML = hasPlan ? 'Starting trial…' : 'Signing in…';
   btn.disabled = true;
   try {
     const res = await fetch(API + '/auth/login', {
@@ -167,7 +188,7 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
     });
     const data = await res.json().catch(() => ({}));
     if (res.ok && data.ok) {
-      if (planId) {
+      if (hasPlan) {
         const ok = await startStripeCheckoutWithSession();
         if (!ok) { btn.innerHTML = orig; btn.disabled = false; }
         return;

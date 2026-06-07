@@ -186,8 +186,9 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 </footer>
 
 <script>
-// 7-day free-trial Stripe price (same as every "Start Free Trial" CTA site-wide).
-var TRIAL_PRICE = 'price_1TUWVpJIDbUntZeXyQD23z8W';
+// 7-day free-trial tier (same as every "Start Free Trial" CTA site-wide). The backend
+// resolves the real Stripe price from tier+interval, so no price ID is hardcoded here.
+var TRIAL_TIER = 'pro';
 
 function toggleDrawer(){ ['mobileDrawer','mobileOverlay','hamburger'].forEach(function(id){ document.getElementById(id).classList.toggle('open'); }); }
 function closeDrawer(){ ['mobileDrawer','mobileOverlay','hamburger'].forEach(function(id){ document.getElementById(id).classList.remove('open'); }); }
@@ -195,7 +196,7 @@ function closeDrawer(){ ['mobileDrawer','mobileOverlay','hamburger'].forEach(fun
 // Kick off the trial via the shared checkout flow (mkt_ref cookie is read by
 // checkout.js / backfilled on the Stripe webhook, so the referrer gets credit).
 function startTrial(){
-  try { if (typeof handleCheckout === 'function') return handleCheckout(TRIAL_PRICE, { preventDefault: function(){}, currentTarget: null }); } catch (e) {}
+  try { if (typeof handleCheckout === 'function') return handleCheckout(TRIAL_TIER, { preventDefault: function(){}, currentTarget: null }); } catch (e) {}
   window.location.href = 'https://maketzo.co/pricing';
 }
 

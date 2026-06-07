@@ -837,7 +837,7 @@ footer {
     <li><a href="pricing.html" onclick="closeDrawer()">Get Started</a></li>
     <li><a href="/app" onclick="closeDrawer()">Log In</a></li>
   </ul>
-  <button class="mobile-drawer-cta" onclick="handleCheckout('price_1TUWVpJIDbUntZeXyQD23z8W',{preventDefault:()=>{},currentTarget:null});closeDrawer()">Start Free Trial &rarr;</button>
+  <button class="mobile-drawer-cta" onclick="handleCheckout('pro',{preventDefault:()=>{},currentTarget:null});closeDrawer()">Start Free Trial &rarr;</button>
 </div>
 
 <!-- NAV -->
@@ -854,7 +854,7 @@ footer {
     <li><a href="/blog">Blog</a></li>
     <li><a href="pricing.html" aria-current="page">Get Started</a></li>
     <li><a href="/app" class="nav-login-btn">Log In</a></li>
-    <li><button class="nav-cta" onclick="handleCheckout('price_1TUWVpJIDbUntZeXyQD23z8W',event)">Start Free Trial</button></li>
+    <li><button class="nav-cta" onclick="handleCheckout('pro',event)">Start Free Trial</button></li>
   </ul>
   <button class="hamburger" id="hamburger" onclick="toggleDrawer()" aria-label="Menu"><span></span><span></span><span></span></button>
 </nav>
@@ -898,7 +898,7 @@ footer {
           <li><span class="feat"><span class="feat-name">Streak preservation</span><span class="feat-desc">Watch your green days stack up, and feel the pull not to break the chain.</span></span></li>
           <li><span class="feat"><span class="feat-name">Custom rule pills</span><span class="feat-desc">Your own non-negotiables, pinned to every session where you can't ignore them.</span></span></li>
         </ul>
-        <button class="btn-secondary tier-cta" id="cta1" data-price-id="price_1Te3geJIDbUntZeXZjubg0EW" onclick="handleCheckout(this.dataset.priceId,event)">Start 7-Day Free Trial</button>
+        <button class="btn-secondary tier-cta" id="cta1" data-tier="journal" data-interval="month" onclick="handleCheckout(this.dataset.tier,event)">Start 7-Day Free Trial</button>
       </div>
 
       <!-- PRO -->
@@ -922,7 +922,7 @@ footer {
           <li><span class="feat"><span class="feat-name">TradingView invite</span><span class="feat-desc">Edge + Pulse live on your own charts, granted within 24 hours.</span></span></li>
           <li><span class="feat"><span class="feat-name">Focus Room</span><span class="feat-desc">Mood-based Zone Tracks and a reset ritual to get your head right before the open.</span></span></li>
         </ul>
-        <button class="btn-primary tier-cta" id="cta2" data-price-id="price_1TUWVpJIDbUntZeXyQD23z8W" onclick="handleCheckout(this.dataset.priceId,event)">Start 7-Day Free Trial</button>
+        <button class="btn-primary tier-cta" id="cta2" data-tier="pro" data-interval="month" onclick="handleCheckout(this.dataset.tier,event)">Start 7-Day Free Trial</button>
       </div>
 
       <!-- ELITE -->
@@ -942,12 +942,12 @@ footer {
           <li><span class="feat"><span class="feat-name">Founders' circle</span><span class="feat-desc">A private room with the team and the most serious traders on the platform.</span></span></li>
           <li><span class="feat"><span class="feat-name">Early access</span><span class="feat-desc">New features land in your account first, before anyone else.</span></span></li>
         </ul>
-        <button class="btn-secondary tier-cta" id="cta3" data-price-id="price_1TUWabJIDbUntZeXYh8IrvEa" onclick="handleCheckout(this.dataset.priceId,event)">Start 7-Day Free Trial</button>
+        <button class="btn-secondary tier-cta" id="cta3" data-tier="elite" data-interval="month" onclick="handleCheckout(this.dataset.tier,event)">Start 7-Day Free Trial</button>
       </div>
     </div>
 
     <div class="mk-cta-repeat">
-      <button class="btn-primary" onclick="handleCheckout('price_1TUWVpJIDbUntZeXyQD23z8W',event)">Start 7-Day Free Trial</button>
+      <button class="btn-primary" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial</button>
     </div>
   </div>
 </section>
@@ -1006,7 +1006,7 @@ footer {
     </div>
 
     <div class="mk-cta-repeat">
-      <button class="btn-primary" onclick="handleCheckout('price_1TUWVpJIDbUntZeXyQD23z8W',event)">Start 7-Day Free Trial</button>
+      <button class="btn-primary" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial</button>
     </div>
   </div>
 </section>
@@ -1020,9 +1020,9 @@ footer {
       <h2 class="standalone-card-title">Skip the platform. <em>Get Edge + Pulse on TradingView.</em></h2>
       <p class="standalone-card-body">$29/mo gets you the same Maketzo Edge + Pulse indicators on TradingView, same invite pipeline, same 24-hour SLA &mdash; without the journaling, Focus Room, or behavioral OS. For traders who want the signal layer alone.</p>
       <div class="standalone-card-cta-wrap">
-        <button class="btn-primary" data-cta-source="pricing-standalone" onclick="handleCheckout('price_1Tc8GNJIDbUntZeXS8JnCa3C',event)">Get Standalone Access &rarr;</button>
+        <button class="btn-primary" data-cta-source="pricing-standalone" data-tier="indicators" data-interval="month" onclick="handleCheckout(event)">Get Standalone Access &rarr;</button>
         <p class="standalone-card-note">Charged today &middot; no trial &middot; cancel anytime &middot; <a href="indicators.html">Learn more about Edge + Pulse</a></p>
-        <p class="standalone-card-note"><a href="#" data-cta-source="pricing-standalone-yearly" onclick="handleCheckout('price_1Tc8J0JIDbUntZeX1fYQ1ET6',event);return false;">Or pay annually &mdash; $290/yr (save ~17%)</a></p>
+        <p class="standalone-card-note"><a href="#" data-cta-source="pricing-standalone-yearly" data-tier="indicators" data-interval="year" onclick="handleCheckout(event);return false;">Or pay annually &mdash; $290/yr (save ~17%)</a></p>
       </div>
     </div>
   </div>
@@ -1082,7 +1082,7 @@ footer {
     </div>
 
     <div class="mk-cta-repeat">
-      <button class="btn-primary" data-cta-source="vs-competitors" onclick="handleCheckout('price_1TUWVpJIDbUntZeXyQD23z8W',event)">Start 7-Day Free Trial &rarr;</button>
+      <button class="btn-primary" data-cta-source="vs-competitors" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
     </div>
   </div>
 </section>
@@ -1116,7 +1116,7 @@ footer {
     </div>
 
     <div class="mk-cta-repeat">
-      <button class="btn-primary" data-cta-source="trial-mechanics" onclick="handleCheckout('price_1TUWVpJIDbUntZeXyQD23z8W',event)">Start 7-Day Free Trial &rarr;</button>
+      <button class="btn-primary" data-cta-source="trial-mechanics" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
     </div>
   </div>
 </section>
@@ -1131,7 +1131,7 @@ footer {
         <div class="referral-card-title">Refer a trader. <em style="font-style:normal;background:var(--mk-gold-gradient);-webkit-background-clip:text;background-clip:text;color:transparent;">Get a month free.</em></div>
         <p class="referral-card-sub">Invite another trader. When they become a paying subscriber, your next bill is credited by one month.</p>
       </div>
-      <button class="btn-primary" onclick="handleCheckout('price_1TUWVpJIDbUntZeXyQD23z8W',event)">Start &amp; Get My Link</button>
+      <button class="btn-primary" onclick="handleCheckout('pro',event)">Start &amp; Get My Link</button>
     </div>
   </div>
 </section>
@@ -1181,7 +1181,7 @@ footer {
     </div>
 
     <div class="mk-cta-repeat">
-      <button class="btn-primary" data-cta-source="faq" onclick="handleCheckout('price_1TUWVpJIDbUntZeXyQD23z8W',event)">Start 7-Day Free Trial &rarr;</button>
+      <button class="btn-primary" data-cta-source="faq" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
     </div>
   </div>
 </section>
@@ -1192,7 +1192,7 @@ footer {
   <p class="final-cta-eyebrow reveal">7-DAY FREE TRIAL · STRIPE-SECURED</p>
   <h2 class="final-cta-title reveal">Start with discipline. <em>Upgrade when you outgrow it.</em></h2>
   <div class="final-cta-btn-wrap reveal">
-    <button class="btn-primary" style="padding:18px 44px;font-size:var(--mk-text-md);" onclick="handleCheckout('price_1TUWVpJIDbUntZeXyQD23z8W',event)">Start 7-Day Free Trial</button>
+    <button class="btn-primary" style="padding:18px 44px;font-size:var(--mk-text-md);" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial</button>
     <p class="final-cta-note">Pro · $49/mo or $399/yr · No charge until day 8 · Cancel in one click</p>
   </div>
 </section>
@@ -1256,14 +1256,14 @@ function closeDrawer(){
 // PRICING TOGGLE
 const plans={
   monthly:[
-    {num:'29',per:'/mo',sub:'or $290/yr — save 17%',priceId:'price_1Te3geJIDbUntZeXZjubg0EW'},
-    {num:'49',per:'/mo',sub:'or $399/yr — save 32%',priceId:'price_1TUWVpJIDbUntZeXyQD23z8W'},
-    {num:'79',per:'/mo',sub:'or $649/yr — save 32%',priceId:'price_1TUWabJIDbUntZeXYh8IrvEa'}
+    {num:'29',per:'/mo',sub:'or $290/yr — save 17%'},
+    {num:'49',per:'/mo',sub:'or $399/yr — save 32%'},
+    {num:'79',per:'/mo',sub:'or $649/yr — save 32%'}
   ],
   annual:[
-    {num:'290',per:'/yr',sub:'Billed annually — save 17%',priceId:'price_1Te3h3JIDbUntZeXLemKAiqu'},
-    {num:'399',per:'/yr',sub:'Billed annually — save 32%',priceId:'price_1TUWZIJIDbUntZeXl4Xtfudj'},
-    {num:'649',per:'/yr',sub:'Billed annually — save 32%',priceId:'price_1TUWc2JIDbUntZeXOIkeHml4'}
+    {num:'290',per:'/yr',sub:'Billed annually — save 17%'},
+    {num:'399',per:'/yr',sub:'Billed annually — save 32%'},
+    {num:'649',per:'/yr',sub:'Billed annually — save 32%'}
   ]
 };
 let isAnnual=false;
@@ -1279,7 +1279,7 @@ function setPricing(annual){
     document.getElementById(n).textContent=pl.num;
     document.getElementById(p).textContent=pl.per;
     document.getElementById(s).textContent=pl.sub;
-    document.getElementById(c).dataset.priceId=pl.priceId;
+    document.getElementById(c).dataset.interval = annual ? 'year' : 'month';
   });
 }
 function togglePricing(){setPricing(!isAnnual);}
