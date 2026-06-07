@@ -52,6 +52,9 @@ strong { color: var(--mk-text-primary); font-weight: 600; }
 .nav-links { display: flex; align-items: center; gap: 28px; margin: 0; padding: 0; }
 .nav-links > li > a:not(.nav-login-btn) { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); font-weight: 500; letter-spacing: 0.02em; transition: color var(--mk-dur-fast); }
 .nav-links > li > a:not(.nav-login-btn):hover { color: var(--mk-text-primary); }
+.nav-auth-in{display:none;}
+html.mkt-auth .nav-auth-out{display:none;}
+html.mkt-auth .nav-auth-in{display:inline;}
 .nav-login-btn { display: inline-flex; align-items: center; font-size: var(--mk-text-sm); font-weight: 600; letter-spacing: var(--mk-track-cap); text-transform: uppercase; padding: 7px 14px; color: var(--mk-text-secondary); border: 1px solid var(--mk-smoke-700); border-radius: var(--mk-radius-button); transition: color var(--mk-dur-fast), border-color var(--mk-dur-fast), background var(--mk-dur-fast); }
 .nav-login-btn:hover { color: var(--mk-text-primary); border-color: var(--mk-smoke-600); background: rgba(255,255,255,.03); }
 .nav-cta { display: inline-flex; align-items: center; justify-content: center; font-family: var(--mk-font-sans); font-size: var(--mk-text-sm); font-weight: 600; letter-spacing: var(--mk-track-cap); text-transform: uppercase; padding: 7px 14px; border: 1px solid rgba(0,0,0,.18); border-radius: var(--mk-radius-button); cursor: pointer; background: var(--mk-gold-gradient); color: var(--mk-text-on-gold); transition: transform var(--mk-dur-snap), box-shadow var(--mk-dur-snap); white-space: nowrap; }
@@ -352,6 +355,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
   .affirm-line { gap: 14px; }
 }
 </style>
+<script>try{if(document.cookie.indexOf('mkt_csrf=')>-1)document.documentElement.classList.add('mkt-auth');}catch(e){}</script>
 </head>
 <body>
 
@@ -373,7 +377,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
     <li><a href="focus.html" onclick="closeDrawer()">Focus Room</a></li>
     <li><a href="/blog" onclick="closeDrawer()">Blog</a></li>
     <li><a href="pricing.html" onclick="closeDrawer()">Get Started</a></li>
-    <li><a href="/app" onclick="closeDrawer()">Log In</a></li>
+    <li><a href="/app" onclick="closeDrawer()"><span class="nav-auth-out">Log In</span><span class="nav-auth-in">LAUNCH</span></a></li>
   </ul>
   <button class="mobile-drawer-cta" onclick="handleCheckout('pro',{preventDefault:()=>{},currentTarget:null});closeDrawer()">Start Free Trial &rarr;</button>
 </div>
@@ -390,7 +394,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
     <li><a href="focus.html">Focus Room</a></li>
     <li><a href="/blog">Blog</a></li>
     <li><a href="pricing.html">Get Started</a></li>
-    <li><a href="/app" class="nav-login-btn">Log In</a></li>
+    <li><a href="/app" class="nav-login-btn"><span class="nav-auth-out">Log In</span><span class="nav-auth-in">LAUNCH</span></a></li>
     <li><button class="nav-cta" onclick="handleCheckout('pro',event)">Start Free Trial</button></li>
   </ul>
   <button class="hamburger" id="hamburger" onclick="toggleDrawer()" aria-label="Menu"><span></span><span></span><span></span></button>

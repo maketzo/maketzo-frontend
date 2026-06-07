@@ -39,8 +39,9 @@
   }
 
   // ── Auth state cache ──────────────────────────────────────────────────
-  // /auth/me is hit on load (for nav swap) AND on CTA click (for intercept).
-  // Cache the promise so we only fire one request per page load.
+  // /auth/me is hit on CTA click (for the cross-user intercept). Cache the
+  // promise so repeated clicks only fire one request per page load. (The nav
+  // no longer calls this on load — see "Auth-aware nav" below.)
   let _meCache = null;
   function getMe() {
     if (!_meCache) {
@@ -55,15 +56,13 @@
   }
 
   // ── Auth-aware nav ────────────────────────────────────────────────────
-  // The signed-in nav state ("Log In" → "LAUNCH" + gold migrating to LAUNCH)
-  // is now resolved BEFORE first paint by a tiny synchronous <head> script that
-  // reads the mkt_csrf cookie and adds `mkt-auth` to <html>; the page's own CSS
-  // then renders the correct labels/treatment from the start. This REPLACES the
-  // old post-paint JS swap (rename + class add), which mutated the nav a beat
-  // after load and reflowed it on every page load — the "jaggedy nav" Ed hit
-  // 2026-06-07 (invisible logged-out / in incognito, hence regular-only). Root
-  // cause = post-paint DOM mutation; fixed by rendering the final state up front,
-  // no mutation, no reflow. See memory/feedback-checkout-must-disambiguate-logged-in-user.md.
+  // The signed-in nav (the login button relabels "Log In" → "LAUNCH") is resolved
+  // BEFORE first paint by a tiny synchronous <head> script that reads the mkt_csrf
+  // cookie and adds `mkt-auth` to <html>; each page's CSS toggles the label from
+  // the start. There is intentionally NO JS nav mutation here: the old post-paint
+  // swap reflowed the nav a beat after load (the "jaggedy nav" Ed hit 2026-06-07 —
+  // invisible logged-out / in incognito, hence regular-only). Root cause was the
+  // post-paint DOM mutation; fixed by rendering the final state up front.
 
   // ── Cross-user signup intercept ───────────────────────────────────────
   // Renders a 2-choice modal when a logged-in user clicks a trial CTA.

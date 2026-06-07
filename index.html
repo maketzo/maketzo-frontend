@@ -179,41 +179,12 @@ strong { color: var(--mk-text-primary); font-weight: 600; }
   background: rgba(255,255,255,.03);
 }
 /* ── Signed-in nav (resolved pre-paint via html.mkt-auth — NO post-load swap) ──
-   "Log In" → "LAUNCH" via label toggle; gold migrates to LAUNCH, trial drops to
-   outline. All color/label only; the final state renders from first paint so the
-   nav never reflows. */
+   The login button just relabels "Log In" ↔ "LAUNCH" to reflect auth state.
+   Gold stays on Start Free Trial; nothing migrates, nothing reflows (the final
+   label renders from first paint). */
 .nav-auth-in { display: none; }
 html.mkt-auth .nav-auth-out { display: none; }
 html.mkt-auth .nav-auth-in { display: inline; }
-.mobile-drawer-links .nav-auth-in { display: none; }
-html.mkt-auth .mobile-drawer-links .nav-auth-out { display: none; }
-html.mkt-auth .mobile-drawer-links .nav-auth-in { display: inline; }
-html.mkt-auth .nav-login-btn {
-  background: var(--mk-gold-gradient);
-  color: var(--mk-text-on-gold);
-  border-color: rgba(0,0,0,.18);
-  justify-content: center;
-}
-html.mkt-auth .nav-login-btn:hover {
-  color: var(--mk-text-on-gold);
-  border-color: rgba(0,0,0,.18);
-  background: var(--mk-gold-gradient);
-  transform: translateY(-1px);
-  box-shadow: var(--mk-glow-gold-sm);
-}
-html.mkt-auth .nav-cta {
-  background: transparent;
-  color: var(--mk-text-secondary);
-  border-color: var(--mk-smoke-700);
-  box-shadow: none;
-}
-html.mkt-auth .nav-cta:hover {
-  background: rgba(255,255,255,.03);
-  color: var(--mk-text-primary);
-  border-color: var(--mk-smoke-600);
-  transform: none;
-  box-shadow: none;
-}
 .nav-cta {
   display: inline-flex; align-items: center; justify-content: center;
   font-family: var(--mk-font-sans);

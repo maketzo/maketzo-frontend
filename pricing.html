@@ -137,6 +137,9 @@ strong { color: var(--mk-text-primary); font-weight: 600; }
 }
 .nav-links > li > a:not(.nav-login-btn):hover { color: var(--mk-text-primary); }
 .nav-links > li > a[aria-current="page"] { color: var(--mk-brand); }
+.nav-auth-in{display:none;}
+html.mkt-auth .nav-auth-out{display:none;}
+html.mkt-auth .nav-auth-in{display:inline;}
 .nav-login-btn {
   display: inline-flex; align-items: center;
   font-size: var(--mk-text-sm); font-weight: 600;
@@ -830,6 +833,7 @@ footer {
 .standalone-card-note a { color: var(--mk-brand); border-bottom: 1px solid rgba(212,175,55,.4); }
 @media (max-width: 600px) { .standalone-card { padding: 28px 24px; } }
 </style>
+<script>try{if(document.cookie.indexOf('mkt_csrf=')>-1)document.documentElement.classList.add('mkt-auth');}catch(e){}</script>
 </head>
 <body>
 
@@ -858,7 +862,7 @@ footer {
     <li><a href="focus.html" onclick="closeDrawer()">Focus Room</a></li>
     <li><a href="/blog" onclick="closeDrawer()">Blog</a></li>
     <li><a href="pricing.html" onclick="closeDrawer()">Get Started</a></li>
-    <li><a href="/app" onclick="closeDrawer()">Log In</a></li>
+    <li><a href="/app" onclick="closeDrawer()"><span class="nav-auth-out">Log In</span><span class="nav-auth-in">LAUNCH</span></a></li>
   </ul>
   <button class="mobile-drawer-cta" onclick="handleCheckout('pro',{preventDefault:()=>{},currentTarget:null});closeDrawer()">Start Free Trial &rarr;</button>
 </div>
@@ -876,7 +880,7 @@ footer {
     <li><a href="focus.html">Focus Room</a></li>
     <li><a href="/blog">Blog</a></li>
     <li><a href="pricing.html" aria-current="page">Get Started</a></li>
-    <li><a href="/app" class="nav-login-btn">Log In</a></li>
+    <li><a href="/app" class="nav-login-btn"><span class="nav-auth-out">Log In</span><span class="nav-auth-in">LAUNCH</span></a></li>
     <li><button class="nav-cta" onclick="handleCheckout('pro',event)">Start Free Trial</button></li>
   </ul>
   <button class="hamburger" id="hamburger" onclick="toggleDrawer()" aria-label="Menu"><span></span><span></span><span></span></button>
