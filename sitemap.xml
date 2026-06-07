@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- maketzo.co sitemap.
+     Static marketing pages are listed by hand below. The blog section between
+     the BLOG:START / BLOG:END markers is regenerated FROM THE DATABASE by
+     lib/blog-publisher.js on every post publish (mirrors how blog/index.html is
+     re-rendered) — so new posts appear here automatically. Do not hand-edit
+     between the markers; edits there are overwritten on the next publish. -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://maketzo.co/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://maketzo.co/why</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://maketzo.co/system</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://maketzo.co/indicators</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://maketzo.co/journal</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://maketzo.co/pricing</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://maketzo.co/focus</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://maketzo.co/soundtrack</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://maketzo.co/contact</loc><changefreq>yearly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://maketzo.co/blog</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://maketzo.co/privacy</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://maketzo.co/terms</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://maketzo.co/disclaimer</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <!-- BLOG:START -->
+  <url><loc>https://maketzo.co/blog/the-third-loss-cost</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://maketzo.co/blog/revenge-trading-neurochemistry-loop</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://maketzo.co/blog/cortisol-curve-risk-plan</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://maketzo.co/blog/meditation-as-risk-management</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://maketzo.co/blog/overtrading-is-an-income-strategy</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://maketzo.co/blog/profitable-traders-are-boring</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://maketzo.co/blog/rules-dont-fail-discipline-does</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://maketzo.co/blog/small-account-discipline-harder</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://maketzo.co/blog/sunday-self-tuesday-self</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://maketzo.co/blog/tap-skill-market-wont-teach</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://maketzo.co/blog/the-trade-you-dont-take</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://maketzo.co/blog/winning-makes-you-bigger</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://maketzo.co/blog/blue-belt-phase-every-trader</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <!-- BLOG:END -->
+</urlset>

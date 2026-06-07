@@ -22,12 +22,16 @@
     AuthName "MAKETZO Preview"
     AuthUserFile "/home/u775138918/domains/maketzo.co/public_html/dev/.htpasswd"
     Require valid-user
+    # Preview tier — never index, even if basic-auth is ever lifted.
+    Header set X-Robots-Tag "noindex, nofollow"
 </If>
 <ElseIf "%{HTTP_HOST} == 'staging.maketzo.co'">
     AuthType Basic
     AuthName "MAKETZO Preview"
     AuthUserFile "/home/u775138918/domains/maketzo.co/public_html/staging/.htpasswd"
     Require valid-user
+    # Preview tier — never index, even if basic-auth is ever lifted.
+    Header set X-Robots-Tag "noindex, nofollow"
 </ElseIf>
 
 <Files ".htpasswd">

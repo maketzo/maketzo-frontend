@@ -1,0 +1,18 @@
+# maketzo.co — production robots policy
+# Marketing site is fully crawlable. Auth/account flows are noindex (also set
+# via <meta name="robots"> on those pages) and disallowed here to save crawl
+# budget. The app (app.maketzo.co) has its own robots.txt (Disallow: /) and an
+# X-Robots-Tag: noindex header — it is a private, auth-gated portal.
+# dev.maketzo.co / staging.maketzo.co are basic-auth gated (crawlers get 401)
+# and additionally send X-Robots-Tag: noindex.
+
+User-agent: *
+Allow: /
+Disallow: /signup
+Disallow: /login
+Disallow: /verify-email
+Disallow: /forgot-password
+Disallow: /reset-password
+Disallow: /unsubscribed
+
+Sitemap: https://maketzo.co/sitemap.xml
