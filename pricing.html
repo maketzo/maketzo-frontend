@@ -26,7 +26,7 @@
   "applicationCategory": "FinanceApplication",
   "operatingSystem": "Web",
   "url": "https://maketzo.co/pricing",
-  "description": "Behavioral accountability system for retail day traders: trade journal, COACH SAYS enforcement, Maketzo Edge + Pulse indicators, Focus Room, and Training Engine.",
+  "description": "Behavioral accountability system for retail day traders: trade journal, COACH SAYS enforcement, Maketzo Edge + Pulse indicators, Focus Room, Strike System, and automatic lockouts.",
   "offers": [
     { "@type": "Offer", "name": "Journal", "price": "29.00", "priceCurrency": "USD", "url": "https://maketzo.co/pricing" },
     { "@type": "Offer", "name": "Pro", "price": "49.00", "priceCurrency": "USD", "url": "https://maketzo.co/pricing" },
@@ -556,6 +556,7 @@ hr.mk-rule-gold, hr.mk-rule-gold--bold { margin: 0 auto; max-width: 1180px; }
 }
 .compare-check { color: var(--mk-profit-500); font-weight: 700; font-size: 1.1rem; }
 .compare-dash { color: var(--mk-smoke-600); font-size: 1.1rem; }
+.compare-soon { display:inline-block; font-size:.6rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--mk-brand); background:rgba(212,175,55,.10); border:1px solid rgba(212,175,55,.30); border-radius:var(--mk-radius-pill); padding:2px 8px; vertical-align:middle; }
 .compare-table td.featured-col { background: rgba(212,175,55,.04); }
 
 /* ── TRIAL STRIP ─────────────────────────────────────────────── */
@@ -940,7 +941,7 @@ footer {
           <li><span class="feat"><span class="feat-name">Maketzo Pulse</span><span class="feat-desc">Confirms momentum before you click, instead of after you're already underwater.</span></span></li>
           <li><span class="feat"><span class="feat-name">COACH SAYS</span><span class="feat-desc">8:30 &amp; 10:30 AM check-ins that sit between you and the button.</span></span></li>
           <li><span class="feat"><span class="feat-name">Strike System</span><span class="feat-desc">Three rule breaks and you're locked out for 24 hours, before one bad morning blows the account.</span></span></li>
-          <li><span class="feat"><span class="feat-name">Waiting Room</span><span class="feat-desc">A forced pause that kills the revenge trade at its source.</span></span></li>
+          <li><span class="feat"><span class="feat-name">Live State Machine</span><span class="feat-desc">Your status band reads every move in real time, so you always know exactly where the day stands.</span></span></li>
           <li><span class="feat"><span class="feat-name">TradingView invite</span><span class="feat-desc">Edge + Pulse live on your own charts, granted within 24 hours.</span></span></li>
           <li><span class="feat"><span class="feat-name">Focus Room</span><span class="feat-desc">Mood-based Zone Tracks and a reset ritual to get your head right before the open.</span></span></li>
         </ul>
@@ -950,7 +951,7 @@ footer {
       <!-- ELITE -->
       <div class="tier-card reveal">
         <div class="tier-name">Elite</div>
-        <div class="tier-pitch">Everything in Pro, plus a coach that learns you: AI-personalized drills, white-glove onboarding, and a seat in the founders' circle.</div>
+        <div class="tier-pitch">Everything in Pro, plus the white-glove layer: a 1-on-1 onboarding session, a seat in the founders' circle, and first access to everything we ship next — including the AI Training Engine.</div>
         <div class="tier-price-row">
           <span class="tier-currency">$</span>
           <span class="tier-price" id="p3num">79</span>
@@ -959,10 +960,10 @@ footer {
         <div class="tier-sub" id="p3sub">or $649/yr — save 32%</div>
         <ul class="tier-features">
           <li><span class="feat"><span class="feat-name">Everything in Pro</span><span class="feat-desc">The full discipline OS, dialed all the way in.</span></span></li>
-          <li><span class="feat"><span class="feat-name">AI Training Engine</span><span class="feat-desc">Drills that adapt to your actual mistakes, not generic lessons.</span></span></li>
           <li><span class="feat"><span class="feat-name">Concierge onboarding</span><span class="feat-desc">A 1-on-1 session to wire MAKETZO to the exact way you trade.</span></span></li>
           <li><span class="feat"><span class="feat-name">Founders' circle</span><span class="feat-desc">A private room with the team and the most serious traders on the platform.</span></span></li>
           <li><span class="feat"><span class="feat-name">Early access</span><span class="feat-desc">New features land in your account first, before anyone else.</span></span></li>
+          <li><span class="feat"><span class="feat-name">AI Training Engine <span class="compare-soon">Coming soon</span></span><span class="feat-desc">Adaptive drills built from your own mistakes — Elite members get first access the day it ships.</span></span></li>
         </ul>
         <button class="btn-secondary tier-cta" id="cta3" data-tier="elite" data-interval="month" onclick="handleCheckout(this.dataset.tier,event)">Start 7-Day Free Trial</button>
       </div>
@@ -1003,9 +1004,8 @@ footer {
 
           <tr class="group-header"><td colspan="4">Behavioral Accountability</td></tr>
           <tr><td>COACH SAYS — 8:30 AM &amp; 10:30 AM check-ins</td><td><span class="compare-dash">—</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
-          <tr><td>State Machine (7-state session flow)</td><td><span class="compare-dash">—</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
+          <tr><td>State Machine — live session-state engine</td><td><span class="compare-dash">—</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
           <tr><td>Strike System &amp; 24-hour lockout</td><td><span class="compare-dash">—</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
-          <tr><td>Waiting Room (anti-overtrading)</td><td><span class="compare-dash">—</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
 
           <tr class="group-header"><td colspan="4">Trade Intelligence</td></tr>
           <tr><td>Maketzo Edge — opportunity windows</td><td><span class="compare-dash">—</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
@@ -1014,12 +1014,10 @@ footer {
 
           <tr class="group-header"><td colspan="4">Training &amp; Focus</td></tr>
           <tr><td>Focus Room — 5 mood-based Zone Tracks + meditation reset</td><td><span class="compare-dash">—</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
-          <tr><td>Training Engine — rule-based quizzes</td><td><span class="compare-dash">—</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
-          <tr><td>AI Training Engine — personalized drills</td><td><span class="compare-dash">—</span></td><td class="featured-col"><span class="compare-dash">—</span></td><td><span class="compare-check">✓</span></td></tr>
+          <tr><td>AI Training Engine — personalized drills</td><td><span class="compare-dash">—</span></td><td class="featured-col"><span class="compare-dash">—</span></td><td><span class="compare-soon">Coming soon</span></td></tr>
           <tr><td>Concierge onboarding session</td><td><span class="compare-dash">—</span></td><td class="featured-col"><span class="compare-dash">—</span></td><td><span class="compare-check">✓</span></td></tr>
 
           <tr class="group-header"><td colspan="4">Community &amp; Support</td></tr>
-          <tr><td>Public feature voting</td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
           <tr><td>Email support</td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
           <tr><td>Founders' community circle</td><td><span class="compare-dash">—</span></td><td class="featured-col"><span class="compare-dash">—</span></td><td><span class="compare-check">✓</span></td></tr>
           <tr><td>Early access to new features</td><td><span class="compare-dash">—</span></td><td class="featured-col"><span class="compare-dash">—</span></td><td><span class="compare-check">✓</span></td></tr>
@@ -1093,7 +1091,6 @@ footer {
 
           <tr class="group-header"><td colspan="6">Focus</td></tr>
           <tr><td>Focus Room &mdash; 5 mood-based Zone Tracks + meditation reset</td><td class="us-col"><span class="compare-check">&#10003;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td></tr>
-          <tr><td>Waiting Room (anti-overtrading)</td><td class="us-col"><span class="compare-check">&#10003;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td></tr>
         </tbody>
       </table>
     </div>
