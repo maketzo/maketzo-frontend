@@ -54,98 +54,16 @@
     return _meCache;
   }
 
-  // ── Auth-aware nav swap ───────────────────────────────────────────────
-  // Static "Log In" link in every marketing-page nav misleads logged-in
-  // users. Coordinated changes on signed-in detection:
-  //   1. "Log In" -> "LAUNCH" with href /app.
-  //   2. Treatment swap (via injected CSS scoped to .nav-signedin):
-  //      LAUNCH adopts gold; "Start Free Trial" drops to outlined.
-  //      Principle: gold = "the user's primary action right now."
-  //      Gold migrates with meaning; only one filled gold button exists.
-  //   3. DOM reorder: LAUNCH's <li> moves AFTER the trial button's <li>
-  //      so the gold-rightmost eye anchor is preserved across auth states.
-  //
-  // The injected CSS approach replaces an earlier failed attempt that
-  // swapped class names (nav-login-btn <-> nav-cta). That broke because:
-  //   (a) `.nav-links > li > a:not(.nav-login-btn)` clobbered LAUNCH's
-  //       text color when nav-login-btn was removed;
-  //   (b) `.nav-login-btn` was authored assuming the `<a>` element;
-  //       applied to the `<button>` element, browser-default styles
-  //       leaked through.
-  // Keeping the original classes and overriding via a marker scope is
-  // symmetric for both element types and high-specificity-safe.
-  //
-  // See memory/feedback-checkout-must-disambiguate-logged-in-user.md.
-  const NAV_SIGNEDIN_CSS =
-    '.nav-links.nav-signedin > li > a.nav-login-btn{' +
-      'background:var(--mk-gold-gradient);color:var(--mk-text-on-gold);' +
-      'border:1px solid rgba(0,0,0,.18);justify-content:center;' +
-      'white-space:nowrap;text-decoration:none;' +
-    '}' +
-    '.nav-links.nav-signedin > li > a.nav-login-btn:hover{' +
-      'background:var(--mk-gold-gradient);color:var(--mk-text-on-gold);' +
-      'border-color:rgba(0,0,0,.18);transform:translateY(-1px);' +
-      'box-shadow:var(--mk-glow-gold-sm);' +
-    '}' +
-    '.nav-links.nav-signedin > li > button.nav-cta{' +
-      'background:transparent;color:var(--mk-text-secondary);' +
-      'border:1px solid var(--mk-smoke-700);box-shadow:none;transform:none;' +
-    '}' +
-    '.nav-links.nav-signedin > li > button.nav-cta:hover{' +
-      'background:rgba(255,255,255,.03);color:var(--mk-text-primary);' +
-      'border-color:var(--mk-smoke-600);transform:none;box-shadow:none;' +
-    '}';
-
-  let _navCssInjected = false;
-  function ensureNavCss() {
-    if (_navCssInjected) return;
-    _navCssInjected = true;
-    const s = document.createElement('style');
-    s.id = 'mkt-nav-signedin';
-    s.textContent = NAV_SIGNEDIN_CSS;
-    document.head.appendChild(s);
-  }
-
-  function syncNav() {
-    getMe().then(function (me) {
-      if (!me) return;
-      ensureNavCss();
-      const launches = document.querySelectorAll('a.nav-login-btn');
-      for (let i = 0; i < launches.length; i++) {
-        const launchA = launches[i];
-        // Source-uppercased per CLAUDE.md §3 (CSS text-transform:uppercase
-        // applies, so source matches visual).
-        launchA.textContent = 'LAUNCH';
-        launchA.setAttribute('href', '/app');
-
-        // Find the sibling Start Free Trial button inside the same <ul>
-        // so the swap is scoped to this nav instance.
-        const launchLi = launchA.parentElement;
-        const ul = launchLi && launchLi.parentElement;
-        const trialBtn = ul ? ul.querySelector('button.nav-cta') : null;
-        if (!ul || !trialBtn) continue;
-        const trialLi = trialBtn.parentElement;
-
-        // Mark the nav as signed-in so the injected CSS applies (color/treatment
-        // only — no layout change).
-        ul.classList.add('nav-signedin');
-
-        // NOTE: we deliberately do NOT reorder the <li>s here. The earlier
-        // `insertBefore` swap moved LAUNCH past the trial button AFTER the async
-        // auth check resolved, which reflowed the nav a beat after paint and read
-        // as the right-side buttons "violently" jumping on every page load
-        // (Ed flagged 2026-06-07). Treatment swap alone (gold ↔ outline) signals
-        // the primary action without any layout shift. `trialLi` retained for
-        // clarity / future use.
-        void trialLi;
-      }
-    });
-  }
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', syncNav);
-  } else {
-    syncNav();
-  }
+  // ── Auth-aware nav ────────────────────────────────────────────────────
+  // The signed-in nav state ("Log In" → "LAUNCH" + gold migrating to LAUNCH)
+  // is now resolved BEFORE first paint by a tiny synchronous <head> script that
+  // reads the mkt_csrf cookie and adds `mkt-auth` to <html>; the page's own CSS
+  // then renders the correct labels/treatment from the start. This REPLACES the
+  // old post-paint JS swap (rename + class add), which mutated the nav a beat
+  // after load and reflowed it on every page load — the "jaggedy nav" Ed hit
+  // 2026-06-07 (invisible logged-out / in incognito, hence regular-only). Root
+  // cause = post-paint DOM mutation; fixed by rendering the final state up front,
+  // no mutation, no reflow. See memory/feedback-checkout-must-disambiguate-logged-in-user.md.
 
   // ── Cross-user signup intercept ───────────────────────────────────────
   // Renders a 2-choice modal when a logged-in user clicks a trial CTA.
