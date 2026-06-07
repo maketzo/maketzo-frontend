@@ -1705,9 +1705,13 @@ footer {
   }
   .mk-cta-repeat .btn-primary {
     width: 100%;
-    max-width: 320px;
+    max-width: 340px;
     padding: 16px 24px;
     font-size: var(--mk-text-md);
+    white-space: normal;
+    line-height: 1.25;
+    height: auto;
+    text-align: center;
   }
 }
 
@@ -1771,6 +1775,41 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
 .sim {
   max-width: 680px;
   margin: 0 auto;
+}
+/* CRITICAL: several sim children set `display` in CSS, which would override the
+   `hidden` attribute (UA `[hidden]{display:none}` is low-priority). Force it. */
+.sim [hidden] { display: none !important; }
+.sim-eyebrow-in {
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-xs);
+  letter-spacing: var(--mk-track-eyebrow);
+  text-transform: uppercase;
+  color: var(--mk-text-tertiary);
+  text-align: center;
+  margin-bottom: 14px;
+}
+.sim-event {
+  display: flex; align-items: center; gap: 9px;
+  padding: 11px 14px; margin-bottom: 16px;
+  background: var(--mk-surface-base);
+  border: var(--mk-border-hairline);
+  border-radius: var(--mk-radius-card-sm);
+  font-size: var(--mk-text-sm);
+  color: var(--mk-text-primary);
+  min-height: 44px;
+  transition: border-color var(--mk-dur-med);
+}
+.sim-event-tag {
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-xs);
+  letter-spacing: .04em;
+  color: var(--mk-text-tertiary);
+  flex-shrink: 0;
+}
+.sim-saved {
+  display: inline-block;
+  font-weight: 700;
+  color: var(--mk-profit-500);
 }
 .sim-screen {
   position: relative;
@@ -1918,7 +1957,7 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
   line-height: 1; margin-bottom: 8px;
 }
 .sim-ghost-col.bad .sim-ghost-v  { color: var(--mk-danger-500); }
-.sim-ghost-col.good .sim-ghost-v { color: var(--mk-profit-500); }
+.sim-ghost-col.good .sim-ghost-v { color: var(--mk-text-primary); }
 .sim-ghost-d { font-size: var(--mk-text-xs); color: var(--mk-text-tertiary); line-height: var(--mk-lead-snug); }
 .sim-controls {
   display: flex; align-items: center; gap: 16px;
@@ -1996,7 +2035,6 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
 <!-- MOBILE DRAWER -->
 <div class="mobile-drawer" id="mobileDrawer">
   <ul class="mobile-drawer-links">
-    <li><a href="why.html" onclick="closeDrawer()">Why</a></li>
     <li><a href="system.html" onclick="closeDrawer()">The System</a></li>
     <li><a href="journal.html" onclick="closeDrawer()">Journal</a></li>
     <li><a href="indicators.html" onclick="closeDrawer()">Indicators</a></li>
@@ -2015,7 +2053,6 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
     <img class="mk-brand-lockup__wordmark" src="assets/logo-wordmark.png" alt="MAKETZO">
   </a>
   <ul class="nav-links">
-    <li><a href="why.html">Why</a></li>
     <li><a href="system.html">The System</a></li>
     <li><a href="journal.html">Journal</a></li>
     <li><a href="indicators.html">Indicators</a></li>
@@ -2111,7 +2148,7 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
       </div>
     </div>
     <div class="mk-cta-repeat">
-      <a href="#see-it-work" class="btn-primary" data-cta-source="why-explore">Show me how it works &darr;</a>
+      <a href="#see-it-work" class="btn-primary" data-cta-source="why-explore">See it work &darr;</a>
     </div>
   </div>
 </section>
@@ -2126,6 +2163,7 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
     <p class="section-sub reveal">One real MAKETZO session, sped up. Same trader, same mistakes every trader makes &mdash; but this time the rules hold the line. <strong>Press play.</strong></p>
     <div class="sim reveal" id="sim">
       <div class="sim-screen" id="simScreen" data-tone="good">
+        <p class="sim-eyebrow-in">A real session &middot; one morning, sped up</p>
         <div class="sim-top">
           <div class="sim-clock"><span class="sim-clock-dot"></span><span id="simClock">9:30 AM</span></div>
           <div class="sim-state" id="simState" data-tone="good">In Rhythm</div>
@@ -2139,6 +2177,10 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
           <span class="sim-strike" data-i="2">2</span>
           <span class="sim-strike" data-i="3">3</span>
         </div>
+        <div class="sim-event" id="simEvent">
+          <span class="sim-event-tag">9:30</span>
+          <span class="sim-event-msg" id="simEventMsg">Clean open. You're up early, trading your plan.</span>
+        </div>
         <div class="sim-coach">
           <span class="sim-coach-label">&#128226; COACH SAYS</span>
           <span class="sim-coach-msg" id="simCoachMsg">You're green out of the gate. Protect it.</span>
@@ -2149,16 +2191,17 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
         </div>
       </div>
       <div class="sim-ghost" id="simGhost" hidden>
+        <p class="sim-eyebrow-in">How the same morning ends</p>
         <div class="sim-ghost-row">
           <div class="sim-ghost-col bad">
-            <div class="sim-ghost-k">What usually happens</div>
+            <div class="sim-ghost-k">Without MAKETZO</div>
             <div class="sim-ghost-v">&minus;$840</div>
             <div class="sim-ghost-d">held the revenge trade, doubled down, blew the week</div>
           </div>
           <div class="sim-ghost-col good">
             <div class="sim-ghost-k">With MAKETZO</div>
             <div class="sim-ghost-v">&minus;$160</div>
-            <div class="sim-ghost-d">locked out, walked away, traded again tomorrow</div>
+            <div class="sim-ghost-d">locked out after strike 3 &mdash; <span class="sim-saved">$680 saved</span></div>
           </div>
         </div>
       </div>
@@ -2182,6 +2225,8 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
       elState  = document.getElementById('simState'),
       elPnl    = document.getElementById('simPnl'),
       elCoach  = document.getElementById('simCoachMsg'),
+      elEvent  = document.getElementById('simEventMsg'),
+      elEventTag = sim.querySelector('.sim-event-tag'),
       elReset  = document.getElementById('simReset'),
       elGhost  = document.getElementById('simGhost'),
       elCta    = document.getElementById('simCta'),
@@ -2190,11 +2235,11 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
       strikes  = sim.querySelectorAll('.sim-strike');
 
   var beats = [
-    { time:'9:30 AM',  pnl:'+$120', tone:'good', state:'In Rhythm',     strikes:0, coach:"You're green out of the gate. Protect it." },
-    { time:'9:52 AM',  pnl:'+$40',  tone:'warn', state:'Caution',       strikes:1, coach:"That chase wasn't your setup. Strike one." },
-    { time:'10:18 AM', pnl:'−$160', tone:'bad', state:'Elevated Risk', strikes:2, warn:true, coach:"Slow down. One more and the session is over." },
-    { time:'10:31 AM', pnl:'−$160', tone:'warn', state:'Reset',     strikes:2, warn:true, reset:true, coach:"Step away from the desk. Three slow breaths." },
-    { time:'10:34 AM', pnl:'−$160', tone:'bad', state:'Locked Out', strikes:3, coach:"Done for today. You protected the week.", ghost:true, cta:true }
+    { time:'9:30 AM',  tag:'9:30',  pnl:'+$120', tone:'good', state:'In Rhythm',     strikes:0, event:"Clean open. You're up early, trading your plan.", coach:"You're green out of the gate. Protect it." },
+    { time:'9:52 AM',  tag:'9:52',  pnl:'+$40',  tone:'warn', state:'Caution',       strikes:1, event:"You chased an extended move. Not your setup.", coach:"That wasn't your setup. Strike one." },
+    { time:'10:18 AM', tag:'10:18', pnl:'−$160', tone:'bad',  state:'Elevated Risk', strikes:2, warn:true, event:"Revenge trade after the red. Now you're tilted.", coach:"Slow down. One more and the session is over." },
+    { time:'10:31 AM', tag:'10:31', pnl:'−$160', tone:'warn', state:'Reset',         strikes:2, warn:true, reset:true, event:"You reach for the mouse again — Reset Protocol steps in.", coach:"Step away from the desk. Three slow breaths." },
+    { time:'10:34 AM', tag:'10:34', pnl:'−$160', tone:'bad',  state:'Locked Out',    strikes:3, event:"Strike 3. The session is locked — you can't trade.", coach:"Done for today. You protected the week.", ghost:true, cta:true }
   ];
   var durs = [1700, 1900, 2100, 3400, 2000];
   var total = durs.reduce(function(a,b){ return a+b; }, 0);
@@ -2213,6 +2258,8 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
     elState.textContent = b.state; elState.dataset.tone = b.tone;
     elScreen.dataset.tone = b.tone;
     elPnl.textContent = b.pnl;   elPnl.dataset.tone = b.tone;
+    elEvent.textContent = b.event;
+    if (elEventTag) elEventTag.textContent = b.tag;
     elCoach.textContent = b.coach;
     setStrikes(b.strikes, b.warn);
     elReset.hidden = !b.reset;
@@ -2307,7 +2354,7 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
     </div>
 
     <div class="mk-cta-repeat">
-      <button class="btn-primary" data-cta-source="journal-pos" onclick="handleCheckout('pro',event)">Start free &mdash; everything included &rarr;</button>
+      <button class="btn-primary" data-cta-source="journal-pos" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
     </div>
   </div>
 </section>
@@ -2348,7 +2395,7 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
       </div>
     </div>
     <div class="mk-cta-repeat">
-      <button class="btn-primary" data-cta-source="system" onclick="handleCheckout('pro',event)">Put COACH SAYS on my session &rarr;</button>
+      <button class="btn-primary" data-cta-source="system" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
     </div>
   </div>
 </section>
@@ -2400,7 +2447,7 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
       </div>
     </div>
     <div class="mk-cta-repeat">
-      <button class="btn-primary" data-cta-source="strike" onclick="handleCheckout('pro',event)">Give me the guardrails &rarr;</button>
+      <button class="btn-primary" data-cta-source="strike" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
     </div>
   </div>
 </section>
@@ -2454,7 +2501,7 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
       </div>
     </div>
     <div class="mk-cta-repeat">
-      <button class="btn-primary" data-cta-source="edge" onclick="handleCheckout('pro',event)">Get Edge + Pulse free for 7 days &rarr;</button>
+      <button class="btn-primary" data-cta-source="edge" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
     </div>
   </div>
 </section>
@@ -2500,7 +2547,7 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
       </div>
     </div>
     <div class="mk-cta-repeat">
-      <button class="btn-primary" data-cta-source="focus" onclick="handleCheckout('pro',event)">Unlock the Focus Room &rarr;</button>
+      <button class="btn-primary" data-cta-source="focus" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
     </div>
   </div>
 </section>
@@ -2617,7 +2664,7 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 </script>
     <div class="mk-cta-repeat">
-      <button class="btn-primary" data-cta-source="reviews" onclick="handleCheckout('pro',event)">Join them &mdash; start free &rarr;</button>
+      <button class="btn-primary" data-cta-source="reviews" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
     </div>
 </section>
 
