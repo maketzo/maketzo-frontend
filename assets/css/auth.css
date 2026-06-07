@@ -99,6 +99,11 @@ html { scroll-behavior: smooth; }
 }
 .auth-gift svg { flex: 0 0 auto; color: var(--mk-gold-500, #C9A84C); }
 .auth-gift strong { color: var(--mk-gold-500, #C9A84C); }
+/* The bare .auth-gift{display:flex} above ties specificity with the UA [hidden]
+   rule and, being author CSS, WINS — so the `hidden` attribute was silently
+   defeated and the gift banner showed for EVERYONE (no referral cookie needed).
+   This guard restores `hidden`: class+attribute (0,2,0) beats .auth-gift (0,1,0). */
+.auth-gift[hidden] { display: none; }
 
 .mk-form-field { margin-bottom: 16px; }
 .mk-form-field label {
