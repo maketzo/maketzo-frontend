@@ -2668,6 +2668,11 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
           </div>
           <div class="chart-svg-wrap">
             <svg viewBox="0 0 400 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <marker id="tradeArrow" markerWidth="9" markerHeight="9" refX="4.5" refY="4.5" orient="auto" markerUnits="userSpaceOnUse">
+                  <path d="M0,0 L9,4.5 L0,9 Z" fill="#E6B450"/>
+                </marker>
+              </defs>
               <rect x="130" y="0" width="180" height="200" fill="rgba(76,175,130,0.07)"/>
               <line x1="130" y1="0" x2="130" y2="200" stroke="#4CAF82" stroke-width="1" stroke-dasharray="4,3" opacity="0.5"/>
               <rect x="310" y="0" width="90" height="200" fill="rgba(224,82,82,0.06)"/>
@@ -2683,6 +2688,7 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
               <rect x="282" y="36" width="8" height="32" fill="#E05252" opacity="0.8"/><rect x="300" y="30" width="8" height="34" fill="#E05252" opacity="0.8"/>
               <rect x="318" y="22" width="8" height="34" fill="#E05252"/><rect x="336" y="20" width="8" height="32" fill="#E05252"/>
               <rect x="354" y="24" width="8" height="34" fill="#E05252"/><rect x="372" y="28" width="8" height="32" fill="#E05252"/>
+              <line x1="154" y1="103" x2="309" y2="60" stroke="#E6B450" stroke-width="2" marker-end="url(#tradeArrow)" opacity="0.9"/>
               <circle cx="142" cy="106" r="5" fill="#4CAF82"/><circle cx="142" cy="106" r="9" fill="rgba(76,175,130,0.2)"/>
               <circle cx="322" cy="56" r="5" fill="#E05252"/><circle cx="322" cy="56" r="9" fill="rgba(224,82,82,0.2)"/>
               <rect x="306" y="72" width="68" height="18" rx="2" fill="rgba(224,82,82,0.15)" stroke="#E05252" stroke-width="0.5"/>
