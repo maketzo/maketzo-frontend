@@ -1764,6 +1764,209 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
 @media (max-width: 1000px) { .journal-hp-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 560px) { .journal-hp-grid { grid-template-columns: 1fr; } }
 /* END journal-positioning section styles */
+
+/* ── INTERACTIVE SESSION SIM · "Anatomy of a saved day" ──────────
+   Self-contained centerpiece. Vanilla JS drives the beats; tokens
+   only. Respects prefers-reduced-motion (renders the final beat). */
+.sim {
+  max-width: 680px;
+  margin: 0 auto;
+}
+.sim-screen {
+  position: relative;
+  background:
+    radial-gradient(620px 320px at 50% -10%, rgba(212,175,55,.07), transparent 70%),
+    var(--mk-surface-raised);
+  border: var(--mk-border-hairline);
+  border-radius: var(--mk-radius-card-lg);
+  padding: 28px;
+  overflow: hidden;
+  transition: border-color var(--mk-dur-med);
+}
+.sim-screen[data-tone="warn"] { border-color: rgba(251,146,60,.34); }
+.sim-screen[data-tone="bad"]  { border-color: rgba(248,113,113,.34); }
+.sim-top {
+  display: flex; align-items: center; justify-content: space-between;
+  padding-bottom: 18px; margin-bottom: 18px;
+  border-bottom: var(--mk-border-hairline);
+}
+.sim-clock {
+  display: inline-flex; align-items: center; gap: 9px;
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-sm);
+  letter-spacing: .04em;
+  color: var(--mk-text-tertiary);
+}
+.sim-clock-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--mk-profit-500);
+  box-shadow: 0 0 10px var(--mk-profit-500);
+  animation: mk-pulse 1.4s infinite;
+}
+.sim-state {
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-xs);
+  letter-spacing: var(--mk-track-eyebrow);
+  text-transform: uppercase;
+  padding: 5px 12px;
+  border-radius: var(--mk-radius-pill);
+  border: 1px solid transparent;
+  transition: color var(--mk-dur-med), background var(--mk-dur-med), border-color var(--mk-dur-med);
+}
+.sim-state[data-tone="good"] { color: var(--mk-profit-500); background: var(--mk-profit-700); border-color: rgba(74,222,128,.25); }
+.sim-state[data-tone="warn"] { color: var(--mk-warning-500); background: var(--mk-warning-700); border-color: rgba(251,146,60,.30); }
+.sim-state[data-tone="bad"]  { color: var(--mk-danger-500); background: var(--mk-danger-700); border-color: rgba(248,113,113,.28); }
+.sim-pnl-wrap { text-align: center; margin-bottom: 22px; }
+.sim-pnl-label {
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-xs);
+  letter-spacing: var(--mk-track-eyebrow);
+  text-transform: uppercase;
+  color: var(--mk-text-tertiary);
+  margin-bottom: 6px;
+}
+.sim-pnl {
+  font-family: var(--mk-font-display);
+  font-size: clamp(2.6rem, 7vw, 3.8rem);
+  letter-spacing: var(--mk-track-display);
+  line-height: 1;
+  color: var(--mk-text-primary);
+  transition: color var(--mk-dur-med);
+}
+.sim-pnl[data-tone="good"] { color: var(--mk-profit-500); }
+.sim-pnl[data-tone="warn"] { color: var(--mk-warning-500); }
+.sim-pnl[data-tone="bad"]  { color: var(--mk-danger-500); }
+.sim-strikes {
+  display: flex; align-items: center; justify-content: center; gap: 12px;
+  margin-bottom: 20px;
+}
+.sim-strike {
+  width: 38px; height: 38px;
+  border-radius: var(--mk-radius-pill);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--mk-font-display);
+  font-size: 1.2rem; letter-spacing: var(--mk-track-display);
+  background: var(--mk-surface-elevated);
+  color: var(--mk-text-tertiary);
+  border: 2px solid var(--mk-smoke-700);
+  transition: all var(--mk-dur-med) var(--mk-ease-out);
+}
+.sim-strike.hit  { background: var(--mk-danger-700); color: var(--mk-danger-500); border-color: var(--mk-danger-500); }
+.sim-strike.warn { background: var(--mk-warning-700); color: var(--mk-warning-500); border-color: var(--mk-warning-500); box-shadow: 0 0 22px rgba(251,146,60,.30); }
+.sim-coach {
+  display: flex; flex-direction: column; gap: 5px;
+  padding: 14px 16px;
+  background: var(--mk-surface-elevated);
+  border-left: 2px solid var(--mk-brand);
+  border-radius: var(--mk-radius-card-sm);
+}
+.sim-coach-label {
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-xs);
+  letter-spacing: var(--mk-track-eyebrow);
+  text-transform: uppercase;
+  color: var(--mk-brand);
+}
+.sim-coach-msg { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); line-height: var(--mk-lead-snug); }
+.sim-reset {
+  position: absolute; inset: 0; z-index: 3;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px;
+  background: rgba(6,7,10,.86);
+  backdrop-filter: blur(4px);
+}
+.sim-reset-ring {
+  width: 96px; height: 96px;
+  border-radius: 50%;
+  border: 2px solid var(--mk-brand);
+  background: radial-gradient(circle, rgba(212,175,55,.18), transparent 70%);
+  animation: simBreathe 3.4s var(--mk-ease-in-out) infinite;
+}
+@keyframes simBreathe {
+  0%, 100% { transform: scale(.7); opacity: .55; }
+  50%      { transform: scale(1.08); opacity: 1; }
+}
+.sim-reset-text {
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-xs);
+  letter-spacing: var(--mk-track-eyebrow);
+  text-transform: uppercase;
+  color: var(--mk-gold-300);
+}
+.sim-ghost { margin-top: 18px; }
+.sim-ghost-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.sim-ghost-col {
+  padding: 18px 16px;
+  border-radius: var(--mk-radius-card);
+  text-align: center;
+}
+.sim-ghost-col.bad  { background: var(--mk-danger-700); border: 1px solid rgba(248,113,113,.22); }
+.sim-ghost-col.good { background: var(--mk-profit-700); border: 1px solid rgba(74,222,128,.22); }
+.sim-ghost-k {
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-xs);
+  letter-spacing: var(--mk-track-eyebrow);
+  text-transform: uppercase;
+  color: var(--mk-text-tertiary);
+  margin-bottom: 8px;
+}
+.sim-ghost-col.bad .sim-ghost-k  { color: var(--mk-danger-500); }
+.sim-ghost-col.good .sim-ghost-k { color: var(--mk-profit-500); }
+.sim-ghost-v {
+  font-family: var(--mk-font-display);
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  letter-spacing: var(--mk-track-display);
+  line-height: 1; margin-bottom: 8px;
+}
+.sim-ghost-col.bad .sim-ghost-v  { color: var(--mk-danger-500); }
+.sim-ghost-col.good .sim-ghost-v { color: var(--mk-profit-500); }
+.sim-ghost-d { font-size: var(--mk-text-xs); color: var(--mk-text-tertiary); line-height: var(--mk-lead-snug); }
+.sim-controls {
+  display: flex; align-items: center; gap: 16px;
+  margin-top: 22px;
+}
+.sim-btn {
+  flex-shrink: 0;
+  font-family: var(--mk-font-sans);
+  font-size: var(--mk-text-sm); font-weight: 600;
+  letter-spacing: var(--mk-track-cap);
+  text-transform: uppercase;
+  padding: 11px 20px;
+  border-radius: var(--mk-radius-button);
+  background: transparent;
+  color: var(--mk-text-primary);
+  border: var(--mk-border-gold);
+  cursor: pointer;
+  transition: color var(--mk-dur-snap), border-color var(--mk-dur-snap), background var(--mk-dur-snap);
+}
+.sim-btn:hover { color: var(--mk-brand); border-color: var(--mk-brand); background: rgba(212,175,55,.06); }
+.sim-progress {
+  flex: 1; height: 4px;
+  background: rgba(255,255,255,.08);
+  border-radius: var(--mk-radius-pill);
+  overflow: hidden;
+}
+.sim-progress-fill {
+  height: 100%; width: 0;
+  background: var(--mk-gold-gradient);
+}
+.sim-cta {
+  text-align: center;
+  margin-top: 26px;
+  animation: simFadeUp .6s var(--mk-ease-out);
+}
+@keyframes simFadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+.sim-cta-line { font-size: var(--mk-text-lg); color: var(--mk-text-secondary); margin-bottom: 18px; line-height: var(--mk-lead-snug); }
+.sim-cta-line strong { color: var(--mk-text-primary); }
+.sim-cta .btn-primary { padding: 14px 26px; font-size: var(--mk-text-md); }
+@media (max-width: 600px) {
+  .sim-screen { padding: 22px 18px; }
+  .sim-controls { flex-wrap: wrap; }
+  .sim-btn { width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sim-clock-dot, .sim-reset-ring { animation: none; }
+  .sim-cta { animation: none; }
+}
 </style>
 </head>
 <body>
@@ -1793,6 +1996,7 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
 <!-- MOBILE DRAWER -->
 <div class="mobile-drawer" id="mobileDrawer">
   <ul class="mobile-drawer-links">
+    <li><a href="why.html" onclick="closeDrawer()">Why</a></li>
     <li><a href="system.html" onclick="closeDrawer()">The System</a></li>
     <li><a href="journal.html" onclick="closeDrawer()">Journal</a></li>
     <li><a href="indicators.html" onclick="closeDrawer()">Indicators</a></li>
@@ -1811,6 +2015,7 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
     <img class="mk-brand-lockup__wordmark" src="assets/logo-wordmark.png" alt="MAKETZO">
   </a>
   <ul class="nav-links">
+    <li><a href="why.html">Why</a></li>
     <li><a href="system.html">The System</a></li>
     <li><a href="journal.html">Journal</a></li>
     <li><a href="indicators.html">Indicators</a></li>
@@ -1839,7 +2044,7 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
     <p class="hero-sub">We've all been there — you've read the books, joined the communities, learned the setups. And yet you still lose… <strong>to yourself.</strong> MAKETZO is the external enforcement system that holds the line when willpower doesn't.</p>
     <div class="hero-ctas">
       <button class="btn-primary" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
-      <a href="#why" class="btn-secondary">&#9654; See How It Works</a>
+      <a href="#see-it-work" class="btn-secondary">&#9654; See How It Works</a>
     </div>
     <div class="hero-proof">
       <div class="proof-row">
@@ -1906,10 +2111,160 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
       </div>
     </div>
     <div class="mk-cta-repeat">
-      <button class="btn-primary" data-cta-source="why" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
+      <a href="#see-it-work" class="btn-primary" data-cta-source="why-explore">Show me how it works &darr;</a>
     </div>
   </div>
 </section>
+
+<!-- INTERACTIVE SESSION SIM -->
+<hr class="mk-rule-gold">
+
+<section class="section" id="see-it-work">
+  <div class="section-inner">
+    <p class="section-eyebrow reveal">01&frac12; &middot; See It Work</p>
+    <h2 class="section-title reveal">Watch a good day <em>go red.</em><br>Then watch the system pull it back.</h2>
+    <p class="section-sub reveal">One real MAKETZO session, sped up. Same trader, same mistakes every trader makes &mdash; but this time the rules hold the line. <strong>Press play.</strong></p>
+    <div class="sim reveal" id="sim">
+      <div class="sim-screen" id="simScreen" data-tone="good">
+        <div class="sim-top">
+          <div class="sim-clock"><span class="sim-clock-dot"></span><span id="simClock">9:30 AM</span></div>
+          <div class="sim-state" id="simState" data-tone="good">In Rhythm</div>
+        </div>
+        <div class="sim-pnl-wrap">
+          <div class="sim-pnl-label">Session P&amp;L</div>
+          <div class="sim-pnl" id="simPnl" data-tone="good">+$120</div>
+        </div>
+        <div class="sim-strikes" id="simStrikes">
+          <span class="sim-strike" data-i="1">1</span>
+          <span class="sim-strike" data-i="2">2</span>
+          <span class="sim-strike" data-i="3">3</span>
+        </div>
+        <div class="sim-coach">
+          <span class="sim-coach-label">&#128226; COACH SAYS</span>
+          <span class="sim-coach-msg" id="simCoachMsg">You're green out of the gate. Protect it.</span>
+        </div>
+        <div class="sim-reset" id="simReset" hidden>
+          <div class="sim-reset-ring"></div>
+          <div class="sim-reset-text">Reset Protocol &middot; breathe</div>
+        </div>
+      </div>
+      <div class="sim-ghost" id="simGhost" hidden>
+        <div class="sim-ghost-row">
+          <div class="sim-ghost-col bad">
+            <div class="sim-ghost-k">What usually happens</div>
+            <div class="sim-ghost-v">&minus;$840</div>
+            <div class="sim-ghost-d">held the revenge trade, doubled down, blew the week</div>
+          </div>
+          <div class="sim-ghost-col good">
+            <div class="sim-ghost-k">With MAKETZO</div>
+            <div class="sim-ghost-v">&minus;$160</div>
+            <div class="sim-ghost-d">locked out, walked away, traded again tomorrow</div>
+          </div>
+        </div>
+      </div>
+      <div class="sim-controls">
+        <button class="sim-btn" id="simPlay" type="button">&#9654; Play the session</button>
+        <div class="sim-progress"><div class="sim-progress-fill" id="simProgressFill"></div></div>
+      </div>
+      <div class="sim-cta" id="simCta" hidden>
+        <p class="sim-cta-line">The day you'd have blown up &mdash; <strong>contained.</strong> That's the whole product.</p>
+        <button class="btn-primary" data-cta-source="sim" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
+      </div>
+    </div>
+  </div>
+</section>
+<script>
+(function(){
+  var sim = document.getElementById('sim');
+  if (!sim) return;
+  var elScreen = document.getElementById('simScreen'),
+      elClock  = document.getElementById('simClock'),
+      elState  = document.getElementById('simState'),
+      elPnl    = document.getElementById('simPnl'),
+      elCoach  = document.getElementById('simCoachMsg'),
+      elReset  = document.getElementById('simReset'),
+      elGhost  = document.getElementById('simGhost'),
+      elCta    = document.getElementById('simCta'),
+      elPlay   = document.getElementById('simPlay'),
+      elFill   = document.getElementById('simProgressFill'),
+      strikes  = sim.querySelectorAll('.sim-strike');
+
+  var beats = [
+    { time:'9:30 AM',  pnl:'+$120', tone:'good', state:'In Rhythm',     strikes:0, coach:"You're green out of the gate. Protect it." },
+    { time:'9:52 AM',  pnl:'+$40',  tone:'warn', state:'Caution',       strikes:1, coach:"That chase wasn't your setup. Strike one." },
+    { time:'10:18 AM', pnl:'−$160', tone:'bad', state:'Elevated Risk', strikes:2, warn:true, coach:"Slow down. One more and the session is over." },
+    { time:'10:31 AM', pnl:'−$160', tone:'warn', state:'Reset',     strikes:2, warn:true, reset:true, coach:"Step away from the desk. Three slow breaths." },
+    { time:'10:34 AM', pnl:'−$160', tone:'bad', state:'Locked Out', strikes:3, coach:"Done for today. You protected the week.", ghost:true, cta:true }
+  ];
+  var durs = [1700, 1900, 2100, 3400, 2000];
+  var total = durs.reduce(function(a,b){ return a+b; }, 0);
+  var timers = [], playing = false;
+
+  function clearTimers(){ timers.forEach(clearTimeout); timers = []; }
+  function setStrikes(n, warn){
+    strikes.forEach(function(s){
+      var i = +s.dataset.i;
+      s.classList.toggle('hit', i <= n);
+      s.classList.toggle('warn', !!warn && i === n);
+    });
+  }
+  function applyBeat(b){
+    elClock.textContent = b.time;
+    elState.textContent = b.state; elState.dataset.tone = b.tone;
+    elScreen.dataset.tone = b.tone;
+    elPnl.textContent = b.pnl;   elPnl.dataset.tone = b.tone;
+    elCoach.textContent = b.coach;
+    setStrikes(b.strikes, b.warn);
+    elReset.hidden = !b.reset;
+    elGhost.hidden = !b.ghost;
+    elCta.hidden   = !b.cta;
+  }
+  function showFinal(){
+    clearTimers(); playing = false;
+    applyBeat(beats[beats.length - 1]);
+    elFill.style.transition = 'none';
+    elFill.style.width = '100%';
+    elPlay.innerHTML = '&#8635; Replay';
+  }
+  function play(){
+    if (playing) return;
+    playing = true;
+    clearTimers();
+    elPlay.textContent = 'Running…';
+    applyBeat(beats[0]);
+    elFill.style.transition = 'none';
+    elFill.style.width = '0';
+    /* force reflow so the width reset takes before we animate */
+    void elFill.offsetWidth;
+    elFill.style.transition = 'width ' + total + 'ms linear';
+    elFill.style.width = '100%';
+    var t = 0;
+    for (var i = 1; i < beats.length; i++) {
+      t += durs[i - 1];
+      (function(b){ timers.push(setTimeout(function(){ applyBeat(b); }, t)); })(beats[i]);
+    }
+    timers.push(setTimeout(function(){
+      playing = false;
+      elPlay.innerHTML = '&#8635; Replay';
+    }, total));
+  }
+
+  elPlay.addEventListener('click', play);
+
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce) {
+    showFinal();
+  } else if ('IntersectionObserver' in window) {
+    var once = false;
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting && !once) { once = true; play(); io.disconnect(); }
+      });
+    }, { threshold: 0.5 });
+    io.observe(sim);
+  }
+})();
+</script>
 
 <!-- BEGIN journal-positioning -->
 <hr class="mk-rule-gold">
@@ -1952,7 +2307,7 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
     </div>
 
     <div class="mk-cta-repeat">
-      <button class="btn-primary" data-cta-source="journal-pos" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
+      <button class="btn-primary" data-cta-source="journal-pos" onclick="handleCheckout('pro',event)">Start free &mdash; everything included &rarr;</button>
     </div>
   </div>
 </section>
@@ -1993,7 +2348,7 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
       </div>
     </div>
     <div class="mk-cta-repeat">
-      <button class="btn-primary" data-cta-source="system" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
+      <button class="btn-primary" data-cta-source="system" onclick="handleCheckout('pro',event)">Put COACH SAYS on my session &rarr;</button>
     </div>
   </div>
 </section>
@@ -2045,7 +2400,7 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
       </div>
     </div>
     <div class="mk-cta-repeat">
-      <button class="btn-primary" data-cta-source="strike" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
+      <button class="btn-primary" data-cta-source="strike" onclick="handleCheckout('pro',event)">Give me the guardrails &rarr;</button>
     </div>
   </div>
 </section>
@@ -2099,7 +2454,7 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
       </div>
     </div>
     <div class="mk-cta-repeat">
-      <button class="btn-primary" data-cta-source="edge" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
+      <button class="btn-primary" data-cta-source="edge" onclick="handleCheckout('pro',event)">Get Edge + Pulse free for 7 days &rarr;</button>
     </div>
   </div>
 </section>
@@ -2145,7 +2500,7 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
       </div>
     </div>
     <div class="mk-cta-repeat">
-      <button class="btn-primary" data-cta-source="focus" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
+      <button class="btn-primary" data-cta-source="focus" onclick="handleCheckout('pro',event)">Unlock the Focus Room &rarr;</button>
     </div>
   </div>
 </section>
@@ -2262,7 +2617,7 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 </script>
     <div class="mk-cta-repeat">
-      <button class="btn-primary" data-cta-source="reviews" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
+      <button class="btn-primary" data-cta-source="reviews" onclick="handleCheckout('pro',event)">Join them &mdash; start free &rarr;</button>
     </div>
 </section>
 
@@ -2405,7 +2760,7 @@ document.addEventListener("DOMContentLoaded", function() {
       <div class="faq-item reveal"><button class="faq-q" onclick="toggleFaq(this)">How does the 7-day free trial work?</button><div class="faq-a">Card required at signup — but <strong>you are not charged until day 8.</strong> Cancel any time before then and you pay nothing. Pro and Elite subscribers receive TradingView indicator access within 24 hours. <em>No tricks. No gotchas. No fine print.</em></div></div>
       <div class="faq-item reveal"><button class="faq-q" onclick="toggleFaq(this)">Is MAKETZO useful if I only trade part-time?</button><div class="faq-a">Absolutely — <strong>part-time traders often benefit most.</strong> When you only have a limited window to trade, every bad decision costs more. MAKETZO's checkpoints and behavioral gates protect your limited session time. Log your P&amp;L, follow the rules, protect your capital.</div></div>
       <div class="faq-item reveal"><button class="faq-q" onclick="toggleFaq(this)">Is my trading data private and secure?</button><div class="faq-a">Your data is yours alone. <strong>MAKETZO does not share, sell, or expose your trading data to any third party.</strong> Each account is fully isolated. You can export or delete your data at any time.</div></div>
-      <div class="faq-item reveal"><button class="faq-q" onclick="toggleFaq(this)">How does the referral program work?</button><div class="faq-a">After subscribing, your referral link appears in your dashboard. When they become a paying member, <strong>you receive one free month</strong> credited automatically. Max 2 referrals. They get <strong>50% off their first month</strong> — $24.50 instead of $49 on Pro.</div></div>
+      <div class="faq-item reveal"><button class="faq-q" onclick="toggleFaq(this)">How does the referral program work?</button><div class="faq-a">After subscribing, your referral link appears in your dashboard. Share it with a trader who needs accountability. When they become a paying member, <strong>you receive one free month</strong> credited automatically &mdash; up to 12 free months a year. And because they came from you, <strong>they get an extended 14-day free trial</strong> instead of the standard 7.</div></div>
       <div class="faq-item reveal"><button class="faq-q" onclick="toggleFaq(this)">Is MAKETZO built for small cap traders?</button><div class="faq-a"><strong>Yes. MAKETZO is purpose-built for small cap momentum traders.</strong> The invite-only indicators, COACH SAYS logic, and session structure are all calibrated for the speed, volatility, and behavioral demands of small cap trading. If you trade large caps or swing trade, the accountability engine and guardrail system still apply — but the indicators are optimized for small cap setups and that is the environment we are designed for.</div></div>
       <div class="faq-item reveal"><button class="faq-q" onclick="toggleFaq(this)">What do I need to use MAKETZO?</button><div class="faq-a">
 <strong>Required — one of the following:</strong>
