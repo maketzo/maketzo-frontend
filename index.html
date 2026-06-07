@@ -1844,10 +1844,11 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
 }
 .sim-state {
   font-family: var(--mk-font-mono);
-  font-size: var(--mk-mono-xs);
+  font-size: var(--mk-mono-md);
+  font-weight: 500;
   letter-spacing: var(--mk-track-eyebrow);
   text-transform: uppercase;
-  padding: 5px 12px;
+  padding: 7px 15px;
   border-radius: var(--mk-radius-pill);
   border: 1px solid transparent;
   transition: color var(--mk-dur-med), background var(--mk-dur-med), border-color var(--mk-dur-med);
@@ -1893,65 +1894,68 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
 .sim-strike.hit  { background: var(--mk-danger-700); color: var(--mk-danger-500); border-color: var(--mk-danger-500); }
 .sim-strike.warn { background: var(--mk-warning-700); color: var(--mk-warning-500); border-color: var(--mk-warning-500); box-shadow: 0 0 22px rgba(251,146,60,.30); }
 .sim-coach {
-  display: flex; flex-direction: column; gap: 5px;
-  padding: 14px 16px;
+  display: flex; flex-direction: column; gap: 8px;
+  padding: 18px 20px;
   background: var(--mk-surface-elevated);
-  border-left: 2px solid var(--mk-brand);
+  border-left: 3px solid var(--mk-brand);
   border-radius: var(--mk-radius-card-sm);
 }
 .sim-coach-label {
   font-family: var(--mk-font-mono);
-  font-size: var(--mk-mono-xs);
+  font-size: var(--mk-mono-sm);
   letter-spacing: var(--mk-track-eyebrow);
   text-transform: uppercase;
   color: var(--mk-brand);
 }
-.sim-coach-msg { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); line-height: var(--mk-lead-snug); }
+.sim-coach-msg { font-size: var(--mk-text-lg); color: var(--mk-text-primary); line-height: var(--mk-lead-body); }
 .sim-reset {
   position: absolute; inset: 0; z-index: 3;
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 24px;
   background: radial-gradient(circle at 50% 45%, rgba(24,19,6,.93), rgba(6,7,10,.96));
   backdrop-filter: blur(7px);
 }
-.sim-reset-ring {
+/* Breathing ring — a faithful PORT of the app's Reset Protocol ring
+   (.fr-breathing-ring): same DOM structure, same phase colors, same
+   WAAPI scale/glow engine (see sim script: startBreath / visScale /
+   ringShadow, lifted from app.js startBreathing). The scale pulse is
+   driven by JS WAAPI on .sim-breathing-ring-inner — NOT a CSS keyframe
+   — because that's how the real reset breathes. Do not reinvent. */
+.sim-breathing-ring {
   position: relative;
-  width: 138px; height: 138px;
+  width: 220px; height: 220px;
   border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  border: 2px solid var(--mk-brand);
-  background: radial-gradient(circle, rgba(212,175,55,.22), rgba(212,175,55,.05) 58%, transparent 72%);
-  animation: simBreathe 5s var(--mk-ease-in-out) infinite;
+  --phase-color: 251,191,36;
+  background: radial-gradient(circle, rgba(var(--phase-color),0.10), transparent 65%);
+  transition: background 700ms ease;
 }
-.sim-reset-core {
-  width: 56px; height: 56px; border-radius: 50%;
-  background: radial-gradient(circle, var(--mk-gold-300), rgba(212,175,55,.28) 68%, transparent);
-  animation: simBreatheCore 5s var(--mk-ease-in-out) infinite;
+.sim-breathing-ring[data-phase="inhale"] { --phase-color: 251,191,36; }
+.sim-breathing-ring[data-phase="hold"]   { --phase-color: 56,189,248; }
+.sim-breathing-ring[data-phase="exhale"] { --phase-color: 110,231,183; }
+.sim-breathing-ring::before,
+.sim-breathing-ring::after {
+  content: ""; position: absolute; inset: 0; border-radius: 50%;
+  border: 1px solid rgba(var(--phase-color),0.40);
+  transition: border-color 700ms ease;
 }
-@keyframes simBreathe {
-  0%, 100% { transform: scale(.7);  border-color: rgba(212,175,55,.42);
-             box-shadow: 0 0 26px 3px rgba(212,175,55,.18), inset 0 0 18px rgba(212,175,55,.10); }
-  50%      { transform: scale(1.14); border-color: rgba(212,175,55,.95);
-             box-shadow: 0 0 64px 16px rgba(212,175,55,.40), inset 0 0 32px rgba(212,175,55,.22); }
+.sim-breathing-ring::after { border-color: rgba(var(--phase-color),0.22); }
+.sim-breathing-ring-inner {
+  width: 60%; height: 60%; border-radius: 50%;
+  background: radial-gradient(circle, rgba(var(--phase-color),0.22), rgba(var(--phase-color),0.05) 70%);
+  border: 1px solid rgba(var(--phase-color),0.55);
+  box-shadow: 0 0 40px rgba(var(--phase-color),0.24);
+  transform: scale(0.46);
+  transition: border-color 700ms ease, background 700ms ease;
 }
-@keyframes simBreatheCore {
-  0%, 100% { transform: scale(.66); opacity: .55; }
-  50%      { transform: scale(1.06); opacity: 1; }
-}
-.sim-reset-phase {
-  position: relative; height: 1.5em; width: 220px; text-align: center;
-}
-.sim-phase {
-  position: absolute; inset: 0;
-  font-family: var(--mk-font-display);
-  font-size: var(--mk-display-md);
-  letter-spacing: var(--mk-track-display-wide);
+.sim-breathing-ring-label {
+  position: absolute;
+  font-family: var(--mk-font-mono);
+  font-size: 14px; letter-spacing: 0.20em;
+  color: rgb(var(--phase-color,251,191,36));
   text-transform: uppercase;
-  color: var(--mk-gold-300);
+  transition: opacity 240ms ease, color 700ms ease;
+  text-shadow: 0 1px 6px rgba(0,0,0,0.8);
 }
-.sim-phase--in  { animation: simPhaseIn  5s var(--mk-ease-in-out) infinite; }
-.sim-phase--out { animation: simPhaseOut 5s var(--mk-ease-in-out) infinite; }
-@keyframes simPhaseIn  { 0%{opacity:1} 40%{opacity:1} 50%{opacity:0} 90%{opacity:0} 100%{opacity:1} }
-@keyframes simPhaseOut { 0%{opacity:0} 40%{opacity:0} 50%{opacity:1} 90%{opacity:1} 100%{opacity:0} }
 .sim-reset-text {
   font-family: var(--mk-font-mono);
   font-size: var(--mk-mono-xs);
@@ -2031,9 +2035,7 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
   .sim-btn { width: 100%; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .sim-clock-dot, .sim-reset-ring, .sim-reset-core,
-  .sim-phase--in, .sim-phase--out { animation: none; }
-  .sim-phase--out { opacity: 0; }
+  .sim-clock-dot { animation: none; }
   .sim-cta { animation: none; }
 }
 </style>
@@ -2216,12 +2218,11 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
           <span class="sim-coach-msg" id="simCoachMsg">You're green out of the gate. Protect it.</span>
         </div>
         <div class="sim-reset" id="simReset" hidden>
-          <div class="sim-reset-ring"><span class="sim-reset-core"></span></div>
-          <div class="sim-reset-phase">
-            <span class="sim-phase sim-phase--in">Breathe in</span>
-            <span class="sim-phase sim-phase--out">Breathe out</span>
+          <div class="sim-breathing-ring" id="simBreathRing" data-phase="inhale">
+            <div class="sim-breathing-ring-inner"></div>
+            <div class="sim-breathing-ring-label" id="simBreathLabel">Inhale</div>
           </div>
-          <div class="sim-reset-text">Reset Protocol &middot; let your heart rate come down</div>
+          <div class="sim-reset-text">Reset Protocol &middot; breathe with the ring</div>
         </div>
       </div>
       <div class="sim-ghost" id="simGhost" hidden>
@@ -2266,7 +2267,56 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
       elCta    = document.getElementById('simCta'),
       elPlay   = document.getElementById('simPlay'),
       elFill   = document.getElementById('simProgressFill'),
+      breathRing  = document.getElementById('simBreathRing'),
+      breathInner = breathRing && breathRing.querySelector('.sim-breathing-ring-inner'),
+      breathLabel = document.getElementById('simBreathLabel'),
       strikes  = sim.querySelectorAll('.sim-strike');
+
+  // ── Breathing engine — ported from app.js startBreathing (WAAPI scale +
+  // glow on the inner ring, resonant 5.5-5.5 cadence = the Reset Protocol's
+  // "coherent/meditate" pattern). Same math as the real app so the marketing
+  // ring breathes identically to a live reset. Do NOT reinvent this.
+  var PHASE_RGB = { inhale:'251,191,36', hold:'56,189,248', exhale:'110,231,183' };
+  var BREATH = [
+    { k:'inhale', label:'Inhale', sec:5.5, scale:1.0  },
+    { k:'exhale', label:'Exhale', sec:5.5, scale:0.55 }
+  ];
+  function _visScale(s){ return 0.46 + (s - 0.55) / 0.45 * 0.66; }      // 0.46 .. 1.12
+  function _glowPx(v){ return 18 + (v - 0.46) / 0.66 * 92; }            // 18 .. 110
+  function _glowA(v){ return 0.12 + (v - 0.46) / 0.66 * 0.34; }         // 0.12 .. 0.46
+  function _ringShadow(v, rgb){ return '0 0 ' + _glowPx(v).toFixed(0) + 'px rgba(' + rgb + ',' + _glowA(v).toFixed(2) + ')'; }
+  var _breathTimer = null, _breathLast = _visScale(0.55);
+  function stopBreath(){
+    if (_breathTimer){ clearTimeout(_breathTimer); _breathTimer = null; }
+    if (breathInner && breathInner.getAnimations){
+      breathInner.getAnimations().forEach(function(a){ try { a.cancel(); } catch(e){} });
+    }
+  }
+  function startBreath(){
+    stopBreath();
+    if (!breathRing || !breathInner) return;
+    _breathLast = _visScale(0.55); // start at the trough; first inhale swells up
+    var i = 0;
+    (function step(){
+      var ph = BREATH[i % BREATH.length];
+      breathRing.setAttribute('data-phase', ph.k);
+      var rgb = PHASE_RGB[ph.k] || '251,191,36';
+      var vis = _visScale(ph.scale);
+      if (breathInner.animate){
+        breathInner.animate(
+          [ { transform: 'scale(' + _breathLast.toFixed(3) + ')', boxShadow: _ringShadow(_breathLast, rgb) },
+            { transform: 'scale(' + vis.toFixed(3) + ')',         boxShadow: _ringShadow(vis, rgb) } ],
+          { duration: ph.sec * 1000, easing: 'ease-in-out', fill: 'forwards' }
+        );
+      }
+      _breathLast = vis;
+      if (breathLabel && breathLabel.textContent !== ph.label){
+        breathLabel.style.opacity = '0';
+        setTimeout(function(){ breathLabel.textContent = ph.label; breathLabel.style.opacity = '1'; }, 140);
+      }
+      _breathTimer = setTimeout(function(){ i++; step(); }, ph.sec * 1000);
+    })();
+  }
 
   var beats = [
     { time:'9:30 AM',  tag:'9:30',  pnl:'+$120', tone:'good', state:'In Rhythm',     strikes:0,
@@ -2285,7 +2335,7 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
       event:"Calm again, you wait for one clean A-plus setup — and close the morning back in the green.",
       coach:"That's how it's done. You reset, waited for one clean setup, and turned a blow-up morning into a green day. That's discipline, not luck.", ghost:true, cta:true }
   ];
-  var durs = [3400, 3400, 3800, 6800, 4200];
+  var durs = [3400, 3400, 3800, 11500, 4200]; /* reset beat = one full resonant breath (5.5 in + 5.5 out) + lead */
   var startDelay = 900;
   var total = durs.reduce(function(a,b){ return a+b; }, 0);
   var timers = [], playing = false;
@@ -2310,6 +2360,7 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
     elReset.hidden = !b.reset;
     elGhost.hidden = !b.ghost;
     elCta.hidden   = !b.cta;
+    if (b.reset) startBreath(); else stopBreath();
   }
   function showFinal(){
     clearTimers(); playing = false;
