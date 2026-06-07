@@ -2261,7 +2261,7 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
   <div class="section-inner">
     <p class="section-eyebrow reveal">01&frac12; &middot; See It Work</p>
     <h2 class="section-title reveal">Watch a good day <em>go red.</em><br>Then watch the system pull it back.</h2>
-    <p class="section-sub reveal">One real MAKETZO session, sped up. Same trader, same mistakes every trader makes &mdash; but this time the rules hold the line. <strong>Press play, or scrub through it yourself.</strong></p>
+    <p class="section-sub reveal">One real MAKETZO session, sped up. Same trader, same mistakes every trader makes, but this time the rules hold the line. <strong>Press play, or scrub through it yourself.</strong></p>
     <div class="sim reveal" id="sim">
       <div class="sim-screen" id="simScreen" data-tone="good">
         <p class="sim-eyebrow-in">A real session &middot; one morning, sped up</p>
@@ -2295,17 +2295,17 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
         </div>
         <div class="sim-spot" id="simSpot" hidden></div>
       </div>
-      <div class="sim-note" id="simNote">
-        <span class="sim-note-eyebrow"><span class="sim-note-dot"></span><span id="simNoteLabel">Status band</span></span>
-        <div class="sim-note-title" id="simNoteTitle">It reads your state, live</div>
-        <div class="sim-note-body" id="simNoteBody">Every trade re-scores your session in real time. The status band always knows whether you're in control or starting to drift.</div>
-      </div>
       <div class="sim-transport">
         <button class="sim-tbtn" id="simPrev" type="button" aria-label="Previous step"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 6h2.2v12H7zM20 6v12l-9-6z"/></svg></button>
         <button class="sim-tbtn sim-tbtn--play" id="simPlay" type="button" aria-label="Play or pause"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></button>
         <button class="sim-tbtn" id="simNext" type="button" aria-label="Next step"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.8 6H17v12h-2.2zM4 6l9 6-9 6z"/></svg></button>
         <div class="sim-scrub" id="simScrub"></div>
         <div class="sim-step" id="simStep">1 / 5</div>
+      </div>
+      <div class="sim-note" id="simNote">
+        <span class="sim-note-eyebrow"><span class="sim-note-dot"></span><span id="simNoteLabel">Status band</span></span>
+        <div class="sim-note-title" id="simNoteTitle">It reads your state, live</div>
+        <div class="sim-note-body" id="simNoteBody">Every trade re-scores your session in real time. The status band always knows whether you're in control or starting to drift.</div>
       </div>
       <div class="sim-ghost" id="simGhost" hidden>
         <div class="sim-ghost-row">
@@ -2322,7 +2322,7 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
         </div>
       </div>
       <div class="sim-cta" id="simCta" hidden>
-        <p class="sim-cta-line">The morning you'd have blown up &mdash; <strong>back in the green.</strong> That's the whole product.</p>
+        <p class="sim-cta-line">The morning you'd have blown up, <strong>now back in the green.</strong> That's the whole product.</p>
         <button class="btn-primary" data-cta-source="sim" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
       </div>
     </div>
@@ -2343,6 +2343,7 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
       elGhost  = document.getElementById('simGhost'),
       elCta    = document.getElementById('simCta'),
       elSpot   = document.getElementById('simSpot'),
+      elNote      = document.getElementById('simNote'),
       elNoteTitle = document.getElementById('simNoteTitle'),
       elNoteBody  = document.getElementById('simNoteBody'),
       elNoteLabel = document.getElementById('simNoteLabel'),
@@ -2397,25 +2398,25 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
 
   var beats = [
     { time:'9:30 AM', tag:'9:30', pnl:'+$120', tone:'good', state:'In Rhythm', strikes:0, spot:'status',
-      event:"Clean open — you're trading the setups you planned.",
-      coach:"Green and disciplined out of the gate. Protect it — don't give it back chasing the next candle.",
-      note:{ label:'Status band', t:'It reads your state, live', b:"Every trade re-scores your session in real time. The status band always knows whether you're in control or starting to drift — before you do." } },
+      event:"Clean open. You're trading the setups you planned.",
+      coach:"Green and disciplined out of the gate. Protect it. Don't give it back chasing the next candle.",
+      note:{ label:'Status band', t:'It reads your state, live', b:"Every trade re-scores your session in real time. The status band always knows whether you're in control or starting to drift, before you do." } },
     { time:'9:52 AM', tag:'9:52', pnl:'+$40', tone:'warn', state:'Caution', strikes:1, spot:'strikes',
       event:"You chased an extended move that wasn't your setup.",
-      coach:"That wasn't one of your setups — strike one. One impulsive trade is human; the second is where good days unravel.",
-      note:{ label:'Strike System', t:'The Strike System fires', b:"Break a rule and you earn a strike, tracked automatically. Three locks the day. No willpower required — the count is kept for you." } },
+      coach:"That wasn't one of your setups. Strike one. One impulsive trade is human; the second is where good days unravel.",
+      note:{ label:'Strike System', t:'The Strike System fires', b:"Break a rule and you earn a strike, tracked automatically. Three locks the day. The count is kept for you, so it never relies on willpower." } },
     { time:'10:18 AM', tag:'10:18', pnl:'−$160', tone:'bad', state:'Elevated', strikes:2, warn:true, spot:'coach',
       event:"A revenge trade to win it back fast. Now you're tilted.",
       coach:"Stop. Down and forcing it is tilt, not a setup. One more rule-break and I lock the session.",
-      note:{ label:'Coach Says', t:'COACH SAYS steps in', b:"The blunt warning you'd never give yourself — delivered the instant your behavior turns, not buried in tomorrow's journal." } },
+      note:{ label:'Coach Says', t:'COACH SAYS steps in', b:"The blunt warning you'd never give yourself, delivered the instant your behavior turns, not buried in tomorrow's journal." } },
     { time:'10:31 AM', tag:'10:31', pnl:'−$160', tone:'warn', state:'Reset', strikes:2, warn:true, reset:true, spot:'reset',
-      event:"You reach for the mouse again — the Reset Protocol steps in.",
+      event:"You reach for the mouse again. The Reset Protocol steps in.",
       coach:"Hands off. One slow breath before you do real damage.",
-      note:{ label:'Reset Protocol', t:'One tool, not the whole pitch', b:"A short guided reset is just one protocol. The real win: the system caught you here, before the damage — something a breathing app can't do." } },
+      note:{ label:'Reset Protocol', t:'It steps in before the damage', b:"The moment tilt or overtrading shows up, MAKETZO interrupts the session and walks you through a guided reset, so you come back composed instead of compounding the loss." } },
     { time:'10:58 AM', tag:'10:58', pnl:'+$89', tone:'good', state:'In Control', strikes:2, spot:'pnl', ghost:true, cta:true,
       event:"Calm again, you take one clean setup and close green.",
-      coach:"That's discipline, not luck — a blow-up morning turned green.",
-      note:{ label:'Session P&L', t:'The morning, contained', b:"Same trader, same mistakes — but it ends +$89 instead of −$840. That's what a journal can't do: change the trade while it's still happening." } }
+      coach:"That's discipline, not luck. A blow-up morning turned green.",
+      note:{ label:'Session P&L', t:'The morning, contained', b:"Same trader, same mistakes, but it ends +$89 instead of −$840. That's accountability in real time: it enforces the discipline you set when you were thinking clearly." } }
   ];
   var durs = [5500, 5800, 6200, 6000, 6500];
   var N = beats.length;
@@ -2447,6 +2448,9 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
     elCoach.textContent = b.coach;
     setStrikes(b.strikes, b.warn);
     elReset.hidden = !b.reset; elGhost.hidden = !b.ghost; elCta.hidden = !b.cta;
+    // On the final beat the outcome cards + CTA are the conclusion, so the
+    // per-beat narration card would be redundant — hide it there.
+    if (elNote) elNote.hidden = !!b.ghost;
     if (b.note){
       if (elNoteLabel) elNoteLabel.textContent = b.note.label || 'Why this matters';
       elNoteTitle.textContent = b.note.t; elNoteBody.textContent = b.note.b;
