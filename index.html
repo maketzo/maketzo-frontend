@@ -50,7 +50,7 @@
 <link rel="stylesheet" href="assets/css/audio-player.css?v=9">
 <script src="assets/js/mkt-analytics.js?v=5" defer></script>
 <script src="assets/js/mkt-consent.js?v=1" defer></script>
-<script src="assets/js/checkout.js?v=8" defer></script>
+<script src="assets/js/checkout.js?v=9" defer></script>
 <script src="assets/js/audio-player.js?v=9" defer></script>
 <script src="assets/js/newsletter.js?v=4" defer></script>
 <style>
@@ -1909,27 +1909,55 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
 .sim-coach-msg { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); line-height: var(--mk-lead-snug); }
 .sim-reset {
   position: absolute; inset: 0; z-index: 3;
-  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px;
-  background: rgba(6,7,10,.86);
-  backdrop-filter: blur(4px);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 24px;
+  background: radial-gradient(circle at 50% 45%, rgba(24,19,6,.93), rgba(6,7,10,.96));
+  backdrop-filter: blur(7px);
 }
 .sim-reset-ring {
-  width: 96px; height: 96px;
+  position: relative;
+  width: 138px; height: 138px;
   border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
   border: 2px solid var(--mk-brand);
-  background: radial-gradient(circle, rgba(212,175,55,.18), transparent 70%);
-  animation: simBreathe 3.4s var(--mk-ease-in-out) infinite;
+  background: radial-gradient(circle, rgba(212,175,55,.22), rgba(212,175,55,.05) 58%, transparent 72%);
+  animation: simBreathe 5s var(--mk-ease-in-out) infinite;
+}
+.sim-reset-core {
+  width: 56px; height: 56px; border-radius: 50%;
+  background: radial-gradient(circle, var(--mk-gold-300), rgba(212,175,55,.28) 68%, transparent);
+  animation: simBreatheCore 5s var(--mk-ease-in-out) infinite;
 }
 @keyframes simBreathe {
-  0%, 100% { transform: scale(.7); opacity: .55; }
-  50%      { transform: scale(1.08); opacity: 1; }
+  0%, 100% { transform: scale(.7);  border-color: rgba(212,175,55,.42);
+             box-shadow: 0 0 26px 3px rgba(212,175,55,.18), inset 0 0 18px rgba(212,175,55,.10); }
+  50%      { transform: scale(1.14); border-color: rgba(212,175,55,.95);
+             box-shadow: 0 0 64px 16px rgba(212,175,55,.40), inset 0 0 32px rgba(212,175,55,.22); }
 }
+@keyframes simBreatheCore {
+  0%, 100% { transform: scale(.66); opacity: .55; }
+  50%      { transform: scale(1.06); opacity: 1; }
+}
+.sim-reset-phase {
+  position: relative; height: 1.5em; width: 220px; text-align: center;
+}
+.sim-phase {
+  position: absolute; inset: 0;
+  font-family: var(--mk-font-display);
+  font-size: var(--mk-display-md);
+  letter-spacing: var(--mk-track-display-wide);
+  text-transform: uppercase;
+  color: var(--mk-gold-300);
+}
+.sim-phase--in  { animation: simPhaseIn  5s var(--mk-ease-in-out) infinite; }
+.sim-phase--out { animation: simPhaseOut 5s var(--mk-ease-in-out) infinite; }
+@keyframes simPhaseIn  { 0%{opacity:1} 40%{opacity:1} 50%{opacity:0} 90%{opacity:0} 100%{opacity:1} }
+@keyframes simPhaseOut { 0%{opacity:0} 40%{opacity:0} 50%{opacity:1} 90%{opacity:1} 100%{opacity:0} }
 .sim-reset-text {
   font-family: var(--mk-font-mono);
   font-size: var(--mk-mono-xs);
   letter-spacing: var(--mk-track-eyebrow);
   text-transform: uppercase;
-  color: var(--mk-gold-300);
+  color: var(--mk-text-tertiary);
 }
 .sim-ghost { margin-top: 18px; }
 .sim-ghost-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
@@ -1957,7 +1985,7 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
   line-height: 1; margin-bottom: 8px;
 }
 .sim-ghost-col.bad .sim-ghost-v  { color: var(--mk-danger-500); }
-.sim-ghost-col.good .sim-ghost-v { color: var(--mk-text-primary); }
+.sim-ghost-col.good .sim-ghost-v { color: var(--mk-profit-500); }
 .sim-ghost-d { font-size: var(--mk-text-xs); color: var(--mk-text-tertiary); line-height: var(--mk-lead-snug); }
 .sim-controls {
   display: flex; align-items: center; gap: 16px;
@@ -2003,7 +2031,9 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
   .sim-btn { width: 100%; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .sim-clock-dot, .sim-reset-ring { animation: none; }
+  .sim-clock-dot, .sim-reset-ring, .sim-reset-core,
+  .sim-phase--in, .sim-phase--out { animation: none; }
+  .sim-phase--out { opacity: 0; }
   .sim-cta { animation: none; }
 }
 </style>
@@ -2186,8 +2216,12 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
           <span class="sim-coach-msg" id="simCoachMsg">You're green out of the gate. Protect it.</span>
         </div>
         <div class="sim-reset" id="simReset" hidden>
-          <div class="sim-reset-ring"></div>
-          <div class="sim-reset-text">Reset Protocol &middot; breathe</div>
+          <div class="sim-reset-ring"><span class="sim-reset-core"></span></div>
+          <div class="sim-reset-phase">
+            <span class="sim-phase sim-phase--in">Breathe in</span>
+            <span class="sim-phase sim-phase--out">Breathe out</span>
+          </div>
+          <div class="sim-reset-text">Reset Protocol &middot; let your heart rate come down</div>
         </div>
       </div>
       <div class="sim-ghost" id="simGhost" hidden>
@@ -2200,8 +2234,8 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
           </div>
           <div class="sim-ghost-col good">
             <div class="sim-ghost-k">With MAKETZO</div>
-            <div class="sim-ghost-v">&minus;$160</div>
-            <div class="sim-ghost-d">locked out after strike 3 &mdash; <span class="sim-saved">$680 saved</span></div>
+            <div class="sim-ghost-v">+$89</div>
+            <div class="sim-ghost-d">reset after strike two, came back calm, closed the day <span class="sim-saved">green</span></div>
           </div>
         </div>
       </div>
@@ -2210,7 +2244,7 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
         <div class="sim-progress"><div class="sim-progress-fill" id="simProgressFill"></div></div>
       </div>
       <div class="sim-cta" id="simCta" hidden>
-        <p class="sim-cta-line">The day you'd have blown up &mdash; <strong>contained.</strong> That's the whole product.</p>
+        <p class="sim-cta-line">The morning you'd have blown up &mdash; <strong>back in the green.</strong> That's the whole product.</p>
         <button class="btn-primary" data-cta-source="sim" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
       </div>
     </div>
@@ -2235,13 +2269,24 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
       strikes  = sim.querySelectorAll('.sim-strike');
 
   var beats = [
-    { time:'9:30 AM',  tag:'9:30',  pnl:'+$120', tone:'good', state:'In Rhythm',     strikes:0, event:"Clean open. You're up early, trading your plan.", coach:"You're green out of the gate. Protect it." },
-    { time:'9:52 AM',  tag:'9:52',  pnl:'+$40',  tone:'warn', state:'Caution',       strikes:1, event:"You chased an extended move. Not your setup.", coach:"That wasn't your setup. Strike one." },
-    { time:'10:18 AM', tag:'10:18', pnl:'−$160', tone:'bad',  state:'Elevated Risk', strikes:2, warn:true, event:"Revenge trade after the red. Now you're tilted.", coach:"Slow down. One more and the session is over." },
-    { time:'10:31 AM', tag:'10:31', pnl:'−$160', tone:'warn', state:'Reset',         strikes:2, warn:true, reset:true, event:"You reach for the mouse again — Reset Protocol steps in.", coach:"Step away from the desk. Three slow breaths." },
-    { time:'10:34 AM', tag:'10:34', pnl:'−$160', tone:'bad',  state:'Locked Out',    strikes:3, event:"Strike 3. The session is locked — you can't trade.", coach:"Done for today. You protected the week.", ghost:true, cta:true }
+    { time:'9:30 AM',  tag:'9:30',  pnl:'+$120', tone:'good', state:'In Rhythm',     strikes:0,
+      event:"Clean open. You're up early and trading the setups you planned last night.",
+      coach:"You're green early and trading clean — exactly the start you want. Now protect it. Don't give it back chasing the next candle." },
+    { time:'9:52 AM',  tag:'9:52',  pnl:'+$40',  tone:'warn', state:'Caution',       strikes:1,
+      event:"You chased an extended move that wasn't on your plan, and gave most of the morning back.",
+      coach:"That wasn't one of your setups — that's strike one. One impulsive trade is human. The second is where good days quietly fall apart." },
+    { time:'10:18 AM', tag:'10:18', pnl:'−$160', tone:'bad',  state:'Elevated Risk', strikes:2, warn:true,
+      event:"A revenge trade to win it back fast. You're red and tilted now — this is where the day usually dies.",
+      coach:"Stop. You're down and trying to get it back in one trade — that's tilt, not a setup. One more rule-break and I lock the session." },
+    { time:'10:31 AM', tag:'10:31', pnl:'−$160', tone:'warn', state:'Reset',  strikes:2, warn:true, reset:true,
+      event:"You reach for the mouse again — and the Reset Protocol steps in before strike three.",
+      coach:"Hands off the mouse. Before you take another trade, breathe with the ring and let your heart rate settle. The setup will still be there in five minutes." },
+    { time:'10:58 AM', tag:'10:58', pnl:'+$89',  tone:'good', state:'Back in Control', strikes:2,
+      event:"Calm again, you wait for one clean A-plus setup — and close the morning back in the green.",
+      coach:"That's how it's done. You reset, waited for one clean setup, and turned a blow-up morning into a green day. That's discipline, not luck.", ghost:true, cta:true }
   ];
-  var durs = [1700, 1900, 2100, 3400, 2000];
+  var durs = [3400, 3400, 3800, 6800, 4200];
+  var startDelay = 900;
   var total = durs.reduce(function(a,b){ return a+b; }, 0);
   var timers = [], playing = false;
 
@@ -2278,22 +2323,25 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
     playing = true;
     clearTimers();
     elPlay.textContent = 'Running…';
+    /* show the starting state and HOLD on it so the viewer can read the
+       baseline (clean +$120 open) before anything starts moving. */
     applyBeat(beats[0]);
     elFill.style.transition = 'none';
     elFill.style.width = '0';
-    /* force reflow so the width reset takes before we animate */
-    void elFill.offsetWidth;
-    elFill.style.transition = 'width ' + total + 'ms linear';
-    elFill.style.width = '100%';
-    var t = 0;
-    for (var i = 1; i < beats.length; i++) {
-      t += durs[i - 1];
-      (function(b){ timers.push(setTimeout(function(){ applyBeat(b); }, t)); })(beats[i]);
-    }
+    void elFill.offsetWidth; /* force reflow so the width reset takes */
     timers.push(setTimeout(function(){
-      playing = false;
-      elPlay.innerHTML = '&#8635; Replay';
-    }, total));
+      elFill.style.transition = 'width ' + total + 'ms linear';
+      elFill.style.width = '100%';
+      var t = 0;
+      for (var i = 1; i < beats.length; i++) {
+        t += durs[i - 1];
+        (function(b){ timers.push(setTimeout(function(){ applyBeat(b); }, t)); })(beats[i]);
+      }
+      timers.push(setTimeout(function(){
+        playing = false;
+        elPlay.innerHTML = '&#8635; Replay';
+      }, total));
+    }, startDelay));
   }
 
   elPlay.addEventListener('click', play);

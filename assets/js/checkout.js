@@ -126,14 +126,18 @@
         if (!ul || !trialBtn) continue;
         const trialLi = trialBtn.parentElement;
 
-        // Mark the nav as signed-in so the injected CSS applies.
+        // Mark the nav as signed-in so the injected CSS applies (color/treatment
+        // only — no layout change).
         ul.classList.add('nav-signedin');
 
-        // DOM reorder: gold (LAUNCH) ends up rightmost. insertBefore(_, null)
-        // appends at the end if trialLi is already the last child.
-        if (trialLi) {
-          ul.insertBefore(launchLi, trialLi.nextSibling);
-        }
+        // NOTE: we deliberately do NOT reorder the <li>s here. The earlier
+        // `insertBefore` swap moved LAUNCH past the trial button AFTER the async
+        // auth check resolved, which reflowed the nav a beat after paint and read
+        // as the right-side buttons "violently" jumping on every page load
+        // (Ed flagged 2026-06-07). Treatment swap alone (gold ↔ outline) signals
+        // the primary action without any layout shift. `trialLi` retained for
+        // clarity / future use.
+        void trialLi;
       }
     });
   }
