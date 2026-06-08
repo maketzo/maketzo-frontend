@@ -25,6 +25,32 @@
   background: var(--mk-obsidian-900);
 }
 
+/* Shared-song arrival banner — sits directly above the player when a visitor
+   lands via a share link (?track=<slug>). Gold-accented to match the player. */
+.mk-audio-player__shared-banner {
+  margin: 0 0 16px;
+  padding: 12px 18px;
+  border-radius: var(--mk-radius-card);
+  background: rgba(212, 175, 55, 0.08);
+  border: 1px solid rgba(212, 175, 55, 0.30);
+  color: var(--mk-text-secondary);
+  font-size: var(--mk-text-sm);
+  line-height: 1.5;
+  text-align: center;
+}
+.mk-audio-player__shared-cta {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  color: var(--mk-brand);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+.mk-audio-player__shared-cta:hover { filter: brightness(1.15); }
+
 .mk-audio-player__art {
   position: relative;
   width: 200px;

@@ -697,6 +697,14 @@ var MK_SHARE_ICON_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1
     var apiBase = deriveApiBase();
     var url = apiBase + "/soundtrack?surface=" + encodeURIComponent(surface);
 
+    // Shared-song arrival: if the visitor came via a share link (?track=<slug>),
+    // ask the API to include that one track even when it isn't in the curated
+    // set, so the shared song is present in the DOM for the deep-link logic
+    // (initPlayer, via __mkInitPlayer below) to highlight + cue it.
+    var sharedSlug = null;
+    try { sharedSlug = new URLSearchParams(window.location.search).get("track"); } catch (e) {}
+    if (sharedSlug) url += "&track=" + encodeURIComponent(sharedSlug);
+
     fetch(url, { credentials: "omit" })
       .then(function (r) { return r.json(); })
       .then(function (data) {
@@ -721,6 +729,24 @@ var MK_SHARE_ICON_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1
         if (audio && tracks[0].src) audio.src = tracks[0].src;
         if (titleEl && tracks[0].name) titleEl.textContent = tracks[0].name;
         if (eyebrowEl) eyebrowEl.textContent = eyebrow;
+
+        // Shared-song arrival reframe: when the backend honored ?track=<slug> and
+        // prepended it (tracks[0]), explain why the visitor is here and nudge the
+        // trial. Only renders for share arrivals; organic visitors never see it.
+        if (sharedSlug && tracks[0] && tracks[0].slug === sharedSlug
+            && player.parentNode && !player.parentNode.querySelector(".mk-audio-player__shared-banner")) {
+          var banner = document.createElement("div");
+          banner.className = "mk-audio-player__shared-banner";
+          banner.innerHTML = 'A trader sent you this track. Press play — then '
+            + '<button type="button" class="mk-audio-player__shared-cta">start your free trial</button> '
+            + 'to unlock the full library inside.';
+          player.parentNode.insertBefore(banner, player);
+          var cta = banner.querySelector(".mk-audio-player__shared-cta");
+          if (cta) cta.addEventListener("click", function (e) {
+            if (typeof window.handleCheckout === "function") window.handleCheckout("pro", e);
+            else window.location.href = "/pricing";
+          });
+        }
       })
       .catch(function (err) {
         if (window.console) console.warn("[audio-player] /soundtrack fetch failed", err);
