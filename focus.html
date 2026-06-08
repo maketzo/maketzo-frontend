@@ -449,11 +449,6 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
 @keyframes cueIn   { 0% { opacity: 1; } 26% { opacity: 1; } 33% { opacity: 0; } 93% { opacity: 0; } 100% { opacity: 1; } }
 @keyframes cueHold { 0%,26% { opacity: 0; } 33% { opacity: 1; } 60% { opacity: 1; } 67% { opacity: 0; } 100% { opacity: 0; } }
 @keyframes cueOut  { 0%,60% { opacity: 0; } 67% { opacity: 1; } 93% { opacity: 1; } 100% { opacity: 0; } }
-@media (prefers-reduced-motion: reduce) {
-  .med-orb { animation: none; transform: scale(1); opacity: 1; }
-  .med-cue { position: static; opacity: 1; animation: none; }
-  .med-cue--in::after, .med-cue--hold::after { content: ' \00B7 '; }
-}
 .med-copy h3 { font-family: var(--mk-font-display); font-size: clamp(1.6rem, 3vw, 2.2rem); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); font-weight: 400; margin-bottom: 14px; line-height: 1.1; }
 .med-copy h3 em { font-style: normal; background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .med-copy p { font-size: var(--mk-text-md); color: var(--mk-text-secondary); line-height: var(--mk-lead-body); margin-bottom: 18px; }

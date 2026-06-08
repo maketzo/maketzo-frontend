@@ -268,11 +268,6 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
 .feed-chart.anim-ready.is-live .feed-candle { transform: scaleY(1); opacity: 1; }
 @keyframes chipFire { 0% { box-shadow: 0 0 0 0 rgba(224,82,82,.55); } 70% { box-shadow: 0 0 0 11px rgba(224,82,82,0); } 100% { box-shadow: 0 0 0 0 rgba(224,82,82,0); } }
 .edge-chip--exit.fire { animation: chipFire 1s ease 2; }
-@media (prefers-reduced-motion: reduce) {
-  .edge-chart.anim-ready .edge-candle,
-  .feed-chart.anim-ready .feed-candle { transform: none; opacity: 1; transition: none; }
-  .edge-chip--exit.fire { animation: none; }
-}
 
 @media (max-width: 700px) {
   .edge-card { padding: 24px 18px; }
