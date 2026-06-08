@@ -226,7 +226,9 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
 
 /* ── PRICING REMINDER STRIP ─────────────────────────────────── */
 .tier-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; max-width: 960px; margin: 0 auto; }
-.tier-mini { padding: 26px 24px; background: var(--mk-surface-raised); border: 1px solid rgba(255,255,255,.06); border-radius: var(--mk-radius-card); text-align: center; }
+.tier-mini { padding: 26px 24px; background: var(--mk-surface-raised); border: 1px solid rgba(255,255,255,.06); border-radius: var(--mk-radius-card); text-align: center; display: flex; flex-direction: column; }
+.tier-mini .tier-mini-note { flex: 1 1 auto; margin-bottom: 18px; }
+.tier-mini .btn-primary, .tier-mini .btn-secondary { width: 100%; margin-top: auto; }
 .tier-mini.featured { border-color: rgba(212,175,55,.5); background: linear-gradient(180deg, rgba(212,175,55,.05), transparent 60%), var(--mk-surface-raised); }
 .tier-mini-name { font-family: var(--mk-font-display); font-size: var(--mk-display-md); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); margin-bottom: 6px; }
 .tier-mini.featured .tier-mini-name { color: var(--mk-brand); }
@@ -518,25 +520,24 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
         <div class="tier-mini-name">Journal</div>
         <div class="tier-mini-price">$29 / month</div>
         <div class="tier-mini-note">Trade journal &middot; session log &middot; P&amp;L &middot; streak &middot; discipline score</div>
+        <button class="btn-secondary" data-tier="journal" data-interval="month" onclick="handleCheckout(this.dataset.tier,event)">Start Free Trial</button>
       </div>
       <div class="tier-mini featured reveal">
         <div class="tier-mini-name">Pro</div>
         <div class="tier-mini-price">$49 / month</div>
         <div class="tier-mini-note">Everything in Journal &middot; Maketzo Edge &middot; Maketzo Pulse &middot; COACH SAYS &middot; State Machine &middot; Strike System &middot; Focus Room</div>
+        <button class="btn-primary" data-tier="pro" data-interval="month" onclick="handleCheckout(this.dataset.tier,event)">Start Free Trial &rarr;</button>
       </div>
       <div class="tier-mini reveal">
         <div class="tier-mini-name">Elite</div>
         <div class="tier-mini-price">$79 / month</div>
         <div class="tier-mini-note">Everything in Pro &middot; Concierge onboarding &middot; Founders' circle &middot; Early access</div>
+        <button class="btn-secondary" data-tier="elite" data-interval="month" onclick="handleCheckout(this.dataset.tier,event)">Start Free Trial</button>
       </div>
     </div>
 
     <div style="text-align:center;margin-top:36px;">
       <a href="pricing.html" class="btn-secondary">See full plan comparison &rarr;</a>
-    </div>
-
-    <div class="mk-cta-repeat">
-      <button class="btn-primary" data-cta-source="pricing-reminder" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
     </div>
   </div>
 </section>

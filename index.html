@@ -1366,7 +1366,9 @@ hr.mk-rule-gold--bold {
 /* Compact tier reminder strip (bottom pricing section — distinct from the
    detailed cards above). Mirrors the journal.html "pricing reminder" pattern. */
 .tier-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; max-width: 960px; margin: 0 auto; }
-.tier-mini { padding: 26px 24px; background: var(--mk-surface-raised); border: 1px solid rgba(255,255,255,.06); border-radius: var(--mk-radius-card); text-align: center; }
+.tier-mini { padding: 26px 24px; background: var(--mk-surface-raised); border: 1px solid rgba(255,255,255,.06); border-radius: var(--mk-radius-card); text-align: center; display: flex; flex-direction: column; }
+.tier-mini .tier-mini-note { flex: 1 1 auto; margin-bottom: 18px; }
+.tier-mini .cta-gold, .tier-mini .cta-outline { width: 100%; margin-top: auto; }
 .tier-mini.featured { border-color: rgba(212,175,55,.5); background: linear-gradient(180deg, rgba(212,175,55,.05), transparent 60%), var(--mk-surface-raised); }
 .tier-mini-name { font-family: var(--mk-font-display); font-size: var(--mk-display-md); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); margin-bottom: 6px; }
 .tier-mini.featured .tier-mini-name { color: var(--mk-brand); }
@@ -3069,20 +3071,24 @@ No software installation required. MAKETZO runs in your browser alongside your e
         <div class="tier-mini-name">Journal</div>
         <div class="tier-mini-price">$29 / month</div>
         <div class="tier-mini-note">Trade journal &middot; session log &middot; P&amp;L &middot; streak &middot; discipline score</div>
+        <button class="cta-outline" data-tier="journal" data-interval="month" onclick="handleCheckout(this.dataset.tier,event)">Start Free Trial</button>
       </div>
       <div class="tier-mini featured reveal">
         <div class="tier-mini-name">Pro</div>
         <div class="tier-mini-price">$49 / month</div>
         <div class="tier-mini-note">Everything in Journal &middot; Maketzo Edge &middot; Maketzo Pulse &middot; COACH SAYS &middot; State Machine &middot; Strike System &middot; Focus Room</div>
+        <button class="cta-gold" data-tier="pro" data-interval="month" onclick="handleCheckout(this.dataset.tier,event)">Start Free Trial &rarr;</button>
       </div>
       <div class="tier-mini reveal">
         <div class="tier-mini-name">Elite</div>
         <div class="tier-mini-price">$79 / month</div>
         <div class="tier-mini-note">Everything in Pro &middot; Concierge onboarding &middot; Founders' circle &middot; Early access</div>
+        <button class="cta-outline" data-tier="elite" data-interval="month" onclick="handleCheckout(this.dataset.tier,event)">Start Free Trial</button>
       </div>
     </div>
     <div class="pricing-cta-row reveal">
       <a href="pricing.html" class="btn-ghost">See full plan comparison &rarr;</a>
+      <p class="pricing-cta-sub">All plans include a 7-day free trial. No charge until day 8.</p>
     </div>
   </div>
 </section>
