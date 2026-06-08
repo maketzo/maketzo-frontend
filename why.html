@@ -344,6 +344,20 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
   .compare-column--them { border-right: 0; border-bottom: 1px solid rgba(255,255,255,.06); }
   .compare-column { padding: 24px 22px; }
 }
+/* delight: when the comparison scrolls in, the MAKETZO column WINS each row in
+   gold, top to bottom — the asymmetry argues itself. CSS-only, fires on .visible. */
+.compare-strip.visible .compare-column--us .compare-row { animation: usRowWin 1.5s cubic-bezier(.16,1,.3,1) both; }
+.compare-strip.visible .compare-column--us .compare-row:nth-child(3) { animation-delay: .20s; }
+.compare-strip.visible .compare-column--us .compare-row:nth-child(4) { animation-delay: .42s; }
+.compare-strip.visible .compare-column--us .compare-row:nth-child(5) { animation-delay: .64s; }
+.compare-strip.visible .compare-column--us .compare-row:nth-child(6) { animation-delay: .86s; }
+.compare-strip.visible .compare-column--us .compare-row:nth-child(7) { animation-delay: 1.08s; }
+@keyframes usRowWin {
+  0%   { background: transparent; }
+  35%  { background: linear-gradient(90deg, rgba(212,175,55,.20), rgba(212,175,55,.03)); }
+  100% { background: transparent; }
+}
+@media (prefers-reduced-motion: reduce) { .compare-strip.visible .compare-column--us .compare-row { animation: none; } }
 
 /* ── AFFIRMATION STACK (3 progressive realizations) ────────────
    Replaces the prose "Outcome" with three numbered editorial lines. */
