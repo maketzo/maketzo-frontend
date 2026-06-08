@@ -1363,6 +1363,17 @@ hr.mk-rule-gold--bold {
 }
 @media (max-width: 900px) { .pricing-grid { grid-template-columns: 1fr; } }
 
+/* Compact tier reminder strip (bottom pricing section — distinct from the
+   detailed cards above). Mirrors the journal.html "pricing reminder" pattern. */
+.tier-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; max-width: 960px; margin: 0 auto; }
+.tier-mini { padding: 26px 24px; background: var(--mk-surface-raised); border: 1px solid rgba(255,255,255,.06); border-radius: var(--mk-radius-card); text-align: center; }
+.tier-mini.featured { border-color: rgba(212,175,55,.5); background: linear-gradient(180deg, rgba(212,175,55,.05), transparent 60%), var(--mk-surface-raised); }
+.tier-mini-name { font-family: var(--mk-font-display); font-size: var(--mk-display-md); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); margin-bottom: 6px; }
+.tier-mini.featured .tier-mini-name { color: var(--mk-brand); }
+.tier-mini-price { font-family: var(--mk-font-mono); font-size: var(--mk-mono-md); color: var(--mk-text-secondary); margin-bottom: 14px; }
+.tier-mini-note { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); color: var(--mk-text-tertiary); letter-spacing: 0.04em; line-height: 1.6; }
+@media (max-width: 760px) { .tier-strip { grid-template-columns: 1fr; } }
+
 /* ── REFERRAL ────────────────────────────────────────────────── */
 .referral-box {
   max-width: 1000px;
@@ -3053,53 +3064,25 @@ No software installation required. MAKETZO runs in your browser alongside your e
     <p class="section-eyebrow reveal">14 &middot; Pricing</p>
     <h2 class="section-title reveal">Pick your level of <em>accountability.</em></h2>
     <p class="section-sub reveal">Journal builds the discipline foundation. Pro adds Maketzo Edge, Pulse, and full behavioral accountability. Elite adds concierge onboarding, the founders' circle, and first access to everything we ship next.</p>
-    <div class="pricing-grid">
-      <div class="price-card reveal">
-        <div class="price-eyebrow">Starter</div><div class="price-name">MAKETZO Journal</div>
-        <div class="price-row"><span class="price-dollar">$</span><span class="price-num">29</span><span class="price-per">/mo</span></div>
-        <div class="price-sub">or $290/yr &mdash; save 17%</div>
-        <div class="price-rule"></div>
-        <ul class="price-list">
-          <li class="bold">Trade journal &amp; daily session log</li>
-          <li class="bold">P&amp;L tracking &amp; &cent;/share metrics</li>
-          <li>Streak preservation</li>
-          <li>Discipline score</li>
-          <li>Rule pills (custom rules)</li>
-        </ul>
-        <button class="cta-outline" data-tier="journal" data-interval="month" onclick="handleCheckout(this.dataset.tier,event)">Start Free Trial</button>
-        <p class="price-note">7 days free &middot; No charge until day 8</p>
+    <div class="tier-strip">
+      <div class="tier-mini reveal">
+        <div class="tier-mini-name">Journal</div>
+        <div class="tier-mini-price">$29 / month</div>
+        <div class="tier-mini-note">Trade journal &middot; session log &middot; P&amp;L &middot; streak &middot; discipline score</div>
       </div>
-      <div class="price-card featured reveal">
-        <div class="popular-badge">Most Popular</div>
-        <div class="price-eyebrow">Pro</div><div class="price-name">MAKETZO Pro</div>
-        <div class="price-row"><span class="price-dollar">$</span><span class="price-num">49</span><span class="price-per">/mo</span></div>
-        <div class="price-sub">or $399/yr &mdash; save 32%</div>
-        <div class="price-rule"></div>
-        <ul class="price-list">
-          <li class="bold">Everything in Journal</li>
-          <li class="bold">Maketzo Edge + Maketzo Pulse</li>
-          <li class="bold">COACH SAYS + State Machine + Strike System</li>
-          <li>Focus Room (5 Zone Tracks + meditation)</li>
-          <li>TradingView invite (within 24 hrs)</li>
-        </ul>
-        <button class="cta-gold" data-tier="pro" data-interval="month" onclick="handleCheckout(this.dataset.tier,event)">Start Free Trial &rarr;</button>
-        <p class="price-note">7 days free &middot; No charge until day 8</p>
+      <div class="tier-mini featured reveal">
+        <div class="tier-mini-name">Pro</div>
+        <div class="tier-mini-price">$49 / month</div>
+        <div class="tier-mini-note">Everything in Journal &middot; Maketzo Edge &middot; Maketzo Pulse &middot; COACH SAYS &middot; State Machine &middot; Strike System &middot; Focus Room</div>
       </div>
-      <div class="price-card reveal">
-        <div class="price-eyebrow">Elite</div><div class="price-name">MAKETZO Elite</div>
-        <div class="price-row"><span class="price-dollar">$</span><span class="price-num">79</span><span class="price-per">/mo</span></div>
-        <div class="price-sub">or $649/yr &mdash; save 32%</div>
-        <div class="price-rule"></div>
-        <ul class="price-list">
-          <li class="bold">Everything in Pro</li>
-          <li class="bold">Concierge onboarding session</li>
-          <li class="bold">Founders' community circle</li>
-          <li>Early access to new features</li>
-          <li>AI Training Engine &mdash; coming soon</li>
-        </ul>
-        <button class="cta-outline" data-tier="elite" data-interval="month" onclick="handleCheckout(this.dataset.tier,event)">Start Free Trial</button>
-        <p class="price-note">7 days free &middot; No charge until day 8</p>
+      <div class="tier-mini reveal">
+        <div class="tier-mini-name">Elite</div>
+        <div class="tier-mini-price">$79 / month</div>
+        <div class="tier-mini-note">Everything in Pro &middot; Concierge onboarding &middot; Founders' circle &middot; Early access</div>
       </div>
+    </div>
+    <div class="pricing-cta-row reveal">
+      <a href="pricing.html" class="btn-ghost">See full plan comparison &rarr;</a>
     </div>
   </div>
 </section>
