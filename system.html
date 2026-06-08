@@ -116,14 +116,18 @@ hr.mk-rule-gold, hr.mk-rule-gold--bold { margin: 0 auto; max-width: 1180px; }
 /* Hero entrance — class-flip + transition, no @keyframes. Mirrors index.html hero pattern. */
 .page-hero .page-hero-eyebrow,
 .page-hero .page-hero-title,
-.page-hero .page-hero-sub { opacity: 0; will-change: opacity, transform; transition: opacity 900ms cubic-bezier(.16,1,.3,1), transform 900ms cubic-bezier(.16,1,.3,1); }
+.page-hero .page-hero-sub,
+.page-hero .page-hero-cta { opacity: 0; will-change: opacity, transform; transition: opacity 900ms cubic-bezier(.16,1,.3,1), transform 900ms cubic-bezier(.16,1,.3,1); }
 .page-hero .page-hero-eyebrow { transform: translateY(20px); transition-duration: 700ms; transition-delay: 100ms; }
 .page-hero .page-hero-title { transform: translateY(48px); transition-duration: 1200ms; transition-delay: 300ms; }
 .page-hero .page-hero-sub { transform: translateY(28px); transition-duration: 900ms; transition-delay: 700ms; }
 .page-hero .page-hero-sub + .page-hero-sub { transition-delay: 950ms; }
+.page-hero .page-hero-cta { transform: translateY(24px); transition-duration: 900ms; transition-delay: 1050ms; display: flex; flex-direction: column; align-items: center; gap: 13px; margin-top: 34px; }
+@media (min-width: 1000px) { .page-hero .page-hero-cta { align-items: flex-start; } }
 body.hero-loaded .page-hero .page-hero-eyebrow,
 body.hero-loaded .page-hero .page-hero-title,
-body.hero-loaded .page-hero .page-hero-sub { opacity: 1; transform: translateY(0); }
+body.hero-loaded .page-hero .page-hero-sub,
+body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0); }
 
 @media (min-width: 1000px) {
   .page-hero { text-align: left; min-height: 680px; padding: 168px 0 112px; }
@@ -195,6 +199,17 @@ body.hero-loaded .page-hero .page-hero-sub { opacity: 1; transform: translateY(0
 .state-card[data-state="warning"] { border-left-color: var(--mk-warning-500); }
 .state-card[data-state="danger"] { border-left-color: var(--mk-danger-500); }
 .state-card[data-state="lockout"] { border-left-color: var(--mk-text-tertiary); background: linear-gradient(180deg, rgba(20,24,33,.6), var(--mk-surface-raised) 50%); }
+/* delight: the disciplined day flows through all seven states on scroll-in (gold pulse, box-shadow only so it never fights the reveal/hover transforms) */
+.state-grid.flow .state-card { animation: stateFlow 1.2s ease both; }
+.state-grid.flow .state-card:nth-child(1) { animation-delay: .40s; }
+.state-grid.flow .state-card:nth-child(2) { animation-delay: .58s; }
+.state-grid.flow .state-card:nth-child(3) { animation-delay: .76s; }
+.state-grid.flow .state-card:nth-child(4) { animation-delay: .94s; }
+.state-grid.flow .state-card:nth-child(5) { animation-delay: 1.12s; }
+.state-grid.flow .state-card:nth-child(6) { animation-delay: 1.30s; }
+.state-grid.flow .state-card:nth-child(7) { animation-delay: 1.48s; }
+@keyframes stateFlow { 0% { box-shadow: none; } 35% { box-shadow: 0 0 0 1.5px var(--mk-brand), 0 10px 34px -10px rgba(212,175,55,.5); } 100% { box-shadow: none; } }
+@media (prefers-reduced-motion: reduce) { .state-grid.flow .state-card { animation: none; } }
 .state-step {
   font-family: var(--mk-font-mono);
   font-size: var(--mk-mono-xs);
@@ -533,8 +548,9 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
       <h1 class="page-hero-title">Set your rules when you're calm. <em>We enforce them when you're not.</em></h1>
       <p class="page-hero-sub">The System is your trading constitution. It watches every click, tracks every lapse, and steps in when discipline starts to crack. Three strikes, COACH SAYS check-ins, guided resets, and automatic lockouts turn your rules from good intentions into enforced reality.</p>
       <p class="page-hero-sub">Most traders don't blow up because they lack a strategy. They blow up because, at exactly the wrong moment, they stop listening to themselves. The System makes that impossible. You write the rules when you're rational. MAKETZO enforces them when you're not.</p>
-      <div class="mk-cta-repeat">
-        <button class="btn-primary" data-cta-source="page-hero" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
+      <div class="page-hero-cta">
+        <button class="btn-primary" data-cta-source="page-hero" style="padding:16px 32px;font-size:var(--mk-text-md);" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
+        <p class="final-cta-note">7 days free &middot; No charge until day 8 &middot; Cancel in one click.</p>
       </div>
     </div>
   </div>
@@ -849,6 +865,11 @@ requestAnimationFrame(()=>document.body.classList.add('hero-loaded'));
 const reveals=document.querySelectorAll('.reveal');
 const obs=new IntersectionObserver((entries)=>{entries.forEach((e,i)=>{if(e.isIntersecting){setTimeout(()=>e.target.classList.add('visible'),i*50);obs.unobserve(e.target);}});},{threshold:0.06});
 reveals.forEach(el=>obs.observe(el));
+// delight: walk the disciplined day through all seven states when the grid scrolls in
+document.querySelectorAll('.state-grid').forEach(function(grid){
+  const gObs=new IntersectionObserver(function(ents){ents.forEach(function(en){if(en.isIntersecting){grid.classList.add('flow');gObs.unobserve(grid);}});},{threshold:0.25});
+  gObs.observe(grid);
+});
 let stickyShown=false,stickyDismissed=false;
 window.addEventListener('scroll',()=>{
   if(!stickyDismissed&&!stickyShown&&window.scrollY/(document.body.scrollHeight-window.innerHeight)>0.45){
