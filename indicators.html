@@ -190,7 +190,7 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
 
 .edge-chart {
   position: relative;
-  aspect-ratio: 2.4/1;
+  aspect-ratio: 2/1;
   background:
     linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px) 0 0/100% 25%,
     linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px) 0 0/calc(100%/14) 100%;
@@ -199,6 +199,7 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
   padding: 16px 14px 14px;
   overflow: hidden;
 }
+.edge-chart-svg { display: block; width: 100%; height: 100%; }
 
 .edge-prime-zone {
   position: absolute;
@@ -275,7 +276,7 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
 
 @media (max-width: 700px) {
   .edge-card { padding: 24px 18px; }
-  .edge-chart { aspect-ratio: 1.7/1; padding: 12px 8px 10px; }
+  .edge-chart { aspect-ratio: 2/1; padding: 12px 8px 10px; }
   .edge-candles { gap: 4px; }
   .edge-candle { max-width: 12px; }
 }
@@ -666,26 +667,46 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
     <div class="edge-card reveal">
       <div class="edge-card-header">
         <span class="edge-card-symbol">SKYQ &middot; 1m</span>
-        <span class="edge-card-time">09:38 ET</span>
+        <span class="edge-card-time">09:38 AM ET</span>
       </div>
       <div class="edge-chart">
-        <div class="edge-prime-zone"><span class="edge-prime-zone-label">PRIME TIME</span></div>
-        <div class="edge-candles">
-          <span class="edge-candle edge-candle--down" style="--h:24%"></span>
-          <span class="edge-candle edge-candle--up"   style="--h:30%"></span>
-          <span class="edge-candle edge-candle--down" style="--h:27%"></span>
-          <span class="edge-candle edge-candle--up"   style="--h:40%"></span>
-          <span class="edge-candle edge-candle--up"   style="--h:52%"></span>
-          <span class="edge-candle edge-candle--up"   style="--h:65%"></span>
-          <span class="edge-candle edge-candle--up"   style="--h:78%"></span>
-          <span class="edge-candle edge-candle--up"   style="--h:88%"></span>
-          <span class="edge-candle edge-candle--up"   style="--h:94%"></span>
-          <span class="edge-candle edge-candle--down" style="--h:88%"></span>
-          <span class="edge-candle edge-candle--down" style="--h:82%"></span>
-          <span class="edge-candle edge-candle--down" style="--h:78%"></span>
-          <span class="edge-candle edge-candle--mute" style="--h:75%"></span>
-          <span class="edge-candle edge-candle--mute" style="--h:73%"></span>
-        </div>
+        <svg viewBox="0 0 400 200" fill="none" xmlns="http://www.w3.org/2000/svg" class="edge-chart-svg" role="img" aria-label="A small-cap momentum run: entry at the start of Prime Time near the lows, exit signal fires at the top.">
+          <defs>
+            <marker id="edgeArrow" markerWidth="9" markerHeight="9" refX="4.5" refY="4.5" orient="auto" markerUnits="userSpaceOnUse">
+              <path d="M0,0 L9,4.5 L0,9 Z" fill="#E6B450"/>
+            </marker>
+          </defs>
+          <rect x="130" y="0" width="180" height="200" fill="rgba(76,175,130,0.07)"/>
+          <line x1="130" y1="0" x2="130" y2="200" stroke="#4CAF82" stroke-width="1" stroke-dasharray="4,3" opacity="0.5"/>
+          <rect x="310" y="0" width="90" height="200" fill="rgba(224,82,82,0.06)"/>
+          <line x1="310" y1="0" x2="310" y2="200" stroke="#E05252" stroke-width="1" stroke-dasharray="4,3" opacity="0.5"/>
+          <line x1="16" y1="164" x2="16" y2="184" stroke="#E05252" stroke-width="1.4"/><rect x="12" y="168" width="8" height="14" fill="#E05252"/>
+          <line x1="34" y1="162" x2="34" y2="180" stroke="#4CAF82" stroke-width="1.4"/><rect x="30" y="166" width="8" height="12" fill="#4CAF82"/>
+          <line x1="52" y1="166" x2="52" y2="183" stroke="#E05252" stroke-width="1.4"/><rect x="48" y="170" width="8" height="10" fill="#E05252"/>
+          <line x1="70" y1="160" x2="70" y2="180" stroke="#4CAF82" stroke-width="1.4"/><rect x="66" y="166" width="8" height="12" fill="#4CAF82"/>
+          <line x1="88" y1="164" x2="88" y2="182" stroke="#E05252" stroke-width="1.4"/><rect x="84" y="168" width="8" height="10" fill="#E05252"/>
+          <line x1="106" y1="156" x2="106" y2="178" stroke="#4CAF82" stroke-width="1.4"/><rect x="102" y="164" width="8" height="12" fill="#4CAF82"/>
+          <line x1="124" y1="152" x2="124" y2="174" stroke="#4CAF82" stroke-width="1.4"/><rect x="120" y="160" width="8" height="12" fill="#4CAF82"/>
+          <rect x="138" y="152" width="8" height="18" fill="#4CAF82"/>
+          <line x1="160" y1="136" x2="160" y2="160" stroke="#4CAF82" stroke-width="1.4"/><rect x="156" y="140" width="8" height="18" fill="#4CAF82"/>
+          <line x1="178" y1="120" x2="178" y2="150" stroke="#4CAF82" stroke-width="1.4"/><rect x="174" y="124" width="8" height="22" fill="#4CAF82"/>
+          <line x1="196" y1="102" x2="196" y2="134" stroke="#4CAF82" stroke-width="1.4"/><rect x="192" y="108" width="8" height="22" fill="#4CAF82"/>
+          <rect x="210" y="88" width="8" height="24" fill="#4CAF82"/>
+          <line x1="232" y1="62" x2="232" y2="98" stroke="#4CAF82" stroke-width="1.4"/><rect x="228" y="68" width="8" height="24" fill="#4CAF82"/>
+          <line x1="250" y1="44" x2="250" y2="76" stroke="#4CAF82" stroke-width="1.4"/><rect x="246" y="48" width="8" height="24" fill="#4CAF82"/>
+          <line x1="268" y1="26" x2="268" y2="58" stroke="#4CAF82" stroke-width="1.4"/><rect x="264" y="30" width="8" height="22" fill="#4CAF82"/>
+          <line x1="286" y1="12" x2="286" y2="44" stroke="#4CAF82" stroke-width="1.4"/><rect x="282" y="18" width="8" height="22" fill="#4CAF82"/>
+          <line x1="304" y1="8" x2="304" y2="46" stroke="#E05252" stroke-width="1.4"/><rect x="300" y="20" width="8" height="20" fill="#E05252"/>
+          <line x1="322" y1="6" x2="322" y2="44" stroke="#E05252" stroke-width="1.4"/><rect x="318" y="18" width="8" height="20" fill="#E05252"/>
+          <line x1="340" y1="10" x2="340" y2="46" stroke="#E05252" stroke-width="1.4"/><rect x="336" y="22" width="8" height="18" fill="#E05252"/>
+          <line x1="358" y1="10" x2="358" y2="48" stroke="#E05252" stroke-width="1.4"/><rect x="354" y="22" width="8" height="20" fill="#E05252"/>
+          <line x1="376" y1="12" x2="376" y2="52" stroke="#E05252" stroke-width="1.4"/><rect x="372" y="26" width="8" height="20" fill="#E05252"/>
+          <line x1="151" y1="146" x2="313" y2="44" stroke="#E6B450" stroke-width="2" marker-end="url(#edgeArrow)" opacity="0.9"/>
+          <circle cx="142" cy="152" r="5" fill="#4CAF82"/><circle cx="142" cy="152" r="9" fill="rgba(76,175,130,0.2)"/>
+          <circle cx="322" cy="38" r="5" fill="#E05252"/><circle cx="322" cy="38" r="9" fill="rgba(224,82,82,0.2)"/>
+          <text x="220" y="190" text-anchor="middle" font-family="'DM Mono', monospace" font-size="9" fill="#4CAF82" letter-spacing="1.5">PRIME TIME</text>
+          <text x="355" y="190" text-anchor="middle" font-family="'DM Mono', monospace" font-size="9" fill="#E05252" letter-spacing="1.5">EXIT</text>
+        </svg>
       </div>
       <div class="edge-card-chips">
         <span class="edge-chip edge-chip--warn">SCALE OUT</span>
