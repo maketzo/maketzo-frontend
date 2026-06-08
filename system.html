@@ -380,7 +380,8 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
   color: var(--mk-lockin-500);
   margin-bottom: 4px;
 }
-.waiting-visual-count { font-family: var(--mk-font-display); font-size: 1.8rem; color: var(--mk-text-primary); }
+.waiting-visual-count { font-family: var(--mk-font-display); font-size: 2.4rem; color: var(--mk-text-primary); font-variant-numeric: tabular-nums; letter-spacing: 0.02em; }
+.waiting-visual-sub { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-text-tertiary); margin-top: 7px; }
 .waiting-copy h3 { font-family: var(--mk-font-display); font-size: clamp(1.6rem, 3vw, 2.2rem); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); font-weight: 400; margin-bottom: 14px; line-height: 1.1; }
 .waiting-copy h3 em { font-style: normal; background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .waiting-copy p { font-size: var(--mk-text-md); color: var(--mk-text-secondary); line-height: var(--mk-lead-body); margin-bottom: 14px; }
@@ -731,7 +732,8 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
       <div class="waiting-visual reveal">
         <div class="waiting-pulse"></div>
         <div class="waiting-visual-label">Reset Protocol · Active</div>
-        <div class="waiting-visual-count">14:23</div>
+        <div class="waiting-visual-count" id="resetCountdown">2:30</div>
+        <div class="waiting-visual-sub">time remaining &middot; breathe until baseline</div>
       </div>
       <div class="waiting-copy reveal">
         <h3>A protocol, a breath, <em>a way back.</em></h3>
@@ -870,6 +872,15 @@ document.querySelectorAll('.state-grid').forEach(function(grid){
   const gObs=new IntersectionObserver(function(ents){ents.forEach(function(en){if(en.isIntersecting){grid.classList.add('flow');gObs.unobserve(grid);}});},{threshold:0.25});
   gObs.observe(grid);
 });
+// Reset Protocol visual: a LIVE countdown so it reads unmistakably as a reset timer (not a clock time). Loops to stay "active".
+(function(){
+  const el=document.getElementById('resetCountdown'); if(!el) return;
+  let secs=150, running=false;
+  const fmt=(s)=>Math.floor(s/60)+':'+String(s%60).padStart(2,'0');
+  function tick(){ if(!running) return; secs = secs>0 ? secs-1 : 150; el.textContent=fmt(secs); setTimeout(tick,1000); }
+  const cdObs=new IntersectionObserver(function(ents){ents.forEach(function(en){if(en.isIntersecting&&!running){running=true;el.textContent=fmt(secs);setTimeout(tick,1000);}});},{threshold:0.4});
+  cdObs.observe(el);
+})();
 let stickyShown=false,stickyDismissed=false;
 window.addEventListener('scroll',()=>{
   if(!stickyDismissed&&!stickyShown&&window.scrollY/(document.body.scrollHeight-window.innerHeight)>0.45){
