@@ -107,14 +107,18 @@ hr.mk-rule-gold, hr.mk-rule-gold--bold { margin: 0 auto; max-width: 1180px; }
 /* Hero entrance — class-flip + transition, no @keyframes. */
 .page-hero .page-hero-eyebrow,
 .page-hero .page-hero-title,
-.page-hero .page-hero-sub { opacity: 0; will-change: opacity, transform; transition: opacity 900ms cubic-bezier(.16,1,.3,1), transform 900ms cubic-bezier(.16,1,.3,1); }
+.page-hero .page-hero-sub,
+.page-hero .page-hero-cta { opacity: 0; will-change: opacity, transform; transition: opacity 900ms cubic-bezier(.16,1,.3,1), transform 900ms cubic-bezier(.16,1,.3,1); }
 .page-hero .page-hero-eyebrow { transform: translateY(20px); transition-duration: 700ms; transition-delay: 100ms; }
 .page-hero .page-hero-title { transform: translateY(48px); transition-duration: 1200ms; transition-delay: 300ms; }
 .page-hero .page-hero-sub { transform: translateY(28px); transition-duration: 900ms; transition-delay: 700ms; }
 .page-hero .page-hero-sub + .page-hero-sub { transition-delay: 950ms; }
+.page-hero .page-hero-cta { transform: translateY(24px); transition-duration: 900ms; transition-delay: 1050ms; display: flex; flex-direction: column; align-items: center; gap: 13px; margin-top: 34px; }
+@media (min-width: 1000px) { .page-hero .page-hero-cta { align-items: flex-start; } }
 body.hero-loaded .page-hero .page-hero-eyebrow,
 body.hero-loaded .page-hero .page-hero-title,
-body.hero-loaded .page-hero .page-hero-sub { opacity: 1; transform: translateY(0); }
+body.hero-loaded .page-hero .page-hero-sub,
+body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0); }
 
 @media (min-width: 1000px) {
   .page-hero { text-align: left; min-height: 680px; padding: 168px 0 112px; }
@@ -253,6 +257,21 @@ body.hero-loaded .page-hero .page-hero-sub { opacity: 1; transform: translateY(0
 }
 .edge-chip--warn { color: var(--mk-warning-500); }
 .edge-chip--exit { color: var(--mk-danger-500); }
+
+/* ── CHART DRAW-IN (delight): candles grow from the baseline on scroll,
+   then the EXIT NOW chip fires once the run completes. JS adds .anim-ready
+   (so no-JS leaves candles fully visible) then .is-live on intersection. */
+.edge-chart.anim-ready .edge-candle,
+.feed-chart.anim-ready .feed-candle { transform: scaleY(0); transform-origin: bottom; opacity: 0; transition: transform .6s cubic-bezier(.16,1,.3,1), opacity .35s ease; }
+.edge-chart.anim-ready.is-live .edge-candle,
+.feed-chart.anim-ready.is-live .feed-candle { transform: scaleY(1); opacity: 1; }
+@keyframes chipFire { 0% { box-shadow: 0 0 0 0 rgba(224,82,82,.55); } 70% { box-shadow: 0 0 0 11px rgba(224,82,82,0); } 100% { box-shadow: 0 0 0 0 rgba(224,82,82,0); } }
+.edge-chip--exit.fire { animation: chipFire 1s ease 2; }
+@media (prefers-reduced-motion: reduce) {
+  .edge-chart.anim-ready .edge-candle,
+  .feed-chart.anim-ready .feed-candle { transform: none; opacity: 1; transition: none; }
+  .edge-chip--exit.fire { animation: none; }
+}
 
 @media (max-width: 700px) {
   .edge-card { padding: 24px 18px; }
@@ -593,8 +612,9 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
       <h1 class="page-hero-title">Two indicators. <em>One read on whether to act.</em></h1>
       <p class="page-hero-sub">Most traders don't need more indicators. They need fewer bad trades. The real challenge is not finding another setup&mdash;it is knowing when momentum is truly on your side, when the odds are stacked against you, and when the smartest trade is no trade at all.</p>
       <p class="page-hero-sub"><strong>Maketzo Edge</strong> surfaces the narrow windows when conditions align. <strong>Maketzo Pulse</strong> confirms whether the move you're in still has energy or is about to give back. Together they answer two questions on one screen: should I be in this trade, and is it still working.</p>
-      <div class="mk-cta-repeat">
-        <button class="btn-primary" data-cta-source="page-hero" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
+      <div class="page-hero-cta">
+        <button class="btn-primary" data-cta-source="page-hero" style="padding:16px 32px;font-size:var(--mk-text-md);" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
+        <p class="final-cta-note">7 days free &middot; No charge until day 8 &middot; Cancel in one click.</p>
       </div>
     </div>
   </div>
@@ -943,6 +963,21 @@ requestAnimationFrame(()=>document.body.classList.add('hero-loaded'));
 const reveals=document.querySelectorAll('.reveal');
 const obs=new IntersectionObserver((entries)=>{entries.forEach((e,i)=>{if(e.isIntersecting){setTimeout(()=>e.target.classList.add('visible'),i*50);obs.unobserve(e.target);}});},{threshold:0.06});
 reveals.forEach(el=>obs.observe(el));
+// Chart draw-in: candles grow from the baseline on scroll, EXIT NOW fires when the run lands.
+document.querySelectorAll('.edge-chart, .feed-chart').forEach(function(chart){
+  chart.classList.add('anim-ready');
+  const cs=chart.querySelectorAll('.edge-candle, .feed-candle');
+  const cObs=new IntersectionObserver(function(ents){ents.forEach(function(en){
+    if(!en.isIntersecting) return;
+    cs.forEach(function(c,i){c.style.transitionDelay=(i*45)+'ms';});
+    chart.classList.add('is-live');
+    const card=chart.closest('.edge-card');
+    const exit=card&&card.querySelector('.edge-chip--exit');
+    if(exit) setTimeout(function(){exit.classList.add('fire');}, cs.length*45+520);
+    cObs.unobserve(chart);
+  });},{threshold:0.3});
+  cObs.observe(chart);
+});
 let stickyShown=false,stickyDismissed=false;
 window.addEventListener('scroll',()=>{
   if(!stickyDismissed&&!stickyShown&&window.scrollY/(document.body.scrollHeight-window.innerHeight)>0.45){
