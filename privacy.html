@@ -177,7 +177,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
   <div class="legal-hero-inner">
     <p class="legal-hero-eyebrow">PRIVACY POLICY</p>
     <h1 class="legal-hero-title">Your Data. Your Trades. <em style="font-style:normal;background:var(--mk-gold-gradient);-webkit-background-clip:text;background-clip:text;color:transparent;">Your Control.</em></h1>
-    <p class="legal-hero-sub">Last updated: 14 May 2026 · Effective: 14 May 2026 · Operated by Abinic, LLC</p>
+    <p class="legal-hero-sub">Last updated: 7 June 2026 · Effective: 7 June 2026 · Operated by Abinic, LLC</p>
   </div>
 </header>
 
@@ -240,7 +240,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
       <h2>4. Where data lives</h2>
       <p>The MAKETZO stack runs on the following infrastructure:</p>
       <ul>
-        <li><strong>Authentication tokens.</strong> JWT tokens stored in your browser's <code style="font-family:var(--mk-font-mono);">localStorage</code>. We don't use third-party session cookies for authentication.</li>
+        <li><strong>Authentication tokens.</strong> A signed session token (JWT) held in a secure, httpOnly first-party cookie (<code style="font-family:var(--mk-font-mono);">mkt_sess</code>), paired with a CSRF-protection cookie (<code style="font-family:var(--mk-font-mono);">mkt_csrf</code>). These are first-party cookies set by MAKETZO &mdash; never third-party tracking cookies.</li>
         <li><strong>Primary data store.</strong> MySQL database hosted on Hostinger infrastructure.</li>
         <li><strong>Billing.</strong> Stripe holds your card details and processes payments. We hold only your Stripe customer ID and current subscription status.</li>
         <li><strong>Email delivery.</strong> Resend handles transactional and newsletter emails on our behalf.</li>
@@ -265,7 +265,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
       <h2>6. Cookies &amp; tracking</h2>
       <p>MAKETZO uses the minimum tracking required to run the service:</p>
       <ul>
-        <li><strong>Authentication.</strong> JWT in <code style="font-family:var(--mk-font-mono);">localStorage</code> (not a cookie). Required to keep you logged in.</li>
+        <li><strong>Authentication.</strong> First-party, essential cookies: a secure httpOnly session cookie (<code style="font-family:var(--mk-font-mono);">mkt_sess</code>) plus a CSRF-protection cookie (<code style="font-family:var(--mk-font-mono);">mkt_csrf</code>). Required to keep you logged in securely &mdash; not used for tracking or advertising.</li>
         <li><strong>Stripe billing portal.</strong> Stripe sets its own cookies when you visit the billing portal. Governed by <a href="https://stripe.com/privacy" target="_blank" rel="noopener">Stripe's privacy policy</a>.</li>
         <li><strong>No third-party ad pixels.</strong> No Facebook Pixel. No Google Ads conversion tracking. No retargeting. No data brokers.</li>
       </ul>
