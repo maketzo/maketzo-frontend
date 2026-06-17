@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<!-- trading-os — The MAKETZO Trading Operating System: the one-page trading SOP, free to read + share -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Trading Operating System — MAKETZO</title>
+<meta name="description" content="The whole trading process on one page: when to trade, when to size down, and when to walk away. Stay safe first, capture opportunity second, never let one decision ruin the day. Free to read, save, and share.">
+<meta name="theme-color" content="#06070A">
+<meta property="og:title" content="The Trading Operating System &mdash; MAKETZO">
+<meta property="og:description" content="The whole trading process on one page. Stay safe first. Capture opportunity second. Never let one decision ruin the day. Free to read and share.">
+<meta property="og:url" content="https://maketzo.co/trading-os">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://maketzo.co/assets/trading-os-og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The Trading Operating System &mdash; MAKETZO">
+<meta name="twitter:description" content="The whole trading process on one page. Stay safe first. Capture opportunity second. Never let one decision ruin the day. Free.">
+<meta name="twitter:image" content="https://maketzo.co/assets/trading-os-og.jpg">
+<link rel="canonical" href="https://maketzo.co/trading-os">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<script src="assets/js/mkt-analytics.js?v=5" defer></script>
+<script src="assets/js/mkt-consent.js?v=1" defer></script>
+<script src="assets/js/checkout.js?v=10" defer></script>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; overflow-y: scroll; }
+body { background: var(--mk-surface-page); color: var(--mk-text-primary); font-family: var(--mk-font-sans); font-size: var(--mk-text-md); line-height: var(--mk-lead-body); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+a { color: inherit; text-decoration: none; }
+ul, ol { list-style: none; }
+img { display: block; max-width: 100%; }
+em, i { font-style: italic; }
+strong { color: var(--mk-text-primary); font-weight: 600; }
+
+/* ── Mobile drawer + overlay ─────────────────────────────────────── */
+.mobile-overlay { position: fixed; inset: 0; z-index: 90; background: rgba(0,0,0,.6); backdrop-filter: blur(6px); opacity: 0; pointer-events: none; transition: opacity var(--mk-dur-med); }
+.mobile-overlay.open { opacity: 1; pointer-events: auto; }
+.mobile-drawer { position: fixed; top: 0; right: 0; bottom: 0; z-index: 100; width: min(320px, 88%); background: var(--mk-surface-base); border-left: var(--mk-border-soft); padding: 80px 28px 28px; transform: translateX(100%); transition: transform var(--mk-dur-med) var(--mk-ease-out); display: flex; flex-direction: column; gap: 20px; }
+.mobile-drawer.open { transform: translateX(0); }
+.mobile-drawer-links li { padding: 12px 0; border-bottom: var(--mk-border-hairline); }
+.mobile-drawer-links a { font-family: var(--mk-font-display); font-size: var(--mk-display-md); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); }
+.mobile-drawer-cta { display: inline-flex; align-items: center; justify-content: center; background: var(--mk-gold-gradient); color: var(--mk-text-on-gold); font-family: var(--mk-font-sans); font-weight: 600; font-size: var(--mk-text-sm); letter-spacing: var(--mk-track-cap); text-transform: uppercase; padding: 14px 22px; border: 1px solid rgba(0,0,0,.18); border-radius: var(--mk-radius-button); cursor: pointer; margin-top: auto; }
+
+/* ── Nav ─────────────────────────────────────────────────────────── */
+#mainNav { position: fixed; top: 0; left: 0; right: 0; z-index: 50; background: rgba(6,7,10,.6); backdrop-filter: blur(20px) saturate(140%); border-bottom: 1px solid rgba(212,175,55,.12); transition: border-color var(--mk-dur-snap); display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 14px 32px 14px 64px; }
+.nav-logo.mk-brand-lockup { --mk-brand-lockup-mark-h: 44px; --mk-brand-lockup-wordmark-h: 22px; --mk-brand-lockup-gap: 10px; }
+.nav-links { display: flex; align-items: center; gap: 28px; margin: 0; padding: 0; }
+.nav-links > li > a:not(.nav-login-btn) { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); font-weight: 500; letter-spacing: 0.02em; transition: color var(--mk-dur-fast); }
+.nav-links > li > a:not(.nav-login-btn):hover { color: var(--mk-text-primary); }
+.nav-auth-in{display:none;}
+html.mkt-auth .nav-auth-out{display:none;}
+html.mkt-auth .nav-auth-in{display:inline;}
+html.mkt-auth .nav-links li:has(.nav-cta){display:none;}
+html.mkt-auth .mobile-drawer-cta{display:none;}
+html.mkt-auth .nav-login-btn{background:var(--mk-gold-gradient);color:var(--mk-text-on-gold);border-color:rgba(0,0,0,.18);}
+html.mkt-auth .nav-login-btn:hover{color:var(--mk-text-on-gold);background:var(--mk-gold-gradient);border-color:rgba(0,0,0,.18);transform:translateY(-1px);box-shadow:var(--mk-glow-gold-sm);}
+.nav-login-btn { display: inline-flex; align-items: center; font-size: var(--mk-text-sm); font-weight: 600; letter-spacing: var(--mk-track-cap); text-transform: uppercase; padding: 7px 14px; color: var(--mk-text-secondary); border: 1px solid var(--mk-smoke-700); border-radius: var(--mk-radius-button); transition: color var(--mk-dur-fast), border-color var(--mk-dur-fast), background var(--mk-dur-fast); }
+.nav-login-btn:hover { color: var(--mk-text-primary); border-color: var(--mk-smoke-600); background: rgba(255,255,255,.03); }
+.nav-cta { display: inline-flex; align-items: center; justify-content: center; font-family: var(--mk-font-sans); font-size: var(--mk-text-sm); font-weight: 600; letter-spacing: var(--mk-track-cap); text-transform: uppercase; padding: 7px 14px; border: 1px solid rgba(0,0,0,.18); border-radius: var(--mk-radius-button); cursor: pointer; background: var(--mk-gold-gradient); color: var(--mk-text-on-gold); transition: transform var(--mk-dur-snap), box-shadow var(--mk-dur-snap); white-space: nowrap; }
+.nav-cta:hover { transform: translateY(-1px); box-shadow: var(--mk-glow-gold-sm); }
+.hamburger { display: none; background: transparent; border: 0; padding: 8px; cursor: pointer; flex-direction: column; gap: 5px; }
+.hamburger span { display: block; width: 24px; height: 2px; background: var(--mk-text-primary); transition: transform var(--mk-dur-snap), opacity var(--mk-dur-snap); }
+.hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+@media (max-width: 900px) { #mainNav { padding: 12px 20px; gap: 16px; } .nav-links { display: none; } .hamburger { display: flex; } }
+
+.btn-primary, .btn-secondary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-family: var(--mk-font-sans); font-size: var(--mk-text-sm); font-weight: 600; letter-spacing: var(--mk-track-cap); text-transform: uppercase; padding: 14px 26px; border-radius: var(--mk-radius-button); border: 1px solid transparent; cursor: pointer; text-decoration: none; white-space: nowrap; transition: transform var(--mk-dur-snap), box-shadow var(--mk-dur-snap), background var(--mk-dur-snap), border-color var(--mk-dur-snap), color var(--mk-dur-snap); }
+.btn-primary { background: var(--mk-gold-gradient); color: var(--mk-text-on-gold); border-color: rgba(0,0,0,.18); }
+.btn-primary:hover { transform: translateY(-1px); box-shadow: var(--mk-glow-gold-md); color: var(--mk-text-on-gold); }
+.btn-secondary { background: transparent; color: var(--mk-text-primary); border: var(--mk-border-gold); }
+.btn-secondary:hover { color: var(--mk-brand); border-color: var(--mk-brand); background: rgba(212,175,55,.06); }
+
+/* ── Footer ──────────────────────────────────────────────────────── */
+footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairline); padding: 56px 0 28px; }
+.footer-inner { max-width: var(--mk-container-marketing); margin: 0 auto; padding: 0 32px; }
+.footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 32px; padding-bottom: 32px; border-bottom: var(--mk-border-hairline); }
+.footer-logo-wrap { display: flex; flex-direction: column; align-items: flex-start; gap: 18px; margin-bottom: 12px; }
+.footer-logo-wrap .mk-brand-lockup { --mk-brand-lockup-mark-h: 40px; --mk-brand-lockup-wordmark-h: 20px; }
+.footer-tagline { font-size: var(--mk-text-sm); color: var(--mk-text-tertiary); line-height: var(--mk-lead-body); max-width: 360px; }
+.footer-tagline strong { display: block; color: var(--mk-text-primary); margin-bottom: 4px; }
+.footer-col-title { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); margin-bottom: 16px; }
+.footer-links { display: flex; flex-direction: column; gap: 10px; padding: 0; }
+.footer-links a { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); transition: color var(--mk-dur-fast); }
+.footer-links a:hover { color: var(--mk-text-primary); }
+.footer-bottom { display: flex; flex-direction: column; gap: 10px; }
+.footer-copy { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: 0.04em; color: var(--mk-text-tertiary); }
+.footer-disclaimer { font-size: var(--mk-text-xs); color: var(--mk-text-tertiary); line-height: var(--mk-lead-body); }
+@media (max-width: 760px) { .footer-grid { grid-template-columns: 1fr; gap: 28px; } }
+
+.reveal { opacity: 0; transform: translateY(16px); transition: opacity var(--mk-dur-slow) var(--mk-ease-out), transform var(--mk-dur-slow) var(--mk-ease-out); }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ── Trading OS page ─────────────────────────────────────────────── */
+.tos-hero { padding: 128px 24px 12px; text-align: center; max-width: 880px; margin: 0 auto; }
+.tos-eyebrow { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); margin-bottom: 18px; }
+.tos-h1 { font-family: var(--mk-font-display); font-size: clamp(2.4rem, 5vw, 3.8rem); letter-spacing: var(--mk-track-display); text-transform: uppercase; line-height: 1.05; margin-bottom: 20px; }
+.tos-h1 em { font-style: normal; background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.tos-sub { font-size: 1.15rem; color: var(--mk-text-secondary); line-height: 1.55; max-width: 620px; margin: 0 auto; }
+
+.tos-graphic-wrap { padding: 36px 24px 8px; text-align: center; }
+.tos-graphic-btn { display: inline-block; padding: 0; border: none; background: none; cursor: zoom-in; line-height: 0; position: relative; max-width: 540px; width: 100%; }
+.tos-graphic-img { width: 100%; height: auto; border-radius: 16px; border: 1px solid rgba(212,175,55,.28); box-shadow: 0 24px 70px rgba(0,0,0,.5); }
+.tos-zoom-hint { position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%); font-family: var(--mk-font-sans); font-size: .8rem; font-weight: 600; letter-spacing: .03em; color: var(--mk-text-on-gold); background: var(--mk-gold-gradient); border-radius: 99px; padding: 7px 16px; box-shadow: 0 4px 16px rgba(0,0,0,.4); }
+.tos-actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 22px; }
+
+/* share row (uses the shared .mk-share component visuals) */
+.tos-share { display: inline-flex; }
+.tos-share .mk-share__trigger { width: auto; }
+
+.tos-section { max-width: 860px; margin: 0 auto; padding: 24px 24px; }
+.tos-sec-eyebrow { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); text-align: center; margin-bottom: 20px; }
+.tos-phases { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.tos-phase { background: var(--mk-surface-base); border: 1px solid var(--mk-smoke-800, rgba(255,255,255,.1)); border-left-width: 4px; border-radius: 12px; padding: 18px 18px; }
+.tos-phase-p1 { border-left-color: #5b8def; } .tos-phase-p2 { border-left-color: #57c98a; } .tos-phase-p3 { border-left-color: #e5c572; } .tos-phase-p4 { border-left-color: #37c1c9; } .tos-phase-p5 { border-left-color: #ff6b6b; }
+.tos-phase-n { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: .1em; text-transform: uppercase; color: var(--mk-text-tertiary); margin-bottom: 6px; }
+.tos-phase-t { font-family: var(--mk-font-display); font-size: 1.3rem; letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); margin-bottom: 8px; }
+.tos-phase-b { font-size: .98rem; color: var(--mk-text-secondary); line-height: 1.55; }
+@media (max-width: 640px) { .tos-phases { grid-template-columns: 1fr; } }
+
+.tos-check { background: var(--mk-surface-base); border: 1px solid rgba(212,175,55,.28); border-radius: 16px; padding: 22px; }
+.tos-check-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.tos-check-item { text-align: center; }
+.tos-check-k { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: .08em; text-transform: uppercase; color: var(--mk-brand); margin-bottom: 4px; }
+.tos-check-q { font-size: .92rem; color: var(--mk-text-secondary); }
+.tos-gate { text-align: center; margin-top: 18px; font-family: var(--mk-font-display); font-size: 1.25rem; letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); }
+.tos-gate em { font-style: normal; color: #ff6b6b; }
+@media (max-width: 640px) { .tos-check-grid { grid-template-columns: 1fr 1fr; } }
+
+.tos-manifesto { max-width: 760px; margin: 28px auto; text-align: center; padding: 0 24px; }
+.tos-manifesto p { font-family: var(--mk-font-display); font-size: clamp(1.4rem, 3vw, 2rem); letter-spacing: var(--mk-track-display); text-transform: uppercase; line-height: 1.25; color: var(--mk-text-primary); }
+.tos-manifesto p em { font-style: normal; background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.tos-manifesto cite { display: block; margin-top: 14px; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); font-style: normal; }
+
+.tos-cta { text-align: center; padding: 40px 24px 96px; }
+.tos-cta h2 { font-family: var(--mk-font-display); font-size: clamp(1.7rem, 3.4vw, 2.4rem); letter-spacing: var(--mk-track-display); text-transform: uppercase; margin-bottom: 14px; }
+.tos-cta p { font-size: 1.05rem; color: var(--mk-text-secondary); line-height: 1.55; max-width: 520px; margin: 0 auto 26px; }
+.tos-cta-hint { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-text-tertiary); margin-top: 14px; }
+
+/* ── Full-screen viewer (large + scrollable; the graphic is text-dense) ── */
+.tos-viewer { position: fixed; inset: 0; z-index: 200; background: rgba(6,8,11,.985); display: flex; flex-direction: column; }
+.tos-viewer[hidden] { display: none; }
+.tos-vbar { flex: 0 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 18px; border-bottom: 1px solid rgba(255,255,255,.1); background: rgba(13,15,20,.7); }
+.tos-vtitle { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); }
+.tos-vactions { display: flex; gap: 8px; }
+.tos-vbtn { display: inline-flex; align-items: center; font-family: var(--mk-font-sans); font-size: .8rem; font-weight: 600; letter-spacing: var(--mk-track-cap); text-transform: uppercase; padding: 9px 14px; border-radius: var(--mk-radius-button); border: 1px solid var(--mk-smoke-700); background: rgba(255,255,255,.05); color: var(--mk-text-primary); cursor: pointer; text-decoration: none; }
+.tos-vbtn:hover { border-color: var(--mk-brand); }
+.tos-vbtn--primary { background: var(--mk-gold-gradient); color: var(--mk-text-on-gold); border-color: rgba(0,0,0,.18); }
+.tos-vscroll { flex: 1; overflow: auto; -webkit-overflow-scrolling: touch; padding: 20px 12px 60px; text-align: center; }
+.tos-vimg { display: block; margin: 0 auto; width: min(1024px, 96vw); height: auto; border-radius: 8px; cursor: zoom-in; box-shadow: 0 12px 50px rgba(0,0,0,.6); }
+.tos-vimg.zoomed { width: 1500px; max-width: none; cursor: zoom-out; }
+@media (max-width: 520px) { .tos-vimg.zoomed { width: 1100px; } }
+</style>
+<script>try{if(document.cookie.indexOf('mkt_csrf=')>-1)document.documentElement.classList.add('mkt-auth');}catch(e){}</script>
+</head>
+<body>
+
+<div class="mobile-overlay" id="mobileOverlay" onclick="closeDrawer()"></div>
+<div class="mobile-drawer" id="mobileDrawer">
+  <ul class="mobile-drawer-links">
+    <li><a href="system.html" onclick="closeDrawer()">The System</a></li>
+    <li><a href="journal.html" onclick="closeDrawer()">Journal</a></li>
+    <li><a href="indicators.html" onclick="closeDrawer()">Indicators</a></li>
+    <li><a href="focus.html" onclick="closeDrawer()">Focus Room</a></li>
+    <li><a href="/blog" onclick="closeDrawer()">Blog</a></li>
+    <li><a href="pricing.html" onclick="closeDrawer()">Pricing</a></li>
+    <li><a href="/app" onclick="closeDrawer()"><span class="nav-auth-out">Log In</span><span class="nav-auth-in">LAUNCH</span></a></li>
+  </ul>
+  <button class="mobile-drawer-cta" onclick="handleCheckout('pro',{preventDefault:()=>{},currentTarget:null});closeDrawer()">Start Free Trial &rarr;</button>
+</div>
+
+<nav id="mainNav">
+  <a href="index.html" class="nav-logo mk-brand-lockup">
+    <img class="mk-brand-lockup__mark" src="assets/logo-mark.png" alt="">
+    <img class="mk-brand-lockup__wordmark" src="assets/logo-wordmark.png" alt="MAKETZO">
+  </a>
+  <ul class="nav-links">
+    <li><a href="system.html">The System</a></li>
+    <li><a href="journal.html">Journal</a></li>
+    <li><a href="indicators.html">Indicators</a></li>
+    <li><a href="focus.html">Focus Room</a></li>
+    <li><a href="/blog">Blog</a></li>
+    <li><a href="pricing.html">Pricing</a></li>
+    <li><a href="/app" class="nav-login-btn"><span class="nav-auth-out">Log In</span><span class="nav-auth-in">LAUNCH</span></a></li>
+    <li><button class="nav-cta" onclick="handleCheckout('pro',event)">Start Free Trial</button></li>
+  </ul>
+  <button class="hamburger" id="hamburger" onclick="toggleDrawer()" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+
+<!-- ─── HERO ─────────────────────────────────────────────────────── -->
+<section class="tos-hero">
+  <p class="tos-eyebrow reveal">The MAKETZO Trading Operating System</p>
+  <h1 class="tos-h1 reveal">Your whole trading system, <em>on one page</em>.</h1>
+  <p class="tos-sub reveal">Stay safe first. Capture opportunity second. Never let one decision ruin the day. The full MAKETZO process, free to read, save, and send to a trading friend.</p>
+</section>
+
+<!-- ─── THE GRAPHIC ──────────────────────────────────────────────── -->
+<section class="tos-graphic-wrap" id="tos-graphic">
+  <button type="button" class="tos-graphic-btn reveal" data-tos-zoom aria-label="View the Trading Operating System full size">
+    <img class="tos-graphic-img" src="assets/trading-os.jpg" alt="The MAKETZO Trading Operating System, the full one-page trading system">
+    <span class="tos-zoom-hint">Tap to view full size</span>
+  </button>
+  <div class="tos-actions reveal">
+    <button type="button" class="btn-primary" data-tos-zoom>View full size</button>
+    <a class="btn-secondary" href="assets/trading-os.jpg" download="MAKETZO-Trading-Operating-System.jpg">Download</a>
+    <div class="mk-share tos-share">
+      <button class="mk-share__trigger" type="button" data-tos-share-trigger aria-haspopup="true" aria-expanded="false">
+        <svg class="mk-share__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/></svg>
+        <span>Send to a trader</span>
+      </button>
+      <div class="mk-share__menu" role="menu" hidden>
+        <button class="mk-share__item" type="button" data-platform="email" role="menuitem"><svg class="mk-share__item-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg><span>Email</span></button>
+        <button class="mk-share__item" type="button" data-platform="sms" role="menuitem"><svg class="mk-share__item-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 11H7V9h2v2zm4 0h-2V9h2v2zm4 0h-2V9h2v2z"/></svg><span>Text</span></button>
+        <button class="mk-share__item" type="button" data-platform="twitter" role="menuitem"><svg class="mk-share__item-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg><span>X</span></button>
+        <button class="mk-share__item" type="button" data-platform="whatsapp" role="menuitem"><svg class="mk-share__item-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg><span>WhatsApp</span></button>
+        <button class="mk-share__item" type="button" data-platform="telegram" role="menuitem"><svg class="mk-share__item-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.139-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg><span>Telegram</span></button>
+        <button class="mk-share__item" type="button" data-platform="facebook" role="menuitem"><svg class="mk-share__item-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg><span>Facebook</span></button>
+        <button class="mk-share__item mk-share__item--wide" type="button" data-platform="copy" role="menuitem"><svg class="mk-share__item-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg><span>Copy link</span></button>
+      </div>
+    </div>
+  </div>
+  <div class="mk-share-toast" role="status" aria-live="polite" hidden>Link copied</div>
+</section>
+
+<hr class="mk-rule-gold">
+
+<!-- ─── THE FIVE PHASES ──────────────────────────────────────────── -->
+<section class="tos-section" id="tos-phases">
+  <p class="tos-sec-eyebrow reveal">The Five Phases</p>
+  <div class="tos-phases">
+    <div class="tos-phase tos-phase-p1 reveal"><div class="tos-phase-n">Phase 1</div><div class="tos-phase-t">Market Temperature</div><div class="tos-phase-b">Read the market before you trade. Hot, slow, or dead decides whether you take A and B setups, A setups only, or nothing at all.</div></div>
+    <div class="tos-phase tos-phase-p2 reveal"><div class="tos-phase-n">Phase 2</div><div class="tos-phase-t">Stock Quality Filter</div><div class="tos-phase-b">Is this stock worthy? Real catalyst, low float, high relative volume, healthy trend, still in focus. If it has run too far too fast, you are chasing.</div></div>
+    <div class="tos-phase tos-phase-p3 reveal"><div class="tos-phase-n">Phase 3</div><div class="tos-phase-t">Trade Qualification</div><div class="tos-phase-b">The LCARS check: Liquidity, Context, Alignment, Recognition, Structure. If it takes three minutes to explain, it is probably not A+.</div></div>
+    <div class="tos-phase tos-phase-p4 reveal"><div class="tos-phase-n">Phase 4</div><div class="tos-phase-t">Active Trade Management</div><div class="tos-phase-b">Green and grateful. Take small losses fast. Never give back the day. Would you take this trade if you were flat? If no, exit.</div></div>
+    <div class="tos-phase tos-phase-p5 reveal"><div class="tos-phase-n">Phase 5</div><div class="tos-phase-t">State Management</div><div class="tos-phase-b">Know when to step away. No setup, no edge, walk. Tilted, spiraling, or your gear is broken, walk. The best skill is leaving.</div></div>
+  </div>
+</section>
+
+<!-- ─── 15-SECOND CHECKLIST ──────────────────────────────────────── -->
+<section class="tos-section" id="tos-checklist">
+  <p class="tos-sec-eyebrow reveal">The 15-Second Master Checklist</p>
+  <div class="tos-check reveal">
+    <div class="tos-check-grid">
+      <div class="tos-check-item"><div class="tos-check-k">Temperature</div><div class="tos-check-q">Hot or slow?</div></div>
+      <div class="tos-check-item"><div class="tos-check-k">Focus</div><div class="tos-check-q">Is this the stock?</div></div>
+      <div class="tos-check-item"><div class="tos-check-k">Trend</div><div class="tos-check-q">Am I with the trend?</div></div>
+      <div class="tos-check-item"><div class="tos-check-k">Volume</div><div class="tos-check-q">Is there participation?</div></div>
+      <div class="tos-check-item"><div class="tos-check-k">Obvious</div><div class="tos-check-q">Would others see it?</div></div>
+      <div class="tos-check-item"><div class="tos-check-k">Extended</div><div class="tos-check-q">Am I chasing?</div></div>
+      <div class="tos-check-item"><div class="tos-check-k">Plan</div><div class="tos-check-q">Do I know my stop?</div></div>
+      <div class="tos-check-item"><div class="tos-check-k">State</div><div class="tos-check-q">Am I calm?</div></div>
+    </div>
+    <p class="tos-gate">If any answer is <em>no</em>, don't trade.</p>
+  </div>
+</section>
+
+<hr class="mk-rule-gold">
+
+<!-- ─── MANIFESTO ────────────────────────────────────────────────── -->
+<blockquote class="tos-manifesto reveal">
+  <p>Professional traders aren't trying to make money. They're trying to <em>avoid unnecessary mistakes</em>. Money is the byproduct.</p>
+  <cite>MAKETZO</cite>
+</blockquote>
+
+<hr class="mk-rule-gold">
+
+<!-- ─── CTA ──────────────────────────────────────────────────────── -->
+<section class="tos-cta" id="tos-cta">
+  <h2 class="reveal">Run the system, not your impulses.</h2>
+  <p class="reveal">The graphic is the map. MAKETZO is the desk that holds you to it: a journal that scores your discipline, a Focus Room that catches the trade you would regret, and indicators that keep you honest.</p>
+  <button class="btn-primary reveal" data-cta-source="trading-os" data-cta-target="trial" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
+  <p class="tos-cta-hint reveal">7 days free. No charge until day 8.</p>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-col-brand">
+        <div class="footer-logo-wrap">
+          <a href="index.html" class="mk-brand-lockup mk-brand-lockup--stacked">
+            <img class="mk-brand-lockup__mark" src="assets/logo-mark.png" alt="">
+            <img class="mk-brand-lockup__wordmark" src="assets/logo-wordmark.png" alt="MAKETZO">
+          </a>
+        </div>
+        <p class="footer-tagline"><strong>Stop the trade you'd regret.</strong>Discipline in every session. Edge in every trade. Accountability when it counts.</p>
+      </div>
+      <div><div class="footer-col-title">Product</div><ul class="footer-links"><li><a href="system.html">The System</a></li><li><a href="journal.html">Journal</a></li><li><a href="indicators.html">Indicators</a></li><li><a href="focus.html">Focus Room</a></li><li><a href="pricing.html">Pricing</a></li></ul></div>
+      <div><div class="footer-col-title">Explore</div><ul class="footer-links"><li><a href="why.html">Why MAKETZO</a></li><li><a href="soundtrack.html">Soundtrack</a></li><li><a href="contact.html">Contact Us</a></li></ul></div>
+      <div><div class="footer-col-title">Legal</div><ul class="footer-links"><li><a href="privacy.html">Privacy Policy</a></li><li><a href="terms.html">Terms of Service</a></li><li><a href="disclaimer.html">Risk Disclaimer</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">&copy; 2026 Abinic, LLC. All rights reserved. MAKETZO&reg; is a product of Abinic, LLC. maketzo.co</p>
+      <p class="footer-disclaimer">Trading securities, options, futures, forex, and cryptocurrencies involves substantial risk of loss and is not suitable for all investors. You may lose some or all of your capital. MAKETZO is a journaling, behavioral accountability, educational, and decision-support platform designed to help traders track performance, reinforce rules, and improve discipline. Neither Abinic, LLC nor MAKETZO provides investment advice, personalized financial advice, tax advice, legal advice, trade recommendations, or solicitations to buy or sell any security or financial instrument.</p>
+    </div>
+  </div>
+</footer>
+
+<!-- ─── FULL-SIZE VIEWER ─────────────────────────────────────────── -->
+<div class="tos-viewer" id="tosViewer" hidden>
+  <div class="tos-vbar">
+    <span class="tos-vtitle">Trading Operating System</span>
+    <div class="tos-vactions">
+      <button type="button" class="tos-vbtn" id="tosViewerZoom">Zoom in</button>
+      <a class="tos-vbtn" href="assets/trading-os.jpg" download="MAKETZO-Trading-Operating-System.jpg">Download</a>
+      <button type="button" class="tos-vbtn tos-vbtn--primary" id="tosViewerClose">Close</button>
+    </div>
+  </div>
+  <div class="tos-vscroll" id="tosViewerScroll">
+    <img class="tos-vimg" id="tosViewerImg" src="assets/trading-os.jpg" alt="The MAKETZO Trading Operating System, full size">
+  </div>
+</div>
+
+<script>
+const API='https://api.maketzo.co';
+function toggleDrawer(){const d=document.getElementById('mobileDrawer');const o=document.getElementById('mobileOverlay');const h=document.getElementById('hamburger');d.classList.toggle('open');o.classList.toggle('open');h.classList.toggle('open');document.body.style.overflow=d.classList.contains('open')?'hidden':'';}
+function closeDrawer(){document.getElementById('mobileDrawer').classList.remove('open');document.getElementById('mobileOverlay').classList.remove('open');document.getElementById('hamburger').classList.remove('open');document.body.style.overflow='';}
+const reveals=document.querySelectorAll('.reveal');
+const obs=new IntersectionObserver((entries)=>{entries.forEach((e,i)=>{if(e.isIntersecting){setTimeout(()=>e.target.classList.add('visible'),i*40);obs.unobserve(e.target);}});},{threshold:0.06});
+reveals.forEach(el=>obs.observe(el));
+window.addEventListener('scroll',()=>{document.getElementById('mainNav').style.borderBottomColor=window.scrollY>60?'rgba(201,168,76,0.25)':'rgba(201,168,76,0.12)';});
+
+/* ── Full-size viewer ── */
+(function(){
+  var v=document.getElementById('tosViewer'),img=document.getElementById('tosViewerImg'),
+      zoom=document.getElementById('tosViewerZoom'),scroll=document.getElementById('tosViewerScroll');
+  function track(ev,props){try{if(window.MKT&&window.MKT.trackEvent)window.MKT.trackEvent(ev,props||{});}catch(e){}}
+  function toggleZoom(){var z=img.classList.toggle('zoomed');zoom.textContent=z?'Fit width':'Zoom in';}
+  function open(){img.classList.remove('zoomed');zoom.textContent='Zoom in';if(scroll)scroll.scrollTop=0;v.hidden=false;document.body.style.overflow='hidden';document.addEventListener('keydown',onKey);track('trading_os_view_full');}
+  function close(){v.hidden=true;document.body.style.overflow='';document.removeEventListener('keydown',onKey);}
+  function onKey(e){if(e.key==='Escape')close();}
+  img.addEventListener('click',toggleZoom);
+  zoom.addEventListener('click',toggleZoom);
+  document.getElementById('tosViewerClose').addEventListener('click',close);
+  document.querySelectorAll('[data-tos-zoom]').forEach(function(b){b.addEventListener('click',function(e){e.preventDefault();open();});});
+  document.querySelectorAll('a[download]').forEach(function(a){a.addEventListener('click',function(){track('trading_os_download',{});});});
+})();
+
+/* ── Share (send it to a trader → this page) ── */
+(function(){
+  var SHARE_URL='https://maketzo.co/trading-os';
+  var SHARE_TEXT='Stay safe first. Capture opportunity second. Never let one decision ruin the day. Here is the whole trading system on one page, free:';
+  var wrap=document.querySelector('.tos-share'); if(!wrap) return;
+  var trigger=wrap.querySelector('[data-tos-share-trigger]'), menu=wrap.querySelector('.mk-share__menu');
+  var toast=document.querySelector('.mk-share-toast');
+  function track(ev,props){try{if(window.MKT&&window.MKT.trackEvent)window.MKT.trackEvent(ev,props||{});}catch(e){}}
+  function openMenu(){menu.hidden=false;trigger.setAttribute('aria-expanded','true');}
+  function closeMenu(){menu.hidden=true;trigger.setAttribute('aria-expanded','false');}
+  trigger.addEventListener('click',function(e){e.stopPropagation();menu.hidden?openMenu():closeMenu();});
+  document.addEventListener('click',function(e){if(!wrap.contains(e.target))closeMenu();});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')closeMenu();});
+  function buildUrl(p){var t=SHARE_TEXT,u=SHARE_URL;
+    if(p==='email')return 'mailto:?subject='+encodeURIComponent('The trading system on one page')+'&body='+encodeURIComponent(t+'\n\n'+u);
+    if(p==='sms')return 'sms:?&body='+encodeURIComponent(t+' '+u);
+    if(p==='twitter')return 'https://twitter.com/intent/tweet?text='+encodeURIComponent(t)+'&url='+encodeURIComponent(u);
+    if(p==='whatsapp')return 'https://wa.me/?text='+encodeURIComponent(t+' '+u);
+    if(p==='telegram')return 'https://t.me/share/url?url='+encodeURIComponent(u)+'&text='+encodeURIComponent(t);
+    if(p==='facebook')return 'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(u);
+    return '';}
+  function showToast(){if(!toast)return;toast.hidden=false;setTimeout(function(){toast.hidden=true;},1800);}
+  function copy(){function done(){showToast();}
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(SHARE_URL).then(done,legacy);}else{legacy();}
+    function legacy(){try{var ta=document.createElement('textarea');ta.value=SHARE_URL;ta.setAttribute('readonly','');ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);}catch(e){}done();}}
+  menu.querySelectorAll('[data-platform]').forEach(function(btn){
+    btn.addEventListener('click',function(){var p=btn.getAttribute('data-platform');track('trading_os_share',{platform:p});
+      if(p==='copy'){copy();closeMenu();return;}
+      var url=buildUrl(p);if(!url)return;
+      if(p==='email'||p==='sms')window.location.href=url;else window.open(url,'_blank','noopener,noreferrer');
+      closeMenu();});
+  });
+})();
+</script>
+</body>
+</html>
