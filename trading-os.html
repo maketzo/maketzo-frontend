@@ -23,9 +23,11 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/tokens.css">
 <link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/css/audio-player.css?v=11">
 <script src="assets/js/mkt-analytics.js?v=5" defer></script>
 <script src="assets/js/mkt-consent.js?v=1" defer></script>
 <script src="assets/js/checkout.js?v=10" defer></script>
+<script src="assets/js/audio-player.js?v=11" defer></script>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; overflow-y: scroll; }
@@ -106,11 +108,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 .tos-graphic-btn { display: inline-block; padding: 0; border: none; background: none; cursor: zoom-in; line-height: 0; position: relative; max-width: 540px; width: 100%; }
 .tos-graphic-img { width: 100%; height: auto; border-radius: 16px; border: 1px solid rgba(212,175,55,.28); box-shadow: 0 24px 70px rgba(0,0,0,.5); }
 .tos-zoom-hint { position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%); font-family: var(--mk-font-sans); font-size: .8rem; font-weight: 600; letter-spacing: .03em; color: var(--mk-text-on-gold); background: var(--mk-gold-gradient); border-radius: 99px; padding: 7px 16px; box-shadow: 0 4px 16px rgba(0,0,0,.4); }
-.tos-actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 22px; }
-
-/* share row (uses the shared .mk-share component visuals) */
-.tos-share { display: inline-flex; }
-.tos-share .mk-share__trigger { width: auto; }
+.tos-actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; align-items: center; margin-top: 22px; }
 
 .tos-section { max-width: 860px; margin: 0 auto; padding: 24px 24px; }
 .tos-sec-eyebrow { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); text-align: center; margin-bottom: 20px; }
@@ -205,12 +203,10 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
     <span class="tos-zoom-hint">Tap to view full size</span>
   </button>
   <div class="tos-actions reveal">
-    <button type="button" class="btn-primary" data-tos-zoom>View full size</button>
-    <a class="btn-secondary" href="assets/trading-os.jpg" download="MAKETZO-Trading-Operating-System.jpg">Download</a>
-    <div class="mk-share tos-share">
-      <button class="mk-share__trigger" type="button" data-tos-share-trigger aria-haspopup="true" aria-expanded="false">
+    <div class="mk-share">
+      <button class="mk-share__trigger mk-share__trigger--primary" type="button" data-share-source="trading-os" data-share-title="The Trading Operating System" data-share-url="https://maketzo.co/trading-os" data-share-text="Stay safe first. Capture opportunity second. Never let one decision ruin the day. The whole trading system on one page, free:" data-share-subject="The trading system on one page" aria-haspopup="true" aria-expanded="false">
         <svg class="mk-share__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/></svg>
-        <span>Send to a trader</span>
+        <span>Share with a trading friend</span>
       </button>
       <div class="mk-share__menu" role="menu" hidden>
         <button class="mk-share__item" type="button" data-platform="email" role="menuitem"><svg class="mk-share__item-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg><span>Email</span></button>
@@ -222,6 +218,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
         <button class="mk-share__item mk-share__item--wide" type="button" data-platform="copy" role="menuitem"><svg class="mk-share__item-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg><span>Copy link</span></button>
       </div>
     </div>
+    <a class="btn-secondary" href="assets/trading-os.jpg" download="MAKETZO-Trading-Operating-System.jpg" data-tos-dl>Download</a>
   </div>
   <div class="mk-share-toast" role="status" aria-live="polite" hidden>Link copied</div>
 </section>
@@ -337,40 +334,6 @@ window.addEventListener('scroll',()=>{document.getElementById('mainNav').style.b
   document.getElementById('tosViewerClose').addEventListener('click',close);
   document.querySelectorAll('[data-tos-zoom]').forEach(function(b){b.addEventListener('click',function(e){e.preventDefault();open();});});
   document.querySelectorAll('a[download]').forEach(function(a){a.addEventListener('click',function(){track('trading_os_download',{});});});
-})();
-
-/* ── Share (send it to a trader → this page) ── */
-(function(){
-  var SHARE_URL='https://maketzo.co/trading-os';
-  var SHARE_TEXT='Stay safe first. Capture opportunity second. Never let one decision ruin the day. Here is the whole trading system on one page, free:';
-  var wrap=document.querySelector('.tos-share'); if(!wrap) return;
-  var trigger=wrap.querySelector('[data-tos-share-trigger]'), menu=wrap.querySelector('.mk-share__menu');
-  var toast=document.querySelector('.mk-share-toast');
-  function track(ev,props){try{if(window.MKT&&window.MKT.trackEvent)window.MKT.trackEvent(ev,props||{});}catch(e){}}
-  function openMenu(){menu.hidden=false;trigger.setAttribute('aria-expanded','true');}
-  function closeMenu(){menu.hidden=true;trigger.setAttribute('aria-expanded','false');}
-  trigger.addEventListener('click',function(e){e.stopPropagation();menu.hidden?openMenu():closeMenu();});
-  document.addEventListener('click',function(e){if(!wrap.contains(e.target))closeMenu();});
-  document.addEventListener('keydown',function(e){if(e.key==='Escape')closeMenu();});
-  function buildUrl(p){var t=SHARE_TEXT,u=SHARE_URL;
-    if(p==='email')return 'mailto:?subject='+encodeURIComponent('The trading system on one page')+'&body='+encodeURIComponent(t+'\n\n'+u);
-    if(p==='sms')return 'sms:?&body='+encodeURIComponent(t+' '+u);
-    if(p==='twitter')return 'https://twitter.com/intent/tweet?text='+encodeURIComponent(t)+'&url='+encodeURIComponent(u);
-    if(p==='whatsapp')return 'https://wa.me/?text='+encodeURIComponent(t+' '+u);
-    if(p==='telegram')return 'https://t.me/share/url?url='+encodeURIComponent(u)+'&text='+encodeURIComponent(t);
-    if(p==='facebook')return 'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(u);
-    return '';}
-  function showToast(){if(!toast)return;toast.hidden=false;setTimeout(function(){toast.hidden=true;},1800);}
-  function copy(){function done(){showToast();}
-    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(SHARE_URL).then(done,legacy);}else{legacy();}
-    function legacy(){try{var ta=document.createElement('textarea');ta.value=SHARE_URL;ta.setAttribute('readonly','');ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);}catch(e){}done();}}
-  menu.querySelectorAll('[data-platform]').forEach(function(btn){
-    btn.addEventListener('click',function(){var p=btn.getAttribute('data-platform');track('trading_os_share',{platform:p});
-      if(p==='copy'){copy();closeMenu();return;}
-      var url=buildUrl(p);if(!url)return;
-      if(p==='email'||p==='sms')window.location.href=url;else window.open(url,'_blank','noopener,noreferrer');
-      closeMenu();});
-  });
 })();
 </script>
 </body>
