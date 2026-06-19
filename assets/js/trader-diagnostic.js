@@ -1,5 +1,5 @@
 /*
- * MAKETZO — "Can You Trade?" / "What Kind of Trader Are You?". v22
+ * MAKETZO — "Can You Trade?" / "What Kind of Trader Are You?". v23
  *
  * A free, no-login, HARD live trading sim at /trader-type. A live candlestick
  * tape (9/20 EMA + VWAP + a resistance level) you trade two-sided (BUY = long,
@@ -9,9 +9,10 @@
  * rug / squeeze) that fires at a RANDOM time, so it never plays the same way and
  * you can't just "keep shorting because it only goes down."
  *
- * Your archetype is read from how you ACTUALLY traded, direction-aware: a clean
- * winning short run is The Sniper, not The Chaser. Most people lose money — that
- * is the point, and that is what makes a score worth sharing.
+ * Your archetype AND grade are read from PROCESS, not P&L, direction-aware: a clean
+ * winning short run is The Sniper; a green run built on averaging down and overtrading
+ * is a Bag Holder who got bailed out by variance, not an A+. The net only caps the
+ * grade in both directions. Most people lose money, and HOW they lost it is the lesson.
  *
  * RISK-POSTURE: the sim never tells you to size up; it just LETS you, then the
  * diagnosis punishes it. Not financial advice (a behavioral sim).
@@ -728,8 +729,14 @@
 
   // Read the trade log into flags → archetype + the 3 most damaging tells.
   // Direction-aware + outcome-aware: a clean WINNING short is not a "chase".
+  // Diagnosis is read from PROCESS, not P&L. A green run built on averaging down and
+  // overtrading is not a Sniper and does not grade A — it got bailed out by variance.
+  // A clean run that finished red is still disciplined. The net only CAPS the grade in
+  // both directions; it never buys a good one. (Ed, 2026-06-19: a bag-holding, averaging-
+  // down, 13-order run was crowned Sniper A+ because it happened to finish green.)
   function analyze(net) {
     var chases = [], bags = [], snatches = [], revenges = [], degen = [], wins = 0;
+    var addsAgainstTotal = 0, ranWinners = 0, cutFast = 0, letRunLosers = 0;
     for (var i = 0; i < trades.length; i++) {
       var t = trades[i];
       // chased = entered late/extended in your direction AND got caught (lost or ran deep against you)
@@ -740,26 +747,59 @@
       if (t.lots >= 4 && t.pnl <= -900) degen.push(t);
       if (t.win && t.pnl < 120 && t.heldMs < 2200 && t.maxFav > t.pnl + 220) snatches.push(t);
       if (t.revenge) revenges.push(t);
-      if (t.win) wins++;
+      addsAgainstTotal += t.addsAgainst || 0;
+      if (t.win) { wins++; if (t.pnl >= 250 && t.pnl >= t.maxFav * 0.6) ranWinners++; }       // let it run
+      else { if (t.maxAdverse >= -250 && t.pnl >= -250) cutFast++; else if (t.maxAdverse <= -450) letRunLosers++; }
     }
     var n = trades.length;
-    var counts = { fomo: chases.length, holding: bags.length, paper: snatches.length, overtrade: buyCount >= 12 ? 2 : 0, tilt: revenges.length, freeze: buyCount === 0 ? 3 : (n === 1 && net <= 0 && buyCount <= 1 ? 2 : 0), press: degen.length };
-    if (!degen.length) { for (var j = 0; j < bags.length; j++) { if (bags[j].addsAgainst >= 2 && net <= -1500) { counts.press = Math.max(counts.press, 2); break; } } }
+    var bagsHadAdds = false; for (i = 0; i < bags.length; i++) if (bags[i].addsAgainst >= 1) bagsHadAdds = true;
 
+    // ── Discipline score (0–100), PROCESS only — the spine of both grade and archetype.
+    var pen = 0;
+    pen += addsAgainstTotal * 16;                          // averaging down — the cardinal sin
+    pen += bags.length * 22;                               // held / fed a loser
+    pen += degen.length * 30;                              // full-send blow-up
+    pen += chases.length * 12;                             // chased an extended move and got caught
+    pen += revenges.length * 16;                           // re-entered on tilt
+    pen += snatches.length * 9;                            // paper-handed a winner
+    pen += Math.max(0, letRunLosers - bags.length) * 10;   // let a red bleed (not already a bag)
+    if (buyCount >= 12) pen += 12;
+    if (buyCount >= 16) pen += 8;
+    if (n === 0) pen += 52;                                // never pulled the trigger
+    var cred = Math.min(12, ranWinners * 4 + cutFast * 2);
+    var disc = Math.max(0, Math.min(100, 100 - pen + cred));
+    var hardSin = degen.length >= 1 || addsAgainstTotal >= 2 || bagsHadAdds || revenges.length >= 2;
+
+    // ── Archetype — dominant SIN, never P&L. Sniper is reserved for clean process.
+    var counts = {
+      fomo: chases.length,
+      holding: bags.length + (addsAgainstTotal >= 2 ? 1 : 0),
+      paper: snatches.length,
+      overtrade: buyCount >= 14 ? 2 : (buyCount >= 12 ? 1 : 0),
+      tilt: revenges.length,
+      freeze: buyCount === 0 ? 3 : (n === 1 && net <= 0 && buyCount <= 1 ? 2 : 0),
+      press: degen.length
+    };
     var PRIORITY = ['press', 'tilt', 'holding', 'fomo', 'overtrade', 'paper', 'freeze'];
     var dom = null, domVal = 0;
     for (var p = 0; p < PRIORITY.length; p++) { var k = PRIORITY[p]; if (counts[k] > domVal) { domVal = counts[k]; dom = k; } }
 
-    var grade = gradeFor(net);
     var MAP = { fomo: 'chaser', holding: 'bagholder', paper: 'paperhands', overtrade: 'masher', tilt: 'revenge', freeze: 'freezer', press: 'degenerate' };
-    // Coherence with the grade: a PROFITABLE run means you mostly traded well, so it
-    // defaults to The Sniper; the only "you won but…" override is chronic snatching
-    // (Paper Hands). The savage sin-archetypes are reserved for runs that LOST money.
+    var cleanSniper = n >= 1 && disc >= 80 && !hardSin && bags.length === 0 && degen.length === 0 && chases.length === 0 && snatches.length < 2 && buyCount < 12;
     var id;
     if (n === 0) id = 'freezer';
-    else if (net > 600) id = (snatches.length >= 2 && snatches.length * 2 >= n) ? 'paperhands' : 'sniper';
+    else if (degen.length) id = 'degenerate';   // a full-send blow-up IS the identity, whatever else happened
+    else if (cleanSniper) id = 'sniper';
     else if (dom) id = MAP[dom];
-    else id = net > 0 ? 'sniper' : 'masher';
+    else if (letRunLosers > 0) id = 'bagholder';
+    else if (snatches.length) id = 'paperhands';
+    else id = 'sniper';
+
+    // The grade can never out-rank the diagnosis: a NAMED sin caps the flex at B, a HARD
+    // sin (averaging down / full send) caps at C. Only a clean Sniper run reaches A/A+.
+    var sinId = id !== 'sniper' && id !== 'freezer';
+    var capGrade = hardSin ? 'C' : (sinId ? 'B' : null);
+    var grade = gradeFor(disc, net, capGrade);
 
     // dominant direction of the chase trades (for the right roast/tag)
     var chaseDir = 1; if (chases.length) { var ls = 0, ss = 0; for (i = 0; i < chases.length; i++) chases[i].dir === 1 ? ls++ : ss++; chaseDir = ss > ls ? -1 : 1; }
@@ -769,10 +809,17 @@
     for (i = 0; i < trades.length; i++) { var pn = trades[i].pnl; if (pn > best) best = pn; if (pn < worst) worst = pn; if (pn >= 0) gWin += pn; else gLoss += -pn; }
     var stats = { n: n, wins: wins, losses: losses, winRate: n ? Math.round(wins / n * 100) : 0, best: best, worst: worst, pf: (gLoss === 0 ? (gWin > 0 ? '∞' : '—') : (gWin / gLoss).toFixed(1)) };
 
+    // honest one-liner that reconciles the grade with the P&L so a green-but-graded-low
+    // (or red-but-graded-well) card reads as a lesson, not a bug.
+    var verdict = '';
+    if (net <= -3000) verdict = 'Two minutes and the account took real damage. The grade is the habit, not the unlucky tape.';
+    else if (sinId && net > 400 && disc < 55) verdict = 'You finished green, but on variance, not process. This is exactly how a good day hands it all back.';
+    else if (id === 'sniper' && net < -200) verdict = 'Red on the day, but the process was clean. That is variance, not a flaw, and it is what prints over a month.';
+
     var tells = [];
     if (bags.length) { var b = bags[0];
-      if (b.addsAgainst >= 1) tells.push({ w: 5, t: 'You averaged into a loser ' + b.addsAgainst + 'x. The bag only got heavier.' });
-      else tells.push({ w: 4, t: 'You held a loser from ' + money(b.maxAdverse) + ' and never cut it.' });
+      if (b.addsAgainst >= 1) tells.push({ w: 5, t: 'You averaged down ' + b.addsAgainst + 'x to save a loser. It still cost you ' + money(-b.pnl) + '.' });
+      else tells.push({ w: 4, t: 'You let a red bleed to ' + money(b.maxAdverse) + ' before you finally cut it at ' + money(b.pnl) + '.' });
     }
     if (degen.length) { var d = degen[0]; tells.push({ w: 5, t: 'You loaded ' + d.lots + ' times into one trade and it went ' + money(d.pnl) + '. No plan, full send.' }); }
     if (chases.length) tells.push({ w: 3, t: (chaseDir === 1 ? 'You bought ' + sym + ' into a pump and ate the reversal' : 'You shorted ' + sym + ' into the hole and got squeezed') + (chases.length > 1 ? ' (' + chases.length + 'x)' : '') + '.' });
@@ -780,23 +827,31 @@
     // Snatch is a Paper-Hands tell; it CONTRADICTS the Sniper ("let winners run"), so it
     // never shows on a Sniper card. A lone give-back on a clean run is not a confession.
     if (snatches.length >= 2 && id !== 'sniper') { var s = snatches[0]; tells.push({ w: 2, t: 'You snatched winners early. One booked ' + money(s.pnl) + ' with ' + money(s.maxFav) + ' on the table.' }); }
-    if (buyCount >= 12) tells.push({ w: 2, t: 'You fired ' + buyCount + ' orders in two minutes. Most of that was fees.' });
+    if (buyCount >= 12 && id !== 'sniper') tells.push({ w: 2, t: 'You fired ' + buyCount + ' orders in two minutes. Most of that was fees.' });
     if (buyCount === 0) tells.push({ w: 3, t: 'You never put a dollar at risk. The whole move happened without you.' });
     tells.sort(function (a, b) { return b.w - a.w; });
 
-    return { id: id, grade: grade, trades: n, wins: wins, dir: chaseDir, stats: stats, tells: tells.slice(0, 3).map(function (x) { return x.t; }) };
+    return { id: id, grade: grade, disc: disc, pct: disciplinePercentile(disc), verdict: verdict, trades: n, wins: wins, dir: chaseDir, stats: stats, tells: tells.slice(0, 3).map(function (x) { return x.t; }) };
   }
-  function gradeFor(net) {
-    if (net >= 3000) return 'A+'; if (net >= 1500) return 'A'; if (net >= 500) return 'B';
-    if (net >= -400) return 'C'; if (net >= -2000) return 'D'; if (net >= -4500) return 'D−'; return 'F';
+  // Grade is the discipline score; net + behavior only CAP it (a red finish can't be the
+  // A+ flex; a hard sin or a real blow-up can't grade above C, however the P&L landed).
+  function gradeFor(disc, net, capGrade) {
+    var g = disc >= 92 ? 'A+' : disc >= 82 ? 'A' : disc >= 70 ? 'B' : disc >= 55 ? 'C' : disc >= 38 ? 'D' : disc >= 22 ? 'D−' : 'F';
+    var order = ['F', 'D−', 'D', 'C', 'B', 'A', 'A+'];
+    function cap(maxG) { if (order.indexOf(g) > order.indexOf(maxG)) g = maxG; }
+    if (net < -200) cap('A');     // a losing run is not the A+ flex
+    if (capGrade) cap(capGrade);  // held/averaged a loser or full-send — P&L can't buy it back
+    if (net <= -3000) cap('C');   // a real blow-up carries a lesson, however you got there
+    return g;
   }
-  function netPercentile(net) {
-    if (net >= 3000) return 98; if (net >= 1500) return 93; if (net >= 500) return 82;
-    if (net >= -400) return 60; if (net >= -2000) return 33; if (net >= -4500) return 13; return 4;
+  function disciplinePercentile(disc) {
+    if (disc >= 92) return 97; if (disc >= 82) return 88; if (disc >= 70) return 74;
+    if (disc >= 55) return 55; if (disc >= 38) return 34; if (disc >= 22) return 16; return 5;
   }
 
   function renderResult(an, net) {
-    var a = ARCH[an.id], pct = netPercentile(net), st = an.stats;
+    var a = ARCH[an.id], pct = an.pct, st = an.stats;
+    var verdictHtml = an.verdict ? '<div class="diag-verdict">' + an.verdict + '</div>' : '';
     var roast = (an.id === 'chaser' && an.dir === -1 && a.roastS) ? a.roastS : a.roast;
     var tag = (an.id === 'chaser' && an.dir === -1 && a.tagS) ? a.tagS : a.tag;
     var tellsHtml = an.tells.length
@@ -819,11 +874,12 @@
           '<div class="diag-card-meta">' +
             '<div class="diag-meta-box"><span class="diag-meta-num ' + (net >= 0 ? 'up' : 'down') + '">' + money(net) + '</span><span class="diag-meta-cap">your 2-minute P&L</span></div>' +
             '<div class="diag-meta-box"><span class="diag-meta-num">' + st.winRate + '%</span><span class="diag-meta-cap">win rate</span></div>' +
-            '<div class="diag-meta-box"><span class="diag-meta-num">' + pct + '%</span><span class="diag-meta-cap">of traders did worse</span></div>' +
+            '<div class="diag-meta-box"><span class="diag-meta-num">' + pct + '%</span><span class="diag-meta-cap">were less disciplined</span></div>' +
           '</div>' +
           '<div class="diag-card-stats">' + st.n + ' trades · ' + st.wins + 'W ' + st.losses + 'L · best ' + (st.best > 0 ? '+' : '') + money(st.best) + ' · worst ' + money(st.worst) + ' · PF ' + st.pf + '</div>' +
           '<div class="diag-card-wm">MAKETZO · protect your capital · maketzo.co</div>' +
         '</div>' +
+        verdictHtml +
         tellsHtml +
         '<div class="diag-funnel">' +
           '<p class="diag-funnel-line">That’s two minutes of fake money showing you a real habit. <strong>MAKETZO is the gym that fixes it.</strong></p>' +

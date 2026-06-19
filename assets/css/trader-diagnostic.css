@@ -227,6 +227,7 @@
 .diag-meta-cap { display: block; font-size: 10.5px; line-height: 1.25; color: var(--d-dim); margin-top: 3px; }
 .diag-card-wm { font-family: var(--mk-font-mono, "DM Mono", monospace); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--d-dim); opacity: .8; }
 
+.diag-verdict { margin: 16px auto 0; max-width: 440px; font-size: 14px; line-height: 1.5; color: var(--d-ink); font-style: italic; }
 .diag-tells { margin: 18px auto 0; max-width: 440px; text-align: left; }
 .diag-tells-h { font-family: var(--mk-font-mono, "DM Mono", monospace); font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--d-gold-hi); margin-bottom: 8px; text-align: center; }
 .diag-tell { font-size: 13.5px; line-height: 1.45; color: var(--d-dim); padding: 9px 12px; border-left: 2px solid rgba(255,107,107,.5); background: rgba(255,107,107,.05); border-radius: 0 8px 8px 0; margin-bottom: 7px; }
