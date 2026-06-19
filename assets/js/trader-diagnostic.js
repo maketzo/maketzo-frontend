@@ -291,7 +291,10 @@
       if (t.win) wins++;
     }
     var n = trades.length;
-    var counts = { fomo: chases.length, holding: bags.length, paper: snatches.length, overtrade: n >= 9 ? 2 : 0, tilt: revenges.length, freeze: (n <= 1) ? 2 : 0, press: 0 };
+    // Freezer = you didn't act. n===0 is the pure case; a lone trade only reads as
+    // freezing if it ALSO lost (a tentative dabble). A single decisive WIN is the
+    // opposite of freezing — it must stay eligible for The Sniper, not get trapped here.
+    var counts = { fomo: chases.length, holding: bags.length, paper: snatches.length, overtrade: n >= 9 ? 2 : 0, tilt: revenges.length, freeze: (n === 0) ? 3 : (n === 1 && net <= 0 ? 2 : 0), press: 0 };
     if (chases.length >= 2 && net <= -1200) counts.press = chases.length + 1; // reckless full-send
     if (n === 0) counts.freeze = 3;
 
