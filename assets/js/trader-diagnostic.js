@@ -1,5 +1,5 @@
 /*
- * MAKETZO — "Can You Trade?" / "What Kind of Trader Are You?". v14
+ * MAKETZO — "Can You Trade?" / "What Kind of Trader Are You?". v15
  *
  * A free, no-login, HARD live trading sim at /what-trader. A live candlestick
  * tape (9/20 EMA + VWAP + a resistance level) you trade two-sided (BUY = long,
@@ -47,6 +47,7 @@
     function tone(f, d, type, g, when) { var a = ac(); if (!a) return; var o = a.createOscillator(), gn = a.createGain(); o.type = type; o.frequency.value = f; gn.gain.value = g; o.connect(gn); gn.connect(a.destination); o.start(a.currentTime + when); o.stop(a.currentTime + when + d); }
     return {
       unlock: function () { ac(); },
+      warm: function () { tone(440, 0.02, 'sine', 0.0001, 0); },
       buy: function () { tone(520, 0.06, 'triangle', 0.05, 0); tone(720, 0.07, 'triangle', 0.04, 0.05); },
       sellWin: function () { tone(660, 0.08, 'triangle', 0.05, 0); tone(990, 0.10, 'triangle', 0.04, 0.07); },
       sellLoss: function () { tone(300, 0.10, 'sine', 0.05, 0); tone(200, 0.16, 'sine', 0.04, 0.08); },
@@ -198,7 +199,7 @@
   var ema9, ema20, vwap, vwapPV, vwapVol, resistance;
   var scenario, eventProg, eventAt, eventFired, running, paused, pauseStart;
   var book, wall, pending, printSkew, lastBookAt, lastPrintAt, lastWallAt;
-  var bookView = 'montage', mmBids, mmAsks;
+  var bookView = 'montage', mmBids, mmAsks, spreadTicks, lastSpreadAt;
   var cv, ctx, els;
 
   function reset() {
@@ -215,6 +216,7 @@
     // scenario + a randomly-timed catalyst
     scenario = pickScenario(); eventFired = false; running = false; paused = false;
     book = null; wall = null; pending = null; printSkew = 0.5; lastBookAt = 0; lastPrintAt = 0; lastWallAt = -9999;
+    spreadTicks = pickSpread('grind'); lastSpreadAt = 0;
     mmBids = pickMMs(L2_LEVELS); mmAsks = pickMMs(L2_LEVELS);
     eventProg = scenario.event ? rnd(scenario.at[0], scenario.at[1]) : 2;
     if (scenario.event && scenario.evChance && Math.random() > scenario.evChance) eventProg = 2;
@@ -238,7 +240,7 @@
   }
 
   function start() {
-    clearAll(); audio.unlock(); reset(); track('diagnostic_start', { scenario: scenario.id });
+    clearAll(); audio.unlock(); audio.warm(); reset(); track('diagnostic_start', { scenario: scenario.id });
     root.innerHTML =
       '<div class="diag-term">' +
         '<div class="diag-main">' +
@@ -300,7 +302,7 @@
       countdown: root.querySelector('[data-countdown]'), cdnum: root.querySelector('[data-cdnum]'),
       pauseover: root.querySelector('[data-pauseover]'), pauseToggle: root.querySelector('[data-pausetoggle]'), exitBtn: root.querySelector('[data-exit]')
     };
-    sizeChart(); drawChart(); updateButtons(); applyBookView(); for (var sp = 0; sp < 16; sp++) emitPrint();
+    sizeChart(); drawChart(); updateButtons(); applyBookView(); for (var sp = 0; sp < 24; sp++) emitPrint();
     els.buy.addEventListener('click', buySide);
     els.sell.addEventListener('click', sellSide);
     els.pauseToggle.addEventListener('click', togglePause);
@@ -310,27 +312,31 @@
     runCountdown(beginGame);
   }
 
-  // A 3-2-1-GO countdown precedes the tape, matching the in-app games. Each step
-  // is scheduled at an absolute offset from ONE origin so the cadence is dead-steady;
-  // chaining setTimeout let a stray leftover timer interleave and look like it sped up.
+  // A 3-2-1-GO countdown precedes the tape. Driven by a requestAnimationFrame clock
+  // anchored to performance.now(), so each number shows based on REAL elapsed time —
+  // setTimeout callbacks can bunch when the main thread is busy (cold load / audio
+  // init), which read as a "rushed" cadence. This is dead-steady regardless of jitter.
   function runCountdown(done) {
-    var seq = ['3', '2', '1', 'GO'], STEP = 850;
+    var STEP = 900, labels = ['3', '2', '1', 'GO'], shown = -1, t0 = performance.now();
     els.countdown.classList.remove('diag-hidden');
-    seq.forEach(function (v, i) {
-      later(function () {
+    (function frame(now) {
+      var i = Math.floor((now - t0) / STEP);
+      if (i >= labels.length) { els.countdown.classList.add('diag-hidden'); done(); return; }
+      if (i !== shown) {
+        shown = i; var v = labels[i];
         els.cdnum.textContent = v; els.cdnum.className = 'diag-cd-num' + (v === 'GO' ? ' go' : '');
         void els.cdnum.offsetWidth; els.cdnum.classList.add('tick');
         try { v === 'GO' ? audio.cdGo() : audio.cdTick(); } catch (e) {}
-      }, i * STEP);
-    });
-    later(function () { els.countdown.classList.add('diag-hidden'); done(); }, seq.length * STEP);
+      }
+      raf = requestAnimationFrame(frame);
+    })(t0);
   }
 
   function beginGame() {
     t0 = performance.now(); lastCandle = t0; lastTick = t0;
     regimeEnd = t0 + ri(REG.grind.min, REG.grind.max);
     eventAt = t0 + DURATION * eventProg;
-    lastBookAt = t0; lastPrintAt = t0; lastWallAt = t0 - WALL_COOLDOWN;
+    lastBookAt = t0; lastPrintAt = t0; lastWallAt = t0 - WALL_COOLDOWN; lastSpreadAt = t0;
     running = true; updateButtons();
     raf = requestAnimationFrame(loop);
   }
@@ -348,7 +354,7 @@
     if (!paused) return;
     var delta = performance.now() - pauseStart;
     t0 += delta; lastCandle += delta; regimeEnd += delta; eventAt += delta; lastLossAt += delta;
-    lastBookAt += delta; lastPrintAt += delta; lastWallAt += delta; if (wall && wall.bornAt) wall.bornAt += delta;
+    lastBookAt += delta; lastPrintAt += delta; lastWallAt += delta; lastSpreadAt += delta; if (wall && wall.bornAt) wall.bornAt += delta;
     if (pos) pos.openAt += delta;
     lastTick = performance.now();
     paused = false; running = true;
@@ -399,7 +405,10 @@
     if (wall && !wall.spoof && now > wall.bornAt + WALL_LIFE) wall = null;
     var R = REG[regime] || REG.grind;
     var drift = price * R.drift * dt;
-    var noise = price * R.vol * (Math.random() * 2 - 1) * Math.sqrt(dt) * 2;
+    // fat-tailed noise: ~3% of ticks get an outsized spike (stop-runs / sweeps that
+    // mostly snap back), and down-tape prints a touch sharper than up ("elevator down").
+    var spike = Math.random() < 0.03 ? rnd(2.2, 3.6) : 1, sharp = R.drift < 0 ? 1.15 : 1;
+    var noise = price * R.vol * (Math.random() * 2 - 1) * Math.sqrt(dt) * 2 * spike * sharp;
     var np = price + drift + noise;
     price = isFinite(np) ? Math.max(0.4, np) : price;
     recentHigh = Math.max(recentHigh * 0.997, price);
@@ -415,6 +424,7 @@
       lastBookAt = now;
       var tReg = pending && pending.dir ? (pending.dir === 'bull' ? 'rip' : 'dump') : regime;
       printSkew += (printTarget(tReg) - printSkew) * 0.08;
+      if (now - lastSpreadAt >= 2800) { lastSpreadAt = now; spreadTicks = pickSpread(regime); }
       refreshBook();
     }
     if (now - lastPrintAt >= printGapFor(regime)) { lastPrintAt = now; emitPrint(); }
@@ -457,10 +467,17 @@
   function printTarget(reg) { var d = REG[reg] ? REG[reg].drift : 0; return clamp(0.5 + d * 1.6, 0.12, 0.9); }
   function printGapFor(reg) { var Rg = REG[reg] || REG.grind; return clamp(420 - (Math.abs(Rg.drift) + Rg.vol) * 700, 90, 460); }
 
+  // Inside spread varies (1 inside-tick tight to a few wide), wider when the tape is
+  // moving — re-rolled every few seconds so the L1 spread actually updates like a real book.
+  function pickSpread(reg) {
+    var v = REG[reg] ? REG[reg].vol : 0.03;
+    var base = v > 0.06 ? rnd(1.6, 4.6) : v > 0.04 ? rnd(1.1, 3.1) : rnd(1, 2.1);
+    return Math.max(1, Math.round(base));
+  }
   // A wall is the leading tell. Real ones get tested and hold; spoofs pull first.
   function spawnWall(side, spoof, now) {
-    var tick = tickOf(price), innerAsk = Math.ceil(price / tick) * tick;
-    var p0 = side === 'ask' ? innerAsk + tick * ri(1, 3) : (innerAsk - tick) - tick * ri(1, 3);
+    var tick = tickOf(price), innerAsk = Math.ceil(price / tick) * tick, innerBid = innerAsk - spreadTicks * tick;
+    var p0 = side === 'ask' ? innerAsk + tick * ri(1, 3) : innerBid - tick * ri(1, 3);
     wall = { side: side, px: p0, size: ri(6000, 22000), spoof: spoof, bornAt: now };
   }
   function pullWall() { wall = null; }
@@ -477,11 +494,11 @@
   function mmidFor(side, idx) { var arr = side === 'bid' ? mmBids : mmAsks; return (arr && arr[idx]) || pick(MMIDS); }
   function refreshBook() {
     if (!els || !els.l2) return;
-    var tick = tickOf(price), innerAsk = Math.ceil(price / tick) * tick, lean = printSkew - 0.5;
+    var tick = tickOf(price), innerAsk = Math.ceil(price / tick) * tick, innerBid = innerAsk - spreadTicks * tick, lean = printSkew - 0.5;
     var asks = [], bids = [], mx = 1, i;
     for (i = 0; i < L2_LEVELS; i++) {
       asks.push({ px: innerAsk + i * tick, size: baseSize(i, -lean) });
-      bids.push({ px: (innerAsk - tick) - i * tick, size: baseSize(i, lean) });
+      bids.push({ px: innerBid - i * tick, size: baseSize(i, lean) });
     }
     if (wall) {
       var arr = wall.side === 'ask' ? asks : bids, best = 0, bd = 1e9;
@@ -551,7 +568,7 @@
     row.className = 'diag-print ' + (green ? 'buy' : 'sell') + (block ? ' block' : '');
     row.innerHTML = '<span class="diag-print-px">' + pr.toFixed(2) + '</span><span class="diag-print-sz">' + fmtSize(size) + '</span>';
     els.tape.insertBefore(row, els.tape.firstChild);
-    while (els.tape.childNodes.length > 16) els.tape.removeChild(els.tape.lastChild);
+    while (els.tape.childNodes.length > 24) els.tape.removeChild(els.tape.lastChild);
   }
   // The plain-words callout naming what the book just did — quiet, distinct from the
   // loud catalyst. Spawn = "buyers stacking the bid"; pull = the spoof getting revealed.
