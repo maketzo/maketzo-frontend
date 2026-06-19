@@ -140,6 +140,9 @@
 .diag-term-topright { display: flex; align-items: center; gap: 10px; }
 .diag-term-exit { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; font-family: var(--mk-font-mono, "DM Mono", monospace); font-size: 13px; line-height: 1; color: var(--d-dim); background: rgba(255,255,255,.05); border: 1px solid var(--d-line); border-radius: 7px; cursor: pointer; transition: color .14s ease, border-color .14s ease; }
 .diag-term-exit:hover { color: var(--d-down); border-color: rgba(255,107,107,.5); }
+.diag-share-game { display: inline-flex; }
+.diag-term-topright .diag-share-icon { width: 26px; height: 26px; border-radius: 7px; }
+.diag-term-topright .diag-share-icon svg { width: 15px; height: 15px; }
 .diag-pause-toggle { width: 100%; margin-top: 10px; font-family: var(--mk-font-mono, "DM Mono", monospace); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--d-ink); background: rgba(255,255,255,.05); border: 1px solid var(--d-line); border-radius: 11px; padding: 11px 0; cursor: pointer; transition: color .14s ease, border-color .14s ease; }
 .diag-pause-toggle:hover { border-color: rgba(212,175,55,.5); }
 
