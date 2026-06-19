@@ -1,5 +1,5 @@
 /*
- * MAKETZO — "Can You Trade?" / "What Kind of Trader Are You?". v25
+ * MAKETZO — "Can You Trade?" / "What Kind of Trader Are You?". v26
  *
  * A free, no-login, HARD live trading sim at /trader-type. A live candlestick
  * tape (9/20 EMA + VWAP + a resistance level) you trade two-sided (BUY = long,
@@ -813,10 +813,14 @@
     // dominant direction of the chase trades (for the right roast/tag)
     var chaseDir = 1; if (chases.length) { var ls = 0, ss = 0; for (i = 0; i < chases.length; i++) chases[i].dir === 1 ? ls++ : ss++; chaseDir = ss > ls ? -1 : 1; }
 
-    // summary metrics for the result card
-    var losses = n - wins, best = 0, worst = 0, gWin = 0, gLoss = 0;
-    for (i = 0; i < trades.length; i++) { var pn = trades[i].pnl; if (pn > best) best = pn; if (pn < worst) worst = pn; if (pn >= 0) gWin += pn; else gLoss += -pn; }
-    var stats = { n: n, wins: wins, losses: losses, winRate: n ? Math.round(wins / n * 100) : 0, best: best, worst: worst, pf: (gLoss === 0 ? (gWin > 0 ? '∞' : '—') : (gWin / gLoss).toFixed(1)) };
+    // summary metrics for the result card. avgWin/avgLoss = the size lesson (are your
+    // winners bigger than your losers?); worstHeat = the deepest unrealized drawdown you
+    // sat through (the risk you actually carried). Plain-English, no jargon — replaces PF.
+    var losses = n - wins, best = 0, worst = 0, gWin = 0, gLoss = 0, worstHeat = 0;
+    for (i = 0; i < trades.length; i++) { var pn = trades[i].pnl; if (pn > best) best = pn; if (pn < worst) worst = pn; if (pn >= 0) gWin += pn; else gLoss += -pn; if (trades[i].maxAdverse < worstHeat) worstHeat = trades[i].maxAdverse; }
+    var stats = { n: n, wins: wins, losses: losses, winRate: n ? Math.round(wins / n * 100) : 0,
+      best: best, worst: worst, worstHeat: worstHeat,
+      avgWin: wins ? gWin / wins : 0, avgLoss: losses ? gLoss / losses : 0 };
 
     // honest one-liner that reconciles the grade with the P&L so a green-but-graded-low
     // (or red-but-graded-well) card reads as a lesson, not a bug.
@@ -840,7 +844,7 @@
     if (buyCount === 0) tells.push({ w: 3, t: 'You never put a dollar at risk. The whole move happened without you.' });
     tells.sort(function (a, b) { return b.w - a.w; });
 
-    return { id: id, grade: grade, disc: disc, pct: disciplinePercentile(disc), verdict: verdict, trades: n, wins: wins, dir: chaseDir, stats: stats, tells: tells.slice(0, 3).map(function (x) { return x.t; }) };
+    return { id: id, grade: grade, disc: disc, verdict: verdict, trades: n, wins: wins, dir: chaseDir, stats: stats, tells: tells.slice(0, 3).map(function (x) { return x.t; }) };
   }
   // Grade is the discipline score; net + behavior only CAP it (a red finish can't be the
   // A+ flex; a hard sin or a real blow-up can't grade above C, however the P&L landed).
@@ -853,13 +857,9 @@
     if (net <= -3000) cap('C');   // a real blow-up carries a lesson, however you got there
     return g;
   }
-  function disciplinePercentile(disc) {
-    if (disc >= 92) return 97; if (disc >= 82) return 88; if (disc >= 70) return 74;
-    if (disc >= 55) return 55; if (disc >= 38) return 34; if (disc >= 22) return 16; return 5;
-  }
-
   function renderResult(an, net) {
-    var a = ARCH[an.id], pct = an.pct, st = an.stats;
+    var a = ARCH[an.id], st = an.stats;
+    var discCls = an.disc >= 70 ? 'up' : (an.disc < 45 ? 'down' : '');
     var verdictHtml = an.verdict ? '<div class="diag-verdict">' + an.verdict + '</div>' : '';
     var roast = (an.id === 'chaser' && an.dir === -1 && a.roastS) ? a.roastS : a.roast;
     var tag = (an.id === 'chaser' && an.dir === -1 && a.tagS) ? a.tagS : a.tag;
@@ -883,9 +883,9 @@
           '<div class="diag-card-meta">' +
             '<div class="diag-meta-box"><span class="diag-meta-num ' + (net >= 0 ? 'up' : 'down') + '">' + money(net) + '</span><span class="diag-meta-cap">your 2-minute P&L</span></div>' +
             '<div class="diag-meta-box"><span class="diag-meta-num">' + st.winRate + '%</span><span class="diag-meta-cap">win rate</span></div>' +
-            '<div class="diag-meta-box"><span class="diag-meta-num">' + pct + '%</span><span class="diag-meta-cap">were less disciplined</span></div>' +
+            '<div class="diag-meta-box"><span class="diag-meta-num ' + discCls + '">' + an.disc + '<span class="diag-meta-den">/100</span></span><span class="diag-meta-cap">discipline</span></div>' +
           '</div>' +
-          '<div class="diag-card-stats">' + st.n + ' trades · ' + st.wins + 'W ' + st.losses + 'L · best ' + (st.best > 0 ? '+' : '') + money(st.best) + ' · worst ' + money(st.worst) + ' · PF ' + st.pf + '</div>' +
+          '<div class="diag-card-stats">' + st.n + ' trades · ' + st.wins + 'W ' + st.losses + 'L · avg win +' + money(st.avgWin) + ' · avg loss ' + money(-st.avgLoss) + ' · worst heat held ' + money(st.worstHeat) + '</div>' +
           '<div class="diag-card-wm">MAKETZO · protect your capital · maketzo.co</div>' +
         '</div>' +
         verdictHtml +

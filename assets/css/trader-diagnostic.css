@@ -224,6 +224,7 @@
 .diag-card-meta { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px; }
 .diag-meta-box { background: rgba(13,15,20,.5); border: 1px solid var(--d-line); border-radius: 10px; padding: 10px 6px; }
 .diag-meta-num { display: block; font-weight: 800; font-size: 19px; color: #fff; font-variant-numeric: tabular-nums; } .diag-meta-num.up { color: var(--d-up); } .diag-meta-num.down { color: var(--d-down); }
+.diag-meta-den { font-weight: 600; font-size: 12px; opacity: .55; }
 .diag-meta-cap { display: block; font-size: 10.5px; line-height: 1.25; color: var(--d-dim); margin-top: 3px; }
 .diag-card-wm { font-family: var(--mk-font-mono, "DM Mono", monospace); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--d-dim); opacity: .8; }
 
