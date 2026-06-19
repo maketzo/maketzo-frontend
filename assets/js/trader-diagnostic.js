@@ -34,8 +34,8 @@
   function rnd(a, b) { return Math.random() * (b - a) + a; }
   function pick(a) { return a[ri(0, a.length - 1)]; }
   function clamp(v, lo, hi) { return v < lo ? lo : v > hi ? hi : v; }
-  function money(v) { v = Math.round(v); return (v < 0 ? '−$' : '$') + Math.abs(v).toLocaleString('en-US'); }
-  function px(v) { return '$' + v.toFixed(2); }
+  function money(v) { v = Math.round(v); if (!isFinite(v)) v = 0; return (v < 0 ? '−$' : '$') + Math.abs(v).toLocaleString('en-US'); }
+  function px(v) { if (!isFinite(v)) v = 0; return '$' + v.toFixed(2); }
 
   function makeAudio() {
     var ctx = null;
@@ -173,15 +173,20 @@
     var elapsed = now - t0;
     if (elapsed >= DURATION) { endGame(); return; }
     raf = requestAnimationFrame(loop);
-    var dt = Math.min(0.05, (now - lastTick) / 1000); lastTick = now;
+    // Guard dt: the rAF timestamp can arrive behind our captured t0 on the first
+    // frame (different time origin), which would make dt negative and sqrt(dt)
+    // NaN, poisoning price and every downstream value.
+    var dt = (now - lastTick) / 1000; lastTick = now;
+    if (!isFinite(dt) || dt <= 0) dt = 0.016; if (dt > 0.05) dt = 0.05;
 
     // regime
     if (now >= regimeEnd) { regime = nextRegime(regime); var R0 = REG[regime]; regimeEnd = now + ri(R0.min, R0.max); }
-    var R = REG[regime];
+    var R = REG[regime] || REG.grind;
     // price tick
     var drift = price * R.drift * dt;
     var noise = price * R.vol * (Math.random() * 2 - 1) * Math.sqrt(dt) * 2;
-    price = Math.max(0.4, price + drift + noise);
+    var np = price + drift + noise;
+    price = isFinite(np) ? Math.max(0.4, np) : price;
     recentHigh = Math.max(recentHigh * 0.997, price); // decaying recent high (extension gauge)
 
     // candle
@@ -216,6 +221,7 @@
     var lo = Infinity, hi = -Infinity, i;
     for (i = 0; i < vis.length; i++) { if (vis[i].l < lo) lo = vis[i].l; if (vis[i].h > hi) hi = vis[i].h; }
     if (pos) { lo = Math.min(lo, pos.entry); hi = Math.max(hi, pos.entry); }
+    if (!isFinite(lo) || !isFinite(hi)) return;
     var rng = (hi - lo) || 1; lo -= rng * 0.08; hi += rng * 0.08; rng = hi - lo;
     function Y(p) { return pad + (h - 2 * pad) * (1 - (p - lo) / rng); }
     var cw = (w - 2 * pad) / WINDOW, bw = Math.max(2, cw * 0.62);
