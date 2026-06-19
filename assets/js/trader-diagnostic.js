@@ -1,5 +1,5 @@
 /*
- * MAKETZO — "Can You Trade?" / "What Kind of Trader Are You?". v15
+ * MAKETZO — "Can You Trade?" / "What Kind of Trader Are You?". v16
  *
  * A free, no-login, HARD live trading sim at /what-trader. A live candlestick
  * tape (9/20 EMA + VWAP + a resistance level) you trade two-sided (BUY = long,
@@ -205,7 +205,7 @@
   function reset() {
     raf = 0; timers = []; sym = pick(SYMBOLS);
     var p = rnd(3.2, 6.8); candles = [];
-    for (var i = 0; i < WINDOW; i++) { var o = p; p = Math.max(0.5, p * (1 + rnd(-0.022, 0.024))); var c = p; candles.push({ o: o, c: c, h: Math.max(o, c) * (1 + rnd(0, 0.012)), l: Math.min(o, c) * (1 - rnd(0, 0.012)) }); }
+    for (var i = 0; i < WINDOW; i++) { var o = p; p = Math.max(0.5, p * (1 + rnd(-0.022, 0.024))); var c = p; candles.push({ o: o, c: c, h: Math.max(o, c) * (1 + rnd(0, 0.012)), l: Math.min(o, c) * (1 - rnd(0, 0.012)), vol: 500 + Math.random() * 800 }); }
     price = p; regime = 'grind'; regimeEnd = 0;
     balance = START_BAL; pos = null; trades = []; buyCount = 0; recentHigh = price; lastLossAt = -9999;
     ema9 = candles[0].c; ema20 = candles[0].c;
@@ -450,8 +450,11 @@
   function closeCandle(c, now) {
     ema9 += K9 * (c.c - ema9); ema20 += K20 * (c.c - ema20); c.e9 = ema9; c.e20 = ema20;
     var rangePct = Math.abs(c.c - c.o) / (c.o || 1);
-    var volMult = (regime === 'pump' || regime === 'rug' || regime === 'squeeze') ? 2.6 : (regime === 'rip' || regime === 'dump') ? 1.6 : 1;
+    // Volume reflects CONVICTION: heavy on real pushes (pump/rug/squeeze), light on the
+    // traps (dead-cat bounce + chop fade), so volume confirms a move or exposes a fake.
+    var volMult = (regime === 'pump' || regime === 'rug' || regime === 'squeeze') ? 2.6 : (regime === 'rip' || regime === 'dump') ? 1.6 : (regime === 'deadcat' || regime === 'chop') ? 0.55 : 1;
     var vol = (800 + Math.random() * 600) * volMult * (1 + rangePct * 8);
+    c.vol = vol;
     var tp = (c.h + c.l + c.c) / 3;
     vwapPV += tp * vol; vwapVol += vol; vwap = vwapVol > 0 ? vwapPV / vwapVol : c.c; c.vwap = vwap;
     if (price > resistance * 1.015) { resistance = price * rnd(1.05, 1.09); }
@@ -604,6 +607,15 @@
     var rng = (hi - lo) || 1; lo -= rng * 0.08; hi += rng * 0.08; rng = hi - lo;
     function Y(p) { return pad + (h - 2 * pad) * (1 - (p - lo) / rng); }
     var cw = (w - 2 * pad) / WINDOW, bw = Math.max(2, cw * 0.62);
+    // volume overlay — translucent bars along the bottom; conviction behind each candle
+    var volMax = 1; for (i = 0; i < vis.length; i++) { if ((vis[i].vol || 0) > volMax) volMax = vis[i].vol; }
+    var volH = (h - 2 * pad) * 0.22, volBase = h - pad;
+    for (i = 0; i < vis.length; i++) {
+      var vc = vis[i]; if (!vc.vol) continue;
+      var vx = pad + cw * i + cw / 2, vbh = volH * (vc.vol / volMax);
+      ctx.fillStyle = (vc.c >= vc.o) ? 'rgba(126,217,87,.20)' : 'rgba(255,107,107,.20)';
+      ctx.fillRect(vx - bw / 2, volBase - vbh, bw, vbh);
+    }
     function poly(key, color, dash) {
       ctx.strokeStyle = color; ctx.lineWidth = 1.5; ctx.setLineDash(dash || []);
       ctx.beginPath(); var started = false;
