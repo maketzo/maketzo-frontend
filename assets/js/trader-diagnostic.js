@@ -1,5 +1,5 @@
 /*
- * MAKETZO — "Can You Trade?" / "What Kind of Trader Are You?". v5 (2-min arc)
+ * MAKETZO — "Can You Trade?" / "What Kind of Trader Are You?". v6 (chart structure)
  *
  * A free, no-login, HARD live trading sim at /what-trader. One shared engine:
  * a live candlestick chart with a SMALL-CAP tape that lures then rugs, real BUY /
@@ -35,6 +35,7 @@
   var FEE_BPS = 0.0015;       // slippage/fee per fill (each side)
   var CANDLE_MS = 700;
   var WINDOW = 40;            // visible candles
+  var K9 = 2 / (9 + 1), K20 = 2 / (20 + 1); // EMA smoothing constants
 
   function ri(a, b) { return Math.floor(Math.random() * (b - a + 1)) + a; }
   function rnd(a, b) { return Math.random() * (b - a) + a; }
@@ -141,6 +142,7 @@
   // ── State ──────────────────────────────────────────────────────────────────
   var root, audio, raf, timers, sym, price, candles, regime, regimeEnd, t0, lastCandle, lastTick;
   var balance, pos, trades, buyCount, recentHigh, lastLossAt;
+  var ema9, ema20, vwap, vwapPV, vwapVol, resistance; // chart structure overlays
   var cv, ctx, els;
 
   function reset() {
@@ -150,6 +152,13 @@
     for (var i = 0; i < WINDOW; i++) { var o = p; p = Math.max(0.5, p * (1 + rnd(-0.022, 0.024))); var c = p; candles.push({ o: o, c: c, h: Math.max(o, c) * (1 + rnd(0, 0.012)), l: Math.min(o, c) * (1 - rnd(0, 0.012)) }); }
     price = p; regime = 'grind'; regimeEnd = 0;
     balance = START_BAL; pos = null; trades = []; buyCount = 0; recentHigh = price; lastLossAt = -9999;
+    // Warm the EMAs over the seed history so the lines open already established.
+    ema9 = candles[0].c; ema20 = candles[0].c;
+    for (var j = 0; j < candles.length; j++) { var cl = candles[j].c; ema9 += K9 * (cl - ema9); ema20 += K20 * (cl - ema20); candles[j].e9 = ema9; candles[j].e20 = ema20; }
+    // Session VWAP starts at the open (no seed). Resistance = an overhead level to trade up into.
+    vwap = NaN; vwapPV = 0; vwapVol = 0;
+    var sh = 0; for (j = 0; j < candles.length; j++) if (candles[j].h > sh) sh = candles[j].h;
+    resistance = Math.max(sh, price) * rnd(1.04, 1.10);
   }
   function later(fn, ms) { var id = setTimeout(fn, ms); timers.push(id); return id; }
   function clearAll() { if (raf) cancelAnimationFrame(raf); raf = 0; for (var i = 0; i < timers.length; i++) clearTimeout(timers[i]); timers = []; }
@@ -178,6 +187,12 @@
           '<div class="diag-term-clock" data-clock>2:00</div>' +
         '</div>' +
         '<canvas class="diag-chart" data-chart></canvas>' +
+        '<div class="diag-legend">' +
+          '<span class="diag-leg"><i class="diag-sw diag-sw-e9"></i>9 EMA</span>' +
+          '<span class="diag-leg"><i class="diag-sw diag-sw-e20"></i>20 EMA</span>' +
+          '<span class="diag-leg"><i class="diag-sw diag-sw-vwap"></i>VWAP</span>' +
+          '<span class="diag-leg"><i class="diag-sw diag-sw-res"></i>Resistance</span>' +
+        '</div>' +
         '<div class="diag-pos" data-pos><span class="diag-pos-state" data-pstate>FLAT</span><span class="diag-pos-pnl" data-upnl></span></div>' +
         '<div class="diag-term-bottom">' +
           '<div class="diag-bal">Equity <b data-equity>' + money(START_BAL) + '</b></div>' +
@@ -232,7 +247,7 @@
 
     // candle
     var c = candles[candles.length - 1]; c.c = price; if (price > c.h) c.h = price; if (price < c.l) c.l = price;
-    if (now - lastCandle >= CANDLE_MS) { lastCandle = now; candles.push({ o: price, h: price, l: price, c: price }); if (candles.length > 90) candles.shift(); }
+    if (now - lastCandle >= CANDLE_MS) { lastCandle = now; closeCandle(c, now); candles.push({ o: price, h: price, l: price, c: price, e9: ema9, e20: ema20, vwap: vwap }); if (candles.length > 90) candles.shift(); }
 
     // track max adverse / favorable on the open position
     if (pos) { var u = pos.shares * (price - pos.entry); if (u < pos.maxAdverse) pos.maxAdverse = u; if (u > pos.maxFav) pos.maxFav = u; }
@@ -256,6 +271,22 @@
     } else { els.pos.className = 'diag-pos'; els.pstate.textContent = 'FLAT'; els.upnl.textContent = ''; }
   }
 
+  // On each candle close: advance the EMAs, the session VWAP (synthetic small-cap
+  // volume, heavier on pumps/rugs), and the resistance level the long trades up into.
+  function closeCandle(c, now) {
+    ema9 += K9 * (c.c - ema9); ema20 += K20 * (c.c - ema20); c.e9 = ema9; c.e20 = ema20;
+    var rangePct = Math.abs(c.c - c.o) / (c.o || 1);
+    var volMult = (regime === 'pump' || regime === 'rug') ? 2.6 : (regime === 'rip' || regime === 'dump') ? 1.6 : 1;
+    var vol = (800 + Math.random() * 600) * volMult * (1 + rangePct * 8);
+    var tp = (c.h + c.l + c.c) / 3;
+    vwapPV += tp * vol; vwapVol += vol; vwap = vwapVol > 0 ? vwapPV / vwapVol : c.c; c.vwap = vwap;
+    // A decisive close above resistance lets it run (ceiling lifts). A stall just under
+    // it in strength often gets sold — that rejection is what gives the long real R/R.
+    if (price > resistance * 1.015) { resistance = price * rnd(1.05, 1.09); }
+    else if (price > resistance * 0.99 && (regime === 'rip' || regime === 'pump') && Math.random() < 0.45) { regime = 'dump'; regimeEnd = now + ri(REG.dump.min, REG.dump.max); }
+    else if (price < resistance * 0.85) { var rh = 0, vl = candles.slice(-20); for (var z = 0; z < vl.length; z++) if (vl[z].h > rh) rh = vl[z].h; resistance = Math.max(rh, price * 1.03) * rnd(1.0, 1.02); }
+  }
+
   function drawChart() {
     var w = cv._w, h = cv._h, pad = 8, vis = candles.slice(-WINDOW);
     ctx.clearRect(0, 0, w, h);
@@ -263,11 +294,19 @@
     for (i = 0; i < vis.length; i++) { if (vis[i].l < lo) lo = vis[i].l; if (vis[i].h > hi) hi = vis[i].h; }
     if (pos) { lo = Math.min(lo, pos.entry); hi = Math.max(hi, pos.entry); }
     if (!isFinite(lo) || !isFinite(hi)) return;
+    var resVis = isFinite(resistance) && resistance < hi * 1.22;
+    if (resVis) hi = Math.max(hi, resistance);
     var rng = (hi - lo) || 1; lo -= rng * 0.08; hi += rng * 0.08; rng = hi - lo;
     function Y(p) { return pad + (h - 2 * pad) * (1 - (p - lo) / rng); }
     var cw = (w - 2 * pad) / WINDOW, bw = Math.max(2, cw * 0.62);
+    function poly(key, color, dash) {
+      ctx.strokeStyle = color; ctx.lineWidth = 1.5; ctx.setLineDash(dash || []);
+      ctx.beginPath(); var started = false;
+      for (var j = 0; j < vis.length; j++) { var v = vis[j][key]; if (v == null || !isFinite(v)) continue; var x = pad + cw * j + cw / 2, y = Y(v); if (!started) { ctx.moveTo(x, y); started = true; } else ctx.lineTo(x, y); }
+      ctx.stroke(); ctx.setLineDash([]);
+    }
     // entry line (blended average)
-    if (pos) { var ey = Y(pos.entry); ctx.strokeStyle = 'rgba(212,175,55,.5)'; ctx.lineWidth = 1; ctx.setLineDash([3, 3]); ctx.beginPath(); ctx.moveTo(0, ey); ctx.lineTo(w, ey); ctx.stroke(); ctx.setLineDash([]); }
+    if (pos) { var ey = Y(pos.entry); ctx.strokeStyle = 'rgba(212,175,55,.55)'; ctx.lineWidth = 1; ctx.setLineDash([3, 3]); ctx.beginPath(); ctx.moveTo(0, ey); ctx.lineTo(w, ey); ctx.stroke(); ctx.setLineDash([]); }
     // candles
     for (i = 0; i < vis.length; i++) {
       var c = vis[i], x = pad + cw * i + cw / 2, up = c.c >= c.o, col = up ? C_UP : C_DOWN;
@@ -275,8 +314,14 @@
       var yo = Y(c.o), yc = Y(c.c), top = Math.min(yo, yc), hgt = Math.max(1.5, Math.abs(yc - yo));
       ctx.fillStyle = col; ctx.fillRect(x - bw / 2, top, bw, hgt);
     }
+    // structure overlays: VWAP (dotted orange), 20 EMA (light blue), 9 EMA (white)
+    poly('vwap', 'rgba(255,159,67,.95)', [2, 3]);
+    poly('e20', 'rgba(127,180,255,.9)');
+    poly('e9', 'rgba(255,255,255,.92)');
+    // resistance
+    if (resVis && resistance >= lo) { var ry = Y(resistance); ctx.strokeStyle = 'rgba(255,122,176,.7)'; ctx.lineWidth = 1; ctx.setLineDash([6, 4]); ctx.beginPath(); ctx.moveTo(0, ry); ctx.lineTo(w, ry); ctx.stroke(); ctx.setLineDash([]); ctx.fillStyle = 'rgba(255,122,176,.95)'; ctx.font = '9px "DM Mono", monospace'; ctx.fillText('RES', 5, ry - 4); }
     // current price line
-    var py = Y(price); ctx.strokeStyle = 'rgba(255,255,255,.35)'; ctx.lineWidth = 1; ctx.setLineDash([2, 3]); ctx.beginPath(); ctx.moveTo(0, py); ctx.lineTo(w, py); ctx.stroke(); ctx.setLineDash([]);
+    var py = Y(price); ctx.strokeStyle = 'rgba(255,255,255,.3)'; ctx.lineWidth = 1; ctx.setLineDash([2, 3]); ctx.beginPath(); ctx.moveTo(0, py); ctx.lineTo(w, py); ctx.stroke(); ctx.setLineDash([]);
   }
 
   // ── Orders ─────────────────────────────────────────────────────────────────

@@ -29,6 +29,14 @@
 
 .diag-chart { display: block; width: 100%; height: 240px; border-radius: 12px; background: #0a0d12; border: 1px solid var(--d-line); }
 
+.diag-legend { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; margin: 8px 2px 0; font-family: var(--mk-font-mono, "DM Mono", monospace); font-size: 10.5px; letter-spacing: .04em; color: var(--d-dim); }
+.diag-leg { display: inline-flex; align-items: center; gap: 6px; }
+.diag-sw { width: 14px; height: 0; border-top: 2px solid transparent; border-radius: 2px; }
+.diag-sw-e9 { border-top-color: #fff; }
+.diag-sw-e20 { border-top-color: #7fb4ff; }
+.diag-sw-vwap { border-top-color: #ff9f43; border-top-style: dotted; }
+.diag-sw-res { border-top-color: #ff7ab0; border-top-style: dashed; }
+
 .diag-pos { display: flex; align-items: center; justify-content: space-between; margin: 10px 2px 2px; min-height: 26px; font-variant-numeric: tabular-nums; }
 .diag-pos-state { font-family: var(--mk-font-mono, "DM Mono", monospace); font-size: 12.5px; letter-spacing: .08em; color: var(--d-dim); }
 .diag-pos.open .diag-pos-state { color: var(--d-gold-hi); }
