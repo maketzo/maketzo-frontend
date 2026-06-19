@@ -215,7 +215,7 @@
     if (scenario.event && scenario.evChance && Math.random() > scenario.evChance) eventProg = 2;
   }
   function later(fn, ms) { var id = setTimeout(fn, ms); timers.push(id); return id; }
-  function clearAll() { if (raf) cancelAnimationFrame(raf); raf = 0; for (var i = 0; i < timers.length; i++) clearTimeout(timers[i]); timers = []; }
+  function clearAll() { if (raf) cancelAnimationFrame(raf); raf = 0; if (timers) for (var i = 0; i < timers.length; i++) clearTimeout(timers[i]); timers = []; }
   function track(ev, data) { try { if (window.MKT && window.MKT.trackEvent) window.MKT.trackEvent(ev, data || {}); } catch (e) {} }
 
   function boot() { root = document.getElementById('diag-root'); if (!root) return; audio = makeAudio(); renderIntro(); }
@@ -226,7 +226,7 @@
         '<div class="diag-eyebrow">The two-minute tape test</div>' +
         '<h1 class="diag-h1">Can you trade,<br><em>or do you just think so?</em></h1>' +
         '<p class="diag-lede">Two minutes on a live small-cap tape that fights back. Real chart, go <b>long</b> or <b>short</b>, real P&L on every fill. It will let you get comfortable, then it will try to take it all back. Find out what kind of trader you really are.</p>' +
-        '<button class="diag-start" type="button" data-start>Take the tape →</button>' +
+        '<button class="diag-start" type="button" data-start>Prove it →</button>' +
         '<div class="diag-intro-note">Free · 2 minutes · not financial advice</div>' +
       '</div>';
     root.querySelector('[data-start]').addEventListener('click', start);
