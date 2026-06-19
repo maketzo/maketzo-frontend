@@ -1,5 +1,5 @@
 /*
- * MAKETZO — "Can You Trade?" / "What Kind of Trader Are You?". v11
+ * MAKETZO — "Can You Trade?" / "What Kind of Trader Are You?". v13
  *
  * A free, no-login, HARD live trading sim at /what-trader. A live candlestick
  * tape (9/20 EMA + VWAP + a resistance level) you trade two-sided (BUY = long,
@@ -188,6 +188,9 @@
   // pull and reverse (the small-cap spoof). Reading the tape is an edge, not armor.
   var SPOOF_P = 0.28, LEAD_MS = 1500, WALL_COOLDOWN = 5200, WALL_LIFE = 3500;
   var BOOK_MS = 220, L2_LEVELS = 5;
+  // DAS-style montage: market-maker IDs per book slot (the DEFAULT view; a price
+  // ladder is the simpler toggle). Real ECN/exchange tags so it reads like a DAS book.
+  var MMIDS = ['NSDQ', 'ARCA', 'EDGX', 'BATS', 'MEMX', 'MIAX', 'IEX', 'NYSE', 'EDGA', 'CBOE', 'PHLX', 'BYX', 'ARCX', 'AMEX'];
 
   // ── State ──────────────────────────────────────────────────────────────────
   var root, audio, raf, timers, sym, price, candles, regime, regimeEnd, t0, lastCandle, lastTick;
@@ -195,6 +198,7 @@
   var ema9, ema20, vwap, vwapPV, vwapVol, resistance;
   var scenario, eventProg, eventAt, eventFired, running, paused, pauseStart;
   var book, wall, pending, printSkew, lastBookAt, lastPrintAt, lastWallAt;
+  var bookView = 'montage', mmBids, mmAsks;
   var cv, ctx, els;
 
   function reset() {
@@ -211,6 +215,7 @@
     // scenario + a randomly-timed catalyst
     scenario = pickScenario(); eventFired = false; running = false; paused = false;
     book = null; wall = null; pending = null; printSkew = 0.5; lastBookAt = 0; lastPrintAt = 0; lastWallAt = -9999;
+    mmBids = pickMMs(L2_LEVELS); mmAsks = pickMMs(L2_LEVELS);
     eventProg = scenario.event ? rnd(scenario.at[0], scenario.at[1]) : 2;
     if (scenario.event && scenario.evChance && Math.random() > scenario.evChance) eventProg = 2;
   }
@@ -233,20 +238,20 @@
   }
 
   function start() {
-    clearAll(); audio.unlock(); audio.buy(); reset(); track('diagnostic_start', { scenario: scenario.id });
+    clearAll(); audio.unlock(); reset(); track('diagnostic_start', { scenario: scenario.id });
     root.innerHTML =
       '<div class="diag-term">' +
         '<div class="diag-main">' +
           '<div class="diag-term-top">' +
             '<div class="diag-term-sym">' + sym + ' <span class="diag-term-px" data-px>' + px(price) + '</span></div>' +
             '<div class="diag-term-topright">' +
-              '<button class="diag-pause-btn" type="button" data-pause aria-label="Pause">Pause</button>' +
               '<div class="diag-term-clock" data-clock>2:00</div>' +
+              '<button class="diag-term-exit" type="button" data-exit aria-label="Exit to start">✕</button>' +
             '</div>' +
           '</div>' +
           '<canvas class="diag-chart" data-chart></canvas>' +
           '<div class="diag-cd diag-hidden" data-countdown><div class="diag-cd-num" data-cdnum>3</div></div>' +
-          '<div class="diag-pause-over diag-hidden" data-pauseover><div class="diag-pause-title">Paused</div><button class="diag-resume" type="button" data-resume>Resume →</button></div>' +
+          '<div class="diag-pause-over diag-hidden" data-pauseover><div class="diag-pause-title">Paused</div></div>' +
           '<div class="diag-legend">' +
             '<span class="diag-leg"><i class="diag-sw diag-sw-e9"></i>9 EMA</span>' +
             '<span class="diag-leg"><i class="diag-sw diag-sw-e20"></i>20 EMA</span>' +
@@ -259,11 +264,14 @@
             '<button class="diag-trade-btn buy" data-buy disabled>BUY</button>' +
             '<button class="diag-trade-btn sell" data-sell disabled>SHORT</button>' +
           '</div>' +
+          '<button class="diag-pause-toggle" type="button" data-pausetoggle>❚❚ Pause</button>' +
           '<div class="diag-term-hint">BUY goes long, SELL goes short. Tap the same side to add, the other to close.</div>' +
         '</div>' +
         '<div class="diag-side">' +
           '<div class="diag-l2-wrap">' +
-            '<div class="diag-side-h">Level 2 <span class="diag-side-sub">order book</span></div>' +
+            '<div class="diag-side-h">Level 2 <span class="diag-side-sub" data-bookmode>· das montage</span>' +
+              '<button class="diag-l2-toggle" type="button" data-l2toggle>Ladder</button></div>' +
+            '<div class="diag-l1" data-l1></div>' +
             '<div class="diag-l2" data-l2></div>' +
           '</div>' +
           '<div class="diag-tape-wrap">' +
@@ -288,14 +296,16 @@
       sell: root.querySelector('[data-sell]'), pos: root.querySelector('[data-pos]'),
       blist: root.querySelector('[data-blist]'), bpnl: root.querySelector('[data-bpnl]'), brec: root.querySelector('[data-brec]'),
       l2: root.querySelector('[data-l2]'), tape: root.querySelector('[data-tape]'),
+      l1: root.querySelector('[data-l1]'), l2toggle: root.querySelector('[data-l2toggle]'), bookmode: root.querySelector('[data-bookmode]'),
       countdown: root.querySelector('[data-countdown]'), cdnum: root.querySelector('[data-cdnum]'),
-      pauseover: root.querySelector('[data-pauseover]'), pauseBtn: root.querySelector('[data-pause]')
+      pauseover: root.querySelector('[data-pauseover]'), pauseToggle: root.querySelector('[data-pausetoggle]'), exitBtn: root.querySelector('[data-exit]')
     };
     sizeChart(); drawChart(); updateButtons(); refreshBook(); for (var sp = 0; sp < 9; sp++) emitPrint();
     els.buy.addEventListener('click', buySide);
     els.sell.addEventListener('click', sellSide);
-    els.pauseBtn.addEventListener('click', pauseGame);
-    root.querySelector('[data-resume]').addEventListener('click', resumeGame);
+    els.pauseToggle.addEventListener('click', togglePause);
+    els.exitBtn.addEventListener('click', exitGame);
+    els.l2toggle.addEventListener('click', toggleBookView);
     window.addEventListener('resize', sizeChart);
     runCountdown(beginGame);
   }
@@ -325,11 +335,14 @@
     raf = requestAnimationFrame(loop);
   }
 
+  // One simple toggle: click pauses, click again plays. Exit drops back to intro.
+  function togglePause() { if (paused) resumeGame(); else pauseGame(); }
+  function exitGame() { clearAll(); running = false; paused = false; pos = null; window.removeEventListener('resize', sizeChart); renderIntro(); }
   function pauseGame() {
     if (!running || paused) return;
     paused = true; running = false; pauseStart = performance.now();
     if (raf) cancelAnimationFrame(raf); raf = 0;
-    els.pauseover.classList.remove('diag-hidden'); updateButtons();
+    els.pauseover.classList.remove('diag-hidden'); els.pauseToggle.textContent = '▶ Resume'; updateButtons();
   }
   function resumeGame() {
     if (!paused) return;
@@ -339,7 +352,7 @@
     if (pos) pos.openAt += delta;
     lastTick = performance.now();
     paused = false; running = true;
-    els.pauseover.classList.add('diag-hidden'); updateButtons();
+    els.pauseover.classList.add('diag-hidden'); els.pauseToggle.textContent = '❚❚ Pause'; updateButtons();
     raf = requestAnimationFrame(loop);
   }
 
@@ -456,6 +469,12 @@
     var base = (300 + Math.random() * 1400) * (1 - level * 0.12) * (1 + clamp(lean, -0.5, 0.5) * 1.1);
     return Math.max(100, Math.round(base / 100) * 100);
   }
+  function pickMMs(n) {
+    var pool = MMIDS.slice(), out = [];
+    for (var i = 0; i < n; i++) out.push(pool.length ? pool.splice(ri(0, pool.length - 1), 1)[0] : pick(MMIDS));
+    return out;
+  }
+  function mmidFor(side, idx) { var arr = side === 'bid' ? mmBids : mmAsks; return (arr && arr[idx]) || pick(MMIDS); }
   function refreshBook() {
     if (!els || !els.l2) return;
     var tick = tickOf(price), innerAsk = Math.ceil(price / tick) * tick, lean = printSkew - 0.5;
@@ -471,7 +490,34 @@
     }
     for (i = 0; i < L2_LEVELS; i++) { if (asks[i].size > mx) mx = asks[i].size; if (bids[i].size > mx) mx = bids[i].size; }
     book = { asks: asks, bids: bids };
-    var h = '';
+    if (els.l1) els.l1.innerHTML =
+      '<span class="diag-l1-cell bid">' + bids[0].px.toFixed(2) + '</span>' +
+      '<span class="diag-l1-spr">spr ' + (asks[0].px - bids[0].px).toFixed(2) + '</span>' +
+      '<span class="diag-l1-cell ask">' + asks[0].px.toFixed(2) + '</span>';
+    if (bookView === 'ladder') renderLadder(asks, bids, mx);
+    else renderMontage(asks, bids);
+    if (Math.random() < 0.18) { var sa = Math.random() < 0.5 ? mmBids : mmAsks; if (sa) sa[ri(0, sa.length - 1)] = pick(MMIDS); }
+  }
+  // The DAS-style default: two columns (bids left, asks right) of MMID · price · size,
+  // banded by price level. A wall is a fat size at one MM; a spoof is that MM vanishing.
+  function renderMontage(asks, bids) {
+    var h = '<div class="diag-mont"><div class="diag-mont-col">', i;
+    for (i = 0; i < L2_LEVELS; i++) h += montRow(bids[i], 'bid', i);
+    h += '</div><div class="diag-mont-col">';
+    for (i = 0; i < L2_LEVELS; i++) h += montRow(asks[i], 'ask', i);
+    h += '</div></div>';
+    els.l2.innerHTML = h;
+  }
+  function montRow(lv, side, idx) {
+    var lots = Math.max(0, Math.round(lv.size / 100));
+    return '<div class="diag-mont-row ' + side + ' lvl' + Math.min(idx, 5) + (lv.wall ? ' wall' : '') + '">' +
+      '<span class="diag-mm">' + mmidFor(side, idx) + '</span>' +
+      '<span class="diag-mp">' + lv.px.toFixed(2) + '</span>' +
+      '<span class="diag-ml">' + lots + '</span></div>';
+  }
+  // The simpler alt: a single-axis price ladder with depth bars (pressure at a glance).
+  function renderLadder(asks, bids, mx) {
+    var h = '', i;
     for (i = L2_LEVELS - 1; i >= 0; i--) h += l2Row(asks[i], 'ask', mx);
     h += '<div class="diag-l2-spread">' + px(price) + '</div>';
     for (i = 0; i < L2_LEVELS; i++) h += l2Row(bids[i], 'bid', mx);
@@ -483,6 +529,13 @@
       '<span class="diag-l2-bar" style="width:' + w + '%"></span>' +
       '<span class="diag-l2-px">' + lv.px.toFixed(2) + '</span>' +
       '<span class="diag-l2-sz">' + fmtSize(lv.size) + '</span></div>';
+  }
+  function toggleBookView() {
+    bookView = bookView === 'montage' ? 'ladder' : 'montage';
+    if (els.l2toggle) els.l2toggle.textContent = bookView === 'montage' ? 'Ladder' : 'Montage';
+    if (els.bookmode) els.bookmode.textContent = bookView === 'montage' ? '· das montage' : '· price ladder';
+    try { audio.tick(); } catch (e) {}
+    refreshBook();
   }
   function emitPrint() {
     if (!els || !els.tape) return;
@@ -730,7 +783,7 @@
         '<button class="diag-again" type="button" data-again>↺ Run the tape again</button>' +
       '</div>';
     buildShare(root.querySelector('[data-share]'), url, shareText, an.id);
-    root.querySelector('[data-again]').addEventListener('click', function () { audio.buy(); start(); });
+    root.querySelector('[data-again]').addEventListener('click', function () { start(); });
     root.querySelector('[data-cta]').addEventListener('click', function () { track('diagnostic_cta', { archetype: an.id }); });
     audio.verdict();
   }
