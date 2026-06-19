@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<!-- what-trader — free public "What Kind of Trader Are You?" diagnostic · playable gauntlet · savage archetype · share + funnel · no login -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What Kind of Trader Are You? — MAKETZO · The 60-Second Tape Test</title>
+<meta name="description" content="Eight live trading moments. You act, the tape answers. Find out which trader you really are — and which one the market is betting against. Free, 60 seconds, no login.">
+<meta name="theme-color" content="#06070A">
+<meta property="og:title" content="What kind of trader are you, really?">
+<meta property="og:description" content="Eight live moments. You act, the tape answers. The result will sting, because it's true. Free 60-second test from MAKETZO.">
+<meta property="og:url" content="https://maketzo.co/what-trader">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://maketzo.co/assets/album-cover.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://maketzo.co/assets/album-cover.jpg">
+<link rel="canonical" href="https://maketzo.co/what-trader">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/css/trader-diagnostic.css?v=1">
+<script src="assets/js/mkt-analytics.js?v=5" defer></script>
+<script src="assets/js/newsletter.js?v=4" defer></script>
+<script src="assets/js/mkt-consent.js?v=1" defer></script>
+<script src="assets/js/checkout.js?v=10" defer></script>
+<script src="assets/js/trader-diagnostic.js?v=1" defer></script>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--mk-surface-page, #06070A); color: var(--mk-text-primary, #f3f5f8); font-family: var(--mk-font-sans, "DM Sans", system-ui, sans-serif); font-size: var(--mk-text-md, 16px); line-height: var(--mk-lead-body, 1.6); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+a { color: inherit; text-decoration: none; }
+ul, ol { list-style: none; }
+img { display: block; max-width: 100%; }
+em, i { font-style: italic; }
+strong { color: var(--mk-text-primary, #fff); font-weight: 600; }
+
+.mobile-overlay { position: fixed; inset: 0; z-index: 90; background: rgba(0,0,0,.6); backdrop-filter: blur(6px); opacity: 0; pointer-events: none; transition: opacity var(--mk-dur-med, .3s); }
+.mobile-overlay.open { opacity: 1; pointer-events: auto; }
+.mobile-drawer { position: fixed; top: 0; right: 0; bottom: 0; z-index: 100; width: min(320px, 88%); background: var(--mk-surface-base, #0d1017); border-left: var(--mk-border-soft, 1px solid rgba(255,255,255,.1)); padding: 80px 28px 28px; transform: translateX(100%); transition: transform var(--mk-dur-med, .3s) var(--mk-ease-out, ease); display: flex; flex-direction: column; gap: 20px; }
+.mobile-drawer.open { transform: translateX(0); }
+.mobile-drawer-links li { padding: 12px 0; border-bottom: var(--mk-border-hairline, 1px solid rgba(255,255,255,.07)); }
+.mobile-drawer-links a { font-family: var(--mk-font-display, "Bebas Neue", sans-serif); font-size: var(--mk-display-md, 28px); letter-spacing: var(--mk-track-display, .02em); text-transform: uppercase; color: var(--mk-text-primary, #fff); }
+.mobile-drawer-cta { display: inline-flex; align-items: center; justify-content: center; background: var(--mk-gold-gradient, linear-gradient(135deg,#e5c572,#d4af37)); color: var(--mk-text-on-gold, #0d0f14); font-family: var(--mk-font-sans, sans-serif); font-weight: 600; font-size: var(--mk-text-sm, 14px); letter-spacing: var(--mk-track-cap, .06em); text-transform: uppercase; padding: 14px 22px; border: 1px solid rgba(0,0,0,.18); border-radius: var(--mk-radius-button, 10px); cursor: pointer; margin-top: auto; }
+html.mkt-auth .mobile-drawer-cta { display: none; }
+
+#mainNav { position: fixed; top: 0; left: 0; right: 0; z-index: 50; background: rgba(6,7,10,.6); backdrop-filter: blur(20px) saturate(140%); border-bottom: 1px solid rgba(212,175,55,.12); display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 14px 32px 14px 64px; }
+.nav-logo.mk-brand-lockup { --mk-brand-lockup-mark-h: 44px; --mk-brand-lockup-wordmark-h: 22px; --mk-brand-lockup-gap: 10px; }
+.nav-links { display: flex; align-items: center; gap: 28px; margin: 0; padding: 0; }
+.nav-links > li > a:not(.nav-login-btn) { font-size: var(--mk-text-sm, 14px); color: var(--mk-text-secondary, #9aa6b3); font-weight: 500; letter-spacing: .02em; transition: color var(--mk-dur-fast, .15s); }
+.nav-links > li > a:not(.nav-login-btn):hover { color: var(--mk-text-primary, #fff); }
+.nav-links > li > a[aria-current="page"] { color: var(--mk-brand, #d4af37); }
+.nav-auth-in { display: none; }
+html.mkt-auth .nav-auth-out { display: none; }
+html.mkt-auth .nav-auth-in { display: inline; }
+.nav-login-btn { font-size: var(--mk-text-sm, 14px); color: var(--mk-text-primary, #fff); font-weight: 600; }
+.nav-cta { font-family: var(--mk-font-sans, sans-serif); font-weight: 600; font-size: var(--mk-text-sm, 14px); color: var(--mk-text-on-gold, #0d0f14); background: var(--mk-gold-gradient, linear-gradient(135deg,#e5c572,#d4af37)); border: none; border-radius: var(--mk-radius-button, 10px); padding: 10px 18px; cursor: pointer; }
+html.mkt-auth .nav-cta { display: none; }
+.hamburger { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 6px; }
+.hamburger span { width: 24px; height: 2px; background: var(--mk-text-primary, #fff); transition: .2s; }
+
+/* diagnostic page shell */
+.diag-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 120px 20px 80px; position: relative; }
+.diag-page::before { content: ""; position: absolute; inset: 0; background: radial-gradient(1100px 600px at 50% -10%, rgba(212,175,55,.10), transparent 60%); pointer-events: none; }
+
+@media (max-width: 880px) {
+  #mainNav { padding: 12px 18px; }
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+}
+</style>
+</head>
+<body>
+
+<div class="mobile-overlay" id="mobileOverlay" onclick="closeDrawer()"></div>
+<div class="mobile-drawer" id="mobileDrawer">
+  <ul class="mobile-drawer-links">
+    <li><a href="system.html" onclick="closeDrawer()">The System</a></li>
+    <li><a href="journal.html" onclick="closeDrawer()">Journal</a></li>
+    <li><a href="indicators.html" onclick="closeDrawer()">Indicators</a></li>
+    <li><a href="focus.html" onclick="closeDrawer()">Focus Room</a></li>
+    <li><a href="/blog" onclick="closeDrawer()">Blog</a></li>
+    <li><a href="pricing.html" onclick="closeDrawer()">Pricing</a></li>
+    <li><a href="/app" onclick="closeDrawer()"><span class="nav-auth-out">Log In</span><span class="nav-auth-in">LAUNCH</span></a></li>
+  </ul>
+  <button class="mobile-drawer-cta" onclick="handleCheckout('pro',{preventDefault:()=>{},currentTarget:null});closeDrawer()">Start Free Trial &rarr;</button>
+</div>
+
+<nav id="mainNav">
+  <a href="index.html" class="nav-logo mk-brand-lockup">
+    <img class="mk-brand-lockup__mark" src="assets/logo-mark.png" alt="">
+    <img class="mk-brand-lockup__wordmark" src="assets/logo-wordmark.png" alt="MAKETZO">
+  </a>
+  <ul class="nav-links">
+    <li><a href="system.html">The System</a></li>
+    <li><a href="journal.html">Journal</a></li>
+    <li><a href="indicators.html">Indicators</a></li>
+    <li><a href="focus.html">Focus Room</a></li>
+    <li><a href="/blog">Blog</a></li>
+    <li><a href="pricing.html">Pricing</a></li>
+    <li><a href="/app" class="nav-login-btn"><span class="nav-auth-out">Log In</span><span class="nav-auth-in">LAUNCH</span></a></li>
+    <li><button class="nav-cta" onclick="handleCheckout('pro',event)">Start Free Trial</button></li>
+  </ul>
+  <button class="hamburger" id="hamburger" onclick="toggleDrawer()" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+
+<main class="diag-page">
+  <div id="diag-root"></div>
+</main>
+
+<hr class="mk-rule-gold">
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-col-brand">
+        <div class="footer-logo-wrap">
+          <a href="index.html" class="mk-brand-lockup mk-brand-lockup--stacked">
+            <img class="mk-brand-lockup__mark" src="assets/logo-mark.png" alt="">
+            <img class="mk-brand-lockup__wordmark" src="assets/logo-wordmark.png" alt="MAKETZO">
+          </a>
+        </div>
+        <p class="footer-tagline"><strong>Stop the trade you'd regret.</strong>Discipline in every session. Edge in every trade. Accountability when it counts.</p>
+      </div>
+      <div><div class="footer-col-title">Product</div><ul class="footer-links"><li><a href="system.html">The System</a></li><li><a href="journal.html">Journal</a></li><li><a href="indicators.html">Indicators</a></li><li><a href="focus.html">Focus Room</a></li><li><a href="pricing.html">Pricing</a></li></ul></div>
+      <div><div class="footer-col-title">Explore</div><ul class="footer-links"><li><a href="why.html">Why MAKETZO</a></li><li><a href="soundtrack.html">Soundtrack</a></li><li><a href="contact.html">Contact Us</a></li></ul></div>
+      <div><div class="footer-col-title">Legal</div><ul class="footer-links"><li><a href="privacy.html">Privacy Policy</a></li><li><a href="terms.html">Terms of Service</a></li><li><a href="disclaimer.html">Risk Disclaimer</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">&copy; 2026 Abinic, LLC. All rights reserved. MAKETZO&reg; is a product of Abinic, LLC. maketzo.co</p>
+      <p class="footer-disclaimer">What Kind of Trader Are You? is a free behavioral self-assessment for entertainment and self-awareness. It is not financial advice, not a measure of skill or future results, and not a recommendation to buy or sell anything. Trading involves substantial risk of loss and is not suitable for all investors.</p>
+      <p class="footer-disclaimer">MAKETZO is a journaling, behavioral accountability, educational, and decision-support platform. Neither Abinic, LLC nor MAKETZO provides investment advice, personalized financial advice, tax advice, legal advice, trade recommendations, or solicitations to buy or sell any security or financial instrument. Users remain solely responsible for their own decisions and risk management.</p>
+    </div>
+  </div>
+</footer>
+
+<div class="sticky-bar" id="stickyBar">
+  <span class="sticky-bar-text"><strong>Stay Sharp.</strong> Bi-weekly trading discipline insights.</span>
+  <form class="sticky-bar-form" onsubmit="return MKTNewsletter.handleForm(event, 'sticky-bar')" novalidate>
+    <input class="sticky-bar-input" id="stickyEmail" name="email" type="email" placeholder="your@email.com" required autocomplete="email" aria-describedby="stickyEmailError">
+    <button class="btn-primary" type="submit">Subscribe</button>
+    <div class="newsletter-error" id="stickyEmailError" hidden></div>
+  </form>
+  <button class="sticky-bar-close" onclick="closeStickyBar()" aria-label="Close">&times;</button>
+</div>
+
+<script>
+const API='https://api.maketzo.co';
+function toggleDrawer(){const d=document.getElementById('mobileDrawer');const o=document.getElementById('mobileOverlay');const h=document.getElementById('hamburger');d.classList.toggle('open');o.classList.toggle('open');h.classList.toggle('open');document.body.style.overflow=d.classList.contains('open')?'hidden':'';}
+function closeDrawer(){document.getElementById('mobileDrawer').classList.remove('open');document.getElementById('mobileOverlay').classList.remove('open');document.getElementById('hamburger').classList.remove('open');document.body.style.overflow='';}
+let stickyShown=false,stickyDismissed=false;
+window.addEventListener('scroll',()=>{
+  if(!stickyDismissed&&!stickyShown&&window.scrollY>240){document.getElementById('stickyBar').classList.add('visible');stickyShown=true;}
+  document.getElementById('mainNav').style.borderBottomColor=window.scrollY>60?'rgba(201,168,76,0.25)':'rgba(201,168,76,0.12)';
+});
+function closeStickyBar(){document.getElementById('stickyBar').classList.remove('visible');stickyDismissed=true;}
+</script>
+</body>
+</html>
