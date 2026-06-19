@@ -1,5 +1,5 @@
 /*
- * MAKETZO — "Can You Trade?" / "What Kind of Trader Are You?". v18
+ * MAKETZO — "Can You Trade?" / "What Kind of Trader Are You?". v19
  *
  * A free, no-login, HARD live trading sim at /what-trader. A live candlestick
  * tape (9/20 EMA + VWAP + a resistance level) you trade two-sided (BUY = long,
@@ -235,9 +235,10 @@
       '<div class="diag-intro">' +
         '<div class="diag-eyebrow">The two-minute tape test</div>' +
         '<h1 class="diag-h1">Can you trade,<br><em>or do you just think so?</em></h1>' +
-        '<p class="diag-lede">Two minutes on a live small-cap tape that fights back. Real chart, go <b>long</b> or <b>short</b>, real P&L on every fill. It will let you get comfortable, then it will try to take it all back. Find out what kind of trader you really are.</p>' +
+        '<p class="diag-lede">Two minutes on a <b>simulated</b> small-cap tape that fights back. Go <b>long</b> or <b>short</b> and watch the P&L move on every fill. It lets you get comfortable, then tries to take it all back. The money is fake. What it shows about how you trade is not.</p>' +
         '<button class="diag-start" type="button" data-start>Prove it →</button>' +
-        '<div class="diag-intro-note">Free · 2 minutes · not financial advice</div>' +
+        '<div class="diag-intro-note">Free · 2 minutes · a simulation, not real trading</div>' +
+        '<div class="diag-intro-disc">Play money on a simulated tape, for practice and entertainment only. Not a real brokerage, no live market data, and nothing here is financial advice.</div>' +
       '</div>';
     root.querySelector('[data-start]').addEventListener('click', start);
   }
@@ -313,7 +314,7 @@
     els.pauseToggle.addEventListener('click', togglePause);
     els.exitBtn.addEventListener('click', exitGame);
     els.l2toggle.addEventListener('click', toggleBookView);
-    buildShare(root.querySelector('[data-share-game]'), 'https://maketzo.co/what-trader', 'Two minutes on a live small-cap tape that fights back. Can you trade, or do you just think so?', 'ingame', pauseGame);
+    buildShare(root.querySelector('[data-share-game]'), 'https://maketzo.co/what-trader', 'Two minutes on a simulated small-cap tape that fights back. Can you trade, or do you just think so?', 'ingame', pauseGame);
     window.addEventListener('resize', sizeChart);
     runCountdown(beginGame);
   }
@@ -415,7 +416,7 @@
     var drift = price * R.drift * dt;
     // fat-tailed noise: ~3% of ticks get an outsized spike (stop-runs / sweeps that
     // mostly snap back), and down-tape prints a touch sharper than up ("elevator down").
-    var spike = Math.random() < 0.03 ? rnd(2.2, 3.6) : 1, sharp = R.drift < 0 ? 1.15 : 1;
+    var isSpike = Math.random() < 0.03, spike = isSpike ? rnd(2.2, 3.6) : 1, sharp = R.drift < 0 ? 1.15 : 1;
     var noise = price * R.vol * (Math.random() * 2 - 1) * Math.sqrt(dt) * 2 * spike * sharp;
     var np = price + drift + noise;
     price = isFinite(np) ? Math.max(0.4, np) : price;
@@ -424,7 +425,9 @@
     var c = candles[candles.length - 1]; c.c = price; if (price > c.h) c.h = price; if (price < c.l) c.l = price;
     if (now - lastCandle >= CANDLE_MS) { lastCandle = now; closeCandle(c, now); candles.push({ o: price, h: price, l: price, c: price, e9: ema9, e20: ema20, vwap: vwap }); if (candles.length > 90) candles.shift(); }
 
-    if (pos) { var u = pos.dir * pos.shares * (price - pos.entry); if (u < pos.maxAdverse) pos.maxAdverse = u; if (u > pos.maxFav) pos.maxFav = u; }
+    // skip spike ticks for max-favorable/adverse: a 1-tick sweep is an untradeable wick,
+    // so it must not masquerade as a level the player "gave back" or "got caught" at.
+    if (pos && !isSpike) { var u = pos.dir * pos.shares * (price - pos.entry); if (u < pos.maxAdverse) pos.maxAdverse = u; if (u > pos.maxFav) pos.maxFav = u; }
 
     // live tape — order book refresh (eased toward the regime, or the telegraphed
     // move during a lead window) + a Time & Sales print on a volatility-scaled cadence
@@ -772,7 +775,9 @@
     if (degen.length) { var d = degen[0]; tells.push({ w: 5, t: 'You loaded ' + d.lots + ' times into one trade and it went ' + money(d.pnl) + '. No plan, full send.' }); }
     if (chases.length) tells.push({ w: 3, t: (chaseDir === 1 ? 'You bought ' + sym + ' into a pump and ate the reversal' : 'You shorted ' + sym + ' into the hole and got squeezed') + (chases.length > 1 ? ' (' + chases.length + 'x)' : '') + '.' });
     if (revenges.length) tells.push({ w: 4, t: 'You re-entered within two seconds of a loss. That is tilt, not a setup.' });
-    if (snatches.length) { var s = snatches[0]; tells.push({ w: 2, t: 'You snatched a winner at ' + money(s.pnl) + '. It was running to ' + money(s.maxFav) + '.' }); }
+    // Snatch is a Paper-Hands tell; it CONTRADICTS the Sniper ("let winners run"), so it
+    // never shows on a Sniper card. A lone give-back on a clean run is not a confession.
+    if (snatches.length >= 2 && id !== 'sniper') { var s = snatches[0]; tells.push({ w: 2, t: 'You snatched winners early. One booked ' + money(s.pnl) + ' with ' + money(s.maxFav) + ' on the table.' }); }
     if (buyCount >= 12) tells.push({ w: 2, t: 'You fired ' + buyCount + ' orders in two minutes. Most of that was fees.' });
     if (buyCount === 0) tells.push({ w: 3, t: 'You never put a dollar at risk. The whole move happened without you.' });
     tells.sort(function (a, b) { return b.w - a.w; });
