@@ -232,7 +232,7 @@
   }
 
   function start() {
-    audio.unlock(); audio.buy(); reset(); track('diagnostic_start', { scenario: scenario.id });
+    clearAll(); audio.unlock(); audio.buy(); reset(); track('diagnostic_start', { scenario: scenario.id });
     root.innerHTML =
       '<div class="diag-term">' +
         '<div class="diag-main">' +
@@ -288,18 +288,20 @@
     runCountdown(beginGame);
   }
 
-  // A 3-2-1-GO countdown precedes the tape, matching the in-app games.
+  // A 3-2-1-GO countdown precedes the tape, matching the in-app games. Each step
+  // is scheduled at an absolute offset from ONE origin so the cadence is dead-steady;
+  // chaining setTimeout let a stray leftover timer interleave and look like it sped up.
   function runCountdown(done) {
-    var seq = ['3', '2', '1', 'GO'], i = 0, STEP = 850;
+    var seq = ['3', '2', '1', 'GO'], STEP = 850;
     els.countdown.classList.remove('diag-hidden');
-    (function step() {
-      if (i >= seq.length) { els.countdown.classList.add('diag-hidden'); done(); return; }
-      var v = seq[i++];
-      els.cdnum.textContent = v; els.cdnum.className = 'diag-cd-num' + (v === 'GO' ? ' go' : '');
-      void els.cdnum.offsetWidth; els.cdnum.classList.add('tick');
-      try { v === 'GO' ? audio.cdGo() : audio.cdTick(); } catch (e) {}
-      later(step, STEP);
-    })();
+    seq.forEach(function (v, i) {
+      later(function () {
+        els.cdnum.textContent = v; els.cdnum.className = 'diag-cd-num' + (v === 'GO' ? ' go' : '');
+        void els.cdnum.offsetWidth; els.cdnum.classList.add('tick');
+        try { v === 'GO' ? audio.cdGo() : audio.cdTick(); } catch (e) {}
+      }, i * STEP);
+    });
+    later(function () { els.countdown.classList.add('diag-hidden'); done(); }, seq.length * STEP);
   }
 
   function beginGame() {
