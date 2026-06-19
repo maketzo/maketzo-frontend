@@ -1,5 +1,5 @@
 /*
- * MAKETZO — "Can You Trade?" / "What Kind of Trader Are You?". v13
+ * MAKETZO — "Can You Trade?" / "What Kind of Trader Are You?". v14
  *
  * A free, no-login, HARD live trading sim at /what-trader. A live candlestick
  * tape (9/20 EMA + VWAP + a resistance level) you trade two-sided (BUY = long,
@@ -269,7 +269,7 @@
         '</div>' +
         '<div class="diag-side">' +
           '<div class="diag-l2-wrap">' +
-            '<div class="diag-side-h">Level 2 <span class="diag-side-sub" data-bookmode>· das montage</span>' +
+            '<div class="diag-side-h">Level 2 <span class="diag-side-sub" data-bookmode>· montage</span>' +
               '<button class="diag-l2-toggle" type="button" data-l2toggle>Ladder</button></div>' +
             '<div class="diag-l1" data-l1></div>' +
             '<div class="diag-l2" data-l2></div>' +
@@ -300,7 +300,7 @@
       countdown: root.querySelector('[data-countdown]'), cdnum: root.querySelector('[data-cdnum]'),
       pauseover: root.querySelector('[data-pauseover]'), pauseToggle: root.querySelector('[data-pausetoggle]'), exitBtn: root.querySelector('[data-exit]')
     };
-    sizeChart(); drawChart(); updateButtons(); refreshBook(); for (var sp = 0; sp < 9; sp++) emitPrint();
+    sizeChart(); drawChart(); updateButtons(); applyBookView(); for (var sp = 0; sp < 16; sp++) emitPrint();
     els.buy.addEventListener('click', buySide);
     els.sell.addEventListener('click', sellSide);
     els.pauseToggle.addEventListener('click', togglePause);
@@ -530,12 +530,17 @@
       '<span class="diag-l2-px">' + lv.px.toFixed(2) + '</span>' +
       '<span class="diag-l2-sz">' + fmtSize(lv.size) + '</span></div>';
   }
+  // The book view (montage vs ladder) PERSISTS across replays — bookView is never
+  // reset, so apply syncs the toggle label + sub-label + re-renders to whatever it is.
+  function applyBookView() {
+    if (els.l2toggle) els.l2toggle.textContent = bookView === 'montage' ? 'Ladder' : 'Montage';
+    if (els.bookmode) els.bookmode.textContent = bookView === 'montage' ? '· montage' : '· ladder';
+    refreshBook();
+  }
   function toggleBookView() {
     bookView = bookView === 'montage' ? 'ladder' : 'montage';
-    if (els.l2toggle) els.l2toggle.textContent = bookView === 'montage' ? 'Ladder' : 'Montage';
-    if (els.bookmode) els.bookmode.textContent = bookView === 'montage' ? '· das montage' : '· price ladder';
     try { audio.tick(); } catch (e) {}
-    refreshBook();
+    applyBookView();
   }
   function emitPrint() {
     if (!els || !els.tape) return;
@@ -546,7 +551,7 @@
     row.className = 'diag-print ' + (green ? 'buy' : 'sell') + (block ? ' block' : '');
     row.innerHTML = '<span class="diag-print-px">' + pr.toFixed(2) + '</span><span class="diag-print-sz">' + fmtSize(size) + '</span>';
     els.tape.insertBefore(row, els.tape.firstChild);
-    while (els.tape.childNodes.length > 12) els.tape.removeChild(els.tape.lastChild);
+    while (els.tape.childNodes.length > 16) els.tape.removeChild(els.tape.lastChild);
   }
   // The plain-words callout naming what the book just did — quiet, distinct from the
   // loud catalyst. Spawn = "buyers stacking the bid"; pull = the spoof getting revealed.
@@ -772,7 +777,7 @@
             '<div class="diag-meta-box"><span class="diag-meta-num">' + pct + '%</span><span class="diag-meta-cap">of traders did worse</span></div>' +
           '</div>' +
           '<div class="diag-card-stats">' + st.n + ' trades · ' + st.wins + 'W ' + st.losses + 'L · best ' + (st.best > 0 ? '+' : '') + money(st.best) + ' · worst ' + money(st.worst) + ' · PF ' + st.pf + '</div>' +
-          '<div class="diag-card-wm">MAKETZO · can you trade · maketzo.co</div>' +
+          '<div class="diag-card-wm">MAKETZO · protect your capital · maketzo.co</div>' +
         '</div>' +
         tellsHtml +
         '<div class="diag-funnel">' +

@@ -93,8 +93,8 @@
 .diag-mont-row.ask.lvl5 { background: #566070; color: #e7edf5; }
 
 /* Time & Sales — the prints. Green hits the offer, red hits the bid. */
-.diag-tape-wrap { flex: 1 1 auto; min-height: 96px; display: flex; flex-direction: column; border-radius: 12px; border: 1px solid var(--d-line); background: rgba(8,11,16,.6); padding: 10px 10px 9px; overflow: hidden; }
-.diag-tape { flex: 1; overflow: hidden; display: flex; flex-direction: column; gap: 1px; font-variant-numeric: tabular-nums; }
+.diag-tape-wrap { flex: 1 1 auto; min-height: 110px; display: flex; flex-direction: column; border-radius: 12px; border: 1px solid var(--d-line); background: rgba(8,11,16,.6); padding: 10px 10px 9px; overflow: hidden; }
+.diag-tape { flex: 1 1 0; min-height: 0; overflow: hidden; display: flex; flex-direction: column; gap: 1px; font-variant-numeric: tabular-nums; }
 .diag-print { display: flex; align-items: center; justify-content: space-between; padding: 2px 8px; border-radius: 4px; font-family: var(--mk-font-mono, "DM Mono", monospace); font-size: 11px; animation: diagPrint .16s ease; }
 .diag-print.buy { background: rgba(126,217,87,.10); }
 .diag-print.sell { background: rgba(255,107,107,.10); }
