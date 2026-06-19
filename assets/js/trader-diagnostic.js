@@ -1,5 +1,5 @@
 /*
- * MAKETZO — "Can You Trade?" / "What Kind of Trader Are You?". v24
+ * MAKETZO — "Can You Trade?" / "What Kind of Trader Are You?". v25
  *
  * A free, no-login, HARD live trading sim at /trader-type. A live candlestick
  * tape (9/20 EMA + VWAP + a resistance level) you trade two-sided (BUY = long,
@@ -739,10 +739,12 @@
     var addsAgainstTotal = 0, ranWinners = 0, cutFast = 0, letRunLosers = 0;
     for (var i = 0; i < trades.length; i++) {
       var t = trades[i];
-      // chased = entered late/extended in your direction AND got caught (lost or ran deep against you)
+      // A chase = bought EXTENDED and ate a REAL reversal (a loss, not a quick managed cut).
+      // Buying the top and WINNING is breakout trading, not chasing — winners and small cuts
+      // never count. (Ed, 2026-06-19: a 10W-1L, +$5,288, PF 29.7 run was branded The Chaser
+      // off one extended entry, because winners with normal heat were flagged "caught".)
       var extended = t.extAtEntry > 0.13;
-      var caught = (t.pnl < 0) || (t.maxAdverse <= -300);
-      if (extended && caught) chases.push(t);
+      if (extended && t.pnl <= -300) chases.push(t);
       if ((t.addsAgainst >= 1 && t.pnl < 0) || (t.pnl <= -400 && t.maxAdverse <= -400)) bags.push(t);
       if (t.lots >= 4 && t.pnl <= -900) degen.push(t);
       if (t.win && t.pnl < 120 && t.heldMs < 2200 && t.maxFav > t.pnl + 220) snatches.push(t);
@@ -770,13 +772,16 @@
     var disc = Math.max(0, Math.min(100, 100 - pen + cred));
     var hardSin = degen.length >= 1 || addsAgainstTotal >= 2 || bagsHadAdds || revenges.length >= 2;
 
-    // ── Archetype — dominant SIN, never P&L. Sniper is reserved for clean process.
+    // ── Archetype — the dominant PATTERN, never P&L. A single slip (one failed breakout,
+    // one quick-cut loss) is a TELL, not your identity; the savage labels need a real
+    // pattern. Sniper is the DEFAULT for a run that traded well (high discipline, no
+    // loser-holding, no chronic leak) — buying the top and winning is breakout trading.
     var counts = {
-      fomo: chases.length,
-      holding: bags.length + (addsAgainstTotal >= 2 ? 1 : 0),
-      paper: snatches.length,
-      overtrade: buyCount >= 14 ? 2 : (buyCount >= 12 ? 1 : 0),
-      tilt: revenges.length,
+      fomo: chases.length >= 2 ? chases.length : 0,          // chasing must be a pattern, not one failed breakout
+      holding: bags.length + (letRunLosers > 0 ? 1 : 0),     // holding/bleeding a loser counts even once
+      paper: snatches.length >= 2 ? snatches.length : 0,
+      overtrade: buyCount >= 14 ? 2 : 0,
+      tilt: revenges.length >= 2 ? revenges.length : 0,
       freeze: buyCount === 0 ? 3 : (n === 1 && net <= 0 && buyCount <= 1 ? 2 : 0),
       press: degen.length
     };
@@ -785,15 +790,19 @@
     for (var p = 0; p < PRIORITY.length; p++) { var k = PRIORITY[p]; if (counts[k] > domVal) { domVal = counts[k]; dom = k; } }
 
     var MAP = { fomo: 'chaser', holding: 'bagholder', paper: 'paperhands', overtrade: 'masher', tilt: 'revenge', freeze: 'freezer', press: 'degenerate' };
-    var cleanSniper = n >= 1 && disc >= 80 && !hardSin && bags.length === 0 && degen.length === 0 && chases.length === 0 && snatches.length < 2 && buyCount < 12;
+    // Sniper = traded well overall. A failed breakout you cut, or heavy-but-skilled activity,
+    // does NOT disqualify the flex (the discipline score already accounts for it). Holding or
+    // bleeding a loser DOES — a Sniper cuts. Discipline governs; one slip never defines you.
+    var cleanSniper = n >= 1 && disc >= 78 && !hardSin && bags.length === 0 && letRunLosers === 0 && degen.length === 0 && snatches.length < 2;
     var id;
     if (n === 0) id = 'freezer';
-    else if (degen.length) id = 'degenerate';   // a full-send blow-up IS the identity, whatever else happened
-    else if (cleanSniper) id = 'sniper';
+    else if (degen.length) id = 'degenerate';   // a full-send blow-up IS the identity
+    else if (cleanSniper) id = 'sniper';         // traded well overall → Sniper, slips become tells
     else if (dom) id = MAP[dom];
-    else if (letRunLosers > 0) id = 'bagholder';
+    else if (bags.length || letRunLosers) id = 'bagholder';
     else if (snatches.length) id = 'paperhands';
-    else id = 'sniper';
+    else if (buyCount >= 12) id = 'masher';
+    else id = 'sniper';                          // discipline dipped but no nameable leak → still a Sniper
 
     // The grade can never out-rank the diagnosis: a NAMED sin caps the flex at B, a HARD
     // sin (averaging down / full send) caps at C. Only a clean Sniper run reaches A/A+.
@@ -822,7 +831,7 @@
       else tells.push({ w: 4, t: 'You let a red bleed to ' + money(b.maxAdverse) + ' before you finally cut it at ' + money(b.pnl) + '.' });
     }
     if (degen.length) { var d = degen[0]; tells.push({ w: 5, t: 'You loaded ' + d.lots + ' times into one trade and it went ' + money(d.pnl) + '. No plan, full send.' }); }
-    if (chases.length) tells.push({ w: 3, t: (chaseDir === 1 ? 'You bought ' + sym + ' into a pump and ate the reversal' : 'You shorted ' + sym + ' into the hole and got squeezed') + (chases.length > 1 ? ' (' + chases.length + 'x)' : '') + '.' });
+    if (chases.length && id !== 'sniper') tells.push({ w: 3, t: (chaseDir === 1 ? 'You bought ' + sym + ' into a pump and ate the reversal' : 'You shorted ' + sym + ' into the hole and got squeezed') + (chases.length > 1 ? ' (' + chases.length + 'x)' : '') + '.' });
     if (revenges.length) tells.push({ w: 4, t: 'You re-entered within two seconds of a loss. That is tilt, not a setup.' });
     // Snatch is a Paper-Hands tell; it CONTRADICTS the Sniper ("let winners run"), so it
     // never shows on a Sniper card. A lone give-back on a clean run is not a confession.
