@@ -1,7 +1,7 @@
 /*
- * MAKETZO — "Can You Trade?" / "What Kind of Trader Are You?". v19
+ * MAKETZO — "Can You Trade?" / "What Kind of Trader Are You?". v20
  *
- * A free, no-login, HARD live trading sim at /what-trader. A live candlestick
+ * A free, no-login, HARD live trading sim at /trader-type. A live candlestick
  * tape (9/20 EMA + VWAP + a resistance level) you trade two-sided (BUY = long,
  * SELL = short, add to average down, blow up). Live blotter on the right. The
  * tape runs one of several SMALL-CAP SCENARIOS chosen at random — pump & dump,
@@ -314,7 +314,7 @@
     els.pauseToggle.addEventListener('click', togglePause);
     els.exitBtn.addEventListener('click', exitGame);
     els.l2toggle.addEventListener('click', toggleBookView);
-    buildShare(root.querySelector('[data-share-game]'), 'https://maketzo.co/what-trader', 'Two minutes on a simulated small-cap tape that fights back. Can you trade, or do you just think so?', 'ingame', pauseGame);
+    buildShare(root.querySelector('[data-share-game]'), 'https://maketzo.co/trader-type', 'Two minutes on a simulated small-cap tape that fights back. Can you trade, or do you just think so?', 'ingame', pauseGame);
     window.addEventListener('resize', sizeChart);
     runCountdown(beginGame);
   }
@@ -800,7 +800,7 @@
     var tellsHtml = an.tells.length
       ? '<div class="diag-tells"><div class="diag-tells-h">Your tells</div>' + an.tells.map(function (t) { return '<div class="diag-tell">' + t + '</div>'; }).join('') + '</div>'
       : '<div class="diag-tells"><div class="diag-tells-h">Your tells</div><div class="diag-tell">Nothing to confess. You took the right side, cut your losers, and walked. Rare.</div></div>';
-    var url = 'https://maketzo.co/what-trader';
+    var url = 'https://maketzo.co/trader-type';
     var shareText = (net >= 0 ? 'I finished ' + money(net) + ' green' : 'I lost ' + money(-net)) + ' in two minutes on MAKETZO and got branded ' + a.name + ' (' + an.grade + '). Can you beat it?';
 
     root.innerHTML =
