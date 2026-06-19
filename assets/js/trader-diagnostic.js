@@ -1,19 +1,24 @@
 /*
- * MAKETZO — "Can You Trade?" / "What Kind of Trader Are You?". v3 (real engine)
+ * MAKETZO — "Can You Trade?" / "What Kind of Trader Are You?". v5 (2-min arc)
  *
  * A free, no-login, HARD live trading sim at /what-trader. One shared engine:
- * a live candlestick chart with an ADVERSARIAL tape (blow-off tops, fakeouts,
- * flush-and-recover, chop that bleeds), real BUY / SELL, a real position and
- * P&L, a 60-second clock. Most people lose money — that's the point, and that's
- * what makes a score worth sharing.
+ * a live candlestick chart with a SMALL-CAP tape that lures then rugs, real BUY /
+ * SELL, a real position you can ADD to (average down), live P&L, a 2-minute clock.
+ * Most people lose money — that's the point, and that's what makes a score worth
+ * sharing.
  *
- * Mode 1 (this file): trade it for 60s, score = your net P&L; your archetype is
- * read from how you ACTUALLY traded (chasing tops, holding losers, snatching
- * winners, overtrading the chop, revenge-buying after a loss, freezing).
+ * The arc (Ed, 2026-06-18): the tape spends the first stretch letting you get
+ * comfortable (trends up, dips get bought, false confidence), then distributes,
+ * then RUGS — offering-style gap-downs that do NOT recover. Holding or averaging
+ * down into the back half is how you blow up. Doing nothing no longer makes money.
+ *
+ * Mode 1 (this file): trade it for 120s, score = your net P&L; your archetype is
+ * read from how you ACTUALLY traded (chasing pumps, holding/averaging losers,
+ * snatching winners, overtrading the chop, revenge-buying, freezing, full-sending).
  * Modes 2 (gauntlet) and 3 (survival) reuse this engine.
  *
- * RISK-POSTURE: the sim never tells you to size up; reckless trading just earns
- * the Degenerate roast. Not financial advice (a behavioral sim).
+ * RISK-POSTURE: the sim never tells you to size up; it just LETS you, then the
+ * diagnosis punishes it (Degenerate / Bag Holder). Not financial advice.
  *
  * NOTE: difficulty/feel is tuned live on dev with Ed. Numbers here are a start.
  */
@@ -23,9 +28,10 @@
   var C_UP = '#7ed957', C_DOWN = '#ff6b6b', C_GOLD = '#d4af37', C_GOLD_HI = '#e5c572', C_DIM = '#7d8794';
   var SYMBOLS = ['NVAX', 'SOND', 'MARA', 'RIOT', 'PLUG', 'FFIE', 'TLRY', 'BBAI', 'HOLO', 'GNS', 'CENN', 'MULN', 'AITX', 'PHUN', 'DPRO'];
 
-  var DURATION = 60000;       // 60-second session
+  var DURATION = 120000;      // 120-second session — room for the lull, then the rug
   var START_BAL = 10000;
-  var NOTIONAL = 4000;        // each BUY deploys ~this much
+  var NOTIONAL = 4000;        // each BUY deploys ~this much; tap again to add a lot
+  var MAXLOTS = 6;            // up to ~$24k exposure — enough to truly blow up
   var FEE_BPS = 0.0015;       // slippage/fee per fill (each side)
   var CANDLE_MS = 700;
   var WINDOW = 40;            // visible candles
@@ -46,6 +52,7 @@
       buy: function () { tone(520, 0.06, 'triangle', 0.05, 0); tone(720, 0.07, 'triangle', 0.04, 0.05); },
       sellWin: function () { tone(660, 0.08, 'triangle', 0.05, 0); tone(990, 0.10, 'triangle', 0.04, 0.07); },
       sellLoss: function () { tone(300, 0.10, 'sine', 0.05, 0); tone(200, 0.16, 'sine', 0.04, 0.08); },
+      rug: function () { tone(220, 0.12, 'sawtooth', 0.05, 0); tone(140, 0.22, 'sawtooth', 0.05, 0.08); tone(90, 0.30, 'sine', 0.04, 0.18); },
       tick: function () { tone(140, 0.008, 'square', 0.006, 0); },
       verdict: function () { tone(330, 0.10, 'triangle', 0.05, 0); tone(495, 0.12, 'triangle', 0.05, 0.10); tone(660, 0.20, 'triangle', 0.045, 0.22); }
     };
@@ -60,51 +67,80 @@
       roast: 'You bought the top of every pump like it owed you money. You’re the exit liquidity the runners were waiting for.',
       tag: 'Green candle, must own. Top tick, every time.' },
     bagholder: { name: 'The Bag Holder', tier: 'd', rarity: 19,
-      roast: 'You watched −$200 become −$900 and called it “giving it room.” Hope is not a stop loss.',
+      roast: 'You watched it bleed, then bought more to “lower your average.” The bag just got heavier. Hope is not a stop loss.',
       tag: 'Down 60% and still calling it a long-term hold.' },
     paperhands: { name: 'The Paper Hands', tier: 'c', rarity: 16,
       roast: 'You cut winners like the IRS was at the door. The ten-bagger left without you, at +$40.',
       tag: 'Green for one second, sold in half a second.' },
     masher: { name: 'The Button Masher', tier: 'd', rarity: 13,
-      roast: 'You traded the chop like it was a fire alarm. Forty fills, zero edge, and the broker thanks you for the fees.',
+      roast: 'You traded the chop like it was a fire alarm. A dozen fills, zero edge, and the broker thanks you for the fees.',
       tag: 'You don’t trade the market, you trade your boredom.' },
     revenge: { name: 'The Revenge Trader', tier: 'f', rarity: 12,
       roast: 'You lost, and instead of breathing you re-loaded a second later to “make it back.” The market owns your emotions now.',
       tag: 'You don’t trade setups, you trade your feelings.' },
     freezer: { name: 'The Freezer', tier: 'c', rarity: 9,
-      roast: 'The move came, you watched it, you admired it, and you did nothing. Twice. Your watchlist is a graveyard of would-haves.',
+      roast: 'The move came, you watched it, you admired it, and you did nothing. Your watchlist is a graveyard of would-haves.',
       tag: 'Perfect read. Pulled the trigger ten minutes too late.' },
     degenerate: { name: 'The Degenerate', tier: 'f', rarity: 6,
-      roast: 'No plan, no stop, full send into every candle. This isn’t trading, it’s a casino with a charting package, and you’re the buffet.',
+      roast: 'No plan, no stop, full send. You kept loading until the offering hit and took the whole stack with it. A casino with a charting package, and you’re the buffet.',
       tag: 'Max size, no stop. See you in the discord.' }
   };
 
-  // ── Tape regimes (the traps). drift = frac/sec, vol = frac/sqrt(sec). ──────
+  // ── Tape regimes. drift = frac/sec, vol = frac/sqrt(sec). ──────────────────
   var REG = {
-    grind:   { drift: 0.015, vol: 0.018, min: 2600, max: 5000 },
-    rip:     { drift: 0.10,  vol: 0.040, min: 1400, max: 2600 },
-    blowoff: { drift: 0.22,  vol: 0.055, min: 900,  max: 1500 },
-    dump:    { drift: -0.11, vol: 0.050, min: 1800, max: 3200 },
-    flush:   { drift: -0.26, vol: 0.060, min: 900,  max: 1400 },
-    recover: { drift: 0.11,  vol: 0.042, min: 1500, max: 2800 },
-    chop:    { drift: 0.0,   vol: 0.072, min: 2800, max: 4800 }
+    grind:   { drift: 0.011,  vol: 0.024, min: 2200, max: 4200 },
+    rip:     { drift: 0.075,  vol: 0.045, min: 1300, max: 2400 },
+    pump:    { drift: 0.16,   vol: 0.060, min: 600,  max: 1200 },  // parabolic, brief
+    dump:    { drift: -0.075, vol: 0.050, min: 1600, max: 3000 },
+    bleed:   { drift: -0.030, vol: 0.040, min: 3000, max: 6000 },  // death by a thousand cuts, no bounce
+    rug:     { drift: -0.30,  vol: 0.075, min: 700,  max: 1300 },  // offering / halt-down, violent
+    deadcat: { drift: 0.05,   vol: 0.045, min: 1000, max: 2000 },  // weak bounce that fades
+    chop:    { drift: 0.0,    vol: 0.085, min: 2600, max: 4600 }
   };
-  // Transition weights are rigged to punish the naive move: chase a rip → eat a
-  // blow-off + dump; panic-sell a flush → miss the recover; trade chop → bleed.
-  var NEXT = {
-    grind:   [['rip', .4], ['chop', .3], ['dump', .3]],
-    rip:     [['blowoff', .45], ['chop', .3], ['grind', .25]],
-    blowoff: [['dump', 1]],
-    dump:    [['flush', .35], ['chop', .35], ['grind', .3]],
-    flush:   [['recover', 1]],
-    recover: [['grind', .5], ['rip', .3], ['chop', .2]],
-    chop:    [['rip', .3], ['dump', .3], ['grind', .4]]
+
+  // Phase-weighted transitions build the arc: EARLY lures (dips bought, trends up),
+  // MID distributes (rips get sold, bleed starts), LATE is the rug zone (down, no
+  // recovery). Sampling stays random within each phase so no two runs feel scripted.
+  var NEXT_EARLY = {
+    grind:   [['rip', .35], ['grind', .3], ['chop', .2], ['dump', .15]],
+    rip:     [['pump', .3], ['grind', .3], ['chop', .2], ['dump', .2]],
+    pump:    [['dump', .55], ['chop', .3], ['grind', .15]],
+    dump:    [['grind', .45], ['chop', .3], ['rip', .15], ['bleed', .1]],
+    bleed:   [['grind', .4], ['chop', .35], ['dump', .25]],
+    rug:     [['deadcat', .5], ['bleed', .3], ['grind', .2]],
+    deadcat: [['grind', .45], ['rip', .3], ['chop', .25]],
+    chop:    [['rip', .35], ['grind', .3], ['dump', .25], ['pump', .1]]
   };
-  function nextRegime(cur) { var w = NEXT[cur] || NEXT.grind, r = Math.random(), acc = 0; for (var i = 0; i < w.length; i++) { acc += w[i][1]; if (r <= acc) return w[i][0]; } return w[w.length - 1][0]; }
+  var NEXT_MID = {
+    grind:   [['rip', .25], ['chop', .3], ['dump', .25], ['bleed', .2]],
+    rip:     [['pump', .3], ['dump', .4], ['chop', .2], ['bleed', .1]],
+    pump:    [['dump', .55], ['rug', .2], ['chop', .25]],
+    dump:    [['bleed', .35], ['chop', .3], ['deadcat', .2], ['grind', .15]],
+    bleed:   [['bleed', .3], ['dump', .3], ['deadcat', .2], ['chop', .2]],
+    rug:     [['bleed', .5], ['deadcat', .3], ['dump', .2]],
+    deadcat: [['dump', .45], ['bleed', .3], ['chop', .15], ['rip', .1]],
+    chop:    [['dump', .35], ['bleed', .25], ['rip', .2], ['grind', .2]]
+  };
+  var NEXT_LATE = {
+    grind:   [['dump', .35], ['bleed', .3], ['rip', .2], ['rug', .15]],
+    rip:     [['dump', .4], ['rug', .3], ['pump', .2], ['chop', .1]],
+    pump:    [['rug', .45], ['dump', .4], ['chop', .15]],
+    dump:    [['bleed', .4], ['rug', .3], ['deadcat', .15], ['chop', .15]],
+    bleed:   [['bleed', .4], ['dump', .3], ['rug', .3]],
+    rug:     [['bleed', .55], ['deadcat', .25], ['dump', .2]],
+    deadcat: [['dump', .45], ['bleed', .35], ['rug', .2]],
+    chop:    [['dump', .4], ['bleed', .35], ['rug', .25]]
+  };
+  function nextRegime(cur, prog) {
+    var tbl = prog < 0.4 ? NEXT_EARLY : prog < 0.72 ? NEXT_MID : NEXT_LATE;
+    var w = tbl[cur] || tbl.grind, r = Math.random(), acc = 0;
+    for (var i = 0; i < w.length; i++) { acc += w[i][1]; if (r <= acc) return w[i][0]; }
+    return w[w.length - 1][0];
+  }
 
   // ── State ──────────────────────────────────────────────────────────────────
   var root, audio, raf, timers, sym, price, candles, regime, regimeEnd, t0, lastCandle, lastTick;
-  var balance, pos, trades, recentHigh, lastLossAt;
+  var balance, pos, trades, buyCount, recentHigh, lastLossAt;
   var cv, ctx, els;
 
   function reset() {
@@ -113,7 +149,7 @@
     var p = rnd(3.2, 6.8); candles = [];
     for (var i = 0; i < WINDOW; i++) { var o = p; p = Math.max(0.5, p * (1 + rnd(-0.022, 0.024))); var c = p; candles.push({ o: o, c: c, h: Math.max(o, c) * (1 + rnd(0, 0.012)), l: Math.min(o, c) * (1 - rnd(0, 0.012)) }); }
     price = p; regime = 'grind'; regimeEnd = 0;
-    balance = START_BAL; pos = null; trades = []; recentHigh = price; lastLossAt = -9999;
+    balance = START_BAL; pos = null; trades = []; buyCount = 0; recentHigh = price; lastLossAt = -9999;
   }
   function later(fn, ms) { var id = setTimeout(fn, ms); timers.push(id); return id; }
   function clearAll() { if (raf) cancelAnimationFrame(raf); raf = 0; for (var i = 0; i < timers.length; i++) clearTimeout(timers[i]); timers = []; }
@@ -124,11 +160,11 @@
   function renderIntro() {
     root.innerHTML =
       '<div class="diag-intro">' +
-        '<div class="diag-eyebrow">The 60-second tape test</div>' +
+        '<div class="diag-eyebrow">The two-minute tape test</div>' +
         '<h1 class="diag-h1">Can you trade,<br><em>or do you just think so?</em></h1>' +
-        '<p class="diag-lede">Sixty seconds on a live tape that fights back. Real chart, real <b>BUY</b> and <b>SELL</b>, real P&L. Most people lose money in under a minute. Find out what kind of trader you really are.</p>' +
+        '<p class="diag-lede">Two minutes on a live small-cap tape that fights back. Real chart, real <b>BUY</b> and <b>SELL</b>, real P&L. It will let you get comfortable, then it will try to take it all back. Find out what kind of trader you really are.</p>' +
         '<button class="diag-start" type="button" data-start>Take the tape →</button>' +
-        '<div class="diag-intro-note">Free · 60 seconds · not financial advice</div>' +
+        '<div class="diag-intro-note">Free · 2 minutes · not financial advice</div>' +
       '</div>';
     root.querySelector('[data-start]').addEventListener('click', start);
   }
@@ -139,7 +175,7 @@
       '<div class="diag-term">' +
         '<div class="diag-term-top">' +
           '<div class="diag-term-sym">' + sym + ' <span class="diag-term-px" data-px>' + px(price) + '</span></div>' +
-          '<div class="diag-term-clock" data-clock>0:60</div>' +
+          '<div class="diag-term-clock" data-clock>2:00</div>' +
         '</div>' +
         '<canvas class="diag-chart" data-chart></canvas>' +
         '<div class="diag-pos" data-pos><span class="diag-pos-state" data-pstate>FLAT</span><span class="diag-pos-pnl" data-upnl></span></div>' +
@@ -150,7 +186,7 @@
           '<button class="diag-trade-btn buy" data-buy>BUY</button>' +
           '<button class="diag-trade-btn sell" data-sell disabled>SELL</button>' +
         '</div>' +
-        '<div class="diag-term-hint">Buy low, sell high. The tape will try to make you do the opposite.</div>' +
+        '<div class="diag-term-hint">BUY opens or adds to your long. SELL closes the whole position.</div>' +
       '</div>';
     cv = root.querySelector('[data-chart]'); ctx = cv.getContext('2d');
     els = {
@@ -179,8 +215,13 @@
     var dt = (now - lastTick) / 1000; lastTick = now;
     if (!isFinite(dt) || dt <= 0) dt = 0.016; if (dt > 0.05) dt = 0.05;
 
-    // regime
-    if (now >= regimeEnd) { regime = nextRegime(regime); var R0 = REG[regime]; regimeEnd = now + ri(R0.min, R0.max); }
+    // regime — phase-weighted by how far we are into the session
+    if (now >= regimeEnd) {
+      regime = nextRegime(regime, elapsed / DURATION);
+      var R0 = REG[regime]; regimeEnd = now + ri(R0.min, R0.max);
+      if (regime === 'rug') { price = Math.max(0.4, price * rnd(0.90, 0.965)); audio.rug(); } // offering / halt gap
+      else if (regime === 'pump') { price = price * rnd(1.0, 1.035); }
+    }
     var R = REG[regime] || REG.grind;
     // price tick
     var drift = price * R.drift * dt;
@@ -193,7 +234,7 @@
     var c = candles[candles.length - 1]; c.c = price; if (price > c.h) c.h = price; if (price < c.l) c.l = price;
     if (now - lastCandle >= CANDLE_MS) { lastCandle = now; candles.push({ o: price, h: price, l: price, c: price }); if (candles.length > 90) candles.shift(); }
 
-    // track max adverse on the open position
+    // track max adverse / favorable on the open position
     if (pos) { var u = pos.shares * (price - pos.entry); if (u < pos.maxAdverse) pos.maxAdverse = u; if (u > pos.maxFav) pos.maxFav = u; }
 
     if (Math.random() < 0.2) audio.tick();
@@ -203,14 +244,14 @@
 
   function renderTerminal(elapsed) {
     els.px.textContent = px(price);
-    var rem = Math.max(0, DURATION - elapsed), s = Math.ceil(rem / 1000);
-    els.clock.textContent = '0:' + (s < 10 ? '0' : '') + s; els.clock.classList.toggle('low', rem <= 12000);
+    var rem = Math.max(0, DURATION - elapsed), s = Math.ceil(rem / 1000), mm = Math.floor(s / 60), ss = s % 60;
+    els.clock.textContent = mm + ':' + (ss < 10 ? '0' : '') + ss; els.clock.classList.toggle('low', rem <= 15000);
     var u = pos ? pos.shares * (price - pos.entry) : 0;
     var eq = balance + u;
     els.equity.textContent = money(eq);
     if (pos) {
       els.pos.className = 'diag-pos open ' + (u >= 0 ? 'up' : 'down');
-      els.pstate.textContent = 'LONG ' + pos.shares + ' @ ' + px(pos.entry);
+      els.pstate.textContent = 'LONG ' + pos.shares + (pos.lots > 1 ? ' · ' + pos.lots + 'x' : '') + ' @ ' + px(pos.entry);
       els.upnl.textContent = (u >= 0 ? '+' : '') + money(u);
     } else { els.pos.className = 'diag-pos'; els.pstate.textContent = 'FLAT'; els.upnl.textContent = ''; }
   }
@@ -225,7 +266,7 @@
     var rng = (hi - lo) || 1; lo -= rng * 0.08; hi += rng * 0.08; rng = hi - lo;
     function Y(p) { return pad + (h - 2 * pad) * (1 - (p - lo) / rng); }
     var cw = (w - 2 * pad) / WINDOW, bw = Math.max(2, cw * 0.62);
-    // entry line
+    // entry line (blended average)
     if (pos) { var ey = Y(pos.entry); ctx.strokeStyle = 'rgba(212,175,55,.5)'; ctx.lineWidth = 1; ctx.setLineDash([3, 3]); ctx.beginPath(); ctx.moveTo(0, ey); ctx.lineTo(w, ey); ctx.stroke(); ctx.setLineDash([]); }
     // candles
     for (i = 0; i < vis.length; i++) {
@@ -240,14 +281,22 @@
 
   // ── Orders ─────────────────────────────────────────────────────────────────
   function doBuy() {
-    if (pos) return;
+    if (pos && pos.lots >= MAXLOTS) { flash(els.buy, 'buy'); return; }
     audio.buy();
-    var shares = Math.max(1, Math.floor(NOTIONAL / price));
-    balance -= shares * price * FEE_BPS;
-    // extension gauge: how far above the recent base is price right now
-    var ext = (price / (recentLow() || price)) - 1;
-    pos = { entry: price, shares: shares, openAt: performance.now(), maxAdverse: 0, maxFav: 0, regimeAtEntry: regime, extAtEntry: ext };
-    els.buy.disabled = true; els.sell.disabled = false;
+    var addShares = Math.max(1, Math.floor(NOTIONAL / price));
+    balance -= addShares * price * FEE_BPS;
+    buyCount++;
+    if (!pos) {
+      var ext = (price / (recentLow() || price)) - 1; // extension above the recent base at first entry
+      pos = { entry: price, shares: addShares, lots: 1, openAt: performance.now(), maxAdverse: 0, maxFav: 0, regimeAtEntry: regime, extAtEntry: ext, addsBelow: 0 };
+    } else {
+      if (price < pos.entry) pos.addsBelow++; // adding under your average = averaging down (the sin)
+      var tot = pos.shares + addShares;
+      pos.entry = (pos.shares * pos.entry + addShares * price) / tot;
+      pos.shares = tot; pos.lots++;
+    }
+    els.sell.disabled = false;
+    els.buy.disabled = pos.lots >= MAXLOTS;
     flash(els.buy, 'buy');
   }
   function recentLow() { var lo = Infinity, v = candles.slice(-14); for (var i = 0; i < v.length; i++) if (v[i].l < lo) lo = v[i].l; return lo === Infinity ? price : lo; }
@@ -259,9 +308,9 @@
     balance += grossPnl - pos.shares * price * FEE_BPS;
     var since = performance.now() - lastLossAt;
     trades.push({
-      entry: pos.entry, exit: price, shares: pos.shares, pnl: grossPnl, heldMs: held,
+      avgEntry: pos.entry, exit: price, shares: pos.shares, lots: pos.lots, pnl: grossPnl, heldMs: held,
       regimeAtEntry: pos.regimeAtEntry, extAtEntry: pos.extAtEntry, maxAdverse: pos.maxAdverse, maxFav: pos.maxFav,
-      revenge: since < 1600, win: grossPnl > 0
+      addsBelow: pos.addsBelow, revenge: since < 2000, win: grossPnl > 0
     });
     if (grossPnl < 0) { lastLossAt = performance.now(); audio.sellLoss(); } else audio.sellWin();
     flash(els.sell, grossPnl >= 0 ? 'win' : 'loss');
@@ -275,57 +324,59 @@
     if (pos) doSell(); // close at market; a deep-red close is its own tell
     var net = balance - START_BAL;
     var an = analyze(net);
-    track('diagnostic_complete', { archetype: an.id, grade: an.grade, net: Math.round(net), trades: trades.length });
+    track('diagnostic_complete', { archetype: an.id, grade: an.grade, net: Math.round(net), trades: trades.length, buys: buyCount });
     renderResult(an, net);
   }
 
   // Read the trade log into flags → archetype + the 3 most damaging tells.
   function analyze(net) {
-    var chases = [], bags = [], snatches = [], revenges = [], wins = 0;
+    var chases = [], bags = [], snatches = [], revenges = [], degen = [], wins = 0;
     for (var i = 0; i < trades.length; i++) {
       var t = trades[i];
-      if (t.regimeAtEntry === 'rip' || t.regimeAtEntry === 'blowoff' || t.extAtEntry > 0.12) chases.push(t);
-      if (t.pnl <= -250 && t.maxAdverse <= -250) bags.push(t);
-      if (t.win && t.pnl < 90 && t.heldMs < 1800 && t.maxFav > t.pnl + 120) snatches.push(t);
+      if (t.regimeAtEntry === 'rip' || t.regimeAtEntry === 'pump' || t.extAtEntry > 0.12) chases.push(t);
+      if ((t.addsBelow >= 1 && t.pnl < 0) || (t.pnl <= -400 && t.maxAdverse <= -400)) bags.push(t);
+      if (t.lots >= 4 && t.pnl <= -900) degen.push(t);
+      if (t.win && t.pnl < 120 && t.heldMs < 2200 && t.maxFav > t.pnl + 220) snatches.push(t);
       if (t.revenge) revenges.push(t);
       if (t.win) wins++;
     }
     var n = trades.length;
-    // Freezer = you didn't act. n===0 is the pure case; a lone trade only reads as
-    // freezing if it ALSO lost (a tentative dabble). A single decisive WIN is the
-    // opposite of freezing — it must stay eligible for The Sniper, not get trapped here.
-    var counts = { fomo: chases.length, holding: bags.length, paper: snatches.length, overtrade: n >= 9 ? 2 : 0, tilt: revenges.length, freeze: (n === 0) ? 3 : (n === 1 && net <= 0 ? 2 : 0), press: 0 };
-    if (chases.length >= 2 && net <= -1200) counts.press = chases.length + 1; // reckless full-send
-    if (n === 0) counts.freeze = 3;
+    var counts = { fomo: chases.length, holding: bags.length, paper: snatches.length, overtrade: buyCount >= 12 ? 2 : 0, tilt: revenges.length, freeze: buyCount === 0 ? 3 : (n === 1 && net <= 0 && buyCount <= 1 ? 2 : 0), press: degen.length };
+    // averaging down hard into a deep loss is the Degenerate signature even at fewer lots
+    if (!degen.length) { for (var j = 0; j < bags.length; j++) { if (bags[j].addsBelow >= 2 && net <= -1500) { counts.press = Math.max(counts.press, 2); break; } } }
 
     var PRIORITY = ['press', 'tilt', 'holding', 'fomo', 'overtrade', 'paper', 'freeze'];
     var dom = null, domVal = 0;
     for (var p = 0; p < PRIORITY.length; p++) { var k = PRIORITY[p]; if (counts[k] > domVal) { domVal = counts[k]; dom = k; } }
 
     var grade = gradeFor(net);
-    var clean = (net > 200) && domVal <= 1 && n >= 1;
+    var clean = (net > 300) && domVal <= 1 && n >= 1 && !bags.length;
     var id = clean ? 'sniper' : dom ? ({ fomo: 'chaser', holding: 'bagholder', paper: 'paperhands', overtrade: 'masher', tilt: 'revenge', freeze: 'freezer', press: 'degenerate' })[dom] : (net > 0 ? 'sniper' : 'masher');
 
     // tells, worst first
     var tells = [];
-    if (chases.length) tells.push({ w: 3, t: 'You chased ' + sym + ' into a pump and ate the reversal' + (chases.length > 1 ? ' (' + chases.length + 'x)' : '') + '.' });
-    if (bags.length) { var b = bags[0]; tells.push({ w: 4, t: 'You held a loser from ' + money(b.maxAdverse) + ' and never cut it.' }); }
-    if (snatches.length) { var s = snatches[0]; tells.push({ w: 2, t: 'You sold a winner at ' + money(s.pnl) + '. It was running to ' + money(s.maxFav) + '.' }); }
-    if (revenges.length) tells.push({ w: 4, t: 'You revenge-bought less than two seconds after a loss.' });
-    if (n >= 9) tells.push({ w: 2, t: 'You fired ' + n + ' trades in 60 seconds. Most of that was fees.' });
-    if (n === 0) tells.push({ w: 3, t: 'You never pulled the trigger. The whole move happened without you.' });
+    if (bags.length) { var b = bags[0];
+      if (b.addsBelow >= 1) tells.push({ w: 5, t: 'You averaged down into a loser ' + b.addsBelow + 'x. The bag only got heavier.' });
+      else tells.push({ w: 4, t: 'You held a loser from ' + money(b.maxAdverse) + ' and never cut it.' });
+    }
+    if (degen.length) { var d = degen[0]; tells.push({ w: 5, t: 'You loaded ' + d.lots + ' times into one trade and it went ' + money(d.pnl) + '. No plan, full send.' }); }
+    if (chases.length) tells.push({ w: 3, t: 'You bought ' + sym + ' into a pump and ate the reversal' + (chases.length > 1 ? ' (' + chases.length + 'x)' : '') + '.' });
+    if (revenges.length) tells.push({ w: 4, t: 'You re-bought within two seconds of a loss. That is tilt, not a setup.' });
+    if (snatches.length) { var s = snatches[0]; tells.push({ w: 2, t: 'You snatched a winner at ' + money(s.pnl) + '. It was running to ' + money(s.maxFav) + '.' }); }
+    if (buyCount >= 12) tells.push({ w: 2, t: 'You fired ' + buyCount + ' buys in two minutes. Most of that was fees.' });
+    if (buyCount === 0) tells.push({ w: 3, t: 'You never put a dollar at risk. The whole move happened without you.' });
     tells.sort(function (a, b) { return b.w - a.w; });
 
     return { id: id, grade: grade, trades: n, wins: wins, tells: tells.slice(0, 3).map(function (x) { return x.t; }) };
   }
   function gradeFor(net) {
-    if (net >= 2600) return 'A+'; if (net >= 1300) return 'A'; if (net >= 500) return 'B';
-    if (net >= -150) return 'C'; if (net >= -1100) return 'D'; if (net >= -2600) return 'D−'; return 'F';
+    if (net >= 3000) return 'A+'; if (net >= 1500) return 'A'; if (net >= 500) return 'B';
+    if (net >= -400) return 'C'; if (net >= -2000) return 'D'; if (net >= -4500) return 'D−'; return 'F';
   }
   function netPercentile(net) {
     // honest model estimate: most lose. higher net = rarer.
-    if (net >= 2600) return 97; if (net >= 1300) return 91; if (net >= 500) return 80;
-    if (net >= -150) return 61; if (net >= -1100) return 38; if (net >= -2600) return 17; return 5;
+    if (net >= 3000) return 98; if (net >= 1500) return 93; if (net >= 500) return 82;
+    if (net >= -400) return 60; if (net >= -2000) return 33; if (net >= -4500) return 13; return 4;
   }
 
   function renderResult(an, net) {
@@ -334,18 +385,18 @@
       ? '<div class="diag-tells"><div class="diag-tells-h">Your tells</div>' + an.tells.map(function (t) { return '<div class="diag-tell">' + t + '</div>'; }).join('') + '</div>'
       : '<div class="diag-tells"><div class="diag-tells-h">Your tells</div><div class="diag-tell">Nothing to confess. You bought weakness, sold strength, and walked. Rare.</div></div>';
     var url = 'https://maketzo.co/what-trader';
-    var shareText = (net >= 0 ? 'I finished ' + money(net) + ' green' : 'I lost ' + money(-net)) + ' in 60 seconds on MAKETZO and got branded ' + a.name + ' (' + an.grade + '). Can you beat it?';
+    var shareText = (net >= 0 ? 'I finished ' + money(net) + ' green' : 'I lost ' + money(-net)) + ' in two minutes on MAKETZO and got branded ' + a.name + ' (' + an.grade + '). Can you beat it?';
 
     root.innerHTML =
       '<div class="diag-result diag-tier-' + a.tier + '">' +
-        '<div class="diag-result-eyebrow">60 seconds later…</div>' +
+        '<div class="diag-result-eyebrow">Two minutes later…</div>' +
         '<div class="diag-card slam" data-card>' +
           '<div class="diag-card-grade">' + an.grade + '</div>' +
           '<div class="diag-card-name">' + a.name + '</div>' +
           '<div class="diag-card-tag">' + a.tag + '</div>' +
           '<div class="diag-card-roast">' + a.roast + '</div>' +
           '<div class="diag-card-meta">' +
-            '<div class="diag-meta-box"><span class="diag-meta-num ' + (net >= 0 ? 'up' : 'down') + '">' + money(net) + '</span><span class="diag-meta-cap">your 60-second P&L</span></div>' +
+            '<div class="diag-meta-box"><span class="diag-meta-num ' + (net >= 0 ? 'up' : 'down') + '">' + money(net) + '</span><span class="diag-meta-cap">your 2-minute P&L</span></div>' +
             '<div class="diag-meta-box"><span class="diag-meta-num">' + pct + '%</span><span class="diag-meta-cap">of traders did worse</span></div>' +
             '<div class="diag-meta-box"><span class="diag-meta-num">' + an.trades + '</span><span class="diag-meta-cap">trades · ' + an.wins + ' green</span></div>' +
           '</div>' +
@@ -354,7 +405,7 @@
         tellsHtml +
         '<div class="diag-share" data-share></div>' +
         '<div class="diag-funnel">' +
-          '<p class="diag-funnel-line">That’s 60 seconds of fake money showing you a real habit. <strong>MAKETZO is the gym that fixes it.</strong></p>' +
+          '<p class="diag-funnel-line">That’s two minutes of fake money showing you a real habit. <strong>MAKETZO is the gym that fixes it.</strong></p>' +
           '<a class="diag-cta" href="/app" data-cta>Train it free →</a>' +
           '<div class="diag-funnel-sub">7 days free · no charge until day 8 · cancel in one click</div>' +
         '</div>' +
