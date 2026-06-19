@@ -1,5 +1,5 @@
 /*
- * MAKETZO — "Can You Trade?" / "What Kind of Trader Are You?". v8
+ * MAKETZO — "Can You Trade?" / "What Kind of Trader Are You?". v9
  *
  * A free, no-login, HARD live trading sim at /what-trader. A live candlestick
  * tape (9/20 EMA + VWAP + a resistance level) you trade two-sided (BUY = long,
@@ -50,8 +50,9 @@
       buy: function () { tone(520, 0.06, 'triangle', 0.05, 0); tone(720, 0.07, 'triangle', 0.04, 0.05); },
       sellWin: function () { tone(660, 0.08, 'triangle', 0.05, 0); tone(990, 0.10, 'triangle', 0.04, 0.07); },
       sellLoss: function () { tone(300, 0.10, 'sine', 0.05, 0); tone(200, 0.16, 'sine', 0.04, 0.08); },
-      rug: function () { tone(220, 0.12, 'sawtooth', 0.05, 0); tone(140, 0.22, 'sawtooth', 0.05, 0.08); tone(90, 0.30, 'sine', 0.04, 0.18); },
-      squeeze: function () { tone(300, 0.10, 'sawtooth', 0.05, 0); tone(560, 0.14, 'sawtooth', 0.05, 0.08); tone(880, 0.22, 'sine', 0.04, 0.18); },
+      rug: function () { tone(200, 0.10, 'sawtooth', 0.035, 0); tone(130, 0.16, 'sawtooth', 0.03, 0.07); tone(90, 0.20, 'sine', 0.026, 0.14); },
+      squeeze: function () { tone(300, 0.10, 'sawtooth', 0.04, 0); tone(560, 0.14, 'sawtooth', 0.04, 0.08); tone(880, 0.20, 'sine', 0.03, 0.18); },
+      news: function () { tone(440, 0.05, 'triangle', 0.03, 0); tone(620, 0.06, 'triangle', 0.025, 0.05); },
       tick: function () { tone(140, 0.008, 'square', 0.006, 0); },
       cdTick: function () { tone(680, 0.07, 'sine', 0.05, 0); },
       cdGo: function () { tone(540, 0.09, 'triangle', 0.05, 0); tone(840, 0.16, 'triangle', 0.05, 0.07); },
@@ -179,12 +180,21 @@
 
   var RUG_NEWS = ['Dilution: the company just priced a stock offering', 'Halt lifted, the insiders are hitting every bid', 'The promoters got their fill and dumped the bag'];
   var SQUEEZE_NEWS = ['Short squeeze: the borrow rate just spiked', 'Halt lifted, buyers are gapping it up', 'Shorts are getting forced to cover'];
+  // Minor, randomly-sprinkled events — each with a real small-cap reason + a nudge.
+  var MINOR = [
+    { news: 'Unusual options activity just flagged', mag: [1.012, 1.032] },
+    { news: 'A block print just hit the ask', mag: [1.01, 1.028] },
+    { news: 'Momentum scanners just lit it up', mag: [1.014, 1.034] },
+    { news: 'Volatility halt cleared, back to trading', mag: [0.972, 0.99] },
+    { news: 'A seller is leaning on the bid', mag: [0.968, 0.99] },
+    { news: 'Profit-takers are ringing the register', mag: [0.974, 0.992] }
+  ];
 
   // ── State ──────────────────────────────────────────────────────────────────
   var root, audio, raf, timers, sym, price, candles, regime, regimeEnd, t0, lastCandle, lastTick;
   var balance, pos, trades, buyCount, recentHigh, lastLossAt;
   var ema9, ema20, vwap, vwapPV, vwapVol, resistance;
-  var scenario, eventProg, eventAt, eventFired, running, paused, pauseStart;
+  var scenario, eventProg, eventAt, eventFired, running, paused, pauseStart, lastMinorAt;
   var cv, ctx, els;
 
   function reset() {
@@ -199,7 +209,7 @@
     var sh = 0; for (j = 0; j < candles.length; j++) if (candles[j].h > sh) sh = candles[j].h;
     resistance = Math.max(sh, price) * rnd(1.04, 1.10);
     // scenario + a randomly-timed catalyst
-    scenario = pickScenario(); eventFired = false; running = false; paused = false;
+    scenario = pickScenario(); eventFired = false; running = false; paused = false; lastMinorAt = 0;
     eventProg = scenario.event ? rnd(scenario.at[0], scenario.at[1]) : 2;
     if (scenario.event && scenario.evChance && Math.random() > scenario.evChance) eventProg = 2;
   }
@@ -337,7 +347,9 @@
     if (now >= regimeEnd) {
       regime = nextRegime(regime, elapsed / DURATION);
       var R0 = REG[regime]; regimeEnd = now + ri(R0.min, R0.max);
-      if (regime === 'rug') { price = Math.max(0.4, price * rnd(0.90, 0.965)); audio.rug(); }
+      // organic regime changes are SILENT — the loud alarm is reserved for the
+      // catalyst event so a jarring sound always has a visible reason on screen.
+      if (regime === 'rug') { price = Math.max(0.4, price * rnd(0.90, 0.965)); }
       else if (regime === 'pump') { price = price * rnd(1.0, 1.035); }
     }
     var R = REG[regime] || REG.grind;
@@ -348,7 +360,7 @@
     recentHigh = Math.max(recentHigh * 0.997, price);
 
     var c = candles[candles.length - 1]; c.c = price; if (price > c.h) c.h = price; if (price < c.l) c.l = price;
-    if (now - lastCandle >= CANDLE_MS) { lastCandle = now; closeCandle(c, now); candles.push({ o: price, h: price, l: price, c: price, e9: ema9, e20: ema20, vwap: vwap }); if (candles.length > 90) candles.shift(); }
+    if (now - lastCandle >= CANDLE_MS) { lastCandle = now; closeCandle(c, now); candles.push({ o: price, h: price, l: price, c: price, e9: ema9, e20: ema20, vwap: vwap }); if (candles.length > 90) candles.shift(); maybeMinorEvent(now, elapsed); }
 
     if (pos) { var u = pos.dir * pos.shares * (price - pos.entry); if (u < pos.maxAdverse) pos.maxAdverse = u; if (u > pos.maxFav) pos.maxFav = u; }
 
@@ -382,12 +394,24 @@
     else if (price < resistance * 0.85) { var rh = 0, vl = candles.slice(-20); for (var z = 0; z < vl.length; z++) if (vl[z].h > rh) rh = vl[z].h; resistance = Math.max(rh, price * 1.03) * rnd(1.0, 1.02); }
   }
 
-  function showCatalyst(kind) {
+  // A small, randomly-timed event with a real reason — the texture Ed loved about
+  // the offering. Cooldown-gated so it stays flavor, not noise.
+  function maybeMinorEvent(now, elapsed) {
+    if (elapsed < 9000 || now - lastMinorAt < 12000) return;
+    if (scenario.event && !eventFired && now >= eventAt - 2500) return; // don't step on the climax
+    if (Math.random() > 0.12) return;
+    lastMinorAt = now;
+    var m = pick(MINOR);
+    price = Math.max(0.4, price * rnd(m.mag[0], m.mag[1]));
+    showCatalyst('news', m.news); audio.news();
+  }
+  function showCatalyst(kind, text) {
     var host = root.querySelector('.diag-main'); if (!host) return;
-    var b = document.createElement('div'); b.className = 'diag-event ' + (kind === 'rug' ? 'rug' : 'squeeze');
-    b.textContent = pick(kind === 'rug' ? RUG_NEWS : SQUEEZE_NEWS);
+    var cls = kind === 'rug' ? 'rug' : kind === 'squeeze' ? 'squeeze' : 'news';
+    var b = document.createElement('div'); b.className = 'diag-event ' + cls;
+    b.textContent = text || pick(kind === 'rug' ? RUG_NEWS : SQUEEZE_NEWS);
     host.appendChild(b);
-    later(function () { if (b.parentNode) b.parentNode.removeChild(b); }, 2800);
+    later(function () { if (b.parentNode) b.parentNode.removeChild(b); }, 2600);
   }
 
   function drawChart() {
@@ -523,11 +547,23 @@
     for (var p = 0; p < PRIORITY.length; p++) { var k = PRIORITY[p]; if (counts[k] > domVal) { domVal = counts[k]; dom = k; } }
 
     var grade = gradeFor(net);
-    var clean = (net > 300) && domVal <= 1 && n >= 1 && !bags.length;
-    var id = clean ? 'sniper' : dom ? ({ fomo: 'chaser', holding: 'bagholder', paper: 'paperhands', overtrade: 'masher', tilt: 'revenge', freeze: 'freezer', press: 'degenerate' })[dom] : (net > 0 ? 'sniper' : 'masher');
+    var MAP = { fomo: 'chaser', holding: 'bagholder', paper: 'paperhands', overtrade: 'masher', tilt: 'revenge', freeze: 'freezer', press: 'degenerate' };
+    // Coherence with the grade: a PROFITABLE run means you mostly traded well, so it
+    // defaults to The Sniper; the only "you won but…" override is chronic snatching
+    // (Paper Hands). The savage sin-archetypes are reserved for runs that LOST money.
+    var id;
+    if (n === 0) id = 'freezer';
+    else if (net > 600) id = (snatches.length >= 2 && snatches.length * 2 >= n) ? 'paperhands' : 'sniper';
+    else if (dom) id = MAP[dom];
+    else id = net > 0 ? 'sniper' : 'masher';
 
     // dominant direction of the chase trades (for the right roast/tag)
     var chaseDir = 1; if (chases.length) { var ls = 0, ss = 0; for (i = 0; i < chases.length; i++) chases[i].dir === 1 ? ls++ : ss++; chaseDir = ss > ls ? -1 : 1; }
+
+    // summary metrics for the result card
+    var losses = n - wins, best = 0, worst = 0, gWin = 0, gLoss = 0;
+    for (i = 0; i < trades.length; i++) { var pn = trades[i].pnl; if (pn > best) best = pn; if (pn < worst) worst = pn; if (pn >= 0) gWin += pn; else gLoss += -pn; }
+    var stats = { n: n, wins: wins, losses: losses, winRate: n ? Math.round(wins / n * 100) : 0, best: best, worst: worst, pf: (gLoss === 0 ? (gWin > 0 ? '∞' : '—') : (gWin / gLoss).toFixed(1)) };
 
     var tells = [];
     if (bags.length) { var b = bags[0];
@@ -542,7 +578,7 @@
     if (buyCount === 0) tells.push({ w: 3, t: 'You never put a dollar at risk. The whole move happened without you.' });
     tells.sort(function (a, b) { return b.w - a.w; });
 
-    return { id: id, grade: grade, trades: n, wins: wins, dir: chaseDir, tells: tells.slice(0, 3).map(function (x) { return x.t; }) };
+    return { id: id, grade: grade, trades: n, wins: wins, dir: chaseDir, stats: stats, tells: tells.slice(0, 3).map(function (x) { return x.t; }) };
   }
   function gradeFor(net) {
     if (net >= 3000) return 'A+'; if (net >= 1500) return 'A'; if (net >= 500) return 'B';
@@ -554,7 +590,7 @@
   }
 
   function renderResult(an, net) {
-    var a = ARCH[an.id], pct = netPercentile(net);
+    var a = ARCH[an.id], pct = netPercentile(net), st = an.stats;
     var roast = (an.id === 'chaser' && an.dir === -1 && a.roastS) ? a.roastS : a.roast;
     var tag = (an.id === 'chaser' && an.dir === -1 && a.tagS) ? a.tagS : a.tag;
     var tellsHtml = an.tells.length
@@ -565,7 +601,10 @@
 
     root.innerHTML =
       '<div class="diag-result diag-tier-' + a.tier + '">' +
-        '<div class="diag-result-eyebrow">Two minutes later…</div>' +
+        '<div class="diag-result-head">' +
+          '<div class="diag-result-eyebrow">Two minutes later…</div>' +
+          '<div class="diag-share-top" data-share></div>' +
+        '</div>' +
         '<div class="diag-card slam" data-card>' +
           '<div class="diag-card-grade">' + an.grade + '</div>' +
           '<div class="diag-card-name">' + a.name + '</div>' +
@@ -573,13 +612,13 @@
           '<div class="diag-card-roast">' + roast + '</div>' +
           '<div class="diag-card-meta">' +
             '<div class="diag-meta-box"><span class="diag-meta-num ' + (net >= 0 ? 'up' : 'down') + '">' + money(net) + '</span><span class="diag-meta-cap">your 2-minute P&L</span></div>' +
+            '<div class="diag-meta-box"><span class="diag-meta-num">' + st.winRate + '%</span><span class="diag-meta-cap">win rate</span></div>' +
             '<div class="diag-meta-box"><span class="diag-meta-num">' + pct + '%</span><span class="diag-meta-cap">of traders did worse</span></div>' +
-            '<div class="diag-meta-box"><span class="diag-meta-num">' + an.trades + '</span><span class="diag-meta-cap">trades · ' + an.wins + ' green</span></div>' +
           '</div>' +
+          '<div class="diag-card-stats">' + st.n + ' trades · ' + st.wins + 'W ' + st.losses + 'L · best ' + (st.best > 0 ? '+' : '') + money(st.best) + ' · worst ' + money(st.worst) + ' · PF ' + st.pf + '</div>' +
           '<div class="diag-card-wm">MAKETZO · can you trade · maketzo.co</div>' +
         '</div>' +
         tellsHtml +
-        '<div class="diag-share" data-share></div>' +
         '<div class="diag-funnel">' +
           '<p class="diag-funnel-line">That’s two minutes of fake money showing you a real habit. <strong>MAKETZO is the gym that fixes it.</strong></p>' +
           '<a class="diag-cta" href="/app" data-cta>Train it free →</a>' +
@@ -609,9 +648,9 @@
     var wrap = document.createElement('div');
     wrap.className = 'mk-share diag-share-mk';
     wrap.innerHTML =
-      '<button class="mk-share__trigger mk-share__trigger--primary" type="button" data-share-source="diagnostic" ' +
+      '<button class="mk-share__trigger diag-share-icon" type="button" data-share-source="diagnostic" data-tooltip="Share to a trader" aria-label="Share to a trader" ' +
         'data-share-title="' + escAttr('Can you trade, or do you just think so?') + '" data-share-text="' + escAttr(text) + '" data-share-url="' + escAttr(url) + '" data-share-subject="' + escAttr('Can you trade?') + '" ' +
-        'aria-haspopup="true" aria-expanded="false">' + SHARE_ICON + '<span>Share to a trader</span></button>' +
+        'aria-haspopup="true" aria-expanded="false">' + SHARE_ICON + '</button>' +
       '<div class="mk-share__menu" role="menu" hidden>' + SHARE_MENU_ITEMS + '</div>';
     host.appendChild(wrap);
     if (!document.querySelector('.mk-share-toast')) { var ts = document.createElement('div'); ts.className = 'mk-share-toast'; ts.setAttribute('role', 'status'); ts.setAttribute('aria-live', 'polite'); ts.hidden = true; ts.textContent = 'Link copied'; document.body.appendChild(ts); }
