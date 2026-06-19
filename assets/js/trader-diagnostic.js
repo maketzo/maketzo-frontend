@@ -1,5 +1,5 @@
 /*
- * MAKETZO — "Can You Trade?" / "What Kind of Trader Are You?". v21
+ * MAKETZO — "Can You Trade?" / "What Kind of Trader Are You?". v22
  *
  * A free, no-login, HARD live trading sim at /trader-type. A live candlestick
  * tape (9/20 EMA + VWAP + a resistance level) you trade two-sided (BUY = long,
@@ -273,8 +273,8 @@
               '<button class="diag-trade-btn buy" data-buy disabled>BUY</button>' +
               '<button class="diag-trade-btn sell" data-sell disabled>SHORT</button>' +
             '</div>' +
+            '<button class="diag-pause-toggle" type="button" data-pausetoggle>❚❚ Pause</button>' +
           '</div>' +
-          '<button class="diag-pause-toggle" type="button" data-pausetoggle>❚❚ Pause</button>' +
           '<div class="diag-term-hint">BUY goes long, SELL goes short. Tap the same side to add, the other to close.</div>' +
         '</div>' +
         '<div class="diag-side">' +

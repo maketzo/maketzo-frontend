@@ -130,15 +130,20 @@
 .diag-brow-empty { font-size: 12px; color: var(--d-dim); opacity: .55; text-align: center; padding: 14px 0; }
 @keyframes diagRow { from { opacity: 0; transform: translateX(8px); } to { opacity: 1; transform: none; } }
 @media (max-width: 720px) {
-  .diag-term { flex-direction: column; padding-bottom: 138px; }
+  .diag-term { flex-direction: column; padding-bottom: 150px; }
   .diag-side { width: auto; flex: none; }
-  .diag-tape-wrap { min-height: 220px; }
-  .diag-tape { max-height: 240px; }
-  .diag-blotter-list { max-height: 130px; }
-  /* Trade cockpit pinned to the bottom of the viewport: read the chart or scroll down
-     to the montage/T&S, and the live P&L + BUY/SELL are always under your thumb. */
-  .diag-actions { position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; padding: 6px 12px calc(8px + env(safe-area-inset-bottom)); background: linear-gradient(180deg, rgba(13,17,24,.93), rgba(8,11,16,.985)); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); border-top: 1px solid var(--d-line); box-shadow: 0 -10px 28px rgba(0,0,0,.5); }
-  .diag-actions .diag-pos { margin: 0 2px 5px; min-height: 0; }
+  .diag-chart { height: 210px; }
+  .diag-cd, .diag-pause-over { height: 210px; }
+  .diag-legend { display: none; }
+  .diag-tape-wrap { min-height: 96px; }
+  .diag-tape { max-height: 118px; }
+  .diag-blotter-list { max-height: 84px; }
+  /* Trade cockpit pinned to the bottom: live P&L + BUY/SELL + pause, always under your
+     thumb while the chart, Level 2 and T&S sit above it on one screen. */
+  .diag-actions { position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; padding: 6px 12px calc(8px + env(safe-area-inset-bottom)); background: linear-gradient(180deg, rgba(13,17,24,.95), rgba(8,11,16,.99)); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); border-top: 1px solid var(--d-line); box-shadow: 0 -10px 28px rgba(0,0,0,.55); }
+  .diag-actions .diag-pos { margin: 0 2px 4px; min-height: 0; }
+  .diag-actions .diag-pause-toggle { margin-top: 7px; padding: 7px 0; font-size: 11px; }
+  .diag-trade-btn { font-size: 24px; padding: 12px 0; }
   .diag-term-hint { display: none; }
 }
 
@@ -245,11 +250,8 @@
 .diag-again:hover { color: var(--d-ink); }
 
 @media (max-width: 480px) {
-  .diag-chart { height: 240px; }
-  .diag-cd, .diag-pause-over { height: 240px; }
-  .diag-cd-num { font-size: 88px; }
-  .diag-cd-num.go { font-size: 74px; }
-  .diag-trade-btn { font-size: 26px; }
+  .diag-cd-num { font-size: 84px; }
+  .diag-cd-num.go { font-size: 72px; }
   .diag-card { padding: 26px 18px 20px; }
   .diag-card-grade { font-size: 38px; top: 14px; right: 14px; }
   .diag-meta-num { font-size: 17px; }

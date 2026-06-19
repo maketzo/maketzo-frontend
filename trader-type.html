@@ -20,13 +20,13 @@
 <link rel="stylesheet" href="assets/css/tokens.css">
 <link rel="stylesheet" href="assets/css/components.css">
 <link rel="stylesheet" href="assets/css/audio-player.css?v=9">
-<link rel="stylesheet" href="assets/css/trader-diagnostic.css?v=14">
+<link rel="stylesheet" href="assets/css/trader-diagnostic.css?v=15">
 <script src="assets/js/mkt-analytics.js?v=5" defer></script>
 <script src="assets/js/newsletter.js?v=4" defer></script>
 <script src="assets/js/mkt-consent.js?v=1" defer></script>
 <script src="assets/js/checkout.js?v=10" defer></script>
 <script src="assets/js/audio-player.js?v=9" defer></script>
-<script src="assets/js/trader-diagnostic.js?v=21" defer></script>
+<script src="assets/js/trader-diagnostic.js?v=22" defer></script>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
@@ -171,26 +171,17 @@ body:has(.sticky-bar.visible) { padding-bottom: 80px; }
   </div>
 </footer>
 
-<div class="sticky-bar" id="stickyBar">
-  <span class="sticky-bar-text"><strong>Stay Sharp.</strong> Bi-weekly trading discipline insights.</span>
-  <form class="sticky-bar-form" onsubmit="return MKTNewsletter.handleForm(event, 'sticky-bar')" novalidate>
-    <input class="sticky-bar-input" id="stickyEmail" name="email" type="email" placeholder="your@email.com" required autocomplete="email" aria-describedby="stickyEmailError">
-    <button class="btn-primary" type="submit">Subscribe</button>
-    <div class="newsletter-error" id="stickyEmailError" hidden></div>
-  </form>
-  <button class="sticky-bar-close" onclick="closeStickyBar()" aria-label="Close">&times;</button>
-</div>
+<!-- Newsletter sticky-bar intentionally omitted on /trader-type: it is a fixed bottom
+     bar that collides with the in-game trade cockpit. The funnel here is the in-game
+     CTA + the result-card share, not email capture. (Overrides the §7 default.) -->
 
 <script>
 const API='https://api.maketzo.co';
 function toggleDrawer(){const d=document.getElementById('mobileDrawer');const o=document.getElementById('mobileOverlay');const h=document.getElementById('hamburger');d.classList.toggle('open');o.classList.toggle('open');h.classList.toggle('open');document.body.style.overflow=d.classList.contains('open')?'hidden':'';}
 function closeDrawer(){document.getElementById('mobileDrawer').classList.remove('open');document.getElementById('mobileOverlay').classList.remove('open');document.getElementById('hamburger').classList.remove('open');document.body.style.overflow='';}
-let stickyShown=false,stickyDismissed=false;
 window.addEventListener('scroll',()=>{
-  if(!stickyDismissed&&!stickyShown&&window.scrollY>240){document.getElementById('stickyBar').classList.add('visible');stickyShown=true;}
   document.getElementById('mainNav').style.borderBottomColor=window.scrollY>60?'rgba(201,168,76,0.25)':'rgba(201,168,76,0.12)';
 });
-function closeStickyBar(){document.getElementById('stickyBar').classList.remove('visible');stickyDismissed=true;}
 </script>
 </body>
 </html>
