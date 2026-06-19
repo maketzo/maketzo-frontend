@@ -1,5 +1,5 @@
 /*
- * MAKETZO — "Can You Trade?" / "What Kind of Trader Are You?". v20
+ * MAKETZO — "Can You Trade?" / "What Kind of Trader Are You?". v21
  *
  * A free, no-login, HARD live trading sim at /trader-type. A live candlestick
  * tape (9/20 EMA + VWAP + a resistance level) you trade two-sided (BUY = long,
@@ -266,11 +266,13 @@
             '<span class="diag-leg"><i class="diag-sw diag-sw-res"></i>Resistance</span>' +
             '<span class="diag-leg"><i class="diag-sw diag-sw-vol"></i>Volume</span>' +
           '</div>' +
-          '<div class="diag-pos" data-pos><span class="diag-pos-state" data-pstate>FLAT</span><span class="diag-pos-pnl" data-upnl></span></div>' +
           '<div class="diag-term-bottom"><div class="diag-bal">Equity <b data-equity>' + money(START_BAL) + '</b></div></div>' +
-          '<div class="diag-trade-btns">' +
-            '<button class="diag-trade-btn buy" data-buy disabled>BUY</button>' +
-            '<button class="diag-trade-btn sell" data-sell disabled>SHORT</button>' +
+          '<div class="diag-actions">' +
+            '<div class="diag-pos" data-pos><span class="diag-pos-state" data-pstate>FLAT</span><span class="diag-pos-pnl" data-upnl></span></div>' +
+            '<div class="diag-trade-btns">' +
+              '<button class="diag-trade-btn buy" data-buy disabled>BUY</button>' +
+              '<button class="diag-trade-btn sell" data-sell disabled>SHORT</button>' +
+            '</div>' +
           '</div>' +
           '<button class="diag-pause-toggle" type="button" data-pausetoggle>❚❚ Pause</button>' +
           '<div class="diag-term-hint">BUY goes long, SELL goes short. Tap the same side to add, the other to close.</div>' +
