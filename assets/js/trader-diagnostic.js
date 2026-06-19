@@ -1,5 +1,5 @@
 /*
- * MAKETZO — "Can You Trade?" / "What Kind of Trader Are You?". v6 (chart structure)
+ * MAKETZO — "Can You Trade?" / "What Kind of Trader Are You?". v7 (two-sided + blotter)
  *
  * A free, no-login, HARD live trading sim at /what-trader. One shared engine:
  * a live candlestick chart with a SMALL-CAP tape that lures then rugs, real BUY /
@@ -171,7 +171,7 @@
       '<div class="diag-intro">' +
         '<div class="diag-eyebrow">The two-minute tape test</div>' +
         '<h1 class="diag-h1">Can you trade,<br><em>or do you just think so?</em></h1>' +
-        '<p class="diag-lede">Two minutes on a live small-cap tape that fights back. Real chart, real <b>BUY</b> and <b>SELL</b>, real P&L. It will let you get comfortable, then it will try to take it all back. Find out what kind of trader you really are.</p>' +
+        '<p class="diag-lede">Two minutes on a live small-cap tape that fights back. Real chart, go <b>long</b> or <b>short</b>, real P&L on every fill. It will let you get comfortable, then it will try to take it all back. Find out what kind of trader you really are.</p>' +
         '<button class="diag-start" type="button" data-start>Take the tape →</button>' +
         '<div class="diag-intro-note">Free · 2 minutes · not financial advice</div>' +
       '</div>';
@@ -182,37 +182,48 @@
     audio.unlock(); audio.buy(); reset(); track('diagnostic_start', {});
     root.innerHTML =
       '<div class="diag-term">' +
-        '<div class="diag-term-top">' +
-          '<div class="diag-term-sym">' + sym + ' <span class="diag-term-px" data-px>' + px(price) + '</span></div>' +
-          '<div class="diag-term-clock" data-clock>2:00</div>' +
+        '<div class="diag-main">' +
+          '<div class="diag-term-top">' +
+            '<div class="diag-term-sym">' + sym + ' <span class="diag-term-px" data-px>' + px(price) + '</span></div>' +
+            '<div class="diag-term-clock" data-clock>2:00</div>' +
+          '</div>' +
+          '<canvas class="diag-chart" data-chart></canvas>' +
+          '<div class="diag-legend">' +
+            '<span class="diag-leg"><i class="diag-sw diag-sw-e9"></i>9 EMA</span>' +
+            '<span class="diag-leg"><i class="diag-sw diag-sw-e20"></i>20 EMA</span>' +
+            '<span class="diag-leg"><i class="diag-sw diag-sw-vwap"></i>VWAP</span>' +
+            '<span class="diag-leg"><i class="diag-sw diag-sw-res"></i>Resistance</span>' +
+          '</div>' +
+          '<div class="diag-pos" data-pos><span class="diag-pos-state" data-pstate>FLAT</span><span class="diag-pos-pnl" data-upnl></span></div>' +
+          '<div class="diag-term-bottom">' +
+            '<div class="diag-bal">Equity <b data-equity>' + money(START_BAL) + '</b></div>' +
+          '</div>' +
+          '<div class="diag-trade-btns">' +
+            '<button class="diag-trade-btn buy" data-buy>BUY</button>' +
+            '<button class="diag-trade-btn sell" data-sell>SHORT</button>' +
+          '</div>' +
+          '<div class="diag-term-hint">BUY goes long, SELL goes short. Tap the same side to add, the other to close.</div>' +
         '</div>' +
-        '<canvas class="diag-chart" data-chart></canvas>' +
-        '<div class="diag-legend">' +
-          '<span class="diag-leg"><i class="diag-sw diag-sw-e9"></i>9 EMA</span>' +
-          '<span class="diag-leg"><i class="diag-sw diag-sw-e20"></i>20 EMA</span>' +
-          '<span class="diag-leg"><i class="diag-sw diag-sw-vwap"></i>VWAP</span>' +
-          '<span class="diag-leg"><i class="diag-sw diag-sw-res"></i>Resistance</span>' +
+        '<div class="diag-blotter">' +
+          '<div class="diag-blotter-top">' +
+            '<div class="diag-blotter-h">Blotter</div>' +
+            '<div class="diag-blotter-pnl" data-bpnl>$0</div>' +
+            '<div class="diag-blotter-rec" data-brec>0W · 0L</div>' +
+          '</div>' +
+          '<div class="diag-blotter-list" data-blist><div class="diag-brow-empty">No trades yet</div></div>' +
         '</div>' +
-        '<div class="diag-pos" data-pos><span class="diag-pos-state" data-pstate>FLAT</span><span class="diag-pos-pnl" data-upnl></span></div>' +
-        '<div class="diag-term-bottom">' +
-          '<div class="diag-bal">Equity <b data-equity>' + money(START_BAL) + '</b></div>' +
-        '</div>' +
-        '<div class="diag-trade-btns">' +
-          '<button class="diag-trade-btn buy" data-buy>BUY</button>' +
-          '<button class="diag-trade-btn sell" data-sell disabled>SELL</button>' +
-        '</div>' +
-        '<div class="diag-term-hint">BUY opens or adds to your long. SELL closes the whole position.</div>' +
       '</div>';
     cv = root.querySelector('[data-chart]'); ctx = cv.getContext('2d');
     els = {
       px: root.querySelector('[data-px]'), clock: root.querySelector('[data-clock]'),
       pstate: root.querySelector('[data-pstate]'), upnl: root.querySelector('[data-upnl]'),
       equity: root.querySelector('[data-equity]'), buy: root.querySelector('[data-buy]'),
-      sell: root.querySelector('[data-sell]'), pos: root.querySelector('[data-pos]')
+      sell: root.querySelector('[data-sell]'), pos: root.querySelector('[data-pos]'),
+      blist: root.querySelector('[data-blist]'), bpnl: root.querySelector('[data-bpnl]'), brec: root.querySelector('[data-brec]')
     };
-    sizeChart();
-    els.buy.addEventListener('click', doBuy);
-    els.sell.addEventListener('click', doSell);
+    sizeChart(); updateButtons();
+    els.buy.addEventListener('click', buySide);
+    els.sell.addEventListener('click', sellSide);
     window.addEventListener('resize', sizeChart);
     t0 = performance.now(); lastCandle = t0; lastTick = t0; regimeEnd = t0 + ri(REG.grind.min, REG.grind.max);
     raf = requestAnimationFrame(loop);
@@ -249,8 +260,8 @@
     var c = candles[candles.length - 1]; c.c = price; if (price > c.h) c.h = price; if (price < c.l) c.l = price;
     if (now - lastCandle >= CANDLE_MS) { lastCandle = now; closeCandle(c, now); candles.push({ o: price, h: price, l: price, c: price, e9: ema9, e20: ema20, vwap: vwap }); if (candles.length > 90) candles.shift(); }
 
-    // track max adverse / favorable on the open position
-    if (pos) { var u = pos.shares * (price - pos.entry); if (u < pos.maxAdverse) pos.maxAdverse = u; if (u > pos.maxFav) pos.maxFav = u; }
+    // track max adverse / favorable on the open position (direction-aware for shorts)
+    if (pos) { var u = pos.dir * pos.shares * (price - pos.entry); if (u < pos.maxAdverse) pos.maxAdverse = u; if (u > pos.maxFav) pos.maxFav = u; }
 
     if (Math.random() < 0.2) audio.tick();
     drawChart();
@@ -261,13 +272,13 @@
     els.px.textContent = px(price);
     var rem = Math.max(0, DURATION - elapsed), s = Math.ceil(rem / 1000), mm = Math.floor(s / 60), ss = s % 60;
     els.clock.textContent = mm + ':' + (ss < 10 ? '0' : '') + ss; els.clock.classList.toggle('low', rem <= 15000);
-    var u = pos ? pos.shares * (price - pos.entry) : 0;
+    var u = pos ? pos.dir * pos.shares * (price - pos.entry) : 0;
     var eq = balance + u;
     els.equity.textContent = money(eq);
     if (pos) {
       els.pos.className = 'diag-pos open ' + (u >= 0 ? 'up' : 'down');
-      els.pstate.textContent = 'LONG ' + pos.shares + (pos.lots > 1 ? ' · ' + pos.lots + 'x' : '') + ' @ ' + px(pos.entry);
-      els.upnl.textContent = (u >= 0 ? '+' : '') + money(u);
+      els.pstate.textContent = (pos.dir === 1 ? 'LONG ' : 'SHORT ') + pos.shares + (pos.lots > 1 ? ' · ' + pos.lots + 'x' : '') + ' @ ' + px(pos.entry);
+      els.upnl.textContent = (u > 0 ? '+' : '') + money(u);
     } else { els.pos.className = 'diag-pos'; els.pstate.textContent = 'FLAT'; els.upnl.textContent = ''; }
   }
 
@@ -324,49 +335,84 @@
     var py = Y(price); ctx.strokeStyle = 'rgba(255,255,255,.3)'; ctx.lineWidth = 1; ctx.setLineDash([2, 3]); ctx.beginPath(); ctx.moveTo(0, py); ctx.lineTo(w, py); ctx.stroke(); ctx.setLineDash([]);
   }
 
-  // ── Orders ─────────────────────────────────────────────────────────────────
-  function doBuy() {
-    if (pos && pos.lots >= MAXLOTS) { flash(els.buy, 'buy'); return; }
+  // ── Orders (two-sided) ─────────────────────────────────────────────────────
+  // From flat, BUY opens a long and SELL opens a short. While in a position the
+  // same-side button ADDS a lot; the opposite button CLOSES the whole position.
+  function buySide() { if (!pos) openPos(1); else if (pos.dir === 1) addLot(); else flatten(); }
+  function sellSide() { if (!pos) openPos(-1); else if (pos.dir === -1) addLot(); else flatten(); }
+
+  function openPos(dir) {
     audio.buy();
     var addShares = Math.max(1, Math.floor(NOTIONAL / price));
-    balance -= addShares * price * FEE_BPS;
-    buyCount++;
-    if (!pos) {
-      var ext = (price / (recentLow() || price)) - 1; // extension above the recent base at first entry
-      pos = { entry: price, shares: addShares, lots: 1, openAt: performance.now(), maxAdverse: 0, maxFav: 0, regimeAtEntry: regime, extAtEntry: ext, addsBelow: 0 };
-    } else {
-      if (price < pos.entry) pos.addsBelow++; // adding under your average = averaging down (the sin)
-      var tot = pos.shares + addShares;
-      pos.entry = (pos.shares * pos.entry + addShares * price) / tot;
-      pos.shares = tot; pos.lots++;
-    }
-    els.sell.disabled = false;
-    els.buy.disabled = pos.lots >= MAXLOTS;
-    flash(els.buy, 'buy');
+    balance -= addShares * price * FEE_BPS; buyCount++;
+    // "chase" extension is direction-aware: a long is extended above its base, a
+    // short is extended below the recent high (selling into the hole, late).
+    var ext = dir === 1 ? (price / (recentLow() || price)) - 1 : ((recentHigh || price) / price) - 1;
+    pos = { dir: dir, entry: price, shares: addShares, lots: 1, openAt: performance.now(), maxAdverse: 0, maxFav: 0, regimeAtEntry: regime, extAtEntry: ext, addsAgainst: 0 };
+    flash(dir === 1 ? els.buy : els.sell, 'buy'); updateButtons();
+  }
+  function addLot() {
+    if (pos.lots >= MAXLOTS) { flash(pos.dir === 1 ? els.buy : els.sell, 'buy'); return; }
+    audio.buy();
+    var addShares = Math.max(1, Math.floor(NOTIONAL / price));
+    balance -= addShares * price * FEE_BPS; buyCount++;
+    // adding when price is worse than your average = averaging into a loser (the sin)
+    if (pos.dir === 1 ? (price < pos.entry) : (price > pos.entry)) pos.addsAgainst++;
+    var tot = pos.shares + addShares;
+    pos.entry = (pos.shares * pos.entry + addShares * price) / tot;
+    pos.shares = tot; pos.lots++;
+    flash(pos.dir === 1 ? els.buy : els.sell, 'buy'); updateButtons();
+  }
+  function flatten() {
+    var held = performance.now() - pos.openAt;
+    var pnl = pos.dir * pos.shares * (price - pos.entry);
+    balance += pnl - pos.shares * price * FEE_BPS;
+    var since = performance.now() - lastLossAt;
+    var rec = {
+      dir: pos.dir, avgEntry: pos.entry, exit: price, shares: pos.shares, lots: pos.lots, pnl: pnl, heldMs: held,
+      regimeAtEntry: pos.regimeAtEntry, extAtEntry: pos.extAtEntry, maxAdverse: pos.maxAdverse, maxFav: pos.maxFav,
+      addsAgainst: pos.addsAgainst, revenge: since < 2000, win: pnl > 0
+    };
+    trades.push(rec);
+    if (pnl < 0) { lastLossAt = performance.now(); audio.sellLoss(); } else audio.sellWin();
+    flash(pos.dir === 1 ? els.sell : els.buy, pnl >= 0 ? 'win' : 'loss');
+    addBlotterRow(rec); pos = null; updateButtons(); updateBlotterSummary();
   }
   function recentLow() { var lo = Infinity, v = candles.slice(-14); for (var i = 0; i < v.length; i++) if (v[i].l < lo) lo = v[i].l; return lo === Infinity ? price : lo; }
-
-  function doSell() {
-    if (!pos) return;
-    var held = performance.now() - pos.openAt;
-    var grossPnl = pos.shares * (price - pos.entry);
-    balance += grossPnl - pos.shares * price * FEE_BPS;
-    var since = performance.now() - lastLossAt;
-    trades.push({
-      avgEntry: pos.entry, exit: price, shares: pos.shares, lots: pos.lots, pnl: grossPnl, heldMs: held,
-      regimeAtEntry: pos.regimeAtEntry, extAtEntry: pos.extAtEntry, maxAdverse: pos.maxAdverse, maxFav: pos.maxFav,
-      addsBelow: pos.addsBelow, revenge: since < 2000, win: grossPnl > 0
-    });
-    if (grossPnl < 0) { lastLossAt = performance.now(); audio.sellLoss(); } else audio.sellWin();
-    flash(els.sell, grossPnl >= 0 ? 'win' : 'loss');
-    pos = null; els.buy.disabled = false; els.sell.disabled = true;
-  }
   function flash(btn, kind) { btn.classList.add('flash-' + kind); later(function () { btn.classList.remove('flash-' + kind); }, 220); }
+
+  // Button labels + enabled state follow the position: the matching side adds, the
+  // other side closes; only the ADD action disables once the position is maxed out.
+  function updateButtons() {
+    if (!els) return;
+    if (!pos) { els.buy.textContent = 'BUY'; els.sell.textContent = 'SHORT'; els.buy.disabled = false; els.sell.disabled = false; }
+    else if (pos.dir === 1) { els.buy.textContent = 'ADD'; els.sell.textContent = 'SELL'; els.buy.disabled = pos.lots >= MAXLOTS; els.sell.disabled = false; }
+    else { els.buy.textContent = 'COVER'; els.sell.textContent = 'ADD'; els.buy.disabled = false; els.sell.disabled = pos.lots >= MAXLOTS; }
+  }
+
+  // ── Blotter ────────────────────────────────────────────────────────────────
+  // A live, running tally of every closed trade. It is itself a behavioral trap:
+  // watching realized P&L tick makes you snatch winners and revenge-trade reds.
+  function addBlotterRow(rec) {
+    if (!els || !els.blist) return;
+    var empty = els.blist.querySelector('.diag-brow-empty'); if (empty) empty.parentNode.removeChild(empty);
+    var row = document.createElement('div');
+    row.className = 'diag-brow ' + (rec.pnl >= 0 ? 'win' : 'loss');
+    row.innerHTML = '<span class="diag-brow-dir">' + (rec.dir === 1 ? 'LONG' : 'SHORT') + (rec.lots > 1 ? ' ' + rec.lots + 'x' : '') + '</span><span class="diag-brow-pnl">' + (rec.pnl > 0 ? '+' : '') + money(rec.pnl) + '</span>';
+    els.blist.insertBefore(row, els.blist.firstChild);
+  }
+  function updateBlotterSummary() {
+    if (!els) return;
+    var real = 0, wk = 0, lk = 0;
+    for (var i = 0; i < trades.length; i++) { real += trades[i].pnl; if (trades[i].pnl >= 0) wk++; else lk++; }
+    if (els.bpnl) { els.bpnl.textContent = (real > 0 ? '+' : '') + money(real); els.bpnl.className = 'diag-blotter-pnl ' + (real > 0 ? 'up' : real < 0 ? 'down' : ''); }
+    if (els.brec) els.brec.textContent = wk + 'W · ' + lk + 'L';
+  }
 
   // ── End + scoring ──────────────────────────────────────────────────────────
   function endGame() {
     clearAll(); window.removeEventListener('resize', sizeChart);
-    if (pos) doSell(); // close at market; a deep-red close is its own tell
+    if (pos) flatten(); // close at market; a deep-red close is its own tell
     var net = balance - START_BAL;
     var an = analyze(net);
     track('diagnostic_complete', { archetype: an.id, grade: an.grade, net: Math.round(net), trades: trades.length, buys: buyCount });
@@ -378,8 +424,8 @@
     var chases = [], bags = [], snatches = [], revenges = [], degen = [], wins = 0;
     for (var i = 0; i < trades.length; i++) {
       var t = trades[i];
-      if (t.regimeAtEntry === 'rip' || t.regimeAtEntry === 'pump' || t.extAtEntry > 0.12) chases.push(t);
-      if ((t.addsBelow >= 1 && t.pnl < 0) || (t.pnl <= -400 && t.maxAdverse <= -400)) bags.push(t);
+      if ((t.dir === 1) ? (t.regimeAtEntry === 'rip' || t.regimeAtEntry === 'pump' || t.extAtEntry > 0.12) : (t.regimeAtEntry === 'rug' || t.regimeAtEntry === 'dump' || t.extAtEntry > 0.15)) chases.push(t);
+      if ((t.addsAgainst >= 1 && t.pnl < 0) || (t.pnl <= -400 && t.maxAdverse <= -400)) bags.push(t);
       if (t.lots >= 4 && t.pnl <= -900) degen.push(t);
       if (t.win && t.pnl < 120 && t.heldMs < 2200 && t.maxFav > t.pnl + 220) snatches.push(t);
       if (t.revenge) revenges.push(t);
@@ -388,7 +434,7 @@
     var n = trades.length;
     var counts = { fomo: chases.length, holding: bags.length, paper: snatches.length, overtrade: buyCount >= 12 ? 2 : 0, tilt: revenges.length, freeze: buyCount === 0 ? 3 : (n === 1 && net <= 0 && buyCount <= 1 ? 2 : 0), press: degen.length };
     // averaging down hard into a deep loss is the Degenerate signature even at fewer lots
-    if (!degen.length) { for (var j = 0; j < bags.length; j++) { if (bags[j].addsBelow >= 2 && net <= -1500) { counts.press = Math.max(counts.press, 2); break; } } }
+    if (!degen.length) { for (var j = 0; j < bags.length; j++) { if (bags[j].addsAgainst >= 2 && net <= -1500) { counts.press = Math.max(counts.press, 2); break; } } }
 
     var PRIORITY = ['press', 'tilt', 'holding', 'fomo', 'overtrade', 'paper', 'freeze'];
     var dom = null, domVal = 0;
@@ -401,14 +447,14 @@
     // tells, worst first
     var tells = [];
     if (bags.length) { var b = bags[0];
-      if (b.addsBelow >= 1) tells.push({ w: 5, t: 'You averaged down into a loser ' + b.addsBelow + 'x. The bag only got heavier.' });
+      if (b.addsAgainst >= 1) tells.push({ w: 5, t: 'You averaged into a loser ' + b.addsAgainst + 'x. The bag only got heavier.' });
       else tells.push({ w: 4, t: 'You held a loser from ' + money(b.maxAdverse) + ' and never cut it.' });
     }
     if (degen.length) { var d = degen[0]; tells.push({ w: 5, t: 'You loaded ' + d.lots + ' times into one trade and it went ' + money(d.pnl) + '. No plan, full send.' }); }
-    if (chases.length) tells.push({ w: 3, t: 'You bought ' + sym + ' into a pump and ate the reversal' + (chases.length > 1 ? ' (' + chases.length + 'x)' : '') + '.' });
-    if (revenges.length) tells.push({ w: 4, t: 'You re-bought within two seconds of a loss. That is tilt, not a setup.' });
+    if (chases.length) tells.push({ w: 3, t: (chases[0].dir === 1 ? 'You bought ' + sym + ' into a pump and ate the reversal' : 'You shorted ' + sym + ' into the hole and got squeezed') + (chases.length > 1 ? ' (' + chases.length + 'x)' : '') + '.' });
+    if (revenges.length) tells.push({ w: 4, t: 'You re-entered within two seconds of a loss. That is tilt, not a setup.' });
     if (snatches.length) { var s = snatches[0]; tells.push({ w: 2, t: 'You snatched a winner at ' + money(s.pnl) + '. It was running to ' + money(s.maxFav) + '.' }); }
-    if (buyCount >= 12) tells.push({ w: 2, t: 'You fired ' + buyCount + ' buys in two minutes. Most of that was fees.' });
+    if (buyCount >= 12) tells.push({ w: 2, t: 'You fired ' + buyCount + ' orders in two minutes. Most of that was fees.' });
     if (buyCount === 0) tells.push({ w: 3, t: 'You never put a dollar at risk. The whole move happened without you.' });
     tells.sort(function (a, b) { return b.w - a.w; });
 
