@@ -1,5 +1,5 @@
 /*
- * MAKETZO — "Can You Trade?" / "What Kind of Trader Are You?". v9
+ * MAKETZO — "Can You Trade?" / "What Kind of Trader Are You?". v11
  *
  * A free, no-login, HARD live trading sim at /what-trader. A live candlestick
  * tape (9/20 EMA + VWAP + a resistance level) you trade two-sided (BUY = long,
@@ -178,23 +178,23 @@
   }
   function nextRegime(cur, prog) { var tbl = regimeTable(prog), w = tbl[cur] || tbl.grind, r = Math.random(), acc = 0; for (var i = 0; i < w.length; i++) { acc += w[i][1]; if (r <= acc) return w[i][0]; } return w[w.length - 1][0]; }
 
-  var RUG_NEWS = ['Dilution: the company just priced a stock offering', 'Halt lifted, the insiders are hitting every bid', 'The promoters got their fill and dumped the bag'];
-  var SQUEEZE_NEWS = ['Short squeeze: the borrow rate just spiked', 'Halt lifted, buyers are gapping it up', 'Shorts are getting forced to cover'];
-  // Minor, randomly-sprinkled events — each with a real small-cap reason + a nudge.
-  var MINOR = [
-    { news: 'Unusual options activity just flagged', mag: [1.012, 1.032] },
-    { news: 'A block print just hit the ask', mag: [1.01, 1.028] },
-    { news: 'Momentum scanners just lit it up', mag: [1.014, 1.034] },
-    { news: 'Volatility halt cleared, back to trading', mag: [0.972, 0.99] },
-    { news: 'A seller is leaning on the bid', mag: [0.968, 0.99] },
-    { news: 'Profit-takers are ringing the register', mag: [0.974, 0.992] }
-  ];
+  // The fundamental "reason" for the climactic move — a big banner + a loud alarm,
+  // because a jarring move should always have a visible cause. Kept tight + real.
+  var RUG_NEWS = ['Dilution: they just priced an offering', 'Insiders just filed to sell. They are hitting every bid.', 'The float unlocked and supply is flooding the tape'];
+  var SQUEEZE_NEWS = ['No borrow left. The shorts are getting called in.', 'A halt just lifted and there are no sellers left', 'Every offer is lifting. The shorts are trapped.'];
+
+  // ── Order book + Time & Sales config (the live tape) ───────────────────────
+  // Walls telegraph a strong move ~LEAD_MS early; SPOOF_P of them are fakes that
+  // pull and reverse (the small-cap spoof). Reading the tape is an edge, not armor.
+  var SPOOF_P = 0.28, LEAD_MS = 1500, WALL_COOLDOWN = 5200, WALL_LIFE = 3500;
+  var BOOK_MS = 220, L2_LEVELS = 5;
 
   // ── State ──────────────────────────────────────────────────────────────────
   var root, audio, raf, timers, sym, price, candles, regime, regimeEnd, t0, lastCandle, lastTick;
   var balance, pos, trades, buyCount, recentHigh, lastLossAt;
   var ema9, ema20, vwap, vwapPV, vwapVol, resistance;
-  var scenario, eventProg, eventAt, eventFired, running, paused, pauseStart, lastMinorAt;
+  var scenario, eventProg, eventAt, eventFired, running, paused, pauseStart;
+  var book, wall, pending, printSkew, lastBookAt, lastPrintAt, lastWallAt;
   var cv, ctx, els;
 
   function reset() {
@@ -209,7 +209,8 @@
     var sh = 0; for (j = 0; j < candles.length; j++) if (candles[j].h > sh) sh = candles[j].h;
     resistance = Math.max(sh, price) * rnd(1.04, 1.10);
     // scenario + a randomly-timed catalyst
-    scenario = pickScenario(); eventFired = false; running = false; paused = false; lastMinorAt = 0;
+    scenario = pickScenario(); eventFired = false; running = false; paused = false;
+    book = null; wall = null; pending = null; printSkew = 0.5; lastBookAt = 0; lastPrintAt = 0; lastWallAt = -9999;
     eventProg = scenario.event ? rnd(scenario.at[0], scenario.at[1]) : 2;
     if (scenario.event && scenario.evChance && Math.random() > scenario.evChance) eventProg = 2;
   }
@@ -260,13 +261,23 @@
           '</div>' +
           '<div class="diag-term-hint">BUY goes long, SELL goes short. Tap the same side to add, the other to close.</div>' +
         '</div>' +
-        '<div class="diag-blotter">' +
-          '<div class="diag-blotter-top">' +
-            '<div class="diag-blotter-h">Blotter</div>' +
-            '<div class="diag-blotter-pnl" data-bpnl>$0</div>' +
-            '<div class="diag-blotter-rec" data-brec>0W · 0L</div>' +
+        '<div class="diag-side">' +
+          '<div class="diag-l2-wrap">' +
+            '<div class="diag-side-h">Level 2 <span class="diag-side-sub">order book</span></div>' +
+            '<div class="diag-l2" data-l2></div>' +
           '</div>' +
-          '<div class="diag-blotter-list" data-blist><div class="diag-brow-empty">No trades yet</div></div>' +
+          '<div class="diag-tape-wrap">' +
+            '<div class="diag-side-h">Time &amp; Sales</div>' +
+            '<div class="diag-tape" data-tape></div>' +
+          '</div>' +
+          '<div class="diag-blotter">' +
+            '<div class="diag-blotter-top">' +
+              '<div class="diag-blotter-h">Blotter</div>' +
+              '<div class="diag-blotter-pnl" data-bpnl>$0</div>' +
+              '<div class="diag-blotter-rec" data-brec>0W · 0L</div>' +
+            '</div>' +
+            '<div class="diag-blotter-list" data-blist><div class="diag-brow-empty">No trades yet</div></div>' +
+          '</div>' +
         '</div>' +
       '</div>';
     cv = root.querySelector('[data-chart]'); ctx = cv.getContext('2d');
@@ -276,10 +287,11 @@
       equity: root.querySelector('[data-equity]'), buy: root.querySelector('[data-buy]'),
       sell: root.querySelector('[data-sell]'), pos: root.querySelector('[data-pos]'),
       blist: root.querySelector('[data-blist]'), bpnl: root.querySelector('[data-bpnl]'), brec: root.querySelector('[data-brec]'),
+      l2: root.querySelector('[data-l2]'), tape: root.querySelector('[data-tape]'),
       countdown: root.querySelector('[data-countdown]'), cdnum: root.querySelector('[data-cdnum]'),
       pauseover: root.querySelector('[data-pauseover]'), pauseBtn: root.querySelector('[data-pause]')
     };
-    sizeChart(); drawChart(); updateButtons();
+    sizeChart(); drawChart(); updateButtons(); refreshBook(); for (var sp = 0; sp < 9; sp++) emitPrint();
     els.buy.addEventListener('click', buySide);
     els.sell.addEventListener('click', sellSide);
     els.pauseBtn.addEventListener('click', pauseGame);
@@ -308,6 +320,7 @@
     t0 = performance.now(); lastCandle = t0; lastTick = t0;
     regimeEnd = t0 + ri(REG.grind.min, REG.grind.max);
     eventAt = t0 + DURATION * eventProg;
+    lastBookAt = t0; lastPrintAt = t0; lastWallAt = t0 - WALL_COOLDOWN;
     running = true; updateButtons();
     raf = requestAnimationFrame(loop);
   }
@@ -322,6 +335,7 @@
     if (!paused) return;
     var delta = performance.now() - pauseStart;
     t0 += delta; lastCandle += delta; regimeEnd += delta; eventAt += delta; lastLossAt += delta;
+    lastBookAt += delta; lastPrintAt += delta; lastWallAt += delta; if (wall && wall.bornAt) wall.bornAt += delta;
     if (pos) pos.openAt += delta;
     lastTick = performance.now();
     paused = false; running = true;
@@ -338,22 +352,38 @@
     var dt = (now - lastTick) / 1000; lastTick = now;
     if (!isFinite(dt) || dt <= 0) dt = 0.016; if (dt > 0.05) dt = 0.05;
 
-    // randomly-timed catalyst — fires once, can be a rug (down) or squeeze (up)
+    // randomly-timed catalyst — the fundamental "reason" (offering / squeeze). Loud.
     if (scenario.event && !eventFired && now >= eventAt) {
-      eventFired = true; regime = scenario.event;
+      eventFired = true; regime = scenario.event; pending = null; wall = null;
       var RE = REG[regime]; regimeEnd = now + ri(RE.min, RE.max);
       if (regime === 'rug') { price = Math.max(0.4, price * rnd(0.85, 0.93)); audio.rug(); showCatalyst('rug'); }
       else { price = price * rnd(1.06, 1.16); audio.squeeze(); showCatalyst('squeeze'); }
     }
-    // regime timer
+    // telegraph an upcoming STRONG move through the book ~LEAD_MS early; a slice of
+    // these are spoofs that pull and reverse (revealed at the turn). Reading the
+    // tape is an edge, not armor — a wall that holds pays, a wall that pulls traps.
+    if (running && !pending && now >= regimeEnd - LEAD_MS && now < regimeEnd) {
+      var nr = nextRegime(regime, elapsed / DURATION);
+      pending = { reg: nr, dir: dirOf(nr), side: null, spoof: false };
+      var sd = strongDir(nr);
+      if (sd && now - lastWallAt > WALL_COOLDOWN) {
+        var spoof = Math.random() < SPOOF_P;
+        var side = spoof ? (sd === 'bull' ? 'ask' : 'bid') : (sd === 'bull' ? 'bid' : 'ask');
+        spawnWall(side, spoof, now); pending.side = side; pending.spoof = spoof; lastWallAt = now;
+        tapeCallout(side, false);
+      }
+    }
+    // regime timer — consume the telegraphed transition; reveal spoofs on the turn
     if (now >= regimeEnd) {
-      regime = nextRegime(regime, elapsed / DURATION);
+      regime = pending ? pending.reg : nextRegime(regime, elapsed / DURATION);
       var R0 = REG[regime]; regimeEnd = now + ri(R0.min, R0.max);
-      // organic regime changes are SILENT — the loud alarm is reserved for the
-      // catalyst event so a jarring sound always has a visible reason on screen.
+      if (pending && pending.side && pending.spoof) { pullWall(); tapeCallout(pending.side, true); }
+      // organic regime changes are SILENT — the loud alarm is reserved for the catalyst.
       if (regime === 'rug') { price = Math.max(0.4, price * rnd(0.90, 0.965)); }
       else if (regime === 'pump') { price = price * rnd(1.0, 1.035); }
+      pending = null;
     }
+    if (wall && !wall.spoof && now > wall.bornAt + WALL_LIFE) wall = null;
     var R = REG[regime] || REG.grind;
     var drift = price * R.drift * dt;
     var noise = price * R.vol * (Math.random() * 2 - 1) * Math.sqrt(dt) * 2;
@@ -362,9 +392,19 @@
     recentHigh = Math.max(recentHigh * 0.997, price);
 
     var c = candles[candles.length - 1]; c.c = price; if (price > c.h) c.h = price; if (price < c.l) c.l = price;
-    if (now - lastCandle >= CANDLE_MS) { lastCandle = now; closeCandle(c, now); candles.push({ o: price, h: price, l: price, c: price, e9: ema9, e20: ema20, vwap: vwap }); if (candles.length > 90) candles.shift(); maybeMinorEvent(now, elapsed); }
+    if (now - lastCandle >= CANDLE_MS) { lastCandle = now; closeCandle(c, now); candles.push({ o: price, h: price, l: price, c: price, e9: ema9, e20: ema20, vwap: vwap }); if (candles.length > 90) candles.shift(); }
 
     if (pos) { var u = pos.dir * pos.shares * (price - pos.entry); if (u < pos.maxAdverse) pos.maxAdverse = u; if (u > pos.maxFav) pos.maxFav = u; }
+
+    // live tape — order book refresh (eased toward the regime, or the telegraphed
+    // move during a lead window) + a Time & Sales print on a volatility-scaled cadence
+    if (now - lastBookAt >= BOOK_MS) {
+      lastBookAt = now;
+      var tReg = pending && pending.dir ? (pending.dir === 'bull' ? 'rip' : 'dump') : regime;
+      printSkew += (printTarget(tReg) - printSkew) * 0.08;
+      refreshBook();
+    }
+    if (now - lastPrintAt >= printGapFor(regime)) { lastPrintAt = now; emitPrint(); }
 
     if (Math.random() < 0.2) audio.tick();
     drawChart();
@@ -396,20 +436,81 @@
     else if (price < resistance * 0.85) { var rh = 0, vl = candles.slice(-20); for (var z = 0; z < vl.length; z++) if (vl[z].h > rh) rh = vl[z].h; resistance = Math.max(rh, price * 1.03) * rnd(1.0, 1.02); }
   }
 
-  // A small, randomly-timed event with a real reason — the texture Ed loved about
-  // the offering. Cooldown-gated so it stays flavor, not noise.
-  function maybeMinorEvent(now, elapsed) {
-    if (elapsed < 9000 || now - lastMinorAt < 12000) return;
-    if (scenario.event && !eventFired && now >= eventAt - 2500) return; // don't step on the climax
-    if (Math.random() > 0.12) return;
-    lastMinorAt = now;
-    var m = pick(MINOR);
-    price = Math.max(0.4, price * rnd(m.mag[0], m.mag[1]));
-    showCatalyst('news', m.news); audio.news();
+  // ── The live tape: order book + Time & Sales, driven by the regime engine ───
+  function tickOf(p) { return p < 2 ? 0.005 : p < 10 ? 0.01 : p < 25 ? 0.02 : 0.05; }
+  function fmtSize(n) { return n >= 1000 ? (n / 1000).toFixed(n >= 9500 ? 0 : 1) + 'K' : '' + Math.round(n); }
+  function strongDir(reg) { return (reg === 'rip' || reg === 'pump' || reg === 'squeeze') ? 'bull' : (reg === 'dump' || reg === 'rug') ? 'bear' : null; }
+  function dirOf(reg) { return (reg === 'rip' || reg === 'pump' || reg === 'squeeze' || reg === 'deadcat') ? 'bull' : (reg === 'dump' || reg === 'rug' || reg === 'bleed') ? 'bear' : null; }
+  function printTarget(reg) { var d = REG[reg] ? REG[reg].drift : 0; return clamp(0.5 + d * 1.6, 0.12, 0.9); }
+  function printGapFor(reg) { var Rg = REG[reg] || REG.grind; return clamp(420 - (Math.abs(Rg.drift) + Rg.vol) * 700, 90, 460); }
+
+  // A wall is the leading tell. Real ones get tested and hold; spoofs pull first.
+  function spawnWall(side, spoof, now) {
+    var tick = tickOf(price), innerAsk = Math.ceil(price / tick) * tick;
+    var p0 = side === 'ask' ? innerAsk + tick * ri(1, 3) : (innerAsk - tick) - tick * ri(1, 3);
+    wall = { side: side, px: p0, size: ri(6000, 22000), spoof: spoof, bornAt: now };
+  }
+  function pullWall() { wall = null; }
+
+  function baseSize(level, lean) {
+    var base = (300 + Math.random() * 1400) * (1 - level * 0.12) * (1 + clamp(lean, -0.5, 0.5) * 1.1);
+    return Math.max(100, Math.round(base / 100) * 100);
+  }
+  function refreshBook() {
+    if (!els || !els.l2) return;
+    var tick = tickOf(price), innerAsk = Math.ceil(price / tick) * tick, lean = printSkew - 0.5;
+    var asks = [], bids = [], mx = 1, i;
+    for (i = 0; i < L2_LEVELS; i++) {
+      asks.push({ px: innerAsk + i * tick, size: baseSize(i, -lean) });
+      bids.push({ px: (innerAsk - tick) - i * tick, size: baseSize(i, lean) });
+    }
+    if (wall) {
+      var arr = wall.side === 'ask' ? asks : bids, best = 0, bd = 1e9;
+      for (i = 0; i < arr.length; i++) { var d = Math.abs(arr[i].px - wall.px); if (d < bd) { bd = d; best = i; } }
+      if (bd <= tick * 1.5) { arr[best].size = wall.size; arr[best].wall = true; }
+    }
+    for (i = 0; i < L2_LEVELS; i++) { if (asks[i].size > mx) mx = asks[i].size; if (bids[i].size > mx) mx = bids[i].size; }
+    book = { asks: asks, bids: bids };
+    var h = '';
+    for (i = L2_LEVELS - 1; i >= 0; i--) h += l2Row(asks[i], 'ask', mx);
+    h += '<div class="diag-l2-spread">' + px(price) + '</div>';
+    for (i = 0; i < L2_LEVELS; i++) h += l2Row(bids[i], 'bid', mx);
+    els.l2.innerHTML = h;
+  }
+  function l2Row(lv, side, mx) {
+    var w = Math.max(4, Math.round(lv.size / mx * 100));
+    return '<div class="diag-l2-row ' + side + (lv.wall ? ' wall' : '') + '">' +
+      '<span class="diag-l2-bar" style="width:' + w + '%"></span>' +
+      '<span class="diag-l2-px">' + lv.px.toFixed(2) + '</span>' +
+      '<span class="diag-l2-sz">' + fmtSize(lv.size) + '</span></div>';
+  }
+  function emitPrint() {
+    if (!els || !els.tape) return;
+    var tick = tickOf(price), green = Math.random() < printSkew;
+    var pr = price + (green ? rnd(0, tick) : -rnd(0, tick));
+    var block = Math.random() < 0.12, size = block ? ri(2000, 9000) : ri(100, 900);
+    var row = document.createElement('div');
+    row.className = 'diag-print ' + (green ? 'buy' : 'sell') + (block ? ' block' : '');
+    row.innerHTML = '<span class="diag-print-px">' + pr.toFixed(2) + '</span><span class="diag-print-sz">' + fmtSize(size) + '</span>';
+    els.tape.insertBefore(row, els.tape.firstChild);
+    while (els.tape.childNodes.length > 12) els.tape.removeChild(els.tape.lastChild);
+  }
+  // The plain-words callout naming what the book just did — quiet, distinct from the
+  // loud catalyst. Spawn = "buyers stacking the bid"; pull = the spoof getting revealed.
+  function tapeCallout(side, pulled) {
+    if (pulled) {
+      if (side === 'bid') showCatalyst('rug', 'Bid pulled. That support was a spoof.');
+      else showCatalyst('squeeze', 'Offer pulled. That wall was fake.');
+      audio.news();
+    } else {
+      showCatalyst('tape', side === 'bid' ? 'Buyers stacking the bid' : 'Seller leaning on the ask');
+      audio.tick();
+    }
   }
   function showCatalyst(kind, text) {
     var host = root.querySelector('.diag-main'); if (!host) return;
-    var cls = kind === 'rug' ? 'rug' : kind === 'squeeze' ? 'squeeze' : 'news';
+    var prev = host.querySelectorAll('.diag-event'); for (var k = 0; k < prev.length; k++) prev[k].parentNode.removeChild(prev[k]);
+    var cls = kind === 'rug' ? 'rug' : kind === 'squeeze' ? 'squeeze' : kind === 'tape' ? 'tape' : 'news';
     var b = document.createElement('div'); b.className = 'diag-event ' + cls;
     b.textContent = text || pick(kind === 'rug' ? RUG_NEWS : SQUEEZE_NEWS);
     host.appendChild(b);

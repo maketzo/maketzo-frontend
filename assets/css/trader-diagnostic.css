@@ -38,32 +38,69 @@
 .diag-sw-vwap { border-top-color: #ff9f43; border-top-style: dotted; }
 .diag-sw-res { border-top-color: #ff7ab0; border-top-style: dashed; }
 
-/* ── Live blotter (running trade tally) ──────────────────────────────────── */
-.diag-blotter { width: 232px; flex: 0 0 232px; display: flex; flex-direction: column; border-radius: 12px; border: 1px solid var(--d-line); background: rgba(8,11,16,.6); padding: 12px 11px; }
-.diag-blotter-top { border-bottom: 1px solid var(--d-line); padding-bottom: 10px; margin-bottom: 9px; }
-.diag-blotter-h { font-family: var(--mk-font-mono, "DM Mono", monospace); font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--d-dim); margin-bottom: 7px; }
-.diag-blotter-pnl { font-size: 25px; font-weight: 800; color: #fff; font-variant-numeric: tabular-nums; line-height: 1; }
+/* ── Right rail: Level 2 + Time & Sales + blotter ────────────────────────── */
+.diag-side { width: 258px; flex: 0 0 258px; display: flex; flex-direction: column; gap: 10px; min-width: 0; min-height: 0; }
+.diag-side-h { font-family: var(--mk-font-mono, "DM Mono", monospace); font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: var(--d-dim); margin-bottom: 7px; display: flex; align-items: baseline; gap: 6px; }
+.diag-side-sub { font-size: 8.5px; letter-spacing: .08em; opacity: .65; }
+
+/* Level 2 order book — depth bars so pressure reads at a glance */
+.diag-l2-wrap { flex: 0 0 auto; border-radius: 12px; border: 1px solid var(--d-line); background: rgba(8,11,16,.6); padding: 10px 10px 9px; }
+.diag-l2 { display: flex; flex-direction: column; gap: 2px; font-variant-numeric: tabular-nums; }
+.diag-l2-row { position: relative; display: flex; align-items: center; justify-content: space-between; padding: 2.5px 8px; border-radius: 4px; font-family: var(--mk-font-mono, "DM Mono", monospace); font-size: 11px; overflow: hidden; }
+.diag-l2-bar { position: absolute; top: 0; bottom: 0; left: 0; z-index: 0; border-radius: 4px; transition: width .18s ease; }
+.diag-l2-row.ask .diag-l2-bar { background: rgba(255,107,107,.15); }
+.diag-l2-row.bid .diag-l2-bar { background: rgba(126,217,87,.15); }
+.diag-l2-px, .diag-l2-sz { position: relative; z-index: 1; }
+.diag-l2-row.ask .diag-l2-px { color: #ffb3b3; }
+.diag-l2-row.bid .diag-l2-px { color: #aee88f; }
+.diag-l2-sz { color: var(--d-ink); opacity: .82; }
+.diag-l2-row.wall .diag-l2-sz { font-weight: 800; opacity: 1; color: #fff; }
+.diag-l2-row.wall.ask .diag-l2-bar { background: rgba(255,107,107,.42); box-shadow: inset 0 0 0 1px rgba(255,107,107,.7); }
+.diag-l2-row.wall.bid .diag-l2-bar { background: rgba(126,217,87,.42); box-shadow: inset 0 0 0 1px rgba(126,217,87,.7); }
+.diag-l2-spread { text-align: center; font-family: var(--mk-font-mono, "DM Mono", monospace); font-size: 11px; font-weight: 700; letter-spacing: .04em; color: var(--d-gold-hi); padding: 3px 0; margin: 1px 0; border-top: 1px solid var(--d-line); border-bottom: 1px solid var(--d-line); }
+
+/* Time & Sales — the prints. Green hits the offer, red hits the bid. */
+.diag-tape-wrap { flex: 1 1 auto; min-height: 96px; display: flex; flex-direction: column; border-radius: 12px; border: 1px solid var(--d-line); background: rgba(8,11,16,.6); padding: 10px 10px 9px; overflow: hidden; }
+.diag-tape { flex: 1; overflow: hidden; display: flex; flex-direction: column; gap: 1px; font-variant-numeric: tabular-nums; }
+.diag-print { display: flex; align-items: center; justify-content: space-between; padding: 2px 8px; border-radius: 4px; font-family: var(--mk-font-mono, "DM Mono", monospace); font-size: 11px; animation: diagPrint .16s ease; }
+.diag-print.buy { background: rgba(126,217,87,.10); }
+.diag-print.sell { background: rgba(255,107,107,.10); }
+.diag-print.buy .diag-print-px { color: #aee88f; }
+.diag-print.sell .diag-print-px { color: #ffb3b3; }
+.diag-print-sz { color: var(--d-ink); opacity: .8; }
+.diag-print.block { box-shadow: inset 2px 0 0 var(--d-gold); }
+.diag-print.block .diag-print-sz { font-weight: 800; opacity: 1; }
+@keyframes diagPrint { from { opacity: 0; transform: translateY(-3px); } to { opacity: 1; transform: none; } }
+
+/* Live blotter (running trade tally — itself a behavioral trap) */
+.diag-blotter { flex: 0 0 auto; display: flex; flex-direction: column; border-radius: 12px; border: 1px solid var(--d-line); background: rgba(8,11,16,.6); padding: 11px 11px; }
+.diag-blotter-top { border-bottom: 1px solid var(--d-line); padding-bottom: 9px; margin-bottom: 8px; }
+.diag-blotter-h { font-family: var(--mk-font-mono, "DM Mono", monospace); font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: var(--d-dim); margin-bottom: 6px; }
+.diag-blotter-pnl { font-size: 23px; font-weight: 800; color: #fff; font-variant-numeric: tabular-nums; line-height: 1; }
 .diag-blotter-pnl.up { color: var(--d-up); }
 .diag-blotter-pnl.down { color: var(--d-down); }
 .diag-blotter-rec { font-size: 12px; color: var(--d-dim); margin-top: 4px; font-variant-numeric: tabular-nums; }
-.diag-blotter-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 5px; max-height: 270px; scrollbar-width: thin; scrollbar-color: rgba(255,255,255,.18) transparent; }
+.diag-blotter-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 5px; max-height: 96px; scrollbar-width: thin; scrollbar-color: rgba(255,255,255,.18) transparent; }
 .diag-blotter-list::-webkit-scrollbar { width: 6px; }
 .diag-blotter-list::-webkit-scrollbar-track { background: transparent; }
 .diag-blotter-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,.14); border-radius: 3px; }
 .diag-blotter-list::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,.26); }
-.diag-brow { display: flex; align-items: center; justify-content: space-between; padding: 7px 9px; border-radius: 7px; background: rgba(255,255,255,.03); border-left: 2px solid var(--d-line); font-variant-numeric: tabular-nums; animation: diagRow .25s ease; }
+.diag-brow { display: flex; align-items: center; justify-content: space-between; padding: 6px 9px; border-radius: 7px; background: rgba(255,255,255,.03); border-left: 2px solid var(--d-line); font-variant-numeric: tabular-nums; animation: diagRow .25s ease; }
 .diag-brow.win { border-left-color: var(--d-up); }
 .diag-brow.loss { border-left-color: var(--d-down); }
 .diag-brow-dir { font-family: var(--mk-font-mono, "DM Mono", monospace); font-size: 10px; letter-spacing: .08em; color: var(--d-dim); }
 .diag-brow-pnl { font-weight: 700; font-size: 13.5px; }
 .diag-brow.win .diag-brow-pnl { color: var(--d-up); }
 .diag-brow.loss .diag-brow-pnl { color: var(--d-down); }
-.diag-brow-empty { font-size: 12px; color: var(--d-dim); opacity: .55; text-align: center; padding: 16px 0; }
+.diag-brow-empty { font-size: 12px; color: var(--d-dim); opacity: .55; text-align: center; padding: 14px 0; }
 @keyframes diagRow { from { opacity: 0; transform: translateX(8px); } to { opacity: 1; transform: none; } }
 @media (max-width: 720px) {
   .diag-term { flex-direction: column; }
-  .diag-blotter { width: auto; flex: none; }
-  .diag-blotter-list { max-height: 148px; }
+  .diag-side { width: auto; flex: none; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-items: start; }
+  .diag-tape-wrap { min-height: 132px; }
+  .diag-tape { max-height: 152px; }
+  .diag-blotter { grid-column: 1 / -1; }
+  .diag-blotter-list { max-height: 132px; }
 }
 
 /* ── Top bar: pause + clock ──────────────────────────────────────────────── */
@@ -86,6 +123,7 @@
 .diag-event.rug { background: rgba(255,107,107,.16); border: 1px solid rgba(255,107,107,.5); color: #ffc7c7; }
 .diag-event.squeeze { background: rgba(126,217,87,.16); border: 1px solid rgba(126,217,87,.5); color: #cdf5b4; }
 .diag-event.news { background: rgba(212,175,55,.14); border: 1px solid rgba(212,175,55,.45); color: #f0d99a; }
+.diag-event.tape { background: rgba(127,180,255,.13); border: 1px solid rgba(127,180,255,.42); color: #d3e4ff; }
 @keyframes diagEventIn { from { opacity: 0; transform: translate(-50%, -4px); } to { opacity: 1; transform: translate(-50%, 0); } }
 
 /* ── Shared .mk-share host (component styles live in audio-player.css) ────── */
