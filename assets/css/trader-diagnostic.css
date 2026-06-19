@@ -20,7 +20,7 @@
 
 /* ── Trading terminal ────────────────────────────────────────────────────── */
 .diag-term { display: flex; gap: 14px; align-items: stretch; animation: diagFade .28s ease; border-radius: 16px; border: 1px solid var(--d-line); background: linear-gradient(180deg, rgba(20,26,36,.7), rgba(10,13,18,.85)); padding: 14px 14px 16px; box-shadow: 0 24px 60px rgba(0,0,0,.45); }
-.diag-main { flex: 1; min-width: 0; }
+.diag-main { flex: 1; min-width: 0; position: relative; }
 @keyframes diagFade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 .diag-term-top { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 10px; }
 .diag-term-sym { font-family: var(--mk-font-mono, "DM Mono", monospace); font-size: 14px; letter-spacing: .14em; color: var(--d-gold-hi); }
@@ -46,7 +46,11 @@
 .diag-blotter-pnl.up { color: var(--d-up); }
 .diag-blotter-pnl.down { color: var(--d-down); }
 .diag-blotter-rec { font-size: 12px; color: var(--d-dim); margin-top: 4px; font-variant-numeric: tabular-nums; }
-.diag-blotter-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 5px; max-height: 270px; }
+.diag-blotter-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 5px; max-height: 270px; scrollbar-width: thin; scrollbar-color: rgba(255,255,255,.18) transparent; }
+.diag-blotter-list::-webkit-scrollbar { width: 6px; }
+.diag-blotter-list::-webkit-scrollbar-track { background: transparent; }
+.diag-blotter-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,.14); border-radius: 3px; }
+.diag-blotter-list::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,.26); }
 .diag-brow { display: flex; align-items: center; justify-content: space-between; padding: 7px 9px; border-radius: 7px; background: rgba(255,255,255,.03); border-left: 2px solid var(--d-line); font-variant-numeric: tabular-nums; animation: diagRow .25s ease; }
 .diag-brow.win { border-left-color: var(--d-up); }
 .diag-brow.loss { border-left-color: var(--d-down); }
@@ -61,6 +65,31 @@
   .diag-blotter { width: auto; flex: none; }
   .diag-blotter-list { max-height: 148px; }
 }
+
+/* ── Top bar: pause + clock ──────────────────────────────────────────────── */
+.diag-term-topright { display: flex; align-items: center; gap: 12px; }
+.diag-pause-btn { font-family: var(--mk-font-mono, "DM Mono", monospace); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--d-dim); background: rgba(255,255,255,.05); border: 1px solid var(--d-line); border-radius: 7px; padding: 5px 11px; cursor: pointer; transition: color .14s ease, border-color .14s ease; }
+.diag-pause-btn:hover { color: var(--d-ink); border-color: rgba(212,175,55,.5); }
+
+/* ── Overlays: 3-2-1-GO countdown + paused ───────────────────────────────── */
+.diag-hidden { display: none !important; }
+.diag-cd, .diag-pause-over { position: absolute; left: 8px; right: 8px; top: 44px; height: 240px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; background: rgba(8,10,14,.66); -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px); border-radius: 12px; z-index: 6; }
+.diag-cd-num { font-family: var(--mk-font-display, "Bebas Neue", Impact, sans-serif); font-size: 112px; line-height: 1; color: #fff; font-variant-numeric: tabular-nums; }
+.diag-cd-num.go { color: var(--d-up); font-size: 92px; letter-spacing: .05em; }
+.diag-cd-num.tick { animation: diagCdPop .5s ease; }
+@keyframes diagCdPop { 0% { transform: scale(.6); opacity: 0; } 45% { transform: scale(1.08); opacity: 1; } 100% { transform: scale(1); } }
+.diag-pause-title { font-family: var(--mk-font-display, "Bebas Neue", Impact, sans-serif); font-size: 44px; color: #fff; letter-spacing: .02em; }
+.diag-resume { font-family: var(--mk-font-sans, "DM Sans", sans-serif); font-weight: 700; font-size: 15px; color: #0d0f14; background: var(--mk-gold-gradient, linear-gradient(135deg, #e5c572, #d4af37)); border: none; border-radius: 11px; padding: 12px 28px; cursor: pointer; }
+
+/* ── Catalyst event banner (the "reason": offering, squeeze, halt) ───────── */
+.diag-event { position: absolute; left: 50%; top: 52px; transform: translateX(-50%); z-index: 7; max-width: calc(100% - 28px); font-family: var(--mk-font-mono, "DM Mono", monospace); font-size: 11px; letter-spacing: .03em; line-height: 1.3; text-align: center; padding: 8px 14px; border-radius: 9px; box-shadow: 0 10px 28px rgba(0,0,0,.5); animation: diagEventIn .3s ease; }
+.diag-event.rug { background: rgba(255,107,107,.16); border: 1px solid rgba(255,107,107,.5); color: #ffc7c7; }
+.diag-event.squeeze { background: rgba(126,217,87,.16); border: 1px solid rgba(126,217,87,.5); color: #cdf5b4; }
+@keyframes diagEventIn { from { opacity: 0; transform: translate(-50%, -4px); } to { opacity: 1; transform: translate(-50%, 0); } }
+
+/* ── Shared .mk-share host (component styles live in audio-player.css) ────── */
+.diag-share { display: flex; justify-content: center; margin: 22px 0 4px; }
+.diag-share-mk { display: inline-flex; }
 
 .diag-pos { display: flex; align-items: center; justify-content: space-between; margin: 10px 2px 2px; min-height: 26px; font-variant-numeric: tabular-nums; }
 .diag-pos-state { font-family: var(--mk-font-mono, "DM Mono", monospace); font-size: 12.5px; letter-spacing: .08em; color: var(--d-dim); }
@@ -126,6 +155,9 @@
 
 @media (max-width: 480px) {
   .diag-chart { height: 200px; }
+  .diag-cd, .diag-pause-over { height: 200px; }
+  .diag-cd-num { font-size: 88px; }
+  .diag-cd-num.go { font-size: 74px; }
   .diag-trade-btn { font-size: 26px; }
   .diag-card { padding: 26px 18px 20px; }
   .diag-card-grade { font-size: 38px; top: 14px; right: 14px; }
