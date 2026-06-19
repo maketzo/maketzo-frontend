@@ -1,5 +1,5 @@
 /*
- * MAKETZO — "Can You Trade?" / "What Kind of Trader Are You?". v16
+ * MAKETZO — "Can You Trade?" / "What Kind of Trader Are You?". v17
  *
  * A free, no-login, HARD live trading sim at /what-trader. A live candlestick
  * tape (9/20 EMA + VWAP + a resistance level) you trade two-sided (BUY = long,
@@ -57,6 +57,9 @@
       tick: function () { tone(140, 0.008, 'square', 0.006, 0); },
       cdTick: function () { tone(680, 0.07, 'sine', 0.05, 0); },
       cdGo: function () { tone(540, 0.09, 'triangle', 0.05, 0); tone(840, 0.16, 'triangle', 0.05, 0.07); },
+      // Whole 3-2-1-GO beep sequence scheduled in one call against the audio clock, so
+      // a cold-context warmup shifts it as a unit instead of rushing the first beat.
+      cdSequence: function (stepSec) { for (var k = 0; k < 3; k++) tone(680, 0.07, 'sine', 0.05, k * stepSec); tone(540, 0.09, 'triangle', 0.05, 3 * stepSec); tone(840, 0.16, 'triangle', 0.05, 3 * stepSec + 0.07); },
       verdict: function () { tone(330, 0.10, 'triangle', 0.05, 0); tone(495, 0.12, 'triangle', 0.05, 0.10); tone(660, 0.20, 'triangle', 0.045, 0.22); }
     };
   }
@@ -259,6 +262,7 @@
             '<span class="diag-leg"><i class="diag-sw diag-sw-e20"></i>20 EMA</span>' +
             '<span class="diag-leg"><i class="diag-sw diag-sw-vwap"></i>VWAP</span>' +
             '<span class="diag-leg"><i class="diag-sw diag-sw-res"></i>Resistance</span>' +
+            '<span class="diag-leg"><i class="diag-sw diag-sw-vol"></i>Volume</span>' +
           '</div>' +
           '<div class="diag-pos" data-pos><span class="diag-pos-state" data-pstate>FLAT</span><span class="diag-pos-pnl" data-upnl></span></div>' +
           '<div class="diag-term-bottom"><div class="diag-bal">Equity <b data-equity>' + money(START_BAL) + '</b></div></div>' +
@@ -319,6 +323,9 @@
   function runCountdown(done) {
     var STEP = 900, labels = ['3', '2', '1', 'GO'], shown = -1, t0 = performance.now();
     els.countdown.classList.remove('diag-hidden');
+    // Beeps scheduled once against the audio clock (immune to cold-context warmup);
+    // the rAF clock below drives ONLY the visual numbers, anchored to real elapsed time.
+    try { audio.cdSequence(STEP / 1000); } catch (e) {}
     (function frame(now) {
       var i = Math.floor((now - t0) / STEP);
       if (i >= labels.length) { els.countdown.classList.add('diag-hidden'); done(); return; }
@@ -326,7 +333,6 @@
         shown = i; var v = labels[i];
         els.cdnum.textContent = v; els.cdnum.className = 'diag-cd-num' + (v === 'GO' ? ' go' : '');
         void els.cdnum.offsetWidth; els.cdnum.classList.add('tick');
-        try { v === 'GO' ? audio.cdGo() : audio.cdTick(); } catch (e) {}
       }
       raf = requestAnimationFrame(frame);
     })(t0);
@@ -616,6 +622,7 @@
       ctx.fillStyle = (vc.c >= vc.o) ? 'rgba(126,217,87,.20)' : 'rgba(255,107,107,.20)';
       ctx.fillRect(vx - bw / 2, volBase - vbh, bw, vbh);
     }
+    ctx.fillStyle = 'rgba(170,182,195,.8)'; ctx.font = '9px "DM Mono", monospace'; ctx.fillText('VOL', 5, volBase - 3);
     function poly(key, color, dash) {
       ctx.strokeStyle = color; ctx.lineWidth = 1.5; ctx.setLineDash(dash || []);
       ctx.beginPath(); var started = false;

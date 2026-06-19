@@ -37,6 +37,7 @@
 .diag-sw-e20 { border-top-color: #7fb4ff; }
 .diag-sw-vwap { border-top-color: #ff9f43; border-top-style: dotted; }
 .diag-sw-res { border-top-color: #ff7ab0; border-top-style: dashed; }
+.diag-sw-vol { height: 9px; border-top: none; border-radius: 1px; background: linear-gradient(90deg, rgba(126,217,87,.55) 0 50%, rgba(255,107,107,.55) 50% 100%); }
 
 /* ── Right rail: Level 2 + Time & Sales + blotter ────────────────────────── */
 .diag-side { width: 258px; flex: 0 0 258px; display: flex; flex-direction: column; gap: 10px; min-width: 0; min-height: 0; }
