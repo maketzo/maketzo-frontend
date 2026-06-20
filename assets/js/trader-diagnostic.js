@@ -1,5 +1,5 @@
 /*
- * MAKETZO — "Can You Trade?" / "What Kind of Trader Are You?". v33
+ * MAKETZO — "Can You Trade?" / "What Kind of Trader Are You?". v34
  *
  * A free, no-login, HARD live trading sim at /trader-type. A live candlestick
  * tape (9/20 EMA + VWAP + a resistance level) you trade two-sided (BUY = long,
@@ -189,8 +189,10 @@
 
   // The fundamental "reason" for the climactic move — a big banner + a loud alarm,
   // because a jarring move should always have a visible cause. Kept tight + real.
-  var RUG_NEWS = ['Dilution: they just priced an offering', 'Insiders just filed to sell. They are hitting every bid.', 'The float unlocked and supply is flooding the tape'];
-  var SQUEEZE_NEWS = ['No borrow left. The shorts are getting called in.', 'A halt just lifted and there are no sellers left', 'Every offer is lifting. The shorts are trapped.'];
+  // Format: a SCANNABLE headline, then the plain reason. The first two words carry the
+  // signal so it reads at a glance. Simplicity + instant clarity over cleverness (Ed).
+  var RUG_NEWS = ['Dilution event - Company issued press release of an offering', 'Offering priced - New shares hitting the market', 'Insiders filed to sell - Supply flooding the tape'];
+  var SQUEEZE_NEWS = ['Halt opened - Shorts getting squeezed', 'Bids rising fast - Shorts getting trapped', 'No shares left to short - Shorts getting called in'];
 
   // ── Order book + Time & Sales config (the live tape) ───────────────────────
   // Walls telegraph a strong move ~LEAD_MS early; SPOOF_P of them are fakes that
@@ -595,11 +597,11 @@
   // loud catalyst. Spawn = "buyers stacking the bid"; pull = the spoof getting revealed.
   function tapeCallout(side, pulled) {
     if (pulled) {
-      if (side === 'bid') showCatalyst('rug', 'Bid pulled. That support was a spoof.');
-      else showCatalyst('squeeze', 'Offer pulled. That wall was fake.');
+      if (side === 'bid') showCatalyst('rug', 'Big bid pulled. Support was a spoof');
+      else showCatalyst('squeeze', 'Big offer pulled. Resistance wall was a spoof');
       audio.news();
     } else {
-      showCatalyst('tape', side === 'bid' ? 'Buyers stacking the bid' : 'Seller leaning on the ask');
+      showCatalyst('tape', side === 'bid' ? 'Buyers stacking the bid' : 'Sellers stacking the ask');
       audio.tick();
     }
   }
@@ -610,7 +612,9 @@
     var b = document.createElement('div'); b.className = 'diag-event ' + cls;
     b.textContent = text || pick(kind === 'rug' ? RUG_NEWS : SQUEEZE_NEWS);
     host.appendChild(b);
-    later(function () { if (b.parentNode) b.parentNode.removeChild(b); }, 2600);
+    // The loud catalyst (no explicit text → picks from NEWS) is the key teaching moment and
+    // the longest line, so it stays up longer; the frequent tape callouts clear faster.
+    later(function () { if (b.parentNode) b.parentNode.removeChild(b); }, text ? 2600 : 4200);
   }
 
   function drawChart() {
