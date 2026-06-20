@@ -1,5 +1,5 @@
 /*
- * MAKETZO — "Can You Trade?" / "What Kind of Trader Are You?". v35
+ * MAKETZO — "Can You Trade?" / "What Kind of Trader Are You?". v36
  *
  * A free, no-login, HARD live trading sim at /trader-type. A live candlestick
  * tape (9/20 EMA + VWAP + a resistance level) you trade two-sided (BUY = long,
@@ -68,7 +68,7 @@
   // ── Archetypes (read from the trade log; direction-aware) ──────────────────
   var ARCH = {
     sniper: { name: 'The Sniper', tier: 'a', rarity: 4,
-      roast: 'You took the right side, cut the losers fast and let the winners run. Annoyingly disciplined. The market hates you.',
+      roast: 'You took the right side, cut the losers fast and let the winners run. That is the whole game, and most traders never run it this clean.',
       tag: 'You wait. You strike. You’re gone.' },
     chaser: { name: 'The Chaser', tier: 'd', rarity: 21,
       roast: 'You bought the top of every pump like it owed you money. You’re the exit liquidity the runners were waiting for.',
