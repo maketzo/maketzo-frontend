@@ -1,5 +1,5 @@
 /*
- * MAKETZO — "Can You Trade?" / "What Kind of Trader Are You?". v29
+ * MAKETZO — "Can You Trade?" / "What Kind of Trader Are You?". v30
  *
  * A free, no-login, HARD live trading sim at /trader-type. A live candlestick
  * tape (9/20 EMA + VWAP + a resistance level) you trade two-sided (BUY = long,
@@ -86,7 +86,7 @@
     masher: { name: 'The Button Masher', tier: 'd', rarity: 13,
       roast: 'You traded the chop like it was a fire alarm. A dozen fills, zero edge, and the broker thanks you for the fees.',
       tag: 'You don’t trade the market, you trade your boredom.' },
-    revenge: { name: 'Full Tilt', tier: 'f', rarity: 12,
+    revenge: { name: 'The Revenge Trader', tier: 'f', rarity: 12,
       roast: 'One red print and the plan was gone. You re-loaded to win it back and let the last loss pick your next trade. The market owns you now.',
       tag: 'You don’t trade setups, you trade your feelings.' },
     freezer: { name: 'The Freezer', tier: 'c', rarity: 9,
