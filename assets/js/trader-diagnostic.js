@@ -1,5 +1,5 @@
 /*
- * MAKETZO — "Can You Trade?" / "What Kind of Trader Are You?". v34
+ * MAKETZO — "Can You Trade?" / "What Kind of Trader Are You?". v35
  *
  * A free, no-login, HARD live trading sim at /trader-type. A live candlestick
  * tape (9/20 EMA + VWAP + a resistance level) you trade two-sided (BUY = long,
@@ -242,7 +242,7 @@
       '<div class="diag-intro">' +
         '<div class="diag-eyebrow">The two-minute tape test</div>' +
         '<h1 class="diag-h1">Can you trade,<br><em>or do you just think so?</em></h1>' +
-        '<p class="diag-lede">Two minutes on a <b>simulated</b> small-cap tape that fights back. Go <b>long</b> or <b>short</b> and watch the P&L move on every fill. It lets you get comfortable, then tries to take it all back. The money is fake. What it shows about how you trade is not.</p>' +
+        '<p class="diag-lede">Two minutes on a <b>simulated</b> small-cap tape that fights back. Go <b>long</b> or <b>short</b> and watch the P&L move on every fill. It never plays the same way twice. The money is fake. What it shows about how you trade is not.</p>' +
         '<button class="diag-start" type="button" data-start>Prove it →</button>' +
         '<div class="diag-intro-note">Free · 2 minutes · a simulation, not real trading</div>' +
         '<div class="diag-intro-disc">Play money on a simulated tape, for practice and entertainment only. Not a real brokerage, no live market data, and nothing here is financial advice.</div>' +
