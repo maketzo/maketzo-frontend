@@ -1,5 +1,5 @@
 /*
- * MAKETZO — "Can You Trade?" / "What Kind of Trader Are You?". v28
+ * MAKETZO — "Can You Trade?" / "What Kind of Trader Are You?". v29
  *
  * A free, no-login, HARD live trading sim at /trader-type. A live candlestick
  * tape (9/20 EMA + VWAP + a resistance level) you trade two-sided (BUY = long,
@@ -73,6 +73,7 @@
     chaser: { name: 'The Chaser', tier: 'd', rarity: 21,
       roast: 'You bought the top of every pump like it owed you money. You’re the exit liquidity the runners were waiting for.',
       roastS: 'You shorted the bottom of every flush like it owed you money. You’re the fuel every squeeze runs on.',
+      roastG: 'Your entries are the leak. You kept buying into pumps and going straight underwater, then got bailed out. Bailed out is not the same as right. One day the tape does not come back.',
       tag: 'Green candle, must own. Top tick, every time.',
       tagS: 'Red candle, must short. Bottom tick, every time.' },
     bagholder: { name: 'The Bag Holder', tier: 'd', rarity: 19,
@@ -736,8 +737,8 @@
   // both directions; it never buys a good one. (Ed, 2026-06-19: a bag-holding, averaging-
   // down, 13-order run was crowned Sniper A+ because it happened to finish green.)
   function analyze(net) {
-    var chases = [], bags = [], snatches = [], revenges = [], degen = [], bleeds = [], wins = 0;
-    var addsAgainstTotal = 0, ranWinners = 0, cutFast = 0, letRunLosers = 0, bailouts = 0, worstBail = 0;
+    var chases = [], bags = [], snatches = [], revenges = [], degen = [], bigLosses = [], wins = 0;
+    var addsAgainstTotal = 0, ranWinners = 0, cutFast = 0, bailouts = 0, worstBail = null;
     for (var i = 0; i < trades.length; i++) {
       var t = trades[i];
       // A chase = bought EXTENDED and ate a REAL reversal (a loss, not a quick managed cut).
@@ -746,36 +747,38 @@
       // off one extended entry, because winners with normal heat were flagged "caught".)
       var extended = t.extAtEntry > 0.13;
       if (extended && t.pnl <= -300) chases.push(t);
-      // A bag = you AVERAGED DOWN into a loser. A single big loss you CUT is NOT bag-holding
-      // (Ed, 2026-06-19: a 6W-1L, +$1,266 run was branded The Bag Holder off one cut loss that
-      // never added). Letting a loser bleed deep is tracked as letRunLosers/bleeds instead.
-      if (t.addsAgainst >= 1 && t.pnl < 0) bags.push(t);
+      if (t.addsAgainst >= 1 && t.pnl < 0) bags.push(t);   // bag = AVERAGED DOWN into a loser
       if (t.lots >= 4 && t.pnl <= -900) degen.push(t);
       if (t.win && t.pnl < 120 && t.heldMs < 2200 && t.maxFav > t.pnl + 220) snatches.push(t);
       if (t.revenge) revenges.push(t);
       addsAgainstTotal += t.addsAgainst || 0;
-      if (t.win) { wins++; if (t.pnl >= 250 && t.pnl >= t.maxFav * 0.6) ranWinners++; if (t.maxAdverse <= -600) { bailouts++; if (t.maxAdverse < worstBail) worstBail = t.maxAdverse; } }
-      else {
-        if (t.maxAdverse >= -250 && t.pnl >= -250) cutFast++;
-        else if (t.maxAdverse <= -450) { letRunLosers++; if (t.maxAdverse < t.pnl - 150) bleeds.push(t); }   // held through heat, not a clean stop
-      }
+      // CUT DISCIPLINE is measured by the REALIZED loss, NEVER by heat (Ed, 2026-06-19: a loss
+      // taken to -$848 of heat but CUT at -$31 was branded "letting a red bleed" → Bag Holder F.
+      // Cutting small after heat is GOOD; only a big REALIZED loss is the "didn't cut" leak).
+      if (t.win) { wins++; if (t.pnl >= 250 && t.pnl >= t.maxFav * 0.6) ranWinners++; }
+      else if (t.pnl >= -250) cutFast++;                  // cut it small — disciplined, regardless of heat
+      else if (t.pnl <= -500) bigLosses.push(t);          // took a big realized loss — did not cut in time
+      // DEEP HEAT that SURVIVED (a win, or a loss cut small) = a bad ENTRY you got bailed out of,
+      // an entry/risk signal — NOT bag-holding. Tracked apart from cut discipline; feeds the chase axis.
+      if (t.maxAdverse <= -600 && t.pnl >= -250) { bailouts++; if (!worstBail || t.maxAdverse < worstBail.maxAdverse) worstBail = t; }
     }
     var n = trades.length;
     var bagsHadAdds = false; for (i = 0; i < bags.length; i++) if (bags[i].addsAgainst >= 1) bagsHadAdds = true;
+    var badEntries = chases.length + bailouts;             // bought a bad spot and went straight underwater
 
     // ── Discipline score (0–100), PROCESS only — the spine of both grade and archetype.
     var pen = 0;
     pen += addsAgainstTotal * 16;                          // averaging down — the cardinal sin
-    pen += bags.length * 22;                               // held / fed a loser
+    pen += bags.length * 22;                               // fed a loser
     pen += degen.length * 30;                              // full-send blow-up
     pen += chases.length * 12;                             // chased an extended move and got caught
     pen += revenges.length * 16;                           // re-entered on tilt
     pen += snatches.length * 9;                            // paper-handed a winner
-    var bleedN = Math.max(0, letRunLosers - bags.length);  // losers you let bleed deep (not averaged)
-    pen += bleedN > 0 ? 10 + (bleedN - 1) * 26 : 0;        // ONE is a slip; a PATTERN of not cutting is a real leak
-    pen += bailouts * 8;                                   // held a winner through deep heat — bailed out, not disciplined
-    if (buyCount >= 12) pen += 12;
-    if (buyCount >= 16) pen += 8;
+    var bigN = Math.max(0, bigLosses.length - bags.length);// big REALIZED losses not already counted as adds-bags
+    pen += bigN > 0 ? 12 + (bigN - 1) * 28 : 0;            // ONE big loss is a slip; a PATTERN of not cutting is a leak
+    pen += bailouts * 7;                                   // got bailed out of a bad entry — risky, not a read
+    if (buyCount >= 14) pen += 12;                         // genuine overtrading (the sim is fast; 12-13 is just active)
+    if (buyCount >= 20) pen += 8;
     if (n === 0) pen += 52;                                // never pulled the trigger
     var cred = Math.min(12, ranWinners * 4 + cutFast * 2);
     var disc = Math.max(0, Math.min(100, 100 - pen + cred));
@@ -786,8 +789,8 @@
     // pattern. Sniper is the DEFAULT for a run that traded well (high discipline, no
     // loser-holding, no chronic leak) — buying the top and winning is breakout trading.
     var counts = {
-      fomo: chases.length >= 2 ? chases.length : 0,          // chasing must be a pattern, not one failed breakout
-      holding: bags.length + (letRunLosers >= 2 ? 1 : 0),    // averaging down (any) OR a PATTERN of bled losers — not one big cut loss
+      fomo: (chases.length >= 2 || badEntries >= 3) ? badEntries : 0,   // a PATTERN of bad entries (chased or bailed out)
+      holding: bags.length + (bigLosses.length >= 2 ? 1 : 0),           // averaged down, OR a pattern of big REALIZED losses
       paper: snatches.length >= 2 ? snatches.length : 0,
       overtrade: buyCount >= 14 ? 2 : 0,
       tilt: revenges.length >= 2 ? revenges.length : 0,
@@ -800,24 +803,25 @@
 
     var MAP = { fomo: 'chaser', holding: 'bagholder', paper: 'paperhands', overtrade: 'masher', tilt: 'revenge', freeze: 'freezer', press: 'degenerate' };
     // Sniper = traded well overall. A failed breakout you cut, or heavy-but-skilled activity,
-    // does NOT disqualify the flex (the discipline score already accounts for it). Holding or
-    // bleeding a loser DOES — a Sniper cuts. Discipline governs; one slip never defines you.
-    var cleanSniper = n >= 1 && disc >= 78 && !hardSin && bags.length === 0 && letRunLosers <= 1 && degen.length === 0 && snatches.length < 2;
+    // does NOT disqualify the flex (the discipline score already accounts for it). Big realized
+    // losses or a pattern of bad entries DO. Discipline governs; one slip never defines you.
+    var cleanSniper = n >= 1 && disc >= 78 && !hardSin && bags.length === 0 && bigLosses.length <= 1 && badEntries <= 2 && degen.length === 0 && snatches.length < 2;
     var id;
     if (n === 0) id = 'freezer';
     else if (degen.length) id = 'degenerate';   // a full-send blow-up IS the identity
     else if (cleanSniper) id = 'sniper';         // traded well overall → Sniper, slips become tells
     else if (dom) id = MAP[dom];
-    else if (bags.length || letRunLosers >= 2) id = 'bagholder';
+    else if (bags.length || bigLosses.length >= 2) id = 'bagholder';
     else if (snatches.length) id = 'paperhands';
-    else if (buyCount >= 12) id = 'masher';
+    else if (buyCount >= 14) id = 'masher';
     else id = 'sniper';                          // discipline dipped but no nameable leak → still a Sniper
 
     // The grade can never out-rank the diagnosis: a NAMED sin caps the flex at B; so does a
-    // single bled loser (a Sniper who let one run is not flawless); a HARD sin (averaging
-    // down / full send / repeat tilt) caps at C. Only a truly clean run reaches A/A+.
+    // single big realized loss or a bail-out (a Sniper who let one run, or got bailed out of a
+    // bad entry, is not flawless); a HARD sin (averaging down / full send / repeat tilt) caps
+    // at C. Only a truly clean run reaches A/A+.
     var sinId = id !== 'sniper' && id !== 'freezer';
-    var capGrade = hardSin ? 'C' : (sinId || letRunLosers >= 1 ? 'B' : null);
+    var capGrade = hardSin ? 'C' : (sinId || bigLosses.length >= 1 || bailouts >= 1 ? 'B' : null);
     var grade = gradeFor(disc, net, capGrade);
 
     // dominant direction of the chase trades (for the right roast/tag)
@@ -842,12 +846,12 @@
     var tells = [];
     if (bags.length) { var b = bags[0]; tells.push({ w: 5, t: 'You averaged down ' + b.addsAgainst + 'x to save a loser. It still cost you ' + money(-b.pnl) + '.' }); }
     if (degen.length) { var d = degen[0]; tells.push({ w: 5, t: 'You loaded ' + d.lots + ' times into one trade and it went ' + money(d.pnl) + '. No plan, full send.' }); }
+    // A big REALIZED loss = you did not cut in time (fires on the loss you actually took, not heat).
+    if (bigLosses.length) { var bl = bigLosses[0]; tells.push({ w: 4, t: 'You let one loser run to ' + money(bl.pnl) + ' instead of cutting it small. That is the trade that erases a good day.' }); }
     // The size lesson — losers bigger than winners is how a high win rate still bleeds out.
     if (losses && wins && stats.avgLoss > stats.avgWin * 1.3) tells.push({ w: 4, t: 'Your losers run bigger than your winners. Avg loss ' + money(-stats.avgLoss) + ' vs avg win +' + money(stats.avgWin) + '. One red erases the green.' });
-    // Held a winner through deep heat — it came back, but that is a bail-out, not a read.
-    if (bailouts) tells.push({ w: 3, t: 'You were down ' + money(worstBail) + ' before that one came back green. That is a bail-out, not a read.' });
-    // Held a loser through heat before cutting (a real bleed, not a clean stop at the low).
-    if (bleeds.length) { var bl = bleeds[0]; tells.push({ w: 3, t: 'You let a red bleed to ' + money(bl.maxAdverse) + ' before you cut it at ' + money(bl.pnl) + '.' }); }
+    // Got bailed out of a bad entry — deep heat that came back. The ENTRY was the mistake.
+    if (bailouts && worstBail) tells.push({ w: 3, t: 'You were down ' + money(worstBail.maxAdverse) + ' before getting out at ' + (worstBail.pnl >= 0 ? '+' : '') + money(worstBail.pnl) + '. You held through heat that should have stopped you.' });
     if (chases.length) tells.push({ w: 3, t: (chaseDir === 1 ? 'You bought ' + sym + ' into a pump and ate the reversal' : 'You shorted ' + sym + ' into the hole and got squeezed') + (chases.length > 1 ? ' (' + chases.length + 'x)' : '') + '.' });
     if (revenges.length) tells.push({ w: 4, t: 'You re-entered within two seconds of a loss. That is tilt, not a setup.' });
     // Snatch is a Paper-Hands tell; it CONTRADICTS the Sniper ("let winners run"), so it
@@ -886,7 +890,8 @@
     var didBetter = pctDidBetter(an.disc);
     var dbCls = didBetter >= 60 ? 'down' : (didBetter <= 25 ? 'up' : '');
     var verdictHtml = an.verdict ? '<div class="diag-verdict">' + an.verdict + '</div>' : '';
-    var roast = (an.id === 'chaser' && an.dir === -1 && a.roastS) ? a.roastS
+    var roast = (an.id === 'chaser' && net >= 0 && a.roastG) ? a.roastG
+      : (an.id === 'chaser' && an.dir === -1 && a.roastS) ? a.roastS
       : (an.id === 'bagholder' && an.held && a.roastH) ? a.roastH : a.roast;
     var tag = (an.id === 'chaser' && an.dir === -1 && a.tagS) ? a.tagS : a.tag;
     var tellsHtml = an.tells.length
