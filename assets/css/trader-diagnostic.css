@@ -221,7 +221,7 @@
 .diag-tier-a .diag-card-name { color: var(--d-up); } .diag-tier-f .diag-card-name { color: var(--d-down); } .diag-tier-c .diag-card-name, .diag-tier-d .diag-card-name { color: var(--d-gold-hi); }
 .diag-card-tag { font-size: 14.5px; font-style: italic; color: #fff; opacity: .92; margin-bottom: 14px; }
 .diag-card-roast { font-size: 15.5px; line-height: 1.55; color: var(--d-ink); max-width: 430px; margin: 0 auto 18px; }
-.diag-card-meta { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px; }
+.diag-card-meta { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 16px; }
 .diag-meta-box { background: rgba(13,15,20,.5); border: 1px solid var(--d-line); border-radius: 10px; padding: 10px 6px; }
 .diag-meta-num { display: block; font-weight: 800; font-size: 19px; color: #fff; font-variant-numeric: tabular-nums; } .diag-meta-num.up { color: var(--d-up); } .diag-meta-num.down { color: var(--d-down); }
 .diag-meta-den { font-weight: 600; font-size: 12px; opacity: .55; }
@@ -256,6 +256,7 @@
   .diag-cd-num.go { font-size: 72px; }
   .diag-card { padding: 26px 18px 20px; }
   .diag-card-grade { font-size: 38px; top: 14px; right: 14px; }
+  .diag-card-meta { grid-template-columns: repeat(2, 1fr); }
   .diag-meta-num { font-size: 17px; }
   .diag-sbtn { font-size: 12px; padding: 8px 11px; }
 }

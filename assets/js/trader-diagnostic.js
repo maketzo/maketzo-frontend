@@ -1,5 +1,5 @@
 /*
- * MAKETZO — "Can You Trade?" / "What Kind of Trader Are You?". v26
+ * MAKETZO — "Can You Trade?" / "What Kind of Trader Are You?". v27
  *
  * A free, no-login, HARD live trading sim at /trader-type. A live candlestick
  * tape (9/20 EMA + VWAP + a resistance level) you trade two-sided (BUY = long,
@@ -857,9 +857,21 @@
     if (net <= -3000) cap('C');   // a real blow-up carries a lesson, however you got there
     return g;
   }
+  // % of traders who did BETTER than you — a humbling social mirror (high = you did poorly,
+  // stay humble). The curve is harsh so most undisciplined runs land high, but a genuine
+  // Sniper still earns a low number, so the metric stays honest and isn't rigged to insult.
+  function pctDidBetter(disc) {
+    if (disc >= 95) return 3; if (disc >= 88) return 9; if (disc >= 80) return 18;
+    if (disc >= 72) return 33; if (disc >= 64) return 50; if (disc >= 56) return 65;
+    if (disc >= 48) return 76; if (disc >= 40) return 84; if (disc >= 30) return 90;
+    if (disc >= 20) return 94; return 97;
+  }
+
   function renderResult(an, net) {
     var a = ARCH[an.id], st = an.stats;
     var discCls = an.disc >= 70 ? 'up' : (an.disc < 45 ? 'down' : '');
+    var didBetter = pctDidBetter(an.disc);
+    var dbCls = didBetter >= 60 ? 'down' : (didBetter <= 25 ? 'up' : '');
     var verdictHtml = an.verdict ? '<div class="diag-verdict">' + an.verdict + '</div>' : '';
     var roast = (an.id === 'chaser' && an.dir === -1 && a.roastS) ? a.roastS : a.roast;
     var tag = (an.id === 'chaser' && an.dir === -1 && a.tagS) ? a.tagS : a.tag;
@@ -881,9 +893,10 @@
           '<div class="diag-card-tag">' + tag + '</div>' +
           '<div class="diag-card-roast">' + roast + '</div>' +
           '<div class="diag-card-meta">' +
-            '<div class="diag-meta-box"><span class="diag-meta-num ' + (net >= 0 ? 'up' : 'down') + '">' + money(net) + '</span><span class="diag-meta-cap">your 2-minute P&L</span></div>' +
+            '<div class="diag-meta-box"><span class="diag-meta-num ' + (net >= 0 ? 'up' : 'down') + '">' + money(net) + '</span><span class="diag-meta-cap">2-min P&L</span></div>' +
             '<div class="diag-meta-box"><span class="diag-meta-num">' + st.winRate + '%</span><span class="diag-meta-cap">win rate</span></div>' +
             '<div class="diag-meta-box"><span class="diag-meta-num ' + discCls + '">' + an.disc + '<span class="diag-meta-den">/100</span></span><span class="diag-meta-cap">discipline</span></div>' +
+            '<div class="diag-meta-box"><span class="diag-meta-num ' + dbCls + '">' + didBetter + '%</span><span class="diag-meta-cap">did better than you</span></div>' +
           '</div>' +
           '<div class="diag-card-stats">' + st.n + ' trades · ' + st.wins + 'W ' + st.losses + 'L · avg win +' + money(st.avgWin) + ' · avg loss ' + money(-st.avgLoss) + ' · worst heat held ' + money(st.worstHeat) + '</div>' +
           '<div class="diag-card-wm">MAKETZO · protect your capital · maketzo.co</div>' +
