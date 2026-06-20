@@ -1,5 +1,5 @@
 /*
- * MAKETZO — "Can You Trade?" / "What Kind of Trader Are You?". v31
+ * MAKETZO — "Can You Trade?" / "What Kind of Trader Are You?". v32
  *
  * A free, no-login, HARD live trading sim at /trader-type. A live candlestick
  * tape (9/20 EMA + VWAP + a resistance level) you trade two-sided (BUY = long,
@@ -94,7 +94,7 @@
       tag: 'Perfect read. Pulled the trigger ten minutes too late.' },
     degenerate: { name: 'The Degenerate', tier: 'f', rarity: 6,
       roast: 'No plan, no stop, full send. You kept loading until the catalyst hit and took the whole stack with it. A casino with a charting package, and you’re the buffet.',
-      tag: 'Max size, no stop. See you in the discord.' }
+      tag: 'Max size, no stop, until it’s gone.' }
   };
 
   // ── Tape regimes. drift = frac/sec, vol = frac/sqrt(sec). ──────────────────
