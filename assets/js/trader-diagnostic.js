@@ -1,5 +1,5 @@
 /*
- * MAKETZO — "Can You Trade?" / "What Kind of Trader Are You?". v32
+ * MAKETZO — "Can You Trade?" / "What Kind of Trader Are You?". v33
  *
  * A free, no-login, HARD live trading sim at /trader-type. A live candlestick
  * tape (9/20 EMA + VWAP + a resistance level) you trade two-sided (BUY = long,
@@ -82,9 +82,11 @@
       tag: 'Underwater and still calling it conviction.' },
     paperhands: { name: 'The Paper Hands', tier: 'c', rarity: 16,
       roast: 'You cut winners like the IRS was at the door. The ten-bagger left without you, at +$40.',
+      roastR: 'You cut every winner down to scraps, so a couple of normal losses wiped the whole day. Tiny wins cannot survive real losses.',
       tag: 'Green for one second, sold in half a second.' },
     masher: { name: 'The Button Masher', tier: 'd', rarity: 13,
       roast: 'You traded the chop like it was a fire alarm. A dozen fills, zero edge, and the broker thanks you for the fees.',
+      roastG: 'A dozen fills in two minutes and you scratched out green by a hair. That is variance paying your fees, not an edge. Trade less, keep more.',
       tag: 'You don’t trade the market, you trade your boredom.' },
     revenge: { name: 'The Revenge Trader', tier: 'f', rarity: 12,
       roast: 'One red print and the plan was gone. You re-loaded to win it back and let the last loss pick your next trade. The market owns you now.',
@@ -896,9 +898,13 @@
     var didBetter = pctDidBetter(an.disc);
     var dbCls = didBetter >= 60 ? 'down' : (didBetter <= 25 ? 'up' : '');
     var verdictHtml = an.verdict ? '<div class="diag-verdict">' + an.verdict + '</div>' : '';
-    var roast = (an.id === 'chaser' && net >= 0 && a.roastG) ? a.roastG
-      : (an.id === 'chaser' && an.dir === -1 && a.roastS) ? a.roastS
-      : (an.id === 'bagholder' && an.held && a.roastH) ? a.roastH : a.roast;
+    // Outcome-aware roasts: a green run never reads as if it lost, and vice-versa. roastG =
+    // green variant, roastR = red variant, roastS = short-direction (chaser), roastH = held (bag).
+    var roast = a.roast;
+    if (net >= 0 && a.roastG) roast = a.roastG;
+    else if (net < 0 && an.id === 'chaser' && an.dir === -1 && a.roastS) roast = a.roastS;
+    else if (net < 0 && a.roastR) roast = a.roastR;
+    if (an.id === 'bagholder' && an.held && a.roastH) roast = a.roastH;
     var tag = (an.id === 'chaser' && an.dir === -1 && a.tagS) ? a.tagS : a.tag;
     var tellsHtml = an.tells.length
       ? '<div class="diag-tells"><div class="diag-tells-h">Your tells</div>' + an.tells.map(function (t) { return '<div class="diag-tell">' + t + '</div>'; }).join('') + '</div>'
