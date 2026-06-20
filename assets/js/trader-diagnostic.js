@@ -1,5 +1,5 @@
 /*
- * MAKETZO — "Can You Trade?" / "What Kind of Trader Are You?". v30
+ * MAKETZO — "Can You Trade?" / "What Kind of Trader Are You?". v31
  *
  * A free, no-login, HARD live trading sim at /trader-type. A live candlestick
  * tape (9/20 EMA + VWAP + a resistance level) you trade two-sided (BUY = long,
@@ -816,12 +816,16 @@
     else if (buyCount >= 14) id = 'masher';
     else id = 'sniper';                          // discipline dipped but no nameable leak → still a Sniper
 
-    // The grade can never out-rank the diagnosis: a NAMED sin caps the flex at B; so does a
-    // single big realized loss or a bail-out (a Sniper who let one run, or got bailed out of a
-    // bad entry, is not flawless); a HARD sin (averaging down / full send / repeat tilt) caps
-    // at C. Only a truly clean run reaches A/A+.
+    // The grade can never out-rank the diagnosis, but it must REWARD a great run, not nitpick
+    // it. A named sin, a big realized loss, or a PATTERN of bail-outs caps at B. A SINGLE
+    // bail-out on an otherwise clean run only costs the A+ (caps at A) — you cut your losers
+    // and won, you just rode one trade too hot. A hard sin caps at C. (Ed, 2026-06-20: a
+    // 96/100, 80%-win, avg-loss-$6 run was capped to B + mocked for one heat trade that won.)
     var sinId = id !== 'sniper' && id !== 'freezer';
-    var capGrade = hardSin ? 'C' : (sinId || bigLosses.length >= 1 || bailouts >= 1 ? 'B' : null);
+    var capGrade = hardSin ? 'C'
+      : (sinId || bigLosses.length >= 1 || bailouts >= 2) ? 'B'
+      : bailouts >= 1 ? 'A'
+      : null;
     var grade = gradeFor(disc, net, capGrade);
 
     // dominant direction of the chase trades (for the right roast/tag)
@@ -851,7 +855,9 @@
     // The size lesson — losers bigger than winners is how a high win rate still bleeds out.
     if (losses && wins && stats.avgLoss > stats.avgWin * 1.3) tells.push({ w: 4, t: 'Your losers run bigger than your winners. Avg loss ' + money(-stats.avgLoss) + ' vs avg win +' + money(stats.avgWin) + '. One red erases the green.' });
     // Got bailed out of a bad entry — deep heat that came back. The ENTRY was the mistake.
-    if (bailouts && worstBail) tells.push({ w: 3, t: 'You were down ' + money(worstBail.maxAdverse) + ' before getting out at ' + (worstBail.pnl >= 0 ? '+' : '') + money(worstBail.pnl) + '. You held through heat that should have stopped you.' });
+    // Suppressed on a clean Sniper: a great run gets the reward line, not a scold for one trade
+    // that worked. (The heat still shows in the stat line for honesty.)
+    if (bailouts && worstBail && id !== 'sniper') tells.push({ w: 3, t: 'You were down ' + money(worstBail.maxAdverse) + ' before getting out at ' + (worstBail.pnl >= 0 ? '+' : '') + money(worstBail.pnl) + '. You got bailed out of a bad spot, not a read.' });
     if (chases.length) tells.push({ w: 3, t: (chaseDir === 1 ? 'You bought ' + sym + ' into a pump and ate the reversal' : 'You shorted ' + sym + ' into the hole and got squeezed') + (chases.length > 1 ? ' (' + chases.length + 'x)' : '') + '.' });
     if (revenges.length) tells.push({ w: 4, t: 'You re-entered within two seconds of a loss. That is tilt, not a setup.' });
     // Snatch is a Paper-Hands tell; it CONTRADICTS the Sniper ("let winners run"), so it
