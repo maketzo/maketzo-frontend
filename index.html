@@ -229,45 +229,53 @@ html.mkt-auth .nav-login-btn:hover{color:var(--mk-text-on-gold);background:var(-
 /* ── HERO ────────────────────────────────────────────────────── */
 .hero {
   position: relative; z-index: 1;
-  min-height: 100vh;
-  padding-top: 86px;
+  padding: 120px 0 76px;
   overflow: hidden;
   isolation: isolate;
-  background: var(--mk-obsidian-950);
-}
-.hero-bg {
-  position: absolute; inset: 0;
-  z-index: 0;
-  display: block;
-}
-.hero-bg img {
-  width: 100%; height: 100%;
-  object-fit: cover;
-  object-position: 65% center;
-  display: block;
-}
-.hero-scrim {
-  position: absolute; inset: 0;
-  z-index: 1;
-  pointer-events: none;
   background:
-    linear-gradient(90deg,
-      var(--mk-obsidian-950) 0%,
-      rgba(6,7,10,.85) 20%,
-      rgba(6,7,10,.35) 46%,
-      rgba(6,7,10,.05) 70%,
-      rgba(6,7,10,.10) 100%),
-    radial-gradient(800px 600px at 8% 18%, rgba(212,175,55,.08), transparent 60%),
-    radial-gradient(120% 90% at 70% 50%, transparent 68%, rgba(0,0,0,.22) 100%);
+    radial-gradient(1100px 720px at 80% 18%, rgba(212,175,55,.07), transparent 62%),
+    var(--mk-obsidian-950);
 }
-.hero-content {
-  position: relative;
-  z-index: 2;
-  max-width: 1280px;
+/* Two-lane grid: copy lede + actions stack in the left lane, the full image
+   spans both rows on the right. On narrow viewports it collapses to a single
+   column (lede -> media -> actions) so the image is always shown WHOLE, never
+   cropped, and the copy never overlaps it. */
+.hero-inner {
+  max-width: 1480px;
   margin: 0 auto;
-  padding: 60px 64px 80px;
-  min-height: calc(100vh - 86px);
-  display: flex; flex-direction: column; justify-content: center;
+  padding: 0 64px;
+  display: grid;
+  grid-template-columns: minmax(0, 46fr) minmax(0, 54fr);
+  grid-template-areas:
+    "lede  media"
+    "acts  media";
+  column-gap: 64px;
+  row-gap: 30px;
+  align-content: center;
+  min-height: calc(100vh - 196px);
+}
+.hero-lede    { grid-area: lede; align-self: end; }
+.hero-actions { grid-area: acts; align-self: start; }
+.hero-media {
+  grid-area: media; align-self: center; position: relative;
+  display: flex; align-items: center;
+}
+.hero-media-pic {
+  display: block; width: 100%;
+  min-width: 0; max-width: 100%;
+  border-radius: 20px; overflow: hidden;
+  border: 1px solid rgba(212,175,55,.20);
+  box-shadow:
+    0 44px 100px -34px rgba(0,0,0,.78),
+    0 1px 0 rgba(255,255,255,.04) inset;
+}
+.hero-media-pic img { display: block; width: 100%; height: auto; }
+.hero-media::after {
+  content: ''; position: absolute; z-index: -1;
+  inset: 4% -2% 4% 2%;
+  border-radius: 34px;
+  background: radial-gradient(56% 62% at 60% 42%, rgba(212,175,55,.18), transparent 72%);
+  filter: blur(30px);
 }
 .hero-badge {
   display: inline-flex; align-items: center; gap: 8px;
@@ -291,13 +299,13 @@ html.mkt-auth .nav-login-btn:hover{color:var(--mk-text-on-gold);background:var(-
 }
 .hero-headline {
   font-family: var(--mk-font-display);
-  font-size: clamp(2.6rem, 5.8vw, 4.8rem);
-  line-height: 1.02;
+  font-size: clamp(2.4rem, 4vw, 4rem);
+  line-height: 1.03;
   letter-spacing: var(--mk-track-display);
   text-transform: uppercase;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
   font-weight: 400;
-  max-width: 14ch;
+  max-width: 15ch;
 }
 .hero-headline em {
   font-style: normal;
@@ -326,8 +334,8 @@ html.mkt-auth .nav-login-btn:hover{color:var(--mk-text-on-gold);background:var(-
 .hero-sub {
   font-size: var(--mk-text-lg);
   color: var(--mk-text-secondary);
-  max-width: 500px;
-  margin-bottom: 32px;
+  max-width: 520px;
+  margin-bottom: 0;
   line-height: var(--mk-lead-body);
 }
 .hero-sub strong { color: var(--mk-text-primary); }
@@ -365,26 +373,37 @@ html.mkt-auth .nav-login-btn:hover{color:var(--mk-text-on-gold);background:var(-
   margin-top: 2px;
 }
 @media (max-width: 1200px) {
-  .hero-content { padding: 60px 40px 80px; }
-  .hero-bg img { object-position: 62% center; }
+  .hero-inner { padding: 0 44px; column-gap: 48px; }
 }
-@media (max-width: 1000px) {
-  .hero { min-height: auto; }
-  .hero-content { padding: 56px 32px 72px; min-height: 88vh; }
-  .hero-bg img { object-position: 60% center; }
-  .hero-scrim {
-    background:
-      linear-gradient(180deg, rgba(6,7,10,.55) 0%, rgba(6,7,10,.78) 100%),
-      linear-gradient(90deg, rgba(6,7,10,.85) 0%, rgba(6,7,10,.35) 70%, rgba(6,7,10,.45) 100%);
+@media (max-width: 920px) {
+  .hero { padding: 104px 0 56px; }
+  .hero-inner {
+    display: block;              /* stack; sidesteps grid track min-sizing */
+    max-width: 680px;
+    min-height: 0;
+    padding: 0 40px;
   }
+  .hero-lede  { margin-bottom: 30px; }
+  .hero-media { display: block; margin-bottom: 30px; }
+  .hero-headline { font-size: clamp(2.6rem, 6.4vw, 3.8rem); max-width: 18ch; }
+  .hero-sub { max-width: none; }
 }
 @media (max-width: 600px) {
-  .hero-content { padding: 48px 20px 56px; min-height: 92vh; }
-  .hero-bg img { object-position: 68% center; }
-  .hero-scrim {
-    background:
-      linear-gradient(180deg, rgba(6,7,10,.65) 0%, rgba(6,7,10,.88) 100%);
+  .hero { padding: 92px 0 44px; }
+  .hero-inner { padding: 0 20px; }
+  .hero-lede  { margin-bottom: 24px; }
+  .hero-media { margin-bottom: 24px; }
+  .hero-badge {
+    max-width: 100%; align-items: flex-start;
+    line-height: 1.5; letter-spacing: 0.1em;
   }
+  .hero-badge .badge-dot { margin-top: 5px; flex-shrink: 0; }
+  .hero-headline { font-size: clamp(2.1rem, 9vw, 2.9rem); }
+  .hero-ctas { gap: 12px; }
+  .hero-ctas .btn-primary,
+  .hero-ctas .btn-secondary { width: 100%; justify-content: center; text-align: center; }
+  .hero-media-pic { border-radius: 14px; }
+  .hero-media::after { display: none; }
 }
 
 /* ── BUTTONS (legacy class names mapped to design-system styles) ── */
@@ -2186,34 +2205,40 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
 
 <!-- HERO — FULL-BLEED -->
 <section class="hero">
-  <picture class="hero-bg" aria-hidden="true">
-    <source srcset="assets/hero-trader.avif" type="image/avif">
-    <source srcset="assets/hero-trader.webp" type="image/webp">
-    <img src="assets/hero-trader.png" alt="" fetchpriority="high" decoding="async">
-  </picture>
-  <div class="hero-scrim" aria-hidden="true"></div>
-
-  <div class="hero-content">
-    <div class="hero-badge"><span class="badge-dot"></span>The accountability system retail traders actually need</div>
-    <h1 class="hero-headline">You know the rules.<br>You break them <em>anyway.</em></h1>
-    <span class="hero-stop"><span class="power-pulse">MAKETZO STOPS THAT.</span></span>
-    <p class="hero-sub">We've all been there — you've read the books, joined the communities, learned the setups. And yet you still lose… <strong>to yourself.</strong> MAKETZO is the external enforcement system that holds the line when willpower doesn't.</p>
-    <div class="hero-ctas">
-      <button class="btn-primary" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
-      <a href="#see-it-work" class="btn-secondary">&#9654; See How It Works</a>
+  <div class="hero-inner">
+    <div class="hero-lede">
+      <div class="hero-badge"><span class="badge-dot"></span>The accountability system retail traders actually need</div>
+      <h1 class="hero-headline">You know the rules.<br>You break them <em>anyway.</em></h1>
+      <span class="hero-stop"><span class="power-pulse">MAKETZO STOPS THAT.</span></span>
+      <p class="hero-sub">We've all been there — you've read the books, joined the communities, learned the setups. And yet you still lose… <strong>to yourself.</strong> MAKETZO is the external enforcement system that holds the line when willpower doesn't.</p>
     </div>
-    <div class="hero-proof">
-      <div class="proof-row">
-        <div class="proof-icon-wrap">&#9889;</div>
-        <div class="proof-text-wrap"><div class="proof-title">7 days free, full access</div><div class="proof-sub">Test everything, risk-free</div></div>
+
+    <div class="hero-media">
+      <picture class="hero-media-pic">
+        <source srcset="assets/hero-trader.avif" type="image/avif">
+        <source srcset="assets/hero-trader.webp" type="image/webp">
+        <img src="assets/hero-trader.png" alt="A focused trader at a multi-monitor desk with MAKETZO's real-time discipline guardrails alongside" width="1606" height="979" fetchpriority="high" decoding="async">
+      </picture>
+    </div>
+
+    <div class="hero-actions">
+      <div class="hero-ctas">
+        <button class="btn-primary" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
+        <a href="#see-it-work" class="btn-secondary">&#9654; See How It Works</a>
       </div>
-      <div class="proof-row">
-        <div class="proof-icon-wrap">&#10003;</div>
-        <div class="proof-text-wrap"><div class="proof-title">Cancel in one click</div><div class="proof-sub">No commitments, no questions asked</div></div>
-      </div>
-      <div class="proof-row">
-        <div class="proof-icon-wrap">&#128274;</div>
-        <div class="proof-text-wrap"><div class="proof-title">Access to Elite Invite-only Indicators</div><div class="proof-sub">Built for serious small-cap traders</div></div>
+      <div class="hero-proof">
+        <div class="proof-row">
+          <div class="proof-icon-wrap">&#9889;</div>
+          <div class="proof-text-wrap"><div class="proof-title">7 days free, full access</div><div class="proof-sub">Test everything, risk-free</div></div>
+        </div>
+        <div class="proof-row">
+          <div class="proof-icon-wrap">&#10003;</div>
+          <div class="proof-text-wrap"><div class="proof-title">Cancel in one click</div><div class="proof-sub">No commitments, no questions asked</div></div>
+        </div>
+        <div class="proof-row">
+          <div class="proof-icon-wrap">&#128274;</div>
+          <div class="proof-text-wrap"><div class="proof-title">Access to Elite Invite-only Indicators</div><div class="proof-sub">Built for serious small-cap traders</div></div>
+        </div>
       </div>
     </div>
   </div>
