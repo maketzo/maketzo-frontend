@@ -239,25 +239,26 @@ html.mkt-auth .nav-login-btn:hover{color:var(--mk-text-on-gold);background:var(-
   isolation: isolate;
   background: var(--mk-obsidian-950);
 }
+/* The image lives on the RIGHT and physically DISSOLVES into the obsidian on the
+   left via a gradient mask on the image itself — so the photo stays crisp where
+   it shows (no gray film / haze over it) and the type sits on clean obsidian.
+   Anchored right so the trader's face reads; the mask is the merge. */
 .hero-bg { position: absolute; inset: 0; z-index: 0; display: block; }
 .hero-bg img {
   width: 100%; height: 100%;
   object-fit: cover;
-  object-position: 78% center;
+  object-position: 52% center;
   display: block;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, transparent 14%, rgba(0,0,0,0.45) 34%, #000 52%);
+          mask-image: linear-gradient(90deg, transparent 0%, transparent 14%, rgba(0,0,0,0.45) 34%, #000 52%);
 }
 .hero-scrim {
   position: absolute; inset: 0; z-index: 1; pointer-events: none;
-  background:
-    linear-gradient(97deg,
-      var(--mk-obsidian-950) 0%,
-      var(--mk-obsidian-950) 22%,
-      rgba(6,7,10,0.90) 36%,
-      rgba(6,7,10,0.55) 50%,
-      rgba(6,7,10,0.14) 68%,
-      rgba(6,7,10,0.34) 100%),
-    linear-gradient(0deg, rgba(6,7,10,0.72) 0%, rgba(6,7,10,0.06) 30%, transparent 46%),
-    radial-gradient(72% 90% at 19% 52%, rgba(212,175,55,0.06), transparent 62%);
+  background: linear-gradient(90deg,
+    var(--mk-obsidian-950) 0%,
+    rgba(6,7,10,0.72) 30%,
+    rgba(6,7,10,0.12) 46%,
+    transparent 56%);
 }
 .hero-content {
   position: relative; z-index: 2;
@@ -368,7 +369,7 @@ html.mkt-auth .nav-login-btn:hover{color:var(--mk-text-on-gold);background:var(-
 }
 @media (max-width: 1200px) {
   .hero-content { padding: 116px 44px 64px; }
-  .hero-bg img { object-position: 74% center; }
+  .hero-bg img { object-position: 50% center; }
 }
 /* Tablet + phone: a portrait frame can't hold monitors + trader + HUD across
    the wide shot, so re-anchor to the trader and let the image sink into
@@ -378,7 +379,7 @@ html.mkt-auth .nav-login-btn:hover{color:var(--mk-text-on-gold);background:var(-
   /* Image becomes a top band that dissolves into obsidian; the type flows
      BELOW the trader, merged by the fade, never across her face. */
   .hero-bg   { inset: 0 0 auto 0; height: 54vh; }
-  .hero-bg img { object-position: 55% 26%; }
+  .hero-bg img { object-position: 55% 26%; -webkit-mask-image: none; mask-image: none; }
   .hero-scrim {
     inset: 0 0 auto 0; height: 62vh;
     background: linear-gradient(180deg,
