@@ -208,7 +208,11 @@
     if (s.buyCount >= 20) pen += 8;
     if (s.n === 0) pen += 52;                     // never pulled the trigger
     var cred = Math.min(12, s.ranWinners * 4 + s.cutFast * 2);
-    return Math.max(0, Math.min(100, 100 - pen + cred));
+    // ROUND. The severity term above is a float, and this number renders raw on the card:
+    // it shipped "57.59265189317668/100" in 19px type. Every penalty used to be an integer,
+    // so nothing here was ever a float until that term existed. Grade thresholds compare
+    // fine either way; this is about the number a human reads.
+    return Math.round(Math.max(0, Math.min(100, 100 - pen + cred)));
   }
 
   // ── Grade — the verdict, and the ONLY verdict. ───────────────────────────────

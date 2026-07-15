@@ -416,7 +416,17 @@
     recentHigh = Math.max(recentHigh * 0.997, price);
 
     var c = candles[candles.length - 1]; c.c = price; if (price > c.h) c.h = price; if (price < c.l) c.l = price;
-    if (now - lastCandle >= CANDLE_MS) { lastCandle = now; closeCandle(c, now); candles.push({ o: price, h: price, l: price, c: price, e9: ema9, e20: ema20, vwap: vwap }); if (candles.length > 90) candles.shift(); }
+    // `t` = session ms, stamped at creation. The review chart maps your fills onto the
+    // tape by TIME (trades carry openAt/closeAt in the same units), which is exact and
+    // survives the closeCandle cadence drifting. Seed candles have no `t`: they are
+    // pre-session scenery and must never be part of the review.
+    //
+    // CAP: was 90, which is ~63s of a 120s session — by the buzzer the FIRST HALF of the
+    // tape had already been shifted out, so a review chart literally could not show the
+    // trades you took early. 260 holds the 40 seed candles plus a full session with room
+    // to spare, and it is 260 small objects, which is nothing. drawChart only ever slices
+    // the last WINDOW, so nothing downstream cares that the array is longer.
+    if (now - lastCandle >= CANDLE_MS) { lastCandle = now; closeCandle(c, now); candles.push({ o: price, h: price, l: price, c: price, e9: ema9, e20: ema20, vwap: vwap, t: now - t0 }); if (candles.length > 260) candles.shift(); }
 
     // skip spike ticks for max-favorable/adverse: a 1-tick sweep is an untradeable wick,
     // so it must not masquerade as a level the player "gave back" or "got caught" at.
@@ -843,6 +853,17 @@
           '<div class="diag-card-wm">MAKETZO · protect your capital · maketzo.co</div>' +
         '</div>' +
         verdictHtml +
+        (st.n ? '<div class="diag-review" data-review hidden>' +
+          '<div class="diag-review-h">Your trades</div>' +
+          '<canvas class="diag-review-cv" data-reviewcv></canvas>' +
+          '<div class="diag-review-key">' +
+            '<span><i class="diag-k diag-k-entry"></i>entry</span>' +
+            '<span><i class="diag-k diag-k-win"></i>exit, green</span>' +
+            '<span><i class="diag-k diag-k-loss"></i>exit, red</span>' +
+            '<span>shaded = how long you held it</span>' +
+          '</div>' +
+          '<div class="diag-review-note">Look left of every entry, not right. What was on the chart before you clicked is what you actually had to work with.</div>' +
+        '</div>' : '') +
         shelfWhyHtml +
         tellsHtml +
         '<div class="diag-funnel">' +
@@ -851,6 +872,7 @@
           '<div class="diag-funnel-sub">7 days free · no charge until day 8 · cancel in one click</div>' +
         '</div>' +
         '<div class="diag-endbar">' +
+          (st.n ? '<button class="diag-copy diag-seetrades" type="button" data-seetrades>See your trades</button>' : '') +
           '<button class="diag-copy" type="button" data-copyresult>Copy your result</button>' +
           '<button class="diag-again" type="button" data-again>↺ Run the tape again</button>' +
         '</div>' +
@@ -862,7 +884,99 @@
     root.querySelector('[data-again]').addEventListener('click', function () { start(); });
     root.querySelector('[data-cta]').addEventListener('click', function () { track('diagnostic_cta', { archetype: h.id }); });
     wireCopyResult(root.querySelector('[data-copyresult]'), shareText, h.id);
+    wireSeeTrades(root, h.id);
     audio.verdict();
+  }
+
+  // ── "See your trades" — the review chart ────────────────────────────────────
+  // The whole session on one chart with your fills marked. This is the most instructive
+  // thing on the result and it is also a live demo of what MAKETZO actually sells:
+  // looking at your own fills once the emotion has drained out. The sim spends two
+  // minutes proving you have a habit; this is the surface where you SEE it.
+  //
+  // Draws from candles[] where t != null (session candles only; seeds are scenery), and
+  // maps trades on by openAt/closeAt in the same session-ms units.
+  function drawReview(canvas) {
+    var sess = [], i;
+    for (i = 0; i < candles.length; i++) if (candles[i].t != null) sess.push(candles[i]);
+    if (!sess.length) return false;
+
+    var dpr = Math.min(2, window.devicePixelRatio || 1);
+    var w = canvas.clientWidth, h = canvas.clientHeight;
+    if (!w || !h) return false;
+    canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
+    var g = canvas.getContext('2d');
+    g.setTransform(dpr, 0, 0, dpr, 0, 0);
+    g.clearRect(0, 0, w, h);
+
+    var padL = 6, padR = 44, padT = 10, padB = 16;
+    var lo = Infinity, hi = -Infinity;
+    for (i = 0; i < sess.length; i++) { if (sess[i].l < lo) lo = sess[i].l; if (sess[i].h > hi) hi = sess[i].h; }
+    // The fills must be inside the frame even if a fill sat outside the candle range.
+    for (i = 0; i < trades.length; i++) {
+      lo = Math.min(lo, trades[i].avgEntry, trades[i].exit);
+      hi = Math.max(hi, trades[i].avgEntry, trades[i].exit);
+    }
+    if (!isFinite(lo) || !isFinite(hi)) return false;
+    // Pad the frame, but a share price is never negative. A tape that rugs toward zero
+    // pushed the axis under 0 and printed "$-0.02" on the scale, which is nonsense.
+    var rng = (hi - lo) || 1;
+    lo = Math.max(0, lo - rng * 0.10); hi += rng * 0.10; rng = (hi - lo) || 1;
+
+    var t0s = sess[0].t, t1s = sess[sess.length - 1].t || 1;
+    var span = (t1s - t0s) || 1;
+    function X(ms) { return padL + (w - padL - padR) * ((ms - t0s) / span); }
+    function Y(p) { return padT + (h - padT - padB) * (1 - (p - lo) / rng); }
+
+    // candles
+    var cw = Math.max(1.2, (w - padL - padR) / sess.length * 0.62);
+    for (i = 0; i < sess.length; i++) {
+      var c = sess[i], x = X(c.t), up = c.c >= c.o, col = up ? 'rgba(126,217,87,.55)' : 'rgba(255,107,107,.55)';
+      g.strokeStyle = col; g.lineWidth = 1;
+      g.beginPath(); g.moveTo(x, Y(c.h)); g.lineTo(x, Y(c.l)); g.stroke();
+      var yo = Y(c.o), yc = Y(c.c);
+      g.fillStyle = col; g.fillRect(x - cw / 2, Math.min(yo, yc), cw, Math.max(1, Math.abs(yc - yo)));
+    }
+
+    // hold bands — the shaded time you were exposed, green if it paid, red if it did not.
+    for (i = 0; i < trades.length; i++) {
+      var t = trades[i];
+      if (t.openAt == null || t.closeAt == null) continue;
+      var x0 = X(t.openAt), x1 = X(t.closeAt), ye = Y(t.avgEntry), yx = Y(t.exit);
+      g.fillStyle = t.pnl >= 0 ? 'rgba(126,217,87,.11)' : 'rgba(255,107,107,.11)';
+      g.fillRect(x0, Math.min(ye, yx), Math.max(1.5, x1 - x0), Math.max(1.5, Math.abs(yx - ye)));
+      // entry -> exit connector
+      g.strokeStyle = t.pnl >= 0 ? 'rgba(126,217,87,.85)' : 'rgba(255,107,107,.85)';
+      g.lineWidth = 1.25; g.setLineDash([3, 2]);
+      g.beginPath(); g.moveTo(x0, ye); g.lineTo(x1, yx); g.stroke(); g.setLineDash([]);
+      // entry marker: triangle pointing the way you bet.
+      g.fillStyle = '#e5c572';
+      g.beginPath();
+      if (t.dir === 1) { g.moveTo(x0, ye - 5.5); g.lineTo(x0 - 4.5, ye + 3); g.lineTo(x0 + 4.5, ye + 3); }
+      else { g.moveTo(x0, ye + 5.5); g.lineTo(x0 - 4.5, ye - 3); g.lineTo(x0 + 4.5, ye - 3); }
+      g.closePath(); g.fill();
+      // exit marker
+      g.fillStyle = t.pnl >= 0 ? '#7ed957' : '#ff6b6b';
+      g.beginPath(); g.arc(x1, yx, 3, 0, Math.PI * 2); g.fill();
+    }
+
+    // the catalyst, if one fired — the moment the tape changed under you.
+    if (catalystAt != null) {
+      var cx = X(catalystAt);
+      g.strokeStyle = 'rgba(212,175,55,.5)'; g.lineWidth = 1; g.setLineDash([2, 3]);
+      g.beginPath(); g.moveTo(cx, padT); g.lineTo(cx, h - padB); g.stroke(); g.setLineDash([]);
+      g.fillStyle = 'rgba(212,175,55,.9)'; g.font = '8px "DM Mono", monospace';
+      g.fillText('NEWS', cx + 3, padT + 8);
+    }
+
+    // right-edge price scale, so the moves have a size
+    g.fillStyle = 'rgba(154,166,179,.75)'; g.font = '9px "DM Mono", monospace'; g.textAlign = 'left';
+    for (i = 0; i <= 3; i++) {
+      var p = lo + rng * (i / 3);
+      g.fillText('$' + p.toFixed(2), w - padR + 5, Y(p) + 3);
+    }
+    g.textAlign = 'start';
+    return true;
   }
 
   // ── The shareable block (the Wordle mechanic) ───────────────────────────────
@@ -889,6 +1003,31 @@
       sq + '\n' +
       st.n + (st.n === 1 ? ' trade · ' : ' trades · ') + (net >= 0 ? '+' : '') + money(net) + ' · 2:00\n' +
       SHARE_URL;
+  }
+
+  function wireSeeTrades(scope, aid) {
+    var btn = scope.querySelector('[data-seetrades]'), panel = scope.querySelector('[data-review]');
+    if (!btn || !panel) return;
+    var open = false, drawn = false;
+    function redraw() { var cv2 = panel.querySelector('[data-reviewcv]'); if (cv2 && open) drawReview(cv2); }
+    btn.addEventListener('click', function () {
+      open = !open;
+      panel.hidden = !open;
+      btn.textContent = open ? 'Hide your trades' : 'See your trades';
+      btn.classList.toggle('is-done', open);
+      if (open) {
+        // The canvas has no layout until it is unhidden, so clientWidth is 0 on the
+        // first paint. Draw on the next frame, once it has a box to measure.
+        requestAnimationFrame(function () {
+          var cv2 = panel.querySelector('[data-reviewcv]');
+          if (cv2 && drawReview(cv2)) { drawn = true; panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }
+          if (!drawn) { panel.hidden = true; open = false; btn.textContent = 'See your trades'; btn.classList.remove('is-done'); }
+        });
+        track('diagnostic_see_trades', { archetype: aid });
+      }
+    });
+    // Canvas is raster: a resize needs a redraw or the chart goes blurry/stretched.
+    window.addEventListener('resize', redraw);
   }
 
   // Copy the block to the clipboard. This is NOT a duplicate of the .mk-share widget

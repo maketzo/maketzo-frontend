@@ -290,6 +290,23 @@
 .diag-copy-sink { position: fixed; top: 0; left: 0; width: 1px; height: 1px; padding: 0; border: 0; opacity: 0; pointer-events: none; }
 .diag-vault-line { margin-top: 12px; font-family: var(--mk-font-mono, "DM Mono", monospace); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--d-dim); opacity: .75; }
 
+/* ── "See your trades" · the review chart ───────────────────────────────────
+   The full session with your fills on it. The most instructive surface here, and a
+   live demo of the product: reviewing your own entries once the emotion has drained. */
+.diag-seetrades { border-color: rgba(126,217,87,.4); background: rgba(126,217,87,.08); color: var(--d-up); }
+.diag-seetrades:hover { background: rgba(126,217,87,.18); color: #fff; }
+.diag-review { margin: 18px auto 0; max-width: 560px; background: rgba(13,15,20,.5); border: 1px solid var(--d-line); border-radius: 12px; padding: 14px 12px 12px; }
+.diag-review-h { font-family: var(--mk-font-mono, "DM Mono", monospace); font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--d-gold-hi); margin-bottom: 10px; }
+.diag-review-cv { display: block; width: 100%; height: 190px; }
+.diag-review-key { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 10px; font-size: 10.5px; color: var(--d-dim); }
+.diag-review-key span { display: inline-flex; align-items: center; gap: 5px; }
+.diag-k { width: 8px; height: 8px; display: inline-block; }
+.diag-k-entry { background: var(--d-gold-hi); clip-path: polygon(50% 0, 100% 100%, 0 100%); }
+.diag-k-win { background: var(--d-up); border-radius: 50%; }
+.diag-k-loss { background: var(--d-down); border-radius: 50%; }
+.diag-review-note { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--d-line); font-size: 12px; line-height: 1.45; color: var(--d-dim); text-align: left; }
+@media (max-width: 480px) { .diag-review-cv { height: 150px; } }
+
 @media (max-width: 480px) {
   .diag-cd-num { font-size: 84px; }
   .diag-cd-num.go { font-size: 72px; }

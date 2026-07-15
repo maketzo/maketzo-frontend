@@ -23,7 +23,7 @@
 <link rel="stylesheet" href="assets/css/tokens.css">
 <link rel="stylesheet" href="assets/css/components.css">
 <link rel="stylesheet" href="assets/css/audio-player.css?v=9">
-<link rel="stylesheet" href="assets/css/trader-diagnostic.css?v=19">
+<link rel="stylesheet" href="assets/css/trader-diagnostic.css?v=20">
 <script src="assets/js/mkt-analytics.js?v=5" defer></script>
 <script src="assets/js/newsletter.js?v=4" defer></script>
 <script src="assets/js/mkt-consent.js?v=1" defer></script>
@@ -32,12 +32,12 @@
 <!-- badge-engine.js is the pure scoring module. It must load BEFORE trader-diagnostic.js
      (which calls window.MaketzoBadges.evaluate at end of run). Both are `defer`, so they
      execute in document order. -->
-<script src="assets/js/badge-engine.js?v=2" defer></script>
+<script src="assets/js/badge-engine.js?v=3" defer></script>
 <!-- badge-vault.js is the localStorage collection. Kept out of badge-engine.js so the
      engine stays pure (no I/O), which is what makes it node-testable and a clean copy
      into the app. Load order does not matter between the two; both precede the sim. -->
 <script src="assets/js/badge-vault.js?v=1" defer></script>
-<script src="assets/js/trader-diagnostic.js?v=39" defer></script>
+<script src="assets/js/trader-diagnostic.js?v=40" defer></script>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
