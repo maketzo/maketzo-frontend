@@ -194,6 +194,15 @@
     // ONE big realized loss is a slip. A PATTERN of not cutting is a leak.
     var bigN = Math.max(0, s.bigLosses.length - s.bags.length);
     pen += bigN > 0 ? 12 + (bigN - 1) * 28 : 0;
+    // ...but a slip that is a MULTIPLE of your own bar is not a slip. A flat 12 points
+    // meant "bought the offering, lost $2,400 against $300 average wins" still graded B,
+    // which is the reward-garbage-behavior complaint all over again. Scale by severity
+    // so the size of the hole matters, capped so one bad trade cannot alone bottom you out.
+    if (bigN > 0) {
+      var worstBig = 0;
+      for (var w = 0; w < s.bigLosses.length; w++) if (s.bigLosses[w].pnl < worstBig) worstBig = s.bigLosses[w].pnl;
+      pen += Math.min(24, Math.max(0, ((-worstBig / s.bigLossBar) - 1) * 10));
+    }
     pen += s.bailouts.length * 7;                 // bad entry, bailed out. risky, not a read.
     if (s.buyCount >= 14) pen += 12;              // genuine overtrading (12-13 is just active)
     if (s.buyCount >= 20) pen += 8;
@@ -229,9 +238,10 @@
   // print a true sentence, the badge cannot fire. Read every check as: "what would
   // I have to be able to say out loud to call this trader that?"
   //
-  // `needs` documents a session tracker that is not wired yet. Those badges are
-  // dormant (they guard on null) until the tracker lands. They are in the catalog
-  // because the catalog IS the design.
+  // `reads` documents which session tracker a badge depends on beyond the trade log.
+  // All of them are wired in trader-diagnostic.js. The null-guards in those checks
+  // STAY: they are what lets a host that cannot supply a tracker (the app port, a
+  // future mode) drop the badge silently instead of firing it on undefined.
   var CATALOG = [
 
     // ══ LEGEND — rare, collectible, "how did you even" ═══════════════════════
@@ -245,7 +255,7 @@
       }
     },
     {
-      id: 'the-nuke', name: 'The Nuke', tier: 'legend', weight: 28,
+      id: 'the-nuke', name: 'The Nuke', tier: 'legend', weight: 28, accuses: true,
       tagline: 'Two minutes. Gone.',
       check: function (s) {
         if (s.net > -8000) return null;
@@ -255,17 +265,18 @@
     {
       id: 'the-comeback', name: 'The Comeback', tier: 'legend', weight: 26,
       tagline: 'Down and out, then not.',
-      needs: 'troughEquity',
+      reads: 'troughEquity',
       check: function (s) {
         if (s.troughEquity == null || s.net <= 0) return null;
         if (s.troughEquity > -3000) return null;
-        return 'You were down ' + money(s.troughEquity) + ' and finished ' + money(s.net) + ' green.';
+        // negate: troughEquity is negative, and "down −$3,600" is a double negative.
+        return 'You were down ' + money(-s.troughEquity) + ' and finished ' + money(s.net) + ' green.';
       }
     },
     {
-      id: 'bought-the-offering', name: 'Bought the Offering', tier: 'legend', weight: 25,
+      id: 'bought-the-offering', name: 'Bought the Offering', tier: 'legend', weight: 25, accuses: true,
       tagline: 'They rang the bell. You raised your hand.',
-      needs: 'catalystAt',
+      reads: 'catalystAt',
       check: function (s) {
         if (s.catalystAt == null || s.catalystDir !== 'rug') return null;
         for (var i = 0; i < s.n; i++) {
@@ -356,7 +367,7 @@
     {
       id: 'roundtripper', name: 'The Roundtripper', tier: 'sin', weight: 16,
       tagline: 'You had it. You gave it back.',
-      needs: 'peakEquity',
+      reads: 'peakEquity',
       check: function (s) {
         if (s.peakEquity == null || s.peakEquity < 1500) return null;
         if (s.net > s.peakEquity * 0.35) return null;
@@ -382,7 +393,7 @@
     {
       id: 'exit-liquidity', name: 'Exit Liquidity', tier: 'sin', weight: 14,
       tagline: 'The runners were waiting for you.',
-      needs: 'sessionHigh',
+      reads: 'sessionHigh',
       check: function (s) {
         if (s.sessionHigh == null) return null;
         for (var i = 0; i < s.n; i++) {
@@ -411,7 +422,7 @@
     {
       id: 'the-spoofed', name: 'The Spoofed', tier: 'sin', weight: 12,
       tagline: 'The wall was never there.',
-      needs: 'wallsSpoofed',
+      reads: 'wallsSpoofed',
       check: function (s) {
         if (!s.wallsSpoofed) return null;
         return 'You traded off a wall that pulled ' + plural(s.wallsSpoofed, 'time', 'times') +
@@ -449,8 +460,17 @@
 
     // ══ FLEX — earned. Celebration only, never a backhanded jab. ═════════════
     // Only evaluated when NO sin fired. The flex is reserved for clean process.
+    //
+    // WEIGHTS ARE DELIBERATELY INVERTED vs what you would first write: The Sniper is
+    // the LOWEST-weighted flex, not the highest. It is the fallback for "traded well
+    // but did nothing you could tell a story about". The specific, rare badges outrank
+    // it, because "you were already short when the floor fell out" is the card you hang
+    // your hat on and The Sniper is the participation trophy of good runs. Written the
+    // obvious way round, The Sniper headlined every single good card and buried Rug
+    // Rider, Ice Water and The Closer on the shelf. Same rule as the style floor:
+    // SPECIFIC BEATS GENERIC.
     {
-      id: 'sniper', name: 'The Sniper', tier: 'flex', weight: 20,
+      id: 'sniper', name: 'The Sniper', tier: 'flex', weight: 6,
       tagline: 'You wait. You strike. You are gone.',
       check: function (s) {
         if (s.n < 1 || s.disc < 78 || s.net < 0) return null;
@@ -460,7 +480,7 @@
       }
     },
     {
-      id: 'the-surgeon', name: 'The Surgeon', tier: 'flex', weight: 18,
+      id: 'the-surgeon', name: 'The Surgeon', tier: 'flex', weight: 13,
       tagline: 'Nothing bled.',
       check: function (s) {
         if (s.losses < 2 || s.bigLosses.length || s.disc < 70) return null;
@@ -470,7 +490,7 @@
       }
     },
     {
-      id: 'small-ball', name: 'Small Ball', tier: 'flex', weight: 16,
+      id: 'small-ball', name: 'Small Ball', tier: 'flex', weight: 12,
       tagline: 'Base hits. All day.',
       check: function (s) {
         if (s.n < 4 || s.net <= 0 || s.disc < 72) return null;
@@ -490,9 +510,9 @@
       }
     },
     {
-      id: 'the-closer', name: 'The Closer', tier: 'flex', weight: 14,
+      id: 'the-closer', name: 'The Closer', tier: 'flex', weight: 17,
       tagline: 'You showed up when it counted.',
-      needs: 'closeAt',
+      reads: 'closeAt',
       check: function (s) {
         if (s.lastCloseAt == null || s.net <= 0 || s.lateNet < 500) return null;
         if (s.lateNet < s.net * 0.6) return null;
@@ -500,9 +520,9 @@
       }
     },
     {
-      id: 'the-patient', name: 'The Patient', tier: 'flex', weight: 13,
+      id: 'the-patient', name: 'The Patient', tier: 'flex', weight: 16,
       tagline: 'You let the lure go by.',
-      needs: 'openAt',
+      reads: 'openAt',
       check: function (s) {
         if (s.firstEntryAt == null || s.firstEntryAt < 60000 || s.net <= 0) return null;
         return 'You did not touch it for the first ' + Math.round(s.firstEntryAt / 1000) +
@@ -510,9 +530,9 @@
       }
     },
     {
-      id: 'ice-water', name: 'Ice Water', tier: 'flex', weight: 12,
+      id: 'ice-water', name: 'Ice Water', tier: 'flex', weight: 19,
       tagline: 'The alarm went off. You did not.',
-      needs: 'catalystAt',
+      reads: 'catalystAt',
       check: function (s) {
         if (s.catalystAt == null || s.n < 2) return null;
         if (s.revenges.length || s.disc < 70) return null;
@@ -524,9 +544,9 @@
       }
     },
     {
-      id: 'rug-rider', name: 'Rug Rider', tier: 'flex', weight: 11,
+      id: 'rug-rider', name: 'Rug Rider', tier: 'flex', weight: 20,
       tagline: 'You were on the right side of the floor falling out.',
-      needs: 'catalystAt',
+      reads: 'catalystAt',
       check: function (s) {
         if (s.catalystAt == null || s.catalystDir !== 'rug') return null;
         for (var i = 0; i < s.n; i++) {
@@ -540,9 +560,9 @@
       }
     },
     {
-      id: 'the-reader', name: 'The Reader', tier: 'flex', weight: 10,
+      id: 'the-reader', name: 'The Reader', tier: 'flex', weight: 18,
       tagline: 'You read the book, not the candles.',
-      needs: 'wallsRead',
+      reads: 'wallsRead',
       check: function (s) {
         if (!s.wallsRead || s.wallsSpoofed || s.net <= 0) return null;
         return 'You traded off ' + plural(s.wallsRead, 'wall', 'walls') +
@@ -600,8 +620,17 @@
     {
       id: 'the-tourist', name: 'The Tourist', tier: 'style', weight: 5,
       tagline: 'You came, you clicked, you left.',
+      // The |net| gate is not decoration. Without it this fired on EVERY thin run and
+      // sat on the shelf next to "One Shot, One Kill: one trade, $2,900, then you
+      // stopped, which is the hard part" saying "you watched more than you traded" —
+      // mocking the exact trade the headline just praised. If the run was decisive,
+      // you are not a tourist. Two quiet trades is a tourist.
       check: function (s) {
-        if (s.n < 1 || s.n > 2) return null;
+        if (s.n < 1 || s.n > 2 || Math.abs(s.net) > 800) return null;
+        // NET is not enough: a $3,600 round trip that lands back at +$300 is not tourism.
+        // Without this, The Tourist sat on The Roundtripper's own shelf saying "you
+        // watched more than you traded" about a run that swung the whole account.
+        if (s.peakEquity != null && (s.peakEquity > 800 || s.troughEquity < -800)) return null;
         return plural(s.n, 'trade', 'trades') + ' in two minutes for ' + (s.net >= 0 ? '+' : '') +
           money(s.net) + '. You watched more than you traded.';
       }
@@ -619,8 +648,13 @@
     {
       id: 'the-bull', name: 'The Bull', tier: 'style', weight: 2,
       tagline: 'You only know one direction.',
+      // n === 1 needs its own line: "Every one of your 1 trades was long" is broken
+      // grammar, and "you never considered the other side" is not a claim you can make
+      // about a single trade anyway. This is the style FLOOR, so it must stay reachable
+      // at n === 1 rather than gate itself off.
       check: function (s) {
         if (s.n < 1 || s.shorts > 0) return null;
+        if (s.n === 1) return 'Your one and only trade was a long.';
         return 'Every one of your ' + s.n + ' trades was long. You never once considered the other side.';
       }
     },
@@ -629,6 +663,7 @@
       tagline: 'Everything is going to zero.',
       check: function (s) {
         if (s.n < 1 || s.longs > 0) return null;
+        if (s.n === 1) return 'Your one and only trade was a short.';
         return 'Every one of your ' + s.n + ' trades was short. You never once considered the other side.';
       }
     },
@@ -713,7 +748,10 @@
       receipt = b.check(s);
       if (receipt) fired.push({ badge: b, receipt: receipt });
     }
-    var anySin = fired.some(function (f) { return f.badge.tier === 'sin'; });
+    // `accuses` catches the legends that are accusations wearing a rare hat (The Nuke,
+    // Bought the Offering). Gating on tier alone let "Bought the Offering" headline a
+    // card with "The Sniper: you took the right side, cut the losers fast" on the shelf.
+    var anySin = fired.some(function (f) { return f.badge.tier === 'sin' || f.badge.accuses; });
 
     // Pass 2: flex, ONLY if nothing accused you. The flex is for clean process.
     if (!anySin) {

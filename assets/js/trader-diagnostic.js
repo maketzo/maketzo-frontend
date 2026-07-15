@@ -184,6 +184,10 @@
   var ema9, ema20, vwap, vwapPV, vwapVol, resistance;
   var scenario, eventProg, eventAt, eventFired, running, paused, pauseStart;
   var book, wall, pending, printSkew, lastBookAt, lastPrintAt, lastWallAt;
+  // Session trackers read by badge-engine.js. All session-relative (ms from t0) or
+  // plain running extremes, so they survive pause (resumeGame shifts t0) and mean the
+  // same thing to the engine as openAt/closeAt do.
+  var peakEquity, troughEquity, sessionHigh, sessionLow, catalystAt, catalystDir, wallsRead, wallsSpoofed;
   var bookView = 'montage', mmBids, mmAsks, spreadTicks, lastSpreadAt;
   var cv, ctx, els;
 
@@ -193,6 +197,8 @@
     for (var i = 0; i < WINDOW; i++) { var o = p; p = Math.max(0.5, p * (1 + rnd(-0.022, 0.024))); var c = p; candles.push({ o: o, c: c, h: Math.max(o, c) * (1 + rnd(0, 0.012)), l: Math.min(o, c) * (1 - rnd(0, 0.012)), vol: 500 + Math.random() * 800 }); }
     price = p; regime = 'grind'; regimeEnd = 0;
     balance = START_BAL; pos = null; trades = []; buyCount = 0; recentHigh = price; lastLossAt = -9999;
+    peakEquity = 0; troughEquity = 0; sessionHigh = price; sessionLow = price;
+    catalystAt = null; catalystDir = null; wallsRead = 0; wallsSpoofed = 0;
     ema9 = candles[0].c; ema20 = candles[0].c;
     for (var j = 0; j < candles.length; j++) { var cl = candles[j].c; ema9 += K9 * (cl - ema9); ema20 += K20 * (cl - ema20); candles[j].e9 = ema9; candles[j].e20 = ema20; }
     vwap = NaN; vwapPV = 0; vwapVol = 0;
@@ -368,8 +374,11 @@
     if (scenario.event && !eventFired && now >= eventAt) {
       eventFired = true; regime = scenario.event; pending = null; wall = null;
       var RE = REG[regime]; regimeEnd = now + ri(RE.min, RE.max);
-      if (regime === 'rug') { price = Math.max(0.4, price * rnd(0.85, 0.93)); audio.rug(); showCatalyst('rug'); }
-      else { price = price * rnd(1.06, 1.16); audio.squeeze(); showCatalyst('squeeze'); }
+      // Session-relative, to match the trades' openAt/closeAt. This is what lets the
+      // engine ask "did you touch the button in the four seconds after the news hit?"
+      catalystAt = now - t0;
+      if (regime === 'rug') { catalystDir = 'rug'; price = Math.max(0.4, price * rnd(0.85, 0.93)); audio.rug(); showCatalyst('rug'); }
+      else { catalystDir = 'squeeze'; price = price * rnd(1.06, 1.16); audio.squeeze(); showCatalyst('squeeze'); }
     }
     // telegraph an upcoming STRONG move through the book ~LEAD_MS early; a slice of
     // these are spoofs that pull and reverse (revealed at the turn). Reading the
@@ -412,6 +421,18 @@
     // skip spike ticks for max-favorable/adverse: a 1-tick sweep is an untradeable wick,
     // so it must not masquerade as a level the player "gave back" or "got caught" at.
     if (pos && !isSpike) { var u = pos.dir * pos.shares * (price - pos.entry); if (u < pos.maxAdverse) pos.maxAdverse = u; if (u > pos.maxFav) pos.maxFav = u; }
+
+    // Session extremes, on the SAME spike guard and for the same reason. A fat-tail
+    // sweep is a 1-tick wick nobody could trade, so it must never become "the high you
+    // bought" (Exit Liquidity) or "the $4,000 you were up" (The Roundtripper). Letting a
+    // wick set these is exactly the v19 maxFav bug, one level up.
+    if (!isSpike) {
+      if (price > sessionHigh) sessionHigh = price;
+      if (price < sessionLow) sessionLow = price;
+      var eq = balance - START_BAL + (pos ? pos.dir * pos.shares * (price - pos.entry) : 0);
+      if (eq > peakEquity) peakEquity = eq;
+      if (eq < troughEquity) troughEquity = eq;
+    }
 
     // live tape — order book refresh (eased toward the regime, or the telegraphed
     // move during a lead window) + a Time & Sales print on a volatility-scaled cadence
@@ -640,6 +661,17 @@
 
   function openPos(dir) {
     audio.buy();
+    // Did you trade OFF the wall that was showing? A bid wall reads as support (implies
+    // long); an ask wall reads as resistance (implies short). Entering in the direction
+    // the wall advertises is "trading the book". Whether that was a read or a trap is
+    // decided by wall.spoof, which the trader cannot see: real walls and spoofs render
+    // identically on purpose, and spoofs are planted on the side OPPOSITE the coming
+    // move (see spawnWall). So this counts the honest thing: you believed the book, and
+    // the book either told the truth or lied. Only the opening entry counts, and only
+    // while the wall is still displayed (pullWall nulls it the moment a spoof yanks).
+    if (wall && dir === (wall.side === 'bid' ? 1 : -1)) {
+      if (wall.spoof) wallsSpoofed++; else wallsRead++;
+    }
     var addShares = Math.max(1, Math.floor(NOTIONAL / price));
     balance -= addShares * price * FEE_BPS; buyCount++;
     var ext = dir === 1 ? (price / (recentLow() || price)) - 1 : ((recentHigh || price) / price) - 1;
@@ -732,9 +764,11 @@
       trades: trades,
       net: net,
       buyCount: buyCount,
-      durationMs: DURATION
-      // Session trackers (peakEquity / sessionHigh / catalystAt / wall reads) are not
-      // wired yet. The badges that need them guard on null and stay dormant.
+      durationMs: DURATION,
+      peakEquity: peakEquity, troughEquity: troughEquity,
+      sessionHigh: sessionHigh, sessionLow: sessionLow,
+      catalystAt: catalystAt, catalystDir: catalystDir,
+      wallsRead: wallsRead, wallsSpoofed: wallsSpoofed
     });
   }
   // % of traders who did BETTER than you — a humbling social mirror (high = you did poorly,
