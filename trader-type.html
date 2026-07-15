@@ -20,13 +20,17 @@
 <link rel="stylesheet" href="assets/css/tokens.css">
 <link rel="stylesheet" href="assets/css/components.css">
 <link rel="stylesheet" href="assets/css/audio-player.css?v=9">
-<link rel="stylesheet" href="assets/css/trader-diagnostic.css?v=18">
+<link rel="stylesheet" href="assets/css/trader-diagnostic.css?v=19">
 <script src="assets/js/mkt-analytics.js?v=5" defer></script>
 <script src="assets/js/newsletter.js?v=4" defer></script>
 <script src="assets/js/mkt-consent.js?v=1" defer></script>
 <script src="assets/js/checkout.js?v=10" defer></script>
 <script src="assets/js/audio-player.js?v=9" defer></script>
-<script src="assets/js/trader-diagnostic.js?v=36" defer></script>
+<!-- badge-engine.js is the pure scoring module. It must load BEFORE trader-diagnostic.js
+     (which calls window.MaketzoBadges.evaluate at end of run). Both are `defer`, so they
+     execute in document order. -->
+<script src="assets/js/badge-engine.js?v=1" defer></script>
+<script src="assets/js/trader-diagnostic.js?v=37" defer></script>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }

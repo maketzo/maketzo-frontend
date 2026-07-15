@@ -212,13 +212,18 @@
 .diag-card { position: relative; border-radius: 18px; padding: 30px 24px 22px; overflow: hidden; background: linear-gradient(160deg, rgba(42,54,72,.5), rgba(13,15,20,.82)); border: 1px solid var(--d-line); box-shadow: 0 24px 60px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.06); }
 .diag-card.slam { animation: diagSlam .5s cubic-bezier(.2,.9,.25,1.2); }
 @keyframes diagSlam { 0% { transform: scale(.86); opacity: 0; } 60% { transform: scale(1.02); opacity: 1; } 100% { transform: scale(1); } }
-.diag-tier-a .diag-card { background: linear-gradient(160deg, rgba(126,217,87,.16), rgba(13,15,20,.86)); border-color: rgba(126,217,87,.4); }
-.diag-tier-f .diag-card { background: linear-gradient(160deg, rgba(255,107,107,.16), rgba(13,15,20,.86)); border-color: rgba(255,107,107,.4); }
-.diag-tier-c .diag-card, .diag-tier-d .diag-card { background: linear-gradient(160deg, rgba(212,175,55,.14), rgba(13,15,20,.86)); border-color: rgba(212,175,55,.34); }
+/* Card tiers are the BADGE tier (flex / sin / style / legend), not the letter grade.
+   The grade is a separate axis now and renders in its own corner. flex = earned (green),
+   sin = savage (red), style = a neutral fingerprint (gold, the house colour), legend =
+   the rare collectible, which gets the only glow on the surface so it reads as special. */
+.diag-tier-flex .diag-card { background: linear-gradient(160deg, rgba(126,217,87,.16), rgba(13,15,20,.86)); border-color: rgba(126,217,87,.4); }
+.diag-tier-sin .diag-card { background: linear-gradient(160deg, rgba(255,107,107,.16), rgba(13,15,20,.86)); border-color: rgba(255,107,107,.4); }
+.diag-tier-style .diag-card { background: linear-gradient(160deg, rgba(212,175,55,.14), rgba(13,15,20,.86)); border-color: rgba(212,175,55,.34); }
+.diag-tier-legend .diag-card { background: linear-gradient(160deg, rgba(212,175,55,.28), rgba(60,40,10,.6) 55%, rgba(13,15,20,.9)); border-color: rgba(212,175,55,.75); box-shadow: 0 24px 60px rgba(0,0,0,.5), 0 0 0 1px rgba(212,175,55,.3), 0 0 42px rgba(212,175,55,.28), inset 0 1px 0 rgba(255,255,255,.1); }
 .diag-card-grade { position: absolute; top: 16px; right: 18px; font-family: var(--mk-font-display, "Bebas Neue", Impact, sans-serif); font-size: 46px; line-height: 1; color: #fff; opacity: .92; }
-.diag-tier-a .diag-card-grade { color: var(--d-up); } .diag-tier-f .diag-card-grade { color: var(--d-down); }
+.diag-tier-flex .diag-card-grade { color: var(--d-up); } .diag-tier-sin .diag-card-grade { color: var(--d-down); } .diag-tier-legend .diag-card-grade { color: var(--d-gold-hi); }
 .diag-card-name { font-family: var(--mk-font-display, "Bebas Neue", Impact, sans-serif); font-weight: 400; font-size: clamp(44px, 13vw, 76px); line-height: .92; letter-spacing: .01em; color: #fff; margin: 4px 0 8px; }
-.diag-tier-a .diag-card-name { color: var(--d-up); } .diag-tier-f .diag-card-name { color: var(--d-down); } .diag-tier-c .diag-card-name, .diag-tier-d .diag-card-name { color: var(--d-gold-hi); }
+.diag-tier-flex .diag-card-name { color: var(--d-up); } .diag-tier-sin .diag-card-name { color: var(--d-down); } .diag-tier-style .diag-card-name, .diag-tier-legend .diag-card-name { color: var(--d-gold-hi); }
 .diag-card-tag { font-size: 14.5px; font-style: italic; color: #fff; opacity: .92; margin-bottom: 14px; }
 .diag-card-roast { font-size: 15.5px; line-height: 1.55; color: var(--d-ink); max-width: 430px; margin: 0 auto 18px; }
 .diag-card-meta { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 16px; }
@@ -232,7 +237,24 @@
 .diag-tells { margin: 18px auto 0; max-width: 440px; text-align: left; }
 .diag-tells-h { font-family: var(--mk-font-mono, "DM Mono", monospace); font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--d-gold-hi); margin-bottom: 8px; text-align: center; }
 .diag-tell { font-size: 13.5px; line-height: 1.45; color: var(--d-dim); padding: 9px 12px; border-left: 2px solid rgba(255,107,107,.5); background: rgba(255,107,107,.05); border-radius: 0 8px 8px 0; margin-bottom: 7px; }
-.diag-tier-a .diag-tell { border-left-color: rgba(126,217,87,.5); background: rgba(126,217,87,.05); }
+.diag-tier-flex .diag-tell, .diag-tier-legend .diag-tell { border-left-color: rgba(126,217,87,.5); background: rgba(126,217,87,.05); }
+
+/* ── The badge shelf ────────────────────────────────────────────────────────
+   The headline is the punch and the share artifact. The shelf is the collection:
+   it carries the nuance the headline cannot, so a headline that reads slightly off
+   is survivable instead of infuriating, and it is what makes two cards comparable. */
+.diag-shelf { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin: 0 auto 16px; max-width: 430px; }
+.diag-shelf-badge { font-family: var(--mk-font-mono, "DM Mono", monospace); font-size: 10.5px; letter-spacing: .09em; text-transform: uppercase; padding: 5px 10px; border-radius: 999px; border: 1px solid var(--d-line); background: rgba(13,15,20,.5); color: var(--d-dim); cursor: default; }
+.diag-bt-flex { border-color: rgba(126,217,87,.45); color: var(--d-up); background: rgba(126,217,87,.08); }
+.diag-bt-sin { border-color: rgba(255,107,107,.45); color: var(--d-down); background: rgba(255,107,107,.08); }
+.diag-bt-legend { border-color: rgba(212,175,55,.7); color: var(--d-gold-hi); background: rgba(212,175,55,.14); box-shadow: 0 0 14px rgba(212,175,55,.25); }
+.diag-bt-style { border-color: rgba(212,175,55,.3); color: var(--d-gold-hi); background: rgba(212,175,55,.05); }
+
+/* The receipt behind every shelf badge. No badge appears without one. */
+.diag-shelf-why { margin: 16px auto 0; max-width: 440px; text-align: left; }
+.diag-shelf-line { font-size: 13px; line-height: 1.45; color: var(--d-dim); padding: 7px 0; border-top: 1px solid var(--d-line); }
+.diag-shelf-line:first-child { border-top: 0; }
+.diag-shelf-name { color: #fff; font-weight: 700; }
 
 .diag-share { margin: 22px auto 0; max-width: 480px; }
 .diag-share-h { font-size: 13px; color: var(--d-dim); margin-bottom: 10px; }

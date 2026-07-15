@@ -65,39 +65,14 @@
     };
   }
 
-  // ── Archetypes (read from the trade log; direction-aware) ──────────────────
-  var ARCH = {
-    sniper: { name: 'The Sniper', tier: 'a', rarity: 4,
-      roast: 'You took the right side, cut the losers fast and let the winners run. That is the whole game, and most traders never run it this clean.',
-      tag: 'You wait. You strike. You’re gone.' },
-    chaser: { name: 'The Chaser', tier: 'd', rarity: 21,
-      roast: 'You bought the top of every pump like it owed you money. You’re the exit liquidity the runners were waiting for.',
-      roastS: 'You shorted the bottom of every flush like it owed you money. You’re the fuel every squeeze runs on.',
-      roastG: 'Your entries are the leak. You kept buying into pumps and going straight underwater, then got bailed out. Bailed out is not the same as right. One day the tape does not come back.',
-      tag: 'Green candle, must own. Top tick, every time.',
-      tagS: 'Red candle, must short. Bottom tick, every time.' },
-    bagholder: { name: 'The Bag Holder', tier: 'd', rarity: 19,
-      roast: 'It went against you and you added more to fix your average. The bag only got heavier. Hope is not a stop loss.',
-      roastH: 'It went against you and you held, and held, waiting for green. The bag only got heavier. Hope is not a stop loss.',
-      tag: 'Underwater and still calling it conviction.' },
-    paperhands: { name: 'The Paper Hands', tier: 'c', rarity: 16,
-      roast: 'You cut winners like the IRS was at the door. The ten-bagger left without you, at +$40.',
-      roastR: 'You cut every winner down to scraps, so a couple of normal losses wiped the whole day. Tiny wins cannot survive real losses.',
-      tag: 'Green for one second, sold in half a second.' },
-    masher: { name: 'The Button Masher', tier: 'd', rarity: 13,
-      roast: 'You traded the chop like it was a fire alarm. A dozen fills, zero edge, and the broker thanks you for the fees.',
-      roastG: 'A dozen fills in two minutes and you scratched out green by a hair. That is variance paying your fees, not an edge. Trade less, keep more.',
-      tag: 'You don’t trade the market, you trade your boredom.' },
-    revenge: { name: 'The Revenge Trader', tier: 'f', rarity: 12,
-      roast: 'One red print and the plan was gone. You re-loaded to win it back and let the last loss pick your next trade. The market owns you now.',
-      tag: 'You don’t trade setups, you trade your feelings.' },
-    freezer: { name: 'The Freezer', tier: 'c', rarity: 9,
-      roast: 'The move came, you watched it, you admired it, and you did nothing. Your watchlist is a graveyard of would-haves.',
-      tag: 'Perfect read. Pulled the trigger ten minutes too late.' },
-    degenerate: { name: 'The Degenerate', tier: 'f', rarity: 6,
-      roast: 'No plan, no stop, full send. You kept loading until the catalyst hit and took the whole stack with it. A casino with a charting package, and you’re the buffet.',
-      tag: 'Max size, no stop, until it’s gone.' }
-  };
+  // ── Scoring lives in badge-engine.js ───────────────────────────────────────
+  // The archetype table + selection logic used to be inlined right here. It moved to
+  // assets/js/badge-engine.js (a pure module) for two reasons: the sim is not the only
+  // consumer (the app gets this next, and it must NOT land in the app.js monolith),
+  // and the old 8-archetype table was structurally incapable of being right. Seven
+  // sins and one saint meant every imperfect run had to wear an accusation, so the
+  // engine's job became "find this trader's worst quality and make it his name".
+  // See the header of badge-engine.js for the two rules that replaced it.
 
   // ── Tape regimes. drift = frac/sec, vol = frac/sqrt(sec). ──────────────────
   var REG = {
@@ -687,7 +662,10 @@
     var pnl = pos.dir * pos.shares * (price - pos.entry);
     balance += pnl - pos.shares * price * FEE_BPS;
     var since = performance.now() - lastLossAt;
-    var rec = { dir: pos.dir, avgEntry: pos.entry, exit: price, shares: pos.shares, lots: pos.lots, pnl: pnl, heldMs: held, regimeAtEntry: pos.regimeAtEntry, extAtEntry: pos.extAtEntry, maxAdverse: pos.maxAdverse, maxFav: pos.maxFav, addsAgainst: pos.addsAgainst, revenge: since < 2000, win: pnl > 0 };
+    // openAt/closeAt are ms from the start of the session (t0), NOT raw performance.now().
+    // The badge engine reads them for the timing badges (The Closer, The Patient, Ice
+    // Water, Rug Rider), so they must be session-relative to mean anything.
+    var rec = { dir: pos.dir, avgEntry: pos.entry, exit: price, shares: pos.shares, lots: pos.lots, pnl: pnl, heldMs: held, regimeAtEntry: pos.regimeAtEntry, extAtEntry: pos.extAtEntry, maxAdverse: pos.maxAdverse, maxFav: pos.maxFav, addsAgainst: pos.addsAgainst, revenge: since < 2000, win: pnl > 0, openAt: pos.openAt - t0, closeAt: performance.now() - t0 };
     trades.push(rec);
     if (pnl < 0) { lastLossAt = performance.now(); audio.sellLoss(); } else audio.sellWin();
     flash(pos.dir === 1 ? els.sell : els.buy, pnl >= 0 ? 'win' : 'loss');
@@ -731,160 +709,33 @@
     if (pos) flatten();
     var net = balance - START_BAL;
     var an = analyze(net);
-    track('diagnostic_complete', { archetype: an.id, grade: an.grade, net: Math.round(net), trades: trades.length, buys: buyCount, scenario: scenario.id });
+    // `archetype` keeps its name so the existing PostHog funnels/insights keep working;
+    // it is now the HEADLINE badge id. `shelf` is new: it is how we learn which badges
+    // actually get earned, which is the input to making rarity real later.
+    track('diagnostic_complete', {
+      archetype: an.headline.id, tier: an.headline.tier,
+      shelf: an.shelf.map(function (b) { return b.id; }).join(','),
+      grade: an.grade, disc: an.disc,
+      net: Math.round(net), trades: trades.length, buys: buyCount, scenario: scenario.id
+    });
     renderResult(an, net);
   }
 
-  // Read the trade log into flags → archetype + the 3 most damaging tells.
-  // Direction-aware + outcome-aware: a clean WINNING short is not a "chase".
-  // Diagnosis is read from PROCESS, not P&L. A green run built on averaging down and
-  // overtrading is not a Sniper and does not grade A — it got bailed out by variance.
-  // A clean run that finished red is still disciplined. The net only CAPS the grade in
-  // both directions; it never buys a good one. (Ed, 2026-06-19: a bag-holding, averaging-
-  // down, 13-order run was crowned Sniper A+ because it happened to finish green.)
+  // Scoring is delegated to badge-engine.js (pure module, no DOM, node-testable).
+  // This function's only job is to hand the engine the session it needs. The engine
+  // decides the grade (the verdict) and the badges (the fingerprint) separately, and
+  // no badge can fire without printing a true receipt. Do NOT reintroduce scoring
+  // logic here: it needs to run unchanged inside the app, and the app must not grow
+  // another monolith. See badge-engine.js for the rules and the incident history.
   function analyze(net) {
-    var chases = [], bags = [], snatches = [], revenges = [], degen = [], bigLosses = [], wins = 0;
-    var addsAgainstTotal = 0, ranWinners = 0, cutFast = 0, bailouts = 0, worstBail = null;
-    for (var i = 0; i < trades.length; i++) {
-      var t = trades[i];
-      // A chase = bought EXTENDED and ate a REAL reversal (a loss, not a quick managed cut).
-      // Buying the top and WINNING is breakout trading, not chasing — winners and small cuts
-      // never count. (Ed, 2026-06-19: a 10W-1L, +$5,288, PF 29.7 run was branded The Chaser
-      // off one extended entry, because winners with normal heat were flagged "caught".)
-      var extended = t.extAtEntry > 0.13;
-      if (extended && t.pnl <= -300) chases.push(t);
-      if (t.addsAgainst >= 1 && t.pnl < 0) bags.push(t);   // bag = AVERAGED DOWN into a loser
-      if (t.lots >= 4 && t.pnl <= -900) degen.push(t);
-      if (t.win && t.pnl < 120 && t.heldMs < 2200 && t.maxFav > t.pnl + 220) snatches.push(t);
-      if (t.revenge) revenges.push(t);
-      addsAgainstTotal += t.addsAgainst || 0;
-      // CUT DISCIPLINE is measured by the REALIZED loss, NEVER by heat (Ed, 2026-06-19: a loss
-      // taken to -$848 of heat but CUT at -$31 was branded "letting a red bleed" → Bag Holder F.
-      // Cutting small after heat is GOOD; only a big REALIZED loss is the "didn't cut" leak).
-      if (t.win) { wins++; if (t.pnl >= 250 && t.pnl >= t.maxFav * 0.6) ranWinners++; }
-      else if (t.pnl >= -250) cutFast++;                  // cut it small — disciplined, regardless of heat
-      else if (t.pnl <= -500) bigLosses.push(t);          // took a big realized loss — did not cut in time
-      // DEEP HEAT that SURVIVED (a win, or a loss cut small) = a bad ENTRY you got bailed out of,
-      // an entry/risk signal — NOT bag-holding. Tracked apart from cut discipline; feeds the chase axis.
-      if (t.maxAdverse <= -600 && t.pnl >= -250) { bailouts++; if (!worstBail || t.maxAdverse < worstBail.maxAdverse) worstBail = t; }
-    }
-    var n = trades.length;
-    var bagsHadAdds = false; for (i = 0; i < bags.length; i++) if (bags[i].addsAgainst >= 1) bagsHadAdds = true;
-    var badEntries = chases.length + bailouts;             // bought a bad spot and went straight underwater
-
-    // ── Discipline score (0–100), PROCESS only — the spine of both grade and archetype.
-    var pen = 0;
-    pen += addsAgainstTotal * 16;                          // averaging down — the cardinal sin
-    pen += bags.length * 22;                               // fed a loser
-    pen += degen.length * 30;                              // full-send blow-up
-    pen += chases.length * 12;                             // chased an extended move and got caught
-    pen += revenges.length * 16;                           // re-entered on tilt
-    pen += snatches.length * 9;                            // paper-handed a winner
-    var bigN = Math.max(0, bigLosses.length - bags.length);// big REALIZED losses not already counted as adds-bags
-    pen += bigN > 0 ? 12 + (bigN - 1) * 28 : 0;            // ONE big loss is a slip; a PATTERN of not cutting is a leak
-    pen += bailouts * 7;                                   // got bailed out of a bad entry — risky, not a read
-    if (buyCount >= 14) pen += 12;                         // genuine overtrading (the sim is fast; 12-13 is just active)
-    if (buyCount >= 20) pen += 8;
-    if (n === 0) pen += 52;                                // never pulled the trigger
-    var cred = Math.min(12, ranWinners * 4 + cutFast * 2);
-    var disc = Math.max(0, Math.min(100, 100 - pen + cred));
-    var hardSin = degen.length >= 1 || addsAgainstTotal >= 2 || bagsHadAdds || revenges.length >= 2;
-
-    // ── Archetype — the dominant PATTERN, never P&L. A single slip (one failed breakout,
-    // one quick-cut loss) is a TELL, not your identity; the savage labels need a real
-    // pattern. Sniper is the DEFAULT for a run that traded well (high discipline, no
-    // loser-holding, no chronic leak) — buying the top and winning is breakout trading.
-    var counts = {
-      fomo: (chases.length >= 2 || badEntries >= 3) ? badEntries : 0,   // a PATTERN of bad entries (chased or bailed out)
-      holding: bags.length + (bigLosses.length >= 2 ? 1 : 0),           // averaged down, OR a pattern of big REALIZED losses
-      paper: snatches.length >= 2 ? snatches.length : 0,
-      overtrade: buyCount >= 14 ? 2 : 0,
-      tilt: revenges.length >= 2 ? revenges.length : 0,
-      freeze: buyCount === 0 ? 3 : (n === 1 && net <= 0 && buyCount <= 1 ? 2 : 0),
-      press: degen.length
-    };
-    var PRIORITY = ['press', 'tilt', 'holding', 'fomo', 'overtrade', 'paper', 'freeze'];
-    var dom = null, domVal = 0;
-    for (var p = 0; p < PRIORITY.length; p++) { var k = PRIORITY[p]; if (counts[k] > domVal) { domVal = counts[k]; dom = k; } }
-
-    var MAP = { fomo: 'chaser', holding: 'bagholder', paper: 'paperhands', overtrade: 'masher', tilt: 'revenge', freeze: 'freezer', press: 'degenerate' };
-    // Sniper = traded well overall. A failed breakout you cut, or heavy-but-skilled activity,
-    // does NOT disqualify the flex (the discipline score already accounts for it). Big realized
-    // losses or a pattern of bad entries DO. Discipline governs; one slip never defines you.
-    var cleanSniper = n >= 1 && disc >= 78 && !hardSin && bags.length === 0 && bigLosses.length <= 1 && badEntries <= 2 && degen.length === 0 && snatches.length < 2;
-    var id;
-    if (n === 0) id = 'freezer';
-    else if (degen.length) id = 'degenerate';   // a full-send blow-up IS the identity
-    else if (cleanSniper) id = 'sniper';         // traded well overall → Sniper, slips become tells
-    else if (dom) id = MAP[dom];
-    else if (bags.length || bigLosses.length >= 2) id = 'bagholder';
-    else if (snatches.length) id = 'paperhands';
-    else if (buyCount >= 14) id = 'masher';
-    else id = 'sniper';                          // discipline dipped but no nameable leak → still a Sniper
-
-    // The grade can never out-rank the diagnosis, but it must REWARD a great run, not nitpick
-    // it. A named sin, a big realized loss, or a PATTERN of bail-outs caps at B. A SINGLE
-    // bail-out on an otherwise clean run only costs the A+ (caps at A) — you cut your losers
-    // and won, you just rode one trade too hot. A hard sin caps at C. (Ed, 2026-06-20: a
-    // 96/100, 80%-win, avg-loss-$6 run was capped to B + mocked for one heat trade that won.)
-    var sinId = id !== 'sniper' && id !== 'freezer';
-    var capGrade = hardSin ? 'C'
-      : (sinId || bigLosses.length >= 1 || bailouts >= 2) ? 'B'
-      : bailouts >= 1 ? 'A'
-      : null;
-    var grade = gradeFor(disc, net, capGrade);
-
-    // dominant direction of the chase trades (for the right roast/tag)
-    var chaseDir = 1; if (chases.length) { var ls = 0, ss = 0; for (i = 0; i < chases.length; i++) chases[i].dir === 1 ? ls++ : ss++; chaseDir = ss > ls ? -1 : 1; }
-
-    // summary metrics for the result card. avgWin/avgLoss = the size lesson (are your
-    // winners bigger than your losers?); worstHeat = the deepest unrealized drawdown you
-    // sat through (the risk you actually carried). Plain-English, no jargon — replaces PF.
-    var losses = n - wins, best = 0, worst = 0, gWin = 0, gLoss = 0, worstHeat = 0;
-    for (i = 0; i < trades.length; i++) { var pn = trades[i].pnl; if (pn > best) best = pn; if (pn < worst) worst = pn; if (pn >= 0) gWin += pn; else gLoss += -pn; if (trades[i].maxAdverse < worstHeat) worstHeat = trades[i].maxAdverse; }
-    var stats = { n: n, wins: wins, losses: losses, winRate: n ? Math.round(wins / n * 100) : 0,
-      best: best, worst: worst, worstHeat: worstHeat,
-      avgWin: wins ? gWin / wins : 0, avgLoss: losses ? gLoss / losses : 0 };
-
-    // honest one-liner that reconciles the grade with the P&L so a green-but-graded-low
-    // (or red-but-graded-well) card reads as a lesson, not a bug.
-    var verdict = '';
-    if (net <= -3000) verdict = 'Two minutes and the account took real damage. The grade is the habit, not the unlucky tape.';
-    else if (sinId && net > 400 && disc < 55) verdict = 'You finished green, but on variance, not process. This is exactly how a good day hands it all back.';
-    else if (id === 'sniper' && net < -200) verdict = 'Red on the day, but the process was clean. That is variance, not a flaw, and it is what prints over a month.';
-
-    var tells = [];
-    if (bags.length) { var b = bags[0]; tells.push({ w: 5, t: 'You averaged down ' + b.addsAgainst + 'x to save a loser. It still cost you ' + money(-b.pnl) + '.' }); }
-    if (degen.length) { var d = degen[0]; tells.push({ w: 5, t: 'You loaded ' + d.lots + ' times into one trade and it went ' + money(d.pnl) + '. No plan, full send.' }); }
-    // A big REALIZED loss = you did not cut in time (fires on the loss you actually took, not heat).
-    if (bigLosses.length) { var bl = bigLosses[0]; tells.push({ w: 4, t: 'You let one loser run to ' + money(bl.pnl) + ' instead of cutting it small. That is the trade that erases a good day.' }); }
-    // The size lesson — losers bigger than winners is how a high win rate still bleeds out.
-    if (losses && wins && stats.avgLoss > stats.avgWin * 1.3) tells.push({ w: 4, t: 'Your losers run bigger than your winners. Avg loss ' + money(-stats.avgLoss) + ' vs avg win +' + money(stats.avgWin) + '. One red erases the green.' });
-    // Got bailed out of a bad entry — deep heat that came back. The ENTRY was the mistake.
-    // Suppressed on a clean Sniper: a great run gets the reward line, not a scold for one trade
-    // that worked. (The heat still shows in the stat line for honesty.)
-    if (bailouts && worstBail && id !== 'sniper') tells.push({ w: 3, t: 'You were down ' + money(worstBail.maxAdverse) + ' before getting out at ' + (worstBail.pnl >= 0 ? '+' : '') + money(worstBail.pnl) + '. You got bailed out of a bad spot, not a read.' });
-    if (chases.length) tells.push({ w: 3, t: (chaseDir === 1 ? 'You bought ' + sym + ' into a pump and ate the reversal' : 'You shorted ' + sym + ' into the hole and got squeezed') + (chases.length > 1 ? ' (' + chases.length + 'x)' : '') + '.' });
-    if (revenges.length) tells.push({ w: 4, t: 'You re-entered within two seconds of a loss. That is tilt, not a setup.' });
-    // Snatch is a Paper-Hands tell; it CONTRADICTS the Sniper ("let winners run"), so it
-    // never shows on a Sniper card. A lone give-back on a clean run is not a confession.
-    if (snatches.length >= 2 && id !== 'sniper') { var s = snatches[0]; tells.push({ w: 2, t: 'You snatched winners early. One booked ' + money(s.pnl) + ' with ' + money(s.maxFav) + ' on the table.' }); }
-    if (buyCount >= 12 && id !== 'sniper') tells.push({ w: 2, t: 'You fired ' + buyCount + ' orders in two minutes. Most of that was fees.' });
-    if (buyCount === 0) tells.push({ w: 3, t: 'You never put a dollar at risk. The whole move happened without you.' });
-    tells.sort(function (a, b) { return b.w - a.w; });
-
-    return { id: id, grade: grade, disc: disc, verdict: verdict, held: bags.length === 0, trades: n, wins: wins, dir: chaseDir, stats: stats, tells: tells.slice(0, 3).map(function (x) { return x.t; }) };
-  }
-  // Grade is the discipline score; net + behavior only CAP it (a red finish can't be the
-  // A+ flex; a hard sin or a real blow-up can't grade above C, however the P&L landed).
-  function gradeFor(disc, net, capGrade) {
-    var g = disc >= 92 ? 'A+' : disc >= 82 ? 'A' : disc >= 70 ? 'B' : disc >= 55 ? 'C' : disc >= 38 ? 'D' : disc >= 22 ? 'D−' : 'F';
-    var order = ['F', 'D−', 'D', 'C', 'B', 'A', 'A+'];
-    function cap(maxG) { if (order.indexOf(g) > order.indexOf(maxG)) g = maxG; }
-    if (net < -200) cap('A');     // a losing run is not the A+ flex
-    if (capGrade) cap(capGrade);  // held/averaged a loser or full-send — P&L can't buy it back
-    if (net <= -3000) cap('C');   // a real blow-up carries a lesson, however you got there
-    return g;
+    return window.MaketzoBadges.evaluate({
+      trades: trades,
+      net: net,
+      buyCount: buyCount,
+      durationMs: DURATION
+      // Session trackers (peakEquity / sessionHigh / catalystAt / wall reads) are not
+      // wired yet. The badges that need them guard on null and stay dormant.
+    });
   }
   // % of traders who did BETTER than you — a humbling social mirror (high = you did poorly,
   // stay humble). The curve is harsh so most undisciplined runs land high, but a genuine
@@ -897,36 +748,45 @@
   }
 
   function renderResult(an, net) {
-    var a = ARCH[an.id], st = an.stats;
+    var h = an.headline, st = an.stats;
     var discCls = an.disc >= 70 ? 'up' : (an.disc < 45 ? 'down' : '');
     var didBetter = pctDidBetter(an.disc);
     var dbCls = didBetter >= 60 ? 'down' : (didBetter <= 25 ? 'up' : '');
     var verdictHtml = an.verdict ? '<div class="diag-verdict">' + an.verdict + '</div>' : '';
-    // Outcome-aware roasts: a green run never reads as if it lost, and vice-versa. roastG =
-    // green variant, roastR = red variant, roastS = short-direction (chaser), roastH = held (bag).
-    var roast = a.roast;
-    if (net >= 0 && a.roastG) roast = a.roastG;
-    else if (net < 0 && an.id === 'chaser' && an.dir === -1 && a.roastS) roast = a.roastS;
-    else if (net < 0 && a.roastR) roast = a.roastR;
-    if (an.id === 'bagholder' && an.held && a.roastH) roast = a.roastH;
-    var tag = (an.id === 'chaser' && an.dir === -1 && a.tagS) ? a.tagS : a.tag;
+    // The receipt IS the roast. There is no separate roast table any more: the sentence
+    // the engine had to be able to print in order to earn the badge is the sentence the
+    // card shows. That is what makes the card undisputable instead of infuriating.
+    var roast = h.receipt;
+    var tag = h.tagline;
+    // The shelf. The headline is the punch; these carry the nuance and the collection.
+    var shelfHtml = an.shelf.length
+      ? '<div class="diag-shelf">' + an.shelf.map(function (b) {
+          return '<div class="diag-shelf-badge diag-bt-' + b.tier + '" title="' + escAttr(b.receipt) + '">' + b.name + '</div>';
+        }).join('') + '</div>'
+      : '';
+    var shelfWhyHtml = an.shelf.length
+      ? '<div class="diag-shelf-why">' + an.shelf.map(function (b) {
+          return '<div class="diag-shelf-line"><span class="diag-shelf-name">' + b.name + '</span> ' + b.receipt + '</div>';
+        }).join('') + '</div>'
+      : '';
     var tellsHtml = an.tells.length
       ? '<div class="diag-tells"><div class="diag-tells-h">Your tells</div>' + an.tells.map(function (t) { return '<div class="diag-tell">' + t + '</div>'; }).join('') + '</div>'
       : '<div class="diag-tells"><div class="diag-tells-h">Your tells</div><div class="diag-tell">Nothing to confess. You took the right side, cut your losers, and walked. Rare.</div></div>';
     var url = 'https://maketzo.co/trader-type';
-    var shareText = (net >= 0 ? 'I finished ' + money(net) + ' green' : 'I lost ' + money(-net)) + ' in two minutes on MAKETZO and got branded ' + a.name + ' (' + an.grade + '). Can you beat it?';
+    var shareText = (net >= 0 ? 'I finished ' + money(net) + ' green' : 'I lost ' + money(-net)) + ' in two minutes on MAKETZO and got ' + h.name + ' (' + an.grade + '). Can you beat it?';
 
     root.innerHTML =
-      '<div class="diag-result diag-tier-' + a.tier + '">' +
+      '<div class="diag-result diag-tier-' + h.tier + '">' +
         '<div class="diag-result-head">' +
           '<div class="diag-result-eyebrow">Two minutes later…</div>' +
           '<div class="diag-share-top" data-share></div>' +
         '</div>' +
         '<div class="diag-card slam" data-card>' +
           '<div class="diag-card-grade">' + an.grade + '</div>' +
-          '<div class="diag-card-name">' + a.name + '</div>' +
+          '<div class="diag-card-name">' + h.name + '</div>' +
           '<div class="diag-card-tag">' + tag + '</div>' +
           '<div class="diag-card-roast">' + roast + '</div>' +
+          shelfHtml +
           '<div class="diag-card-meta">' +
             '<div class="diag-meta-box"><span class="diag-meta-num ' + (net >= 0 ? 'up' : 'down') + '">' + money(net) + '</span><span class="diag-meta-cap">2-min P&L</span></div>' +
             '<div class="diag-meta-box"><span class="diag-meta-num">' + st.winRate + '%</span><span class="diag-meta-cap">win rate</span></div>' +
@@ -937,6 +797,7 @@
           '<div class="diag-card-wm">MAKETZO · protect your capital · maketzo.co</div>' +
         '</div>' +
         verdictHtml +
+        shelfWhyHtml +
         tellsHtml +
         '<div class="diag-funnel">' +
           '<p class="diag-funnel-line">That’s two minutes of fake money showing you a real habit. <strong>MAKETZO is the gym that fixes it.</strong></p>' +
@@ -945,9 +806,9 @@
         '</div>' +
         '<button class="diag-again" type="button" data-again>↺ Run the tape again</button>' +
       '</div>';
-    buildShare(root.querySelector('[data-share]'), url, shareText, an.id);
+    buildShare(root.querySelector('[data-share]'), url, shareText, h.id);
     root.querySelector('[data-again]').addEventListener('click', function () { start(); });
-    root.querySelector('[data-cta]').addEventListener('click', function () { track('diagnostic_cta', { archetype: an.id }); });
+    root.querySelector('[data-cta]').addEventListener('click', function () { track('diagnostic_cta', { archetype: h.id }); });
     audio.verdict();
   }
 
