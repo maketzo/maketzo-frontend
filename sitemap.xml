@@ -20,6 +20,7 @@
   <url><loc>https://maketzo.co/terms</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
   <url><loc>https://maketzo.co/disclaimer</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
   <!-- BLOG:START -->
+  <url><loc>https://maketzo.co/blog/clean-entry-decided-before-setup</loc><lastmod>2026-07-15</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://maketzo.co/blog/small-loss-complete-trade</loc><lastmod>2026-07-14</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://maketzo.co/blog/you-dont-lose-you-give-it-back</loc><lastmod>2026-07-13</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://maketzo.co/blog/the-hardest-trade-is-no-trade</loc><lastmod>2026-07-13</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
