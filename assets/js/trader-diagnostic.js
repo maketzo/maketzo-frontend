@@ -771,33 +771,43 @@
       wallsRead: wallsRead, wallsSpoofed: wallsSpoofed
     });
   }
-  // % of traders who did BETTER than you — a humbling social mirror (high = you did poorly,
-  // stay humble). The curve is harsh so most undisciplined runs land high, but a genuine
-  // Sniper still earns a low number, so the metric stays honest and isn't rigged to insult.
-  function pctDidBetter(disc) {
-    if (disc >= 95) return 3; if (disc >= 88) return 9; if (disc >= 80) return 18;
-    if (disc >= 72) return 33; if (disc >= 64) return 50; if (disc >= 56) return 65;
-    if (disc >= 48) return 76; if (disc >= 40) return 84; if (disc >= 30) return 90;
-    if (disc >= 20) return 94; return 97;
-  }
+  // REMOVED 2026-07-15: pctDidBetter(disc) — "N% did better than you". It was a hardcoded
+  // lookup on the player's OWN discipline score. It measured nobody. It was a claim about
+  // a population that did not exist, printed on a product whose entire pitch is honesty,
+  // and it is the same fabricated-leaderboard idea already ruled out once (the sim
+  // deliberately has no fake leaderboard). Its slot now shows the badge collection, which
+  // is a fact about you. If a real percentile is wanted, the backend /diagnostic/result
+  // counter has to exist first — `diagnostic_complete` now logs tier/shelf/disc, so the
+  // data starts accruing from today.
 
   function renderResult(an, net) {
     var h = an.headline, st = an.stats;
     var discCls = an.disc >= 70 ? 'up' : (an.disc < 45 ? 'down' : '');
-    var didBetter = pctDidBetter(an.disc);
-    var dbCls = didBetter >= 60 ? 'down' : (didBetter <= 25 ? 'up' : '');
     var verdictHtml = an.verdict ? '<div class="diag-verdict">' + an.verdict + '</div>' : '';
+    // Record the run + read the collection. Never let a storage fault break the card.
+    var vault = { earned: 0, total: 0, fresh: [], runs: 0, supported: false };
+    try { vault = window.MaketzoVault.record(an, window.MaketzoBadges.CATALOG.length); } catch (e) {}
+    // On run 1 EVERYTHING is new, so the marker differentiates nothing and just adds
+    // four badges of noise to a first impression. It earns its place from run 2 on.
+    var isFresh = {};
+    if (vault.runs > 1) for (var vi = 0; vi < vault.fresh.length; vi++) isFresh[vault.fresh[vi]] = 1;
     // The receipt IS the roast. There is no separate roast table any more: the sentence
     // the engine had to be able to print in order to earn the badge is the sentence the
     // card shows. That is what makes the card undisputable instead of infuriating.
     var roast = h.receipt;
     var tag = h.tagline;
     // The shelf. The headline is the punch; these carry the nuance and the collection.
+    // Pills are the SHELF only. The headline is already the biggest thing on the card,
+    // so repeating it as a pill directly beneath itself is noise, and its receipt is
+    // already the roast. A first-time headline is marked on the headline instead.
     var shelfHtml = an.shelf.length
       ? '<div class="diag-shelf">' + an.shelf.map(function (b) {
-          return '<div class="diag-shelf-badge diag-bt-' + b.tier + '" title="' + escAttr(b.receipt) + '">' + b.name + '</div>';
+          return '<div class="diag-shelf-badge diag-bt-' + b.tier + (isFresh[b.id] ? ' is-new' : '') +
+            '" title="' + escAttr(b.receipt) + '">' + b.name +
+            (isFresh[b.id] ? '<span class="diag-new">new</span>' : '') + '</div>';
         }).join('') + '</div>'
       : '';
+    var headNewHtml = isFresh[h.id] ? '<span class="diag-new diag-new--head">new</span>' : '';
     var shelfWhyHtml = an.shelf.length
       ? '<div class="diag-shelf-why">' + an.shelf.map(function (b) {
           return '<div class="diag-shelf-line"><span class="diag-shelf-name">' + b.name + '</span> ' + b.receipt + '</div>';
@@ -806,8 +816,8 @@
     var tellsHtml = an.tells.length
       ? '<div class="diag-tells"><div class="diag-tells-h">Your tells</div>' + an.tells.map(function (t) { return '<div class="diag-tell">' + t + '</div>'; }).join('') + '</div>'
       : '<div class="diag-tells"><div class="diag-tells-h">Your tells</div><div class="diag-tell">Nothing to confess. You took the right side, cut your losers, and walked. Rare.</div></div>';
-    var url = 'https://maketzo.co/trader-type';
-    var shareText = (net >= 0 ? 'I finished ' + money(net) + ' green' : 'I lost ' + money(-net)) + ' in two minutes on MAKETZO and got ' + h.name + ' (' + an.grade + '). Can you beat it?';
+    var url = SHARE_URL;
+    var shareText = buildShareBlock(an, net, st);
 
     root.innerHTML =
       '<div class="diag-result diag-tier-' + h.tier + '">' +
@@ -817,7 +827,7 @@
         '</div>' +
         '<div class="diag-card slam" data-card>' +
           '<div class="diag-card-grade">' + an.grade + '</div>' +
-          '<div class="diag-card-name">' + h.name + '</div>' +
+          '<div class="diag-card-name">' + h.name + headNewHtml + '</div>' +
           '<div class="diag-card-tag">' + tag + '</div>' +
           '<div class="diag-card-roast">' + roast + '</div>' +
           shelfHtml +
@@ -825,7 +835,9 @@
             '<div class="diag-meta-box"><span class="diag-meta-num ' + (net >= 0 ? 'up' : 'down') + '">' + money(net) + '</span><span class="diag-meta-cap">2-min P&L</span></div>' +
             '<div class="diag-meta-box"><span class="diag-meta-num">' + st.winRate + '%</span><span class="diag-meta-cap">win rate</span></div>' +
             '<div class="diag-meta-box"><span class="diag-meta-num ' + discCls + '">' + an.disc + '<span class="diag-meta-den">/100</span></span><span class="diag-meta-cap">discipline</span></div>' +
-            '<div class="diag-meta-box"><span class="diag-meta-num ' + dbCls + '">' + didBetter + '%</span><span class="diag-meta-cap">did better than you</span></div>' +
+            (vault.supported
+              ? '<div class="diag-meta-box"><span class="diag-meta-num gold">' + vault.earned + '<span class="diag-meta-den">/' + vault.total + '</span></span><span class="diag-meta-cap">badges collected</span></div>'
+              : '<div class="diag-meta-box"><span class="diag-meta-num">' + st.n + '</span><span class="diag-meta-cap">trades</span></div>') +
           '</div>' +
           '<div class="diag-card-stats">' + st.n + ' trades · ' + st.wins + 'W ' + st.losses + 'L · avg win +' + money(st.avgWin) + ' · avg loss ' + money(-st.avgLoss) + ' · worst heat held ' + money(st.worstHeat) + '</div>' +
           '<div class="diag-card-wm">MAKETZO · protect your capital · maketzo.co</div>' +
@@ -834,16 +846,84 @@
         shelfWhyHtml +
         tellsHtml +
         '<div class="diag-funnel">' +
-          '<p class="diag-funnel-line">That’s two minutes of fake money showing you a real habit. <strong>MAKETZO is the gym that fixes it.</strong></p>' +
+          '<p class="diag-funnel-line">' + h.pitch + '</p>' +
           '<a class="diag-cta" href="/app" data-cta>Train it free →</a>' +
           '<div class="diag-funnel-sub">7 days free · no charge until day 8 · cancel in one click</div>' +
         '</div>' +
-        '<button class="diag-again" type="button" data-again>↺ Run the tape again</button>' +
+        '<div class="diag-endbar">' +
+          '<button class="diag-copy" type="button" data-copyresult>Copy your result</button>' +
+          '<button class="diag-again" type="button" data-again>↺ Run the tape again</button>' +
+        '</div>' +
+        (vault.supported && vault.total - vault.earned > 0
+          ? '<div class="diag-vault-line">' + (vault.total - vault.earned) + ' badges you have not seen yet.</div>'
+          : '') +
       '</div>';
     buildShare(root.querySelector('[data-share]'), url, shareText, h.id);
     root.querySelector('[data-again]').addEventListener('click', function () { start(); });
     root.querySelector('[data-cta]').addEventListener('click', function () { track('diagnostic_cta', { archetype: h.id }); });
+    wireCopyResult(root.querySelector('[data-copyresult]'), shareText, h.id);
     audio.verdict();
+  }
+
+  // ── The shareable block (the Wordle mechanic) ───────────────────────────────
+  // Wordle spread on a plain-text grid, not an image: it pastes into any text field,
+  // needs no OG pipeline, renders identically everywhere, and reads as a flex rather
+  // than an ad. The squares are the trader's ACTUAL trade sequence, green per winner
+  // and red per loser, so the block is a real artifact of the run and not decoration.
+  //
+  // The badge is deliberately NOT hidden the way Wordle hides its answer: the badge IS
+  // the flex, and hiding it removes the reason to post. What stays unspoiled is the
+  // tape, which is randomised per run anyway, so nobody can be spoiled.
+  //
+  // The user's own first-person share may challenge a peer; that is settled and is NOT
+  // the protect-not-taunt rule, which governs MAKETZO's own voice at a result
+  // (memory/feedback-outcome-voice-protective-not-taunting).
+  var SQ_MAX = 14, SHARE_URL = 'https://maketzo.co/trader-type';
+  function buildShareBlock(an, net, st) {
+    var sq = '', i;
+    for (i = 0; i < trades.length && i < SQ_MAX; i++) sq += (trades[i].pnl >= 0 ? '🟩' : '🟥');
+    if (trades.length > SQ_MAX) sq += '+' + (trades.length - SQ_MAX);
+    if (!trades.length) sq = '·  never clicked';
+    return 'MAKETZO · trader-type\n' +
+      an.headline.name.toUpperCase() + ' · ' + an.grade + '\n' +
+      sq + '\n' +
+      st.n + (st.n === 1 ? ' trade · ' : ' trades · ') + (net >= 0 ? '+' : '') + money(net) + ' · 2:00\n' +
+      SHARE_URL;
+  }
+
+  // Copy the block to the clipboard. This is NOT a duplicate of the .mk-share widget
+  // (which shares a LINK to a platform, and whose "Copy link" copies the URL alone).
+  // Wordle's actual mechanic is copy-a-text-block and paste it wherever you already
+  // talk, which is a different job and needs its own button.
+  function wireCopyResult(btn, text, aid) {
+    if (!btn) return;
+    btn.addEventListener('click', function () {
+      function done(okFlag) {
+        btn.textContent = okFlag ? 'Copied' : 'Press Ctrl+C';
+        btn.classList.toggle('is-done', !!okFlag);
+        later(function () { btn.textContent = 'Copy your result'; btn.classList.remove('is-done'); }, 2200);
+        track('diagnostic_copy_result', { archetype: aid, ok: !!okFlag });
+      }
+      // navigator.clipboard needs a secure context AND permission; it rejects silently
+      // in plenty of real browsers, so the execCommand path is a real fallback, not
+      // ceremony. If both fail, select the text so the user can copy it themselves.
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(function () { done(true); }, function () { legacyCopy(text, done); });
+      } else legacyCopy(text, done);
+    });
+  }
+  function legacyCopy(text, done) {
+    try {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.className = 'diag-copy-sink';
+      document.body.appendChild(ta);
+      ta.select(); ta.setSelectionRange(0, text.length);
+      var okFlag = document.execCommand && document.execCommand('copy');
+      document.body.removeChild(ta);
+      done(!!okFlag);
+    } catch (e) { done(false); }
   }
 
   // ── Share — reuse the site-wide .mk-share component (audio-player.js engine) ─

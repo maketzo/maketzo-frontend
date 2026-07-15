@@ -257,6 +257,7 @@
     {
       id: 'the-nuke', name: 'The Nuke', tier: 'legend', weight: 28, accuses: true,
       tagline: 'Two minutes. Gone.',
+      pitch: 'That was fake money. MAKETZO exists so the real version never happens.',
       check: function (s) {
         if (s.net > -8000) return null;
         return 'You lost ' + money(-s.net) + ' in two minutes. That is most of the account.';
@@ -276,6 +277,7 @@
     {
       id: 'bought-the-offering', name: 'Bought the Offering', tier: 'legend', weight: 25, accuses: true,
       tagline: 'They rang the bell. You raised your hand.',
+      pitch: 'News hits and the hand moves before the brain does. MAKETZO trains the pause.',
       reads: 'catalystAt',
       check: function (s) {
         if (s.catalystAt == null || s.catalystDir !== 'rug') return null;
@@ -315,6 +317,7 @@
     {
       id: 'degenerate', name: 'The Degenerate', tier: 'sin', weight: 20,
       tagline: 'Max size, no stop, until it is gone.',
+      pitch: 'No plan, no stop, full send. MAKETZO makes you name the plan before the open, not during the trade.',
       check: function (s) {
         if (!s.degen.length) return null;
         var d = s.degen[0];
@@ -325,6 +328,7 @@
     {
       id: 'bagholder', name: 'The Bag Holder', tier: 'sin', weight: 19,
       tagline: 'Underwater and still calling it conviction.',
+      pitch: 'Averaging down is the habit that ends accounts. MAKETZO flags the second entry, before the bag gets heavy.',
       // THE FIX. This is the badge that has misfired more than any other. It now
       // requires what its NAME means: you averaged down into a loser and it cost you.
       // Two cut losses can no longer elect it. One big loss cannot elect it. The old
@@ -346,6 +350,7 @@
     {
       id: 'revenge', name: 'The Revenge Trader', tier: 'sin', weight: 18,
       tagline: 'You do not trade setups, you trade your feelings.',
+      pitch: 'The trade after a loss is the one that costs the most. MAKETZO puts a hand on your shoulder there.',
       check: function (s) {
         if (s.revenges.length < 2) return null;   // one fast re-entry is a tell, not an identity
         return 'You re-entered within two seconds of a loss ' + plural(s.revenges.length, 'time', 'times') +
@@ -355,6 +360,7 @@
     {
       id: 'martingale', name: 'The Martingale', tier: 'sin', weight: 17,
       tagline: 'Double it. That always works.',
+      pitch: 'Sizing up after a loss is the fastest way to a bad week. MAKETZO catches the pattern early.',
       check: function (s) {
         var ups = 0;
         for (var i = 1; i < s.n; i++) {
@@ -367,6 +373,7 @@
     {
       id: 'roundtripper', name: 'The Roundtripper', tier: 'sin', weight: 16,
       tagline: 'You had it. You gave it back.',
+      pitch: 'Giving back a green day is a habit, not luck. MAKETZO sees the giveback starting and says so.',
       reads: 'peakEquity',
       check: function (s) {
         if (s.peakEquity == null || s.peakEquity < 1500) return null;
@@ -378,6 +385,7 @@
     {
       id: 'chaser', name: 'The Chaser', tier: 'sin', weight: 15,
       tagline: 'Green candle, must own. Top tick, every time.',
+      pitch: 'Your entries are the leak, not your reads. MAKETZO shows you the setups you chased, the morning after, when you can see them straight.',
       // Needs a PATTERN of extended entries that ate REAL reversals. A won breakout is
       // never counted (that is The Breakout Trader). One slip is a tell.
       check: function (s) {
@@ -393,6 +401,7 @@
     {
       id: 'exit-liquidity', name: 'Exit Liquidity', tier: 'sin', weight: 14,
       tagline: 'The runners were waiting for you.',
+      pitch: 'Buying the top is a timing habit you can actually fix. MAKETZO shows you where you clicked, once the emotion has drained out.',
       reads: 'sessionHigh',
       check: function (s) {
         if (s.sessionHigh == null) return null;
@@ -409,6 +418,7 @@
     {
       id: 'the-hero', name: 'The Hero', tier: 'sin', weight: 13,
       tagline: 'Shorting a squeeze is not a thesis.',
+      pitch: 'Fighting a move and adding to it is how accounts end. MAKETZO flags the add, not the opinion.',
       check: function (s) {
         for (var i = 0; i < s.n; i++) {
           var t = s.trades[i];
@@ -422,6 +432,7 @@
     {
       id: 'the-spoofed', name: 'The Spoofed', tier: 'sin', weight: 12,
       tagline: 'The wall was never there.',
+      pitch: 'The book lies. Reading it well takes reps, and reps are what MAKETZO is for.',
       reads: 'wallsSpoofed',
       check: function (s) {
         if (!s.wallsSpoofed) return null;
@@ -432,6 +443,7 @@
     {
       id: 'masher', name: 'The Button Masher', tier: 'sin', weight: 11,
       tagline: 'You do not trade the market, you trade your boredom.',
+      pitch: 'Most of those fills were boredom, not edge. MAKETZO counts them, and counting is what makes you stop.',
       check: function (s) {
         if (s.buyCount < 14 || s.net > 400) return null;   // busy AND it did not work
         return 'You fired ' + plural(s.buyCount, 'order', 'orders') + ' in two minutes to finish ' +
@@ -441,6 +453,7 @@
     {
       id: 'paperhands', name: 'The Paper Hands', tier: 'sin', weight: 10,
       tagline: 'Green for one second, sold in half a second.',
+      pitch: 'Tiny wins cannot survive real losses. MAKETZO tracks what you left on the table, so the pattern stops being invisible.',
       check: function (s) {
         if (s.snatches.length < 2) return null;
         var left = 0; for (var i = 0; i < s.snatches.length; i++) left += s.snatches[i].maxFav - s.snatches[i].pnl;
@@ -451,6 +464,7 @@
     {
       id: 'the-donor', name: 'The Donor', tier: 'sin', weight: 9,
       tagline: 'No survivors.',
+      pitch: 'Every trade red is a process problem, not a luck problem. MAKETZO finds which part.',
       check: function (s) {
         if (s.n < 3 || s.wins > 0) return null;
         return plural(s.n, 'trade', 'trades') + ', ' + plural(s.n, 'loss', 'losses') +
@@ -734,6 +748,29 @@
     return null;
   }
 
+  // ── Pitch — the funnel line, spoken to the leak the card just proved. ────────
+  // The card has, at that exact moment, more evidence about this person's trading than
+  // any ad ever will, and the old line was "That's two minutes of fake money showing you
+  // a real habit" for everybody. Badges with a nameable leak carry their own `pitch`;
+  // the rest fall back by tier.
+  //
+  // RISK-POSTURE RULE (CLAUDE.md §3): not one of these prescribes a size or a posture.
+  // They name a HABIT and say MAKETZO surfaces it. Never "size down", never "trade less
+  // size", never a position instruction.
+  function pitchFor(badge, s) {
+    if (badge && badge.pitch) return badge.pitch;
+    if (!badge) return 'Two minutes of fake money, and it already found a habit. MAKETZO is where you fix it.';
+    if (badge.tier === 'flex') {
+      return 'That is the process, on fake money, for two minutes. Running it that clean when the money is real, every day, is the actual job. MAKETZO is how you keep score.';
+    }
+    if (badge.tier === 'style') {
+      return s && s.n === 0
+        ? 'You watched the whole thing and never put a dollar at risk. Sitting out is a decision too, and MAKETZO tracks the ones you skip.'
+        : 'That is your fingerprint on two minutes of fake money. MAKETZO shows you the same pattern on the money that counts.';
+    }
+    return 'Two minutes of fake money, and it already found a habit. MAKETZO is where you fix it.';
+  }
+
   // ── evaluate ────────────────────────────────────────────────────────────────
   // The whole public API. Session in, verdict out.
   function evaluate(session) {
@@ -785,7 +822,8 @@
       disc: s.disc,
       headline: head ? {
         id: head.badge.id, name: head.badge.name, tier: head.badge.tier,
-        tagline: head.badge.tagline, receipt: head.receipt
+        tagline: head.badge.tagline, receipt: head.receipt,
+        pitch: pitchFor(head.badge, s)
       } : null,
       shelf: shelf.map(function (f) {
         return { id: f.badge.id, name: f.badge.name, tier: f.badge.tier, receipt: f.receipt };

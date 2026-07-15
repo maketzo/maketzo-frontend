@@ -228,7 +228,7 @@
 .diag-card-roast { font-size: 15.5px; line-height: 1.55; color: var(--d-ink); max-width: 430px; margin: 0 auto 18px; }
 .diag-card-meta { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 16px; }
 .diag-meta-box { background: rgba(13,15,20,.5); border: 1px solid var(--d-line); border-radius: 10px; padding: 10px 6px; }
-.diag-meta-num { display: block; font-weight: 800; font-size: 19px; color: #fff; font-variant-numeric: tabular-nums; } .diag-meta-num.up { color: var(--d-up); } .diag-meta-num.down { color: var(--d-down); }
+.diag-meta-num { display: block; font-weight: 800; font-size: 19px; color: #fff; font-variant-numeric: tabular-nums; } .diag-meta-num.up { color: var(--d-up); } .diag-meta-num.down { color: var(--d-down); } .diag-meta-num.gold { color: var(--d-gold-hi); }
 .diag-meta-den { font-weight: 600; font-size: 12px; opacity: .55; }
 .diag-meta-cap { display: block; font-size: 10.5px; line-height: 1.25; color: var(--d-dim); margin-top: 3px; }
 .diag-card-wm { font-family: var(--mk-font-mono, "DM Mono", monospace); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--d-dim); opacity: .8; }
@@ -244,7 +244,14 @@
    it carries the nuance the headline cannot, so a headline that reads slightly off
    is survivable instead of infuriating, and it is what makes two cards comparable. */
 .diag-shelf { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin: 0 auto 16px; max-width: 430px; }
-.diag-shelf-badge { font-family: var(--mk-font-mono, "DM Mono", monospace); font-size: 10.5px; letter-spacing: .09em; text-transform: uppercase; padding: 5px 10px; border-radius: 999px; border: 1px solid var(--d-line); background: rgba(13,15,20,.5); color: var(--d-dim); cursor: default; }
+.diag-shelf-badge { position: relative; font-family: var(--mk-font-mono, "DM Mono", monospace); font-size: 10.5px; letter-spacing: .09em; text-transform: uppercase; padding: 5px 10px; border-radius: 999px; border: 1px solid var(--d-line); background: rgba(13,15,20,.5); color: var(--d-dim); cursor: default; }
+/* First time you have ever earned this badge. The whole point of the collection. */
+.diag-shelf-badge.is-new { animation: diagNewPop .5s cubic-bezier(.2,.9,.25,1.4) both; }
+@keyframes diagNewPop { 0% { transform: scale(.7); opacity: 0; } 65% { transform: scale(1.09); opacity: 1; } 100% { transform: scale(1); } }
+.diag-new { margin-left: 6px; font-size: 8.5px; letter-spacing: .1em; color: var(--d-gold-hi); border: 1px solid rgba(212,175,55,.5); border-radius: 999px; padding: 1px 4px; vertical-align: 1px; }
+/* On the headline the name is ~76px display type, so the marker needs its own scale
+   and must not inherit the display font's tracking. */
+.diag-new--head { font-family: var(--mk-font-mono, "DM Mono", monospace); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; vertical-align: middle; margin-left: 12px; padding: 3px 8px; background: rgba(212,175,55,.14); animation: diagNewPop .5s cubic-bezier(.2,.9,.25,1.4) both; display: inline-block; }
 .diag-bt-flex { border-color: rgba(126,217,87,.45); color: var(--d-up); background: rgba(126,217,87,.08); }
 .diag-bt-sin { border-color: rgba(255,107,107,.45); color: var(--d-down); background: rgba(255,107,107,.08); }
 .diag-bt-legend { border-color: rgba(212,175,55,.7); color: var(--d-gold-hi); background: rgba(212,175,55,.14); box-shadow: 0 0 14px rgba(212,175,55,.25); }
@@ -270,8 +277,18 @@
 .diag-cta { display: inline-block; font-weight: 700; font-size: 17px; color: #0d0f14; background: var(--mk-gold-gradient, linear-gradient(135deg, #e5c572, #d4af37)); border-radius: 13px; padding: 15px 36px; text-decoration: none; box-shadow: 0 10px 28px rgba(212,175,55,.26); transition: transform .15s ease; }
 .diag-cta:hover { transform: translateY(-2px); }
 .diag-funnel-sub { margin-top: 12px; font-size: 12px; color: var(--d-dim); }
-.diag-again { margin-top: 22px; background: none; border: none; color: var(--d-dim); font-size: 13.5px; font-weight: 600; cursor: pointer; padding: 8px; }
+.diag-endbar { margin-top: 22px; display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; }
+.diag-again { background: none; border: none; color: var(--d-dim); font-size: 13.5px; font-weight: 600; cursor: pointer; padding: 8px; }
 .diag-again:hover { color: var(--d-ink); }
+/* Copy the result BLOCK (the Wordle mechanic). Distinct from the share widget, which
+   sends a link to a platform. This one puts text on the clipboard for anywhere. */
+.diag-copy { background: rgba(212,175,55,.08); border: 1px solid rgba(212,175,55,.4); color: var(--d-gold-hi); font-family: var(--mk-font-mono, "DM Mono", monospace); font-size: 11.5px; letter-spacing: .1em; text-transform: uppercase; border-radius: 999px; padding: 9px 16px; cursor: pointer; transition: background var(--mk-dur-fast, .15s), color var(--mk-dur-fast, .15s); }
+.diag-copy:hover { background: rgba(212,175,55,.18); color: #fff; }
+.diag-copy.is-done { background: rgba(126,217,87,.14); border-color: rgba(126,217,87,.5); color: var(--d-up); }
+/* Off-screen sink for the execCommand fallback. Must be focusable + selectable, so it
+   cannot be display:none, and must never scroll the page into a jump. */
+.diag-copy-sink { position: fixed; top: 0; left: 0; width: 1px; height: 1px; padding: 0; border: 0; opacity: 0; pointer-events: none; }
+.diag-vault-line { margin-top: 12px; font-family: var(--mk-font-mono, "DM Mono", monospace); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--d-dim); opacity: .75; }
 
 @media (max-width: 480px) {
   .diag-cd-num { font-size: 84px; }
