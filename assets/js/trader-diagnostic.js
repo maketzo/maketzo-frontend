@@ -26,6 +26,11 @@
   var SYMBOLS = ['NVAX', 'SOND', 'MARA', 'RIOT', 'PLUG', 'FFIE', 'TLRY', 'BBAI', 'HOLO', 'GNS', 'CENN', 'MULN', 'AITX', 'PHUN', 'DPRO'];
 
   var DURATION = 120000;      // 120-second session
+  // The sim ticks at a FIXED rate so the tape is identical on every device. 60Hz keeps
+  // the price path as fine-grained as the old best-case frame delta, and 7200 steps of
+  // arithmetic over two minutes is nothing.
+  var SIM_HZ = 60, SIM_DT = 1 / SIM_HZ, SIM_MS = 1000 / SIM_HZ;
+  var MAX_STEPS = Math.ceil(DURATION / SIM_MS);
   var START_BAL = 10000;
   var NOTIONAL = 4000;        // each fill deploys ~this much; tap same side to add a lot
   var MAXLOTS = 6;            // up to ~$24k exposure — enough to truly blow up
@@ -34,8 +39,30 @@
   var WINDOW = 40;            // visible candles
   var K9 = 2 / (9 + 1), K20 = 2 / (20 + 1); // EMA smoothing constants
 
-  function ri(a, b) { return Math.floor(Math.random() * (b - a + 1)) + a; }
-  function rnd(a, b) { return Math.random() * (b - a) + a; }
+  // ── The random source ───────────────────────────────────────────────────────
+  // RNG() is the ONLY source of randomness in the sim. Daily = seeded from the date, so
+  // every player on earth trades an identical tape. Practice = Math.random.
+  //
+  // EVERY draw goes through RNG(), including the ones that look cosmetic (the audio tick,
+  // the market-maker name shuffle). That is not tidiness, it is correctness: if any
+  // seeded draw is consumed CONDITIONALLY on an unseeded one, the two players' sequences
+  // desync from that moment and the "same tape" promise silently breaks. One source, no
+  // exceptions, no way to get it subtly wrong later.
+  var RNG = Math.random;
+  // mulberry32 — small, fast, and good enough that no trader will ever find the pattern.
+  function mulberry32(a) {
+    return function () {
+      a |= 0; a = (a + 0x6D2B79F5) | 0;
+      var t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  function useSeed(seed) { RNG = mulberry32(seed >>> 0); }
+  function useRandom() { RNG = Math.random; }
+
+  function ri(a, b) { return Math.floor(RNG() * (b - a + 1)) + a; }
+  function rnd(a, b) { return RNG() * (b - a) + a; }
   function pick(a) { return a[ri(0, a.length - 1)]; }
   function clamp(v, lo, hi) { return v < lo ? lo : v > hi ? hi : v; }
   function money(v) { v = Math.round(v); if (!isFinite(v)) v = 0; return (v < 0 ? '−$' : '$') + Math.abs(v).toLocaleString('en-US'); }
@@ -151,7 +178,7 @@
     { id: 'chop',     w: 0.18, event: null },
     { id: 'runner',   w: 0.18, event: null }
   ];
-  function pickScenario() { var r = Math.random(), acc = 0; for (var i = 0; i < SCENARIOS.length; i++) { acc += SCENARIOS[i].w; if (r <= acc) return SCENARIOS[i]; } return SCENARIOS[0]; }
+  function pickScenario() { var r = RNG(), acc = 0; for (var i = 0; i < SCENARIOS.length; i++) { acc += SCENARIOS[i].w; if (r <= acc) return SCENARIOS[i]; } return SCENARIOS[0]; }
   function regimeTable(prog) {
     var s = scenario.id;
     if (s === 'squeeze') return prog < 0.45 ? NEXT_EARLY : prog < 0.7 ? NEXT_MID : NEXT_BULL;
@@ -160,7 +187,7 @@
     if (s === 'runner') return prog < 0.25 ? NEXT_EARLY : NEXT_BULL;
     return prog < 0.4 ? NEXT_EARLY : prog < 0.72 ? NEXT_MID : NEXT_LATE; // pumpdump
   }
-  function nextRegime(cur, prog) { var tbl = regimeTable(prog), w = tbl[cur] || tbl.grind, r = Math.random(), acc = 0; for (var i = 0; i < w.length; i++) { acc += w[i][1]; if (r <= acc) return w[i][0]; } return w[w.length - 1][0]; }
+  function nextRegime(cur, prog) { var tbl = regimeTable(prog), w = tbl[cur] || tbl.grind, r = RNG(), acc = 0; for (var i = 0; i < w.length; i++) { acc += w[i][1]; if (r <= acc) return w[i][0]; } return w[w.length - 1][0]; }
 
   // The fundamental "reason" for the climactic move — a big banner + a loud alarm,
   // because a jarring move should always have a visible cause. Kept tight + real.
@@ -180,6 +207,9 @@
 
   // ── State ──────────────────────────────────────────────────────────────────
   var root, audio, raf, timers, sym, price, candles, regime, regimeEnd, t0, lastCandle, lastTick;
+  var simSteps = 0;           // sim steps run this session; sim time = simSteps * SIM_MS
+  var mode = 'daily';         // 'daily' (seeded, scored, shareable) | 'practice' (random)
+  var activeSeed = null;      // the seed this run was built from; null in practice
   var balance, pos, trades, buyCount, recentHigh, lastLossAt;
   var ema9, ema20, vwap, vwapPV, vwapVol, resistance;
   var scenario, eventProg, eventAt, eventFired, running, paused, pauseStart;
@@ -194,7 +224,7 @@
   function reset() {
     raf = 0; timers = []; sym = pick(SYMBOLS);
     var p = rnd(3.2, 6.8); candles = [];
-    for (var i = 0; i < WINDOW; i++) { var o = p; p = Math.max(0.5, p * (1 + rnd(-0.022, 0.024))); var c = p; candles.push({ o: o, c: c, h: Math.max(o, c) * (1 + rnd(0, 0.012)), l: Math.min(o, c) * (1 - rnd(0, 0.012)), vol: 500 + Math.random() * 800 }); }
+    for (var i = 0; i < WINDOW; i++) { var o = p; p = Math.max(0.5, p * (1 + rnd(-0.022, 0.024))); var c = p; candles.push({ o: o, c: c, h: Math.max(o, c) * (1 + rnd(0, 0.012)), l: Math.min(o, c) * (1 - rnd(0, 0.012)), vol: 500 + RNG() * 800 }); }
     price = p; regime = 'grind'; regimeEnd = 0;
     balance = START_BAL; pos = null; trades = []; buyCount = 0; recentHigh = price; lastLossAt = -9999;
     peakEquity = 0; troughEquity = 0; sessionHigh = price; sessionLow = price;
@@ -210,29 +240,145 @@
     spreadTicks = pickSpread('grind'); lastSpreadAt = 0;
     mmBids = pickMMs(L2_LEVELS); mmAsks = pickMMs(L2_LEVELS);
     eventProg = scenario.event ? rnd(scenario.at[0], scenario.at[1]) : 2;
-    if (scenario.event && scenario.evChance && Math.random() > scenario.evChance) eventProg = 2;
+    if (scenario.event && scenario.evChance && RNG() > scenario.evChance) eventProg = 2;
   }
+  // daily.js is a separate module; guard so the sim still runs (in practice mode) if it
+  // ever fails to load rather than taking the whole page down with it.
+  function D() { return window.MaketzoDaily || null; }
+
   function later(fn, ms) { var id = setTimeout(fn, ms); timers.push(id); return id; }
   function clearAll() { if (raf) cancelAnimationFrame(raf); raf = 0; if (timers) for (var i = 0; i < timers.length; i++) clearTimeout(timers[i]); timers = []; }
   function track(ev, data) { try { if (window.MKT && window.MKT.trackEvent) window.MKT.trackEvent(ev, data || {}); } catch (e) {} }
 
+  // Verification hook. The Daily Challenge's whole promise is "everyone trades the same
+  // tape", and the only way to PROVE that is to read the tape back and compare it across
+  // machines/framerates. Exposes a fingerprint, never a way to influence the run.
+  window.__diagTape = function () {
+    if (!candles) return null;
+    var h = 2166136261 >>> 0, sess = [];
+    for (var i = 0; i < candles.length; i++) if (candles[i].t != null) sess.push(candles[i]);
+    for (i = 0; i < sess.length; i++) {
+      var s = sess[i].c.toFixed(4);
+      for (var j = 0; j < s.length; j++) { h ^= s.charCodeAt(j); h = Math.imul(h, 16777619) >>> 0; }
+    }
+    return {
+      steps: simSteps, seed: activeSeed, mode: mode,
+      scenario: scenario && scenario.id,
+      finalPrice: price.toFixed(4),
+      candles: sess.length,
+      catalystAt: catalystAt == null ? null : Math.round(catalystAt),
+      hash: (h >>> 0).toString(16)
+    };
+  };
+
   function boot() { root = document.getElementById('diag-root'); if (!root) return; audio = makeAudio(); renderIntro(); }
 
+  var DISCLAIMER = '<div class="diag-intro-disc">Play money on a simulated tape, for practice and entertainment only. Not a real brokerage, no live market data, and nothing here is financial advice.</div>';
+
+  // THE SAME-TAPE PROMISE (Ed, 2026-07-15: "Make it known to users that everyone will
+  // have the same exact tape for the daily challenge not random"). This is the entire
+  // reason a shared result means anything, so it is stated plainly and up front, not
+  // buried in small print. Note the old lede's "It never plays the same way twice" is
+  // GONE from the daily: it was true of random tapes and would be a lie here.
+  var SAME_TAPE = '<div class="diag-same"><b>Everyone who plays today trades this exact tape.</b> Same open, same tricks, same rug, same everything. It is not random. That is what makes your result worth comparing to anyone else\'s.</div>';
+
   function renderIntro() {
+    var d = D();
+    var st = d ? d.stats() : { playedToday: false, streak: 0, day: 1, supported: false };
+    if (d && st.playedToday) return renderDone(d, st);
+
+    var streakHtml = st.streak > 0
+      ? '<div class="diag-streak">' + st.streak + ' day streak</div>' : '';
+
     root.innerHTML =
       '<div class="diag-intro">' +
-        '<div class="diag-eyebrow">The two-minute tape test</div>' +
+        '<div class="diag-eyebrow">Daily Challenge #' + (d ? d.dayNumber() : 1) + '</div>' +
         '<h1 class="diag-h1">Can you trade,<br><em>or do you just think so?</em></h1>' +
-        '<p class="diag-lede">Two minutes on a <b>simulated</b> small-cap tape that fights back. Go <b>long</b> or <b>short</b> and watch the P&L move on every fill. It never plays the same way twice. The money is fake. What it shows about how you trade is not.</p>' +
-        '<button class="diag-start" type="button" data-start>Prove it →</button>' +
-        '<div class="diag-intro-note">Free · 2 minutes · a simulation, not real trading</div>' +
-        '<div class="diag-intro-disc">Play money on a simulated tape, for practice and entertainment only. Not a real brokerage, no live market data, and nothing here is financial advice.</div>' +
+        '<p class="diag-lede">Two minutes on a <b>simulated</b> small-cap tape that fights back. Go <b>long</b> or <b>short</b> and watch the P&L move on every fill. The money is fake. What it shows about how you trade is not.</p>' +
+        SAME_TAPE +
+        streakHtml +
+        '<button class="diag-start" type="button" data-start>Trade Today\'s Tape →</button>' +
+        '<div class="diag-intro-note">Free · 2 minutes · one run a day</div>' +
+        '<button class="diag-practice-link" type="button" data-practice>Just want to practice? Run a random tape →</button>' +
+        DISCLAIMER +
       '</div>';
-    root.querySelector('[data-start]').addEventListener('click', start);
+    root.querySelector('[data-start]').addEventListener('click', function () { start('daily'); });
+    wirePractice();
   }
 
-  function start() {
-    clearAll(); audio.unlock(); audio.warm(); reset(); track('diagnostic_start', { scenario: scenario.id });
+  // You have already traded today. The point of the lock is that there is nothing to do
+  // but come back, so this screen's job is to make tomorrow feel worth it: your result,
+  // the countdown, and the share. Practice stays available so a first-time visitor from
+  // a shared link is never stranded at a wall.
+  function renderDone(d, st) {
+    var r = d.resultToday() || {};
+    var streakHtml = st.streak > 0 ? '<div class="diag-streak">' + st.streak + ' day streak</div>' : '';
+    root.innerHTML =
+      '<div class="diag-intro diag-done">' +
+        '<div class="diag-eyebrow">Daily #' + r.day + ' · Done</div>' +
+        '<div class="diag-done-card">' +
+          '<div class="diag-done-grade">' + (r.grade || '') + '</div>' +
+          '<div class="diag-done-name">' + (r.name || '') + '</div>' +
+          '<div class="diag-done-net ' + ((r.net || 0) >= 0 ? 'up' : 'down') + '">' + money(r.net || 0) + '</div>' +
+        '</div>' +
+        streakHtml +
+        '<div class="diag-next">Daily #' + (r.day + 1) + ' opens in <b data-countdown-next>' + d.countdownText() + '</b></div>' +
+        '<p class="diag-done-line">That was today\'s tape. Everyone who played it traded the same one, so send your card to a trader who thinks they would have done better.</p>' +
+        '<div class="diag-done-share" data-share-done></div>' +
+        // The done screen had NO conversion path at all: a returning visitor hit the
+        // wall with nothing to click. This is a captive, high-intent moment (they want
+        // to trade and cannot), so the CTA belongs here. It sits BELOW the share because
+        // sharing is this screen's job, and the v9 rule only guards against the two
+        // competing — not against the CTA existing.
+        '<div class="diag-done-cta">' +
+          '<a class="diag-cta" href="/app" data-cta>Train it free →</a>' +
+          '<div class="diag-funnel-sub">7 days free · no charge until day 8 · cancel in one click</div>' +
+        '</div>' +
+        '<button class="diag-practice-link" type="button" data-practice>Practice on a random tape →</button>' +
+        DISCLAIMER +
+      '</div>';
+    var blk = r.share || (r.name ? ('MAKETZO · Daily #' + r.day + '\n' + String(r.name).toUpperCase() + ' · ' + r.grade + '\n' + ((r.net || 0) >= 0 ? '+' : '') + money(r.net || 0) + ' · 2:00\n' + SHARE_URL) : SHARE_URL);
+    // Labeled, not a bare icon: on this screen sharing IS the primary action, and there
+    // is no CTA above it to compete with.
+    buildShare(root.querySelector('[data-share-done]'), SHARE_URL, blk, r.badge || 'done', null, 'Share your card');
+    var cta = root.querySelector('[data-cta]');
+    if (cta) cta.addEventListener('click', function () { track('diagnostic_cta', { archetype: r.badge || 'done', from: 'daily-done' }); });
+    wirePractice();
+    // Tick the countdown so "opens in 3h 12m" is never stale on a page left open.
+    var el = root.querySelector('[data-countdown-next]');
+    var iv = setInterval(function () {
+      if (!el || !document.body.contains(el)) { clearInterval(iv); return; }
+      el.textContent = d.countdownText();
+      // Midnight ET crossed while the tab sat open: the challenge is live again.
+      if (!d.playedToday()) { clearInterval(iv); renderIntro(); }
+    }, 1000);
+    // `timers` is only initialised by reset(), and this screen renders at boot before any
+    // run has happened. Guard, or the done-screen throws on a returning visitor's first
+    // paint — which is the single most common way anyone will ever see this page.
+    if (timers) timers.push(iv);
+  }
+
+  function wirePractice() {
+    var b = root.querySelector('[data-practice]');
+    if (b) b.addEventListener('click', function () { start('practice'); });
+  }
+
+  // m = 'daily' (today's seeded tape, once) | 'practice' (a fresh random tape, unlimited)
+  function start(m) {
+    mode = (m === 'practice') ? 'practice' : 'daily';
+    // SEED BEFORE reset(). reset() draws the symbol, the 40 seed candles, the opening
+    // price, the resistance level, the scenario and the catalyst timing — everything
+    // that IS the tape. Seeding after it would leave all of that random and the "same
+    // tape for everyone" promise would be false in the most visible way possible.
+    if (mode === 'daily') {
+      activeSeed = D() ? D().seedForToday() : 1;
+      useSeed(activeSeed);
+    } else {
+      activeSeed = null; useRandom();
+    }
+    simSteps = 0;
+    clearAll(); audio.unlock(); audio.warm(); reset();
+    track('diagnostic_start', { scenario: scenario.id, mode: mode, day: D() ? D().dayNumber() : 0 });
     root.innerHTML =
       '<div class="diag-term">' +
         '<div class="diag-main">' +
@@ -332,10 +478,15 @@
   }
 
   function beginGame() {
-    t0 = performance.now(); lastCandle = t0; lastTick = t0;
-    regimeEnd = t0 + ri(REG.grind.min, REG.grind.max);
-    eventAt = t0 + DURATION * eventProg;
-    lastBookAt = t0; lastPrintAt = t0; lastWallAt = t0 - WALL_COOLDOWN; lastSpreadAt = t0;
+    // t0 is the WALL clock, and its only jobs are the countdown display and the elapsed
+    // reading that tells the sim how many steps it owes. Every timer below is SIM time,
+    // measured from 0 at the open, so none of them can drift with the frame rate.
+    t0 = performance.now(); lastTick = t0;
+    simSteps = 0;
+    lastCandle = 0;
+    regimeEnd = ri(REG.grind.min, REG.grind.max);
+    eventAt = DURATION * eventProg;
+    lastBookAt = 0; lastPrintAt = 0; lastWallAt = -WALL_COOLDOWN; lastSpreadAt = 0;
     running = true; updateButtons();
     raf = requestAnimationFrame(loop);
   }
@@ -352,8 +503,13 @@
   function resumeGame() {
     if (!paused) return;
     var delta = performance.now() - pauseStart;
-    t0 += delta; lastCandle += delta; regimeEnd += delta; eventAt += delta; lastLossAt += delta;
-    lastBookAt += delta; lastPrintAt += delta; lastWallAt += delta; lastSpreadAt += delta; if (wall && wall.bornAt) wall.bornAt += delta;
+    // Only the WALL-clock anchors move. Sim time does not advance while paused, so every
+    // sim timer (regimeEnd, lastCandle, eventAt, the book/print/wall cadences, wall.bornAt)
+    // is pause-immune by construction and must NOT be shifted — shifting them now would
+    // push the tape off the seed and hand this player a different market to everyone else.
+    // lastLossAt (tilt) and pos.openAt (your hold) are wall-clock: they measure YOU, not
+    // the tape, so they still need the nudge.
+    t0 += delta; lastLossAt += delta;
     if (pos) pos.openAt += delta;
     lastTick = performance.now();
     paused = false; running = true;
@@ -363,12 +519,33 @@
 
   function sizeChart() { if (!cv) return; var r = cv.getBoundingClientRect(), dpr = window.devicePixelRatio || 1; cv._w = Math.max(220, r.width); cv._h = r.height || 220; cv.width = cv._w * dpr; cv.height = cv._h * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0); if (candles) drawChart(); }
 
+  // ── The loop ────────────────────────────────────────────────────────────────
+  // FIXED TIMESTEP, KEYED TO ELAPSED TIME. This is what makes the Daily Challenge
+  // possible at all. The old loop advanced the tape by the frame delta, so a 144Hz
+  // monitor took ~2.4x as many random draws as a 60Hz phone over the same 120 seconds:
+  // identical seed, completely different tape. A daily where your hardware picks your
+  // market is worse than no daily.
+  //
+  // Now the sim owes `floor(elapsed / SIM_MS)` steps at any instant. Framerate only
+  // changes how smoothly you SEE it. Background the tab and it catches up on return,
+  // rather than the tape quietly freezing while the clock ran (which was an exploit:
+  // you could skip the rug by switching tabs).
   function loop(now) {
     var elapsed = now - t0;
     if (elapsed >= DURATION) { endGame(); return; }
     raf = requestAnimationFrame(loop);
-    var dt = (now - lastTick) / 1000; lastTick = now;
-    if (!isFinite(dt) || dt <= 0) dt = 0.016; if (dt > 0.05) dt = 0.05;
+    var want = Math.min(Math.floor(elapsed / SIM_MS), MAX_STEPS);
+    while (simSteps < want) { simStep(); simSteps++; }
+    drawChart();
+    renderTerminal(elapsed);
+  }
+
+  // One deterministic step of the world. Reads NOTHING from the wall clock: every timer
+  // below is in SIM MS (simSteps * SIM_MS), so the tape is a pure function of the seed.
+  function simStep() {
+    var now = simSteps * SIM_MS;        // sim time, ms since the open
+    var elapsed = now;
+    var dt = SIM_DT;
 
     // randomly-timed catalyst — the fundamental "reason" (offering / squeeze). Loud.
     if (scenario.event && !eventFired && now >= eventAt) {
@@ -376,7 +553,7 @@
       var RE = REG[regime]; regimeEnd = now + ri(RE.min, RE.max);
       // Session-relative, to match the trades' openAt/closeAt. This is what lets the
       // engine ask "did you touch the button in the four seconds after the news hit?"
-      catalystAt = now - t0;
+      catalystAt = now;   // `now` is already sim ms from the open; t0 is a wall stamp
       if (regime === 'rug') { catalystDir = 'rug'; price = Math.max(0.4, price * rnd(0.85, 0.93)); audio.rug(); showCatalyst('rug'); }
       else { catalystDir = 'squeeze'; price = price * rnd(1.06, 1.16); audio.squeeze(); showCatalyst('squeeze'); }
     }
@@ -388,7 +565,7 @@
       pending = { reg: nr, dir: dirOf(nr), side: null, spoof: false };
       var sd = strongDir(nr);
       if (sd && now - lastWallAt > WALL_COOLDOWN) {
-        var spoof = Math.random() < SPOOF_P;
+        var spoof = RNG() < SPOOF_P;
         var side = spoof ? (sd === 'bull' ? 'ask' : 'bid') : (sd === 'bull' ? 'bid' : 'ask');
         spawnWall(side, spoof, now); pending.side = side; pending.spoof = spoof; lastWallAt = now;
         tapeCallout(side, false);
@@ -409,8 +586,8 @@
     var drift = price * R.drift * dt;
     // fat-tailed noise: ~3% of ticks get an outsized spike (stop-runs / sweeps that
     // mostly snap back), and down-tape prints a touch sharper than up ("elevator down").
-    var isSpike = Math.random() < 0.03, spike = isSpike ? rnd(2.2, 3.6) : 1, sharp = R.drift < 0 ? 1.15 : 1;
-    var noise = price * R.vol * (Math.random() * 2 - 1) * Math.sqrt(dt) * 2 * spike * sharp;
+    var isSpike = RNG() < 0.03, spike = isSpike ? rnd(2.2, 3.6) : 1, sharp = R.drift < 0 ? 1.15 : 1;
+    var noise = price * R.vol * (RNG() * 2 - 1) * Math.sqrt(dt) * 2 * spike * sharp;
     var np = price + drift + noise;
     price = isFinite(np) ? Math.max(0.4, np) : price;
     recentHigh = Math.max(recentHigh * 0.997, price);
@@ -426,7 +603,7 @@
     // trades you took early. 260 holds the 40 seed candles plus a full session with room
     // to spare, and it is 260 small objects, which is nothing. drawChart only ever slices
     // the last WINDOW, so nothing downstream cares that the array is longer.
-    if (now - lastCandle >= CANDLE_MS) { lastCandle = now; closeCandle(c, now); candles.push({ o: price, h: price, l: price, c: price, e9: ema9, e20: ema20, vwap: vwap, t: now - t0 }); if (candles.length > 260) candles.shift(); }
+    if (now - lastCandle >= CANDLE_MS) { lastCandle = now; closeCandle(c, now); candles.push({ o: price, h: price, l: price, c: price, e9: ema9, e20: ema20, vwap: vwap, t: now }); if (candles.length > 260) candles.shift(); }
 
     // skip spike ticks for max-favorable/adverse: a 1-tick sweep is an untradeable wick,
     // so it must not masquerade as a level the player "gave back" or "got caught" at.
@@ -455,9 +632,11 @@
     }
     if (now - lastPrintAt >= printGapFor(regime)) { lastPrintAt = now; emitPrint(); }
 
-    if (Math.random() < 0.2) audio.tick();
-    drawChart();
-    renderTerminal(elapsed);
+    // Sound is a side effect of the step, not of the frame: it draws from RNG, so it has
+    // to happen exactly once per sim step or the sequence desyncs from everyone else's.
+    // Rendering is deliberately NOT here — loop() draws once per frame, however many
+    // steps it just ran.
+    if (RNG() < 0.2) audio.tick();
   }
 
   function renderTerminal(elapsed) {
@@ -479,12 +658,12 @@
     // Volume reflects CONVICTION: heavy on real pushes (pump/rug/squeeze), light on the
     // traps (dead-cat bounce + chop fade), so volume confirms a move or exposes a fake.
     var volMult = (regime === 'pump' || regime === 'rug' || regime === 'squeeze') ? 2.6 : (regime === 'rip' || regime === 'dump') ? 1.6 : (regime === 'deadcat' || regime === 'chop') ? 0.55 : 1;
-    var vol = (800 + Math.random() * 600) * volMult * (1 + rangePct * 8);
+    var vol = (800 + RNG() * 600) * volMult * (1 + rangePct * 8);
     c.vol = vol;
     var tp = (c.h + c.l + c.c) / 3;
     vwapPV += tp * vol; vwapVol += vol; vwap = vwapVol > 0 ? vwapPV / vwapVol : c.c; c.vwap = vwap;
     if (price > resistance * 1.015) { resistance = price * rnd(1.05, 1.09); }
-    else if (price > resistance * 0.99 && (regime === 'rip' || regime === 'pump') && Math.random() < 0.45) { regime = 'dump'; regimeEnd = now + ri(REG.dump.min, REG.dump.max); }
+    else if (price > resistance * 0.99 && (regime === 'rip' || regime === 'pump') && RNG() < 0.45) { regime = 'dump'; regimeEnd = now + ri(REG.dump.min, REG.dump.max); }
     else if (price < resistance * 0.85) { var rh = 0, vl = candles.slice(-20); for (var z = 0; z < vl.length; z++) if (vl[z].h > rh) rh = vl[z].h; resistance = Math.max(rh, price * 1.03) * rnd(1.0, 1.02); }
   }
 
@@ -512,7 +691,7 @@
   function pullWall() { wall = null; }
 
   function baseSize(level, lean) {
-    var base = (300 + Math.random() * 1400) * (1 - level * 0.12) * (1 + clamp(lean, -0.5, 0.5) * 1.1);
+    var base = (300 + RNG() * 1400) * (1 - level * 0.12) * (1 + clamp(lean, -0.5, 0.5) * 1.1);
     return Math.max(100, Math.round(base / 100) * 100);
   }
   function pickMMs(n) {
@@ -542,7 +721,7 @@
       '<span class="diag-l1-cell ask">' + asks[0].px.toFixed(2) + '</span>';
     if (bookView === 'ladder') renderLadder(asks, bids, mx);
     else renderMontage(asks, bids);
-    if (Math.random() < 0.18) { var sa = Math.random() < 0.5 ? mmBids : mmAsks; if (sa) sa[ri(0, sa.length - 1)] = pick(MMIDS); }
+    if (RNG() < 0.18) { var sa = RNG() < 0.5 ? mmBids : mmAsks; if (sa) sa[ri(0, sa.length - 1)] = pick(MMIDS); }
   }
   // The DAS-style default: two columns (bids left, asks right) of MMID · price · size,
   // banded by price level. A wall is a fat size at one MM; a spoof is that MM vanishing.
@@ -590,9 +769,9 @@
   }
   function emitPrint() {
     if (!els || !els.tape) return;
-    var tick = tickOf(price), green = Math.random() < printSkew;
+    var tick = tickOf(price), green = RNG() < printSkew;
     var pr = price + (green ? rnd(0, tick) : -rnd(0, tick));
-    var block = Math.random() < 0.12, size = block ? ri(2000, 9000) : ri(100, 900);
+    var block = RNG() < 0.12, size = block ? ri(2000, 9000) : ri(100, 900);
     var row = document.createElement('div');
     row.className = 'diag-print ' + (green ? 'buy' : 'sell') + (block ? ' block' : '');
     row.innerHTML = '<span class="diag-print-px">' + pr.toFixed(2) + '</span><span class="diag-print-sz">' + fmtSize(size) + '</span>';
@@ -797,6 +976,12 @@
     // Record the run + read the collection. Never let a storage fault break the card.
     var vault = { earned: 0, total: 0, fresh: [], runs: 0, supported: false };
     try { vault = window.MaketzoVault.record(an, window.MaketzoBadges.CATALOG.length); } catch (e) {}
+    // Practice banks badges (the collection has to stay reachable at 36 badges — one run
+    // a day would take months) but only the DAILY banks a score, a streak, and a
+    // comparable share. That split is what lets the lock be a ritual without killing the
+    // collection or walling a first-time visitor after two minutes.
+    var daily = { supported: false, streak: 0, day: 0 };
+    if (mode === 'daily' && D()) { try { daily = D().recordPlay(an); } catch (e) {} }
     // On run 1 EVERYTHING is new, so the marker differentiates nothing and just adds
     // four badges of noise to a first impression. It earns its place from run 2 on.
     var isFresh = {};
@@ -878,8 +1063,17 @@
           (st.n ? '<button class="diag-copy diag-seetrades" type="button" data-seetrades>See your trades</button>' : '') +
           '<button class="diag-copy" type="button" data-copyresult>Copy your result</button>' +
           '<div class="diag-share-end" data-share-end></div>' +
-          '<button class="diag-again" type="button" data-again>↺ Run the tape again</button>' +
+          // The daily is done: the only honest button left is a practice tape. Offering
+          // "run it again" would either re-run today's tape (making the score meaningless)
+          // or silently hand out a different one under the same Daily number.
+          (mode === 'daily'
+            ? '<button class="diag-again" type="button" data-practice>↺ Practice on a random tape</button>'
+            : '<button class="diag-again" type="button" data-again>↺ Run another tape</button>') +
         '</div>' +
+        (mode === 'daily'
+          ? '<div class="diag-next">Daily #' + ((daily.day || 0) + 1) + ' opens in <b data-countdown-next>' + (D() ? D().countdownText() : '') + '</b>' +
+            (daily.streak > 1 ? ' · <b>' + daily.streak + ' day streak</b>' : '') + '</div>'
+          : '') +
         (vault.supported && vault.total - vault.earned > 0
           ? '<div class="diag-vault-line">' + (vault.total - vault.earned) + ' badges you have not seen yet.</div>'
           : '') +
@@ -889,7 +1083,17 @@
     // fine: buildShare scopes its menu + listeners to its own host and __mkInitShareWidgetsIn
     // is called per host. The toast is created once and guarded.
     buildShare(root.querySelector('[data-share-end]'), url, shareText, h.id);
-    root.querySelector('[data-again]').addEventListener('click', function () { start(); });
+    var again = root.querySelector('[data-again]');
+    if (again) again.addEventListener('click', function () { start('practice'); });
+    wirePractice();
+    var nx = root.querySelector('[data-countdown-next]');
+    if (nx && D()) {
+      var iv = setInterval(function () {
+        if (!document.body.contains(nx)) { clearInterval(iv); return; }
+        nx.textContent = D().countdownText();
+      }, 1000);
+      if (timers) timers.push(iv);
+    }
     root.querySelector('[data-cta]').addEventListener('click', function () { track('diagnostic_cta', { archetype: h.id }); });
     wireCopyResult(root.querySelector('[data-copyresult]'), shareText, h.id);
     wireSeeTrades(root, h.id);
@@ -1040,7 +1244,15 @@
     for (i = 0; i < trades.length && i < SQ_MAX; i++) sq += (trades[i].pnl >= 0 ? '🟩' : '🟥');
     if (trades.length > SQ_MAX) sq += '+' + (trades.length - SQ_MAX);
     if (!trades.length) sq = '·  never clicked';
-    return 'MAKETZO · trader-type\n' +
+    // "Daily #12" is the whole point of the header. Two blocks with the same number were
+    // the SAME tape, so the squares and the P&L are finally comparable. Before this the
+    // block was Wordle-shaped but compared nothing: my 🟩🟩🟥 on a runner and yours on a
+    // bleeder were different markets. A practice block says so plainly rather than
+    // pretending to be a score anyone can measure against.
+    var head = (mode === 'daily' && D())
+      ? 'MAKETZO · Daily #' + D().dayNumber()
+      : 'MAKETZO · trader-type (practice)';
+    return head + '\n' +
       an.headline.name.toUpperCase() + ' · ' + an.grade + '\n' +
       sq + '\n' +
       st.n + (st.n === 1 ? ' trade · ' : ' trades · ') + (net >= 0 ? '+' : '') + money(net) + ' · 2:00\n' +
@@ -1164,14 +1376,14 @@
     '<button class="mk-share__item mk-share__item--wide" type="button" data-platform="copy" role="menuitem"><svg class="mk-share__item-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg><span>Copy link</span></button>';
   var SHARE_ICON = '<svg class="mk-share__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/></svg>';
 
-  function buildShare(host, url, text, aid, onTrigger) {
+  function buildShare(host, url, text, aid, onTrigger, label) {
     if (!host) return;
     var wrap = document.createElement('div');
-    wrap.className = 'mk-share diag-share-mk';
+    wrap.className = 'mk-share diag-share-mk' + (label ? ' diag-share-labeled' : '');
     wrap.innerHTML =
       '<button class="mk-share__trigger diag-share-icon" type="button" data-share-source="diagnostic" data-tooltip="Share to a trader" aria-label="Share to a trader" ' +
         'data-share-title="' + escAttr('Can you trade, or do you just think so?') + '" data-share-text="' + escAttr(text) + '" data-share-url="' + escAttr(url) + '" data-share-subject="' + escAttr('Can you trade?') + '" ' +
-        'aria-haspopup="true" aria-expanded="false">' + SHARE_ICON + '</button>' +
+        'aria-haspopup="true" aria-expanded="false">' + SHARE_ICON + (label ? '<span class="diag-share-lbl">' + label + '</span>' : '') + '</button>' +
       '<div class="mk-share__menu" role="menu" hidden>' + SHARE_MENU_ITEMS + '</div>';
     host.appendChild(wrap);
     reapOrphanShareMenus();

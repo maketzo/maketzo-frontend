@@ -23,7 +23,7 @@
 <link rel="stylesheet" href="assets/css/tokens.css">
 <link rel="stylesheet" href="assets/css/components.css">
 <link rel="stylesheet" href="assets/css/audio-player.css?v=9">
-<link rel="stylesheet" href="assets/css/trader-diagnostic.css?v=21">
+<link rel="stylesheet" href="assets/css/trader-diagnostic.css?v=22">
 <script src="assets/js/mkt-analytics.js?v=5" defer></script>
 <script src="assets/js/newsletter.js?v=4" defer></script>
 <script src="assets/js/mkt-consent.js?v=1" defer></script>
@@ -37,7 +37,10 @@
      engine stays pure (no I/O), which is what makes it node-testable and a clean copy
      into the app. Load order does not matter between the two; both precede the sim. -->
 <script src="assets/js/badge-vault.js?v=1" defer></script>
-<script src="assets/js/trader-diagnostic.js?v=41" defer></script>
+<!-- daily.js owns the NY-midnight clock, the seed, and the once-a-day gate. Must load
+     before trader-diagnostic.js, which seeds its RNG from it at the start of every run. -->
+<script src="assets/js/daily.js?v=1" defer></script>
+<script src="assets/js/trader-diagnostic.js?v=42" defer></script>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
