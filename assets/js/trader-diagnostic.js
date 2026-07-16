@@ -855,14 +855,12 @@
         verdictHtml +
         (st.n ? '<div class="diag-review" data-review hidden>' +
           '<div class="diag-review-h">Your trades</div>' +
-          '<canvas class="diag-review-cv" data-reviewcv></canvas>' +
-          '<div class="diag-review-key">' +
-            '<span><i class="diag-k diag-k-entry"></i>entry</span>' +
-            '<span><i class="diag-k diag-k-win"></i>exit, green</span>' +
-            '<span><i class="diag-k diag-k-loss"></i>exit, red</span>' +
-            '<span>shaded = how long you held it</span>' +
-          '</div>' +
-          '<div class="diag-review-note">Look left of every entry, not right. What was on the chart before you clicked is what you actually had to work with.</div>' +
+          '<button class="diag-review-tap" type="button" data-reviewzoom aria-label="Expand your trades">' +
+            '<canvas class="diag-review-cv" data-reviewcv></canvas>' +
+            '<span class="diag-review-expand">⤢ Tap to enlarge</span>' +
+          '</button>' +
+          REVIEW_KEY_HTML +
+          '<div class="diag-review-note">' + REVIEW_NOTE + '</div>' +
         '</div>' : '') +
         shelfWhyHtml +
         tellsHtml +
@@ -871,9 +869,15 @@
           '<a class="diag-cta" href="/app" data-cta>Train it free →</a>' +
           '<div class="diag-funnel-sub">7 days free · no charge until day 8 · cancel in one click</div>' +
         '</div>' +
+        // Share lives here, NOT directly above "Train it free". v9 deliberately moved it
+        // off the CTA because "Share vs Train-It-Free were two competing CTAs"; putting
+        // it back above the button would rebuild that exact conflict. This row sits
+        // BELOW the CTA and groups the two get-it-out-of-here actions (copy the block,
+        // send it somewhere) side by side, where the eye already goes after reading.
         '<div class="diag-endbar">' +
           (st.n ? '<button class="diag-copy diag-seetrades" type="button" data-seetrades>See your trades</button>' : '') +
           '<button class="diag-copy" type="button" data-copyresult>Copy your result</button>' +
+          '<div class="diag-share-end" data-share-end></div>' +
           '<button class="diag-again" type="button" data-again>↺ Run the tape again</button>' +
         '</div>' +
         (vault.supported && vault.total - vault.earned > 0
@@ -881,12 +885,27 @@
           : '') +
       '</div>';
     buildShare(root.querySelector('[data-share]'), url, shareText, h.id);
+    // The SAME widget again at the bottom. Two live .mk-share instances on one page is
+    // fine: buildShare scopes its menu + listeners to its own host and __mkInitShareWidgetsIn
+    // is called per host. The toast is created once and guarded.
+    buildShare(root.querySelector('[data-share-end]'), url, shareText, h.id);
     root.querySelector('[data-again]').addEventListener('click', function () { start(); });
     root.querySelector('[data-cta]').addEventListener('click', function () { track('diagnostic_cta', { archetype: h.id }); });
     wireCopyResult(root.querySelector('[data-copyresult]'), shareText, h.id);
     wireSeeTrades(root, h.id);
     audio.verdict();
   }
+
+  // Shared by the inline review and the lightbox, so the legend and the lesson cannot
+  // drift apart between the two renderings of the same chart.
+  var REVIEW_KEY_HTML =
+    '<div class="diag-review-key">' +
+      '<span><i class="diag-k diag-k-entry"></i>entry</span>' +
+      '<span><i class="diag-k diag-k-win"></i>exit, green</span>' +
+      '<span><i class="diag-k diag-k-loss"></i>exit, red</span>' +
+      '<span>shaded = how long you held it</span>' +
+    '</div>';
+  var REVIEW_NOTE = 'Look left of every entry, not right. What was on the chart before you clicked is what you actually had to work with.';
 
   // ── "See your trades" — the review chart ────────────────────────────────────
   // The whole session on one chart with your fills marked. This is the most instructive
@@ -920,13 +939,33 @@
     if (!isFinite(lo) || !isFinite(hi)) return false;
     // Pad the frame, but a share price is never negative. A tape that rugs toward zero
     // pushed the axis under 0 and printed "$-0.02" on the scale, which is nonsense.
-    var rng = (hi - lo) || 1;
-    lo = Math.max(0, lo - rng * 0.10); hi += rng * 0.10; rng = (hi - lo) || 1;
+    // A small-cap tape can run 10x in two minutes. On a LINEAR axis that pins every
+    // trade you took at $3 into the bottom tenth of the frame while nine tenths of the
+    // chart is the move you already missed -- so enlarging it changes nothing, it is
+    // still unreadable. Log when the range is extreme, which is exactly what every real
+    // charting tool does, for exactly this reason.
+    //
+    // Decide BEFORE padding, and pad in the axis's own units. Padding additively and
+    // THEN taking the log is the bug that shipped a chart whose scale ran to $0.01 on a
+    // tape that bottomed at $0.72: an additive 10% of a $5 range is a huge multiple down
+    // near the bottom, so it blew the axis open and left 40% of the frame empty.
+    var useLog = (hi / Math.max(lo, 0.01)) > 3;
+    var rng;
+    if (useLog) { lo = Math.max(0.01, lo / 1.10); hi = hi * 1.10; }
+    else { var pad0 = (hi - lo) || 1; lo = Math.max(0, lo - pad0 * 0.10); hi = hi + pad0 * 0.10; }
+    rng = (hi - lo) || 1;
+
+    var l0 = Math.log(Math.max(lo, 0.01)), lspan = (Math.log(hi) - l0) || 1;
+    function frac(p) {
+      if (useLog) return (Math.log(Math.max(p, 0.01)) - l0) / lspan;
+      return (p - lo) / rng;
+    }
+    function priceAtFrac(f) { return useLog ? Math.exp(l0 + lspan * f) : (lo + rng * f); }
 
     var t0s = sess[0].t, t1s = sess[sess.length - 1].t || 1;
     var span = (t1s - t0s) || 1;
     function X(ms) { return padL + (w - padL - padR) * ((ms - t0s) / span); }
-    function Y(p) { return padT + (h - padT - padB) * (1 - (p - lo) / rng); }
+    function Y(p) { return padT + (h - padT - padB) * (1 - frac(p)); }
 
     // candles
     var cw = Math.max(1.2, (w - padL - padR) / sess.length * 0.62);
@@ -969,12 +1008,15 @@
       g.fillText('NEWS', cx + 3, padT + 8);
     }
 
-    // right-edge price scale, so the moves have a size
+    // Right-edge price scale. Labels are spaced evenly in SCREEN space and their price
+    // read back off the axis, so they stay evenly spread whether it is linear or log.
     g.fillStyle = 'rgba(154,166,179,.75)'; g.font = '9px "DM Mono", monospace'; g.textAlign = 'left';
     for (i = 0; i <= 3; i++) {
-      var p = lo + rng * (i / 3);
+      var p = priceAtFrac(i / 3);
       g.fillText('$' + p.toFixed(2), w - padR + 5, Y(p) + 3);
     }
+    // Say so. A trader reading a squashed-looking move deserves to know the axis is log.
+    if (useLog) { g.fillStyle = 'rgba(212,175,55,.8)'; g.fillText('LOG', w - padR + 5, h - 4); }
     g.textAlign = 'start';
     return true;
   }
@@ -1028,6 +1070,52 @@
     });
     // Canvas is raster: a resize needs a redraw or the chart goes blurry/stretched.
     window.addEventListener('resize', redraw);
+    var zoom = panel.querySelector('[data-reviewzoom]');
+    if (zoom) zoom.addEventListener('click', function () { openReviewLightbox(aid); });
+  }
+
+  // ── The lightbox ────────────────────────────────────────────────────────────
+  // The inline chart is ~190px tall inside a 560px card, which is enough to know the
+  // chart is THERE and not enough to read a single entry. Two minutes of trades on that
+  // is a thumbnail, not a review. This is the surface where the lesson actually lands,
+  // so it gets the whole viewport.
+  function openReviewLightbox(aid) {
+    if (document.querySelector('.diag-lightbox')) return;   // never stack two
+    var ov = document.createElement('div');
+    ov.className = 'diag-lightbox';
+    ov.innerHTML =
+      '<div class="diag-lb-inner" role="dialog" aria-modal="true" aria-label="Your trades">' +
+        '<div class="diag-lb-head">' +
+          '<div class="diag-lb-title">Your trades</div>' +
+          '<button class="diag-lb-close" type="button" data-lbclose aria-label="Close">✕</button>' +
+        '</div>' +
+        '<canvas class="diag-lb-cv" data-lbcv></canvas>' +
+        REVIEW_KEY_HTML +
+        '<div class="diag-review-note">' + REVIEW_NOTE + '</div>' +
+      '</div>';
+    document.body.appendChild(ov);
+    document.body.classList.add('diag-lb-open');            // stop the page scrolling behind it
+
+    var cv2 = ov.querySelector('[data-lbcv]');
+    // Same first-paint problem as the inline panel: the element needs a layout box
+    // before clientWidth means anything.
+    requestAnimationFrame(function () { drawReview(cv2); });
+
+    function onResize() { drawReview(cv2); }
+    function onKey(e) { if (e.key === 'Escape' || e.key === 'Esc') close(); }
+    function close() {
+      window.removeEventListener('resize', onResize);
+      document.removeEventListener('keydown', onKey);
+      document.body.classList.remove('diag-lb-open');
+      if (ov.parentNode) ov.parentNode.removeChild(ov);
+    }
+    window.addEventListener('resize', onResize);
+    document.addEventListener('keydown', onKey);
+    ov.querySelector('[data-lbclose]').addEventListener('click', close);
+    // Backdrop click closes; a click INSIDE the panel must not.
+    ov.addEventListener('click', function (e) { if (e.target === ov) close(); });
+    ov.querySelector('.diag-lb-close').focus();
+    track('diagnostic_review_zoom', { archetype: aid });
   }
 
   // Copy the block to the clipboard. This is NOT a duplicate of the .mk-share widget
@@ -1086,12 +1174,30 @@
         'aria-haspopup="true" aria-expanded="false">' + SHARE_ICON + '</button>' +
       '<div class="mk-share__menu" role="menu" hidden>' + SHARE_MENU_ITEMS + '</div>';
     host.appendChild(wrap);
+    reapOrphanShareMenus();
     if (!document.querySelector('.mk-share-toast')) { var ts = document.createElement('div'); ts.className = 'mk-share-toast'; ts.setAttribute('role', 'status'); ts.setAttribute('aria-live', 'polite'); ts.hidden = true; ts.textContent = 'Link copied'; document.body.appendChild(ts); }
     // In-game share pauses the live run on open so a share sheet can't burn the clock.
     if (onTrigger) wrap.querySelector('.mk-share__trigger').addEventListener('click', onTrigger);
     var menuEl = wrap.querySelector('.mk-share__menu');
     menuEl.addEventListener('click', function (e) { var b = e.target.closest('[data-platform]'); if (b) track('diagnostic_share', { archetype: aid, via: b.getAttribute('data-platform') }); });
     if (window.__mkInitShareWidgetsIn) window.__mkInitShareWidgetsIn(host);
+    // initShareWidget re-parents the menu to <body> so it can escape overflow clipping.
+    // Tag it with its owner so the reaper below can tell live from orphaned.
+    if (wrap._mkMenu) wrap._mkMenu._mkShareOwner = wrap;
+  }
+
+  // Every buildShare leaves a menu parked on <body>. This surface rebuilds its DOM on
+  // every run (renderResult and the terminal both replace root.innerHTML), so the owning
+  // .mk-share wrap dies while its menu lives on: 3 orphans per run (in-game + the two on
+  // the result), accumulating forever across replays, each still carrying listeners. The
+  // sim is BUILT for replay, so this is unbounded. Only reaps menus whose owner has left
+  // the document, so a live widget can never be nuked by mistake.
+  function reapOrphanShareMenus() {
+    var menus = document.querySelectorAll('body > .mk-share__menu');
+    for (var i = 0; i < menus.length; i++) {
+      var m = menus[i], owner = m._mkShareOwner;
+      if (owner && !document.body.contains(owner) && m.parentNode) m.parentNode.removeChild(m);
+    }
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();

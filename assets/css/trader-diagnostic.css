@@ -1,11 +1,18 @@
 /* MAKETZO — "Can You Trade?" live trading sim. Scoped .diag-* */
 
-#diag-root {
+/* The lightbox is appended to <body>, OUTSIDE #diag-root, so it must be declared here
+   too or every --d-* resolves to nothing inside it. That is not theoretical: the legend
+   swatches (background: var(--d-gold-hi) etc) rendered as invisible 8px boxes, so the
+   enlarged chart shipped with a legend that named colours it did not show. */
+#diag-root, .diag-lightbox {
   --d-gold: #d4af37; --d-gold-hi: #e5c572; --d-up: #7ed957; --d-down: #ff6b6b;
   --d-ink: #f3f5f8; --d-dim: #9aa6b3; --d-panel: rgba(18,24,34,.7); --d-line: rgba(255,255,255,.10);
+}
+#diag-root {
   width: 100%; max-width: 900px; margin: 0 auto; color: var(--d-ink);
   font-family: var(--mk-font-sans, "DM Sans", system-ui, sans-serif);
 }
+.diag-lightbox { color: var(--d-ink); font-family: var(--mk-font-sans, "DM Sans", system-ui, sans-serif); }
 
 /* ── Intro ───────────────────────────────────────────────────────────────── */
 .diag-intro { text-align: center; padding: 8px 4px 4px; max-width: 600px; margin: 0 auto; }
@@ -297,6 +304,13 @@
 .diag-seetrades:hover { background: rgba(126,217,87,.18); color: #fff; }
 .diag-review { margin: 18px auto 0; max-width: 560px; background: rgba(13,15,20,.5); border: 1px solid var(--d-line); border-radius: 12px; padding: 14px 12px 12px; }
 .diag-review-h { font-family: var(--mk-font-mono, "DM Mono", monospace); font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--d-gold-hi); margin-bottom: 10px; }
+/* The whole chart is one big button. A canvas gives no affordance on its own, so the
+   hint sits on it and the cursor changes: nothing else here says "there is more". */
+.diag-review-tap { display: block; width: 100%; padding: 0; border: 0; background: none; cursor: zoom-in; position: relative; border-radius: 8px; }
+.diag-review-tap:hover .diag-review-expand,
+.diag-review-tap:focus-visible .diag-review-expand { opacity: 1; border-color: rgba(212,175,55,.55); }
+.diag-review-tap:focus-visible { outline: 2px solid rgba(212,175,55,.6); outline-offset: 2px; }
+.diag-review-expand { position: absolute; right: 6px; top: 6px; font-family: var(--mk-font-mono, "DM Mono", monospace); font-size: 9.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--d-gold-hi); background: rgba(6,7,10,.78); border: 1px solid rgba(212,175,55,.3); border-radius: 999px; padding: 3px 8px; opacity: .78; transition: opacity .14s ease, border-color .14s ease; pointer-events: none; }
 .diag-review-cv { display: block; width: 100%; height: 190px; }
 .diag-review-key { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 10px; font-size: 10.5px; color: var(--d-dim); }
 .diag-review-key span { display: inline-flex; align-items: center; gap: 5px; }
@@ -306,6 +320,33 @@
 .diag-k-loss { background: var(--d-down); border-radius: 50%; }
 .diag-review-note { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--d-line); font-size: 12px; line-height: 1.45; color: var(--d-dim); text-align: left; }
 @media (max-width: 480px) { .diag-review-cv { height: 150px; } }
+
+/* ── Lightbox · the review chart at a size you can actually read ────────────
+   z-index must clear the fixed nav (50), the retired sticky-bar band (55) and the
+   mobile drawer (100). A fixed bottom bar out-z-indexing a modal is a real bug this
+   page has had before. */
+.diag-lightbox { position: fixed; inset: 0; z-index: 200; background: rgba(4,5,8,.9); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; padding: 24px; animation: diagLbIn .18s ease both; }
+@keyframes diagLbIn { from { opacity: 0; } to { opacity: 1; } }
+.diag-lb-inner { width: min(1100px, 96vw); background: linear-gradient(160deg, rgba(28,34,48,.7), rgba(13,15,20,.94)); border: 1px solid rgba(212,175,55,.3); border-radius: 14px; padding: 16px 16px 14px; box-shadow: 0 30px 90px rgba(0,0,0,.7); }
+.diag-lb-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.diag-lb-title { font-family: var(--mk-font-mono, "DM Mono", monospace); font-size: 12px; letter-spacing: .18em; text-transform: uppercase; color: var(--d-gold-hi); }
+.diag-lb-close { width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; background: rgba(13,15,20,.6); border: 1px solid var(--d-line); border-radius: 8px; color: var(--d-ink); font-size: 14px; cursor: pointer; }
+.diag-lb-close:hover { border-color: rgba(212,175,55,.5); color: #fff; }
+/* 62vh so the legend + the lesson stay on screen with it, not below the fold. */
+.diag-lb-cv { display: block; width: 100%; height: 62vh; max-height: 620px; }
+.diag-lb-inner .diag-review-note { text-align: center; }
+body.diag-lb-open { overflow: hidden; }
+@media (max-width: 640px) {
+  .diag-lightbox { padding: 10px; }
+  .diag-lb-inner { padding: 12px 10px 10px; }
+  .diag-lb-cv { height: 56vh; }
+}
+
+/* Second share icon, in the bottom action row beside "Copy your result". */
+.diag-share-end { display: inline-flex; }
+.diag-share-end .diag-share-icon { width: 34px; height: 34px; border-radius: 999px; border-color: rgba(212,175,55,.4); background: rgba(212,175,55,.08); }
+.diag-share-end .diag-share-icon:hover { background: rgba(212,175,55,.18); color: #fff; }
+.diag-share-end .diag-share-icon svg { width: 15px; height: 15px; }
 
 @media (max-width: 480px) {
   .diag-cd-num { font-size: 84px; }
