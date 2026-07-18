@@ -85,6 +85,8 @@ html.mkt-auth .nav-login-btn:hover{color:var(--mk-text-on-gold);background:var(-
 .gaunt-embed-frame { max-width: 540px; margin: 0 auto; background: #0D0F14; border: 1px solid rgba(212,175,55,.16); border-radius: var(--mk-radius-card); overflow: hidden; box-shadow: 0 24px 64px rgba(0,0,0,.45); }
 .gaunt-embed { width: 100%; border: 0; display: block; height: 660px; background: #0D0F14; transition: height var(--mk-dur-fast) linear; }
 @media (max-width: 600px) { .gaunt-embed-frame { margin: 0 12px; border-radius: var(--mk-radius-button); } }
+.gaunt-embed-disclaimer { max-width: 560px; margin: 18px auto 0; padding: 0 24px; font-size: var(--mk-text-xs); line-height: 1.55; color: var(--mk-text-tertiary); text-align: center; }
+.gaunt-embed-disclaimer a { color: var(--mk-brand); text-decoration: underline; }
 
 /* ── Conversion (stranger vs member) ─────────────────────────────────────── */
 .gaunt-convert { padding: 44px 0 78px; background: var(--mk-obsidian-950); text-align: center; border-top: var(--mk-border-hairline); }
@@ -160,7 +162,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
       </span>
       <p class="gaunt-eyebrow">The Gauntlet</p>
       <h1 class="gaunt-title">Can You Beat<br>Captain Green?</h1>
-      <p class="gaunt-lead">Seven fast questions on how traders actually win and lose, with the clock draining on every one. Everyone faces the same duel today, so the score means something. Beat him, then send it back.</p>
+      <p class="gaunt-lead">Seven fast questions on how traders win and lose, with the clock draining on each one. Everyone faces the same duel today, so a good score is worth bragging about.</p>
     </div>
   </section>
 
@@ -168,6 +170,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
     <div class="gaunt-embed-frame">
       <iframe id="gauntletFrame" class="gaunt-embed" title="Play The Gauntlet" scrolling="no" loading="eager"></iframe>
     </div>
+    <p class="gaunt-embed-disclaimer">The Gauntlet is a trivia game for entertainment and educational purposes only. It is not financial, investment, or trading advice, and nothing in it is a recommendation or solicitation to buy, sell, or hold any security. Trading involves substantial risk of loss. See the full <a href="https://maketzo.co/disclaimer">disclaimer</a>.</p>
   </section>
 
   <section class="gaunt-convert">
