@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Gauntlet · Beat Captain Green | MAKETZO</title>
+<meta name="description" content="MAKETZO's daily trading duel. Seven fast questions on how traders win and lose, against the clock, head to head with Captain Green. Play free.">
+<meta name="theme-color" content="#06070A">
+<meta property="og:title" content="Can you beat Captain Green? · The Gauntlet">
+<meta property="og:description" content="MAKETZO's daily trading duel: seven fast questions, one clock. Same duel for everyone today. Play free.">
+<meta property="og:url" content="https://maketzo.co/gauntlet">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://maketzo.co/assets/logo-mark.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Can you beat Captain Green? · The Gauntlet">
+<meta name="twitter:description" content="MAKETZO's daily trading duel. Seven questions, one clock. Play free.">
+<meta name="twitter:image" content="https://maketzo.co/assets/logo-mark.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://maketzo.co/assets/css/tokens.css">
+<link rel="stylesheet" href="https://maketzo.co/assets/css/components.css">
+<script src="https://maketzo.co/assets/js/mkt-analytics.js?v=5" defer></script>
+<script src="https://maketzo.co/assets/js/mkt-consent.js?v=1" defer></script>
+<script src="https://maketzo.co/assets/js/checkout.js?v=10" defer></script>
+<style>
+/* Chrome cloned from /learn (nav · drawer · buttons · footer) so /gauntlet
+   stays bit-consistent with the rest of the site. */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; overflow-y: scroll; }
+body { background: var(--mk-surface-page); color: var(--mk-text-primary); font-family: var(--mk-font-sans); font-size: var(--mk-text-md); line-height: var(--mk-lead-body); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+a { color: inherit; text-decoration: none; }
+ul, ol { list-style: none; }
+img { display: block; max-width: 100%; }
+em, i { font-style: italic; }
+strong { color: var(--mk-text-primary); font-weight: 600; }
+
+.mobile-overlay { position: fixed; inset: 0; z-index: 90; background: rgba(0,0,0,.6); backdrop-filter: blur(6px); opacity: 0; pointer-events: none; transition: opacity var(--mk-dur-med); }
+.mobile-overlay.open { opacity: 1; pointer-events: auto; }
+.mobile-drawer { position: fixed; top: 0; right: 0; bottom: 0; z-index: 100; width: min(320px, 88%); background: var(--mk-surface-base); border-left: var(--mk-border-soft); padding: 80px 28px 28px; transform: translateX(100%); transition: transform var(--mk-dur-med) var(--mk-ease-out); display: flex; flex-direction: column; gap: 20px; }
+.mobile-drawer.open { transform: translateX(0); }
+.mobile-drawer-links li { padding: 12px 0; border-bottom: var(--mk-border-hairline); }
+.mobile-drawer-links a { font-family: var(--mk-font-display); font-size: var(--mk-display-md); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); }
+.mobile-drawer-cta { display: inline-flex; align-items: center; justify-content: center; background: var(--mk-gold-gradient); color: var(--mk-text-on-gold); font-family: var(--mk-font-sans); font-weight: 600; font-size: var(--mk-text-sm); letter-spacing: var(--mk-track-cap); text-transform: uppercase; padding: 14px 22px; border: 1px solid rgba(0,0,0,.18); border-radius: var(--mk-radius-button); cursor: pointer; margin-top: auto; }
+
+#mainNav { position: fixed; top: 0; left: 0; right: 0; z-index: 50; background: rgba(6,7,10,.6); backdrop-filter: blur(20px) saturate(140%); border-bottom: 1px solid rgba(212,175,55,.12); display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 14px 32px 14px 64px; }
+.nav-logo.mk-brand-lockup { --mk-brand-lockup-mark-h: 44px; --mk-brand-lockup-wordmark-h: 22px; --mk-brand-lockup-gap: 10px; }
+.nav-links { display: flex; align-items: center; gap: 28px; margin: 0; padding: 0; }
+.nav-links > li > a:not(.nav-login-btn) { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); font-weight: 500; letter-spacing: 0.02em; transition: color var(--mk-dur-fast); }
+.nav-links > li > a:not(.nav-login-btn):hover { color: var(--mk-text-primary); }
+.nav-auth-in{display:none;}
+html.mkt-auth .nav-auth-out{display:none;}
+html.mkt-auth .nav-auth-in{display:inline;}
+html.mkt-auth .nav-links li:has(.nav-cta){display:none;}
+html.mkt-auth .mobile-drawer-cta{display:none;}
+html.mkt-auth .nav-login-btn{background:var(--mk-gold-gradient);color:var(--mk-text-on-gold);border-color:rgba(0,0,0,.18);}
+html.mkt-auth .nav-login-btn:hover{color:var(--mk-text-on-gold);background:var(--mk-gold-gradient);border-color:rgba(0,0,0,.18);transform:translateY(-1px);box-shadow:var(--mk-glow-gold-sm);}
+.nav-login-btn { display: inline-flex; align-items: center; font-size: var(--mk-text-sm); font-weight: 600; letter-spacing: var(--mk-track-cap); text-transform: uppercase; padding: 7px 14px; color: var(--mk-text-secondary); border: 1px solid var(--mk-smoke-700); border-radius: var(--mk-radius-button); transition: color var(--mk-dur-fast), border-color var(--mk-dur-fast), background var(--mk-dur-fast); }
+.nav-login-btn:hover { color: var(--mk-text-primary); border-color: var(--mk-smoke-600); background: rgba(255,255,255,.03); }
+.nav-cta { display: inline-flex; align-items: center; justify-content: center; font-family: var(--mk-font-sans); font-size: var(--mk-text-sm); font-weight: 600; letter-spacing: var(--mk-track-cap); text-transform: uppercase; padding: 7px 14px; border: 1px solid rgba(0,0,0,.18); border-radius: var(--mk-radius-button); cursor: pointer; background: var(--mk-gold-gradient); color: var(--mk-text-on-gold); transition: transform var(--mk-dur-snap), box-shadow var(--mk-dur-snap); white-space: nowrap; }
+.nav-cta:hover { transform: translateY(-1px); box-shadow: var(--mk-glow-gold-sm); }
+.hamburger { display: none; background: transparent; border: 0; padding: 8px; cursor: pointer; flex-direction: column; gap: 5px; }
+.hamburger span { display: block; width: 24px; height: 2px; background: var(--mk-text-primary); transition: transform var(--mk-dur-snap), opacity var(--mk-dur-snap); }
+.hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+@media (max-width: 900px) { #mainNav { padding: 12px 20px; gap: 16px; } .nav-links { display: none; } .hamburger { display: flex; } }
+
+.btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-family: var(--mk-font-sans); font-size: var(--mk-text-sm); font-weight: 600; letter-spacing: var(--mk-track-cap); text-transform: uppercase; padding: 15px 28px; border-radius: var(--mk-radius-button); border: 1px solid rgba(0,0,0,.18); cursor: pointer; text-decoration: none; white-space: nowrap; background: var(--mk-gold-gradient); color: var(--mk-text-on-gold); transition: transform var(--mk-dur-snap), box-shadow var(--mk-dur-snap); }
+.btn-primary:hover { transform: translateY(-1px); box-shadow: var(--mk-glow-gold-md); color: var(--mk-text-on-gold); }
+
+/* ── Hero (compact — the game is the hero, not a wall of copy) ────────────── */
+.gaunt-hero { position: relative; overflow: hidden; padding: 128px 0 26px; background: var(--mk-obsidian-950); text-align: center; }
+.gaunt-hero::before { content: ''; position: absolute; top: -140px; left: 50%; width: 760px; height: 520px; transform: translateX(-50%); background: radial-gradient(ellipse at 50% 42%, rgba(212,175,55,.13), transparent 62%); pointer-events: none; z-index: 0; }
+.gaunt-hero-inner { position: relative; z-index: 1; max-width: 720px; margin: 0 auto; padding: 0 24px; }
+.gaunt-rec { display: inline-flex; align-items: center; gap: 10px; padding: 6px 16px 6px 6px; border: 1px solid rgba(212,175,55,.26); background: rgba(212,175,55,.05); border-radius: 999px; margin-bottom: 22px; }
+.gaunt-rec-ic { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; background: var(--mk-gold-gradient); color: var(--mk-text-on-gold); flex-shrink: 0; }
+.gaunt-rec-ic svg { width: 13px; height: 13px; fill: currentColor; }
+.gaunt-rec-txt { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: 0.08em; text-transform: uppercase; color: var(--mk-brand); }
+.gaunt-eyebrow { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); margin-bottom: 14px; }
+.gaunt-title { font-family: var(--mk-font-display); font-size: clamp(2.5rem, 7vw, 4rem); letter-spacing: var(--mk-track-display); line-height: 0.98; text-transform: uppercase; font-weight: 400; }
+.gaunt-lead { max-width: 560px; margin: 18px auto 0; font-size: var(--mk-text-lg); color: var(--mk-text-secondary); line-height: 1.5; }
+
+/* ── The embedded game ───────────────────────────────────────────────────── */
+.gaunt-embed-section { padding: 6px 0 20px; background: var(--mk-surface-page); }
+.gaunt-embed-frame { max-width: 540px; margin: 0 auto; background: #0D0F14; border: 1px solid rgba(212,175,55,.16); border-radius: var(--mk-radius-card); overflow: hidden; box-shadow: 0 24px 64px rgba(0,0,0,.45); }
+.gaunt-embed { width: 100%; border: 0; display: block; height: 660px; background: #0D0F14; transition: height var(--mk-dur-fast) linear; }
+@media (max-width: 600px) { .gaunt-embed-frame { margin: 0 12px; border-radius: var(--mk-radius-button); } }
+
+/* ── Conversion (stranger vs member) ─────────────────────────────────────── */
+.gaunt-convert { padding: 44px 0 78px; background: var(--mk-obsidian-950); text-align: center; border-top: var(--mk-border-hairline); }
+.gaunt-convert-inner { max-width: 640px; margin: 0 auto; padding: 0 24px; transition: box-shadow var(--mk-dur-med); border-radius: var(--mk-radius-card); }
+.gaunt-convert-inner.flash { box-shadow: 0 0 0 1px rgba(212,175,55,.4), 0 0 60px rgba(212,175,55,.14); }
+.gaunt-convert-in { display: none; }
+html.mkt-auth .gaunt-convert-out { display: none; }
+html.mkt-auth .gaunt-convert-in { display: block; }
+.gaunt-c-eyebrow { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); margin-bottom: 15px; }
+.gaunt-c-title { font-family: var(--mk-font-display); font-size: clamp(1.7rem, 4vw, 2.4rem); letter-spacing: var(--mk-track-display); line-height: 1.05; text-transform: uppercase; font-weight: 400; margin-bottom: 15px; }
+.gaunt-c-sub { font-size: var(--mk-text-md); color: var(--mk-text-secondary); max-width: 520px; margin: 0 auto 26px; line-height: var(--mk-lead-body); }
+.gaunt-c-note { margin-top: 14px; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: 0.04em; color: var(--mk-text-tertiary); }
+
+/* Footer (cloned) */
+footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairline); padding: 56px 0 28px; }
+.footer-inner { max-width: var(--mk-container-marketing); margin: 0 auto; padding: 0 32px; }
+.footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 32px; padding-bottom: 32px; border-bottom: var(--mk-border-hairline); }
+.footer-logo-wrap { display: flex; flex-direction: column; align-items: flex-start; gap: 18px; margin-bottom: 12px; }
+.footer-logo-wrap .mk-brand-lockup { --mk-brand-lockup-mark-h: 40px; --mk-brand-lockup-wordmark-h: 20px; }
+.footer-tagline { font-size: var(--mk-text-sm); color: var(--mk-text-tertiary); line-height: var(--mk-lead-body); max-width: 360px; }
+.footer-tagline strong { display: block; color: var(--mk-text-primary); margin-bottom: 4px; }
+.footer-col-title { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); margin-bottom: 16px; }
+.footer-links { display: flex; flex-direction: column; gap: 10px; padding: 0; }
+.footer-links a { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); transition: color var(--mk-dur-fast); }
+.footer-links a:hover { color: var(--mk-text-primary); }
+.footer-bottom { display: flex; flex-direction: column; gap: 10px; }
+.footer-copy { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: 0.04em; color: var(--mk-text-tertiary); }
+.footer-disclaimer { font-size: var(--mk-text-xs); color: var(--mk-text-tertiary); line-height: var(--mk-lead-body); }
+@media (max-width: 800px) { .footer-grid { grid-template-columns: 1fr; gap: 24px; } }
+</style>
+<script>try{if(document.cookie.indexOf('mkt_csrf=')>-1)document.documentElement.classList.add('mkt-auth');}catch(e){}</script>
+</head>
+<body>
+
+<div class="mobile-overlay" id="mobileOverlay" onclick="closeDrawer()"></div>
+<div class="mobile-drawer" id="mobileDrawer">
+  <ul class="mobile-drawer-links">
+    <li><a href="https://maketzo.co/system" onclick="closeDrawer()">The System</a></li>
+    <li><a href="https://maketzo.co/journal" onclick="closeDrawer()">Journal</a></li>
+    <li><a href="https://maketzo.co/indicators" onclick="closeDrawer()">Indicators</a></li>
+    <li><a href="https://maketzo.co/focus" onclick="closeDrawer()">Focus Room</a></li>
+    <li><a href="https://maketzo.co/blog" onclick="closeDrawer()">Blog</a></li>
+    <li><a href="https://maketzo.co/pricing" onclick="closeDrawer()">Pricing</a></li>
+    <li><a href="https://maketzo.co/app" onclick="closeDrawer()"><span class="nav-auth-out">Log In</span><span class="nav-auth-in">LAUNCH</span></a></li>
+  </ul>
+  <button class="mobile-drawer-cta" onclick="startTrial();closeDrawer()">Start Free Trial &rarr;</button>
+</div>
+
+<nav id="mainNav">
+  <a href="https://maketzo.co" class="nav-logo mk-brand-lockup">
+    <img class="mk-brand-lockup__mark" src="https://maketzo.co/assets/logo-mark.png" alt="">
+    <img class="mk-brand-lockup__wordmark" src="https://maketzo.co/assets/logo-wordmark.png" alt="MAKETZO">
+  </a>
+  <ul class="nav-links">
+    <li><a href="https://maketzo.co/system">The System</a></li>
+    <li><a href="https://maketzo.co/journal">Journal</a></li>
+    <li><a href="https://maketzo.co/indicators">Indicators</a></li>
+    <li><a href="https://maketzo.co/focus">Focus Room</a></li>
+    <li><a href="https://maketzo.co/blog">Blog</a></li>
+    <li><a href="https://maketzo.co/pricing">Pricing</a></li>
+    <li><a href="https://maketzo.co/app" class="nav-login-btn"><span class="nav-auth-out">Log In</span><span class="nav-auth-in">LAUNCH</span></a></li>
+    <li><button class="nav-cta" onclick="startTrial()">Start Free Trial</button></li>
+  </ul>
+  <button class="hamburger" id="hamburger" onclick="toggleDrawer()" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+
+<main>
+  <section class="gaunt-hero">
+    <div class="gaunt-hero-inner">
+      <span class="gaunt-rec" id="gauntRec">
+        <span class="gaunt-rec-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path id="gauntRecIc" d="M12 2l1.7 6.3L20 10l-6.3 1.7L12 18l-1.7-6.3L4 10l6.3-1.7z"/></svg></span>
+        <span class="gaunt-rec-txt" id="gauntRecTxt">MAKETZO's daily trading duel</span>
+      </span>
+      <p class="gaunt-eyebrow">The Gauntlet</p>
+      <h1 class="gaunt-title">Can You Beat<br>Captain Green?</h1>
+      <p class="gaunt-lead">Seven fast questions on how traders actually win and lose, with the clock draining on every one. Everyone faces the same duel today, so the score means something. Beat him, then send it back.</p>
+    </div>
+  </section>
+
+  <section class="gaunt-embed-section">
+    <div class="gaunt-embed-frame">
+      <iframe id="gauntletFrame" class="gaunt-embed" title="Play The Gauntlet" scrolling="no" loading="eager"></iframe>
+    </div>
+  </section>
+
+  <section class="gaunt-convert">
+    <div class="gaunt-convert-inner" id="convertInner">
+      <div class="gaunt-convert-out">
+        <p class="gaunt-c-eyebrow">The warm-up is free</p>
+        <h2 class="gaunt-c-title">The Gauntlet Warms You Up.<br>MAKETZO Keeps You Honest.</h2>
+        <p class="gaunt-c-sub">The duel is the free warm-up traders run before the open. The product behind it does the real work: a journal that makes you face every trade, a Focus Room that kills the tilt before it costs you, and indicators that keep you disciplined.</p>
+        <button class="btn-primary" onclick="startTrial()">Start 7-Day Free Trial &rarr;</button>
+        <p class="gaunt-c-note">7 days free &middot; cancel anytime</p>
+      </div>
+      <div class="gaunt-convert-in">
+        <p class="gaunt-c-eyebrow">You're in</p>
+        <h2 class="gaunt-c-title">Your Gauntlet Lives<br>in the App</h2>
+        <p class="gaunt-c-sub">Play today's duel, hold your streak, and run the full session where it counts.</p>
+        <a class="btn-primary" id="memberOpenLink" href="https://app.maketzo.co">Open the Gauntlet in the App &rarr;</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-col-brand">
+        <div class="footer-logo-wrap">
+          <a href="https://maketzo.co" class="mk-brand-lockup mk-brand-lockup--stacked">
+            <img class="mk-brand-lockup__mark" src="https://maketzo.co/assets/logo-mark.png" alt="">
+            <img class="mk-brand-lockup__wordmark" src="https://maketzo.co/assets/logo-wordmark.png" alt="MAKETZO">
+          </a>
+        </div>
+        <p class="footer-tagline"><strong>Stop the trade you'd regret.</strong>Discipline in every session. Edge in every trade. Accountability when it counts.</p>
+      </div>
+      <div><div class="footer-col-title">Product</div><ul class="footer-links"><li><a href="https://maketzo.co/system">The System</a></li><li><a href="https://maketzo.co/journal">Journal</a></li><li><a href="https://maketzo.co/indicators">Indicators</a></li><li><a href="https://maketzo.co/focus">Focus Room</a></li><li><a href="https://maketzo.co/pricing">Pricing</a></li></ul></div>
+      <div><div class="footer-col-title">Explore</div><ul class="footer-links"><li><a href="https://maketzo.co/why">Why MAKETZO</a></li><li><a href="https://maketzo.co/blog">Blog</a></li><li><a href="https://maketzo.co/contact">Contact Us</a></li></ul></div>
+      <div><div class="footer-col-title">Legal</div><ul class="footer-links"><li><a href="https://maketzo.co/privacy">Privacy</a></li><li><a href="https://maketzo.co/terms">Terms</a></li><li><a href="https://maketzo.co/disclaimer">Disclaimer</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">&copy; 2026 Abinic, LLC. All rights reserved. MAKETZO&reg; is a product of Abinic, LLC. maketzo.co</p>
+      <p class="footer-disclaimer">Trading involves substantial risk of loss. MAKETZO is a journaling, behavioral accountability, educational, and decision-support platform — not investment advice, not a broker-dealer, not a registered investment adviser. See full disclaimer at <a href="https://maketzo.co/disclaimer">maketzo.co/disclaimer</a>.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+// 7-day free-trial tier (same as every "Start Free Trial" CTA site-wide).
+var TRIAL_TIER = 'pro';
+
+function toggleDrawer(){ ['mobileDrawer','mobileOverlay','hamburger'].forEach(function(id){ document.getElementById(id).classList.toggle('open'); }); }
+function closeDrawer(){ ['mobileDrawer','mobileOverlay','hamburger'].forEach(function(id){ document.getElementById(id).classList.remove('open'); }); }
+
+function startTrial(){
+  try { if (typeof handleCheckout === 'function') return handleCheckout(TRIAL_TIER, { preventDefault: function(){}, currentTarget: null }); } catch (e) {}
+  window.location.href = 'https://maketzo.co/pricing';
+}
+
+// Tier-matched app origin (frontend dev.maketzo.co -> app dev-app.maketzo.co, etc).
+function appBase(){
+  var h = location.hostname;
+  if (h.indexOf('dev') === 0) return 'https://dev-app.maketzo.co';
+  if (h.indexOf('staging') === 0) return 'https://staging-app.maketzo.co';
+  return 'https://app.maketzo.co';
+}
+
+// A trader referred them? show the warm "someone sent you" chip (paper-plane).
+var REC_PLANE = 'M2 21l21-9L2 3v7l15 2-15 2z';
+function hasRef(){ try { return !!(window.MKT && MKT.getRef && MKT.getRef()); } catch (e) { return false; } }
+(function setRec(){
+  if (!hasRef()) return;
+  var txt = document.getElementById('gauntRecTxt');
+  var ic = document.getElementById('gauntRecIc');
+  if (txt) txt.textContent = 'A trader dropped you into the Gauntlet';
+  if (ic) ic.setAttribute('d', REC_PLANE);
+})();
+
+// Point the member CTA straight at the Gauntlet inside the app (not app home).
+(function setMemberLink(){
+  var a = document.getElementById('memberOpenLink');
+  if (a) a.href = appBase() + '/#focus-room/brain-teasers?game=gauntlet';
+})();
+
+// Boot the embedded game (public kiosk on the matching app tier).
+(function embed(){
+  var f = document.getElementById('gauntletFrame');
+  if (f) f.src = appBase() + '/gauntlet-play.html';
+})();
+
+// The kiosk relays its height (so the iframe fits with no inner scrollbar) and
+// its finished result (so we nudge attention to the signup CTA at peak interest).
+var _flashed = false;
+window.addEventListener('message', function (e) {
+  try { if (String(e.origin).replace(/^https?:\/\//,'').indexOf('maketzo.co') === -1) return; } catch (err) { return; }
+  var d = e.data || {};
+  if (d.type === 'mk-gauntlet-height' && d.height) {
+    var f = document.getElementById('gauntletFrame');
+    if (f) f.style.height = Math.max(320, d.height) + 'px';
+  } else if (d.type === 'mk-gauntlet-result' && !_flashed) {
+    _flashed = true;
+    var box = document.getElementById('convertInner');
+    if (box) {
+      box.classList.add('flash');
+      box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      setTimeout(function(){ box.classList.remove('flash'); }, 2400);
+    }
+    try { if (window.MKT && MKT.trackEvent) MKT.trackEvent('gauntlet_public_finish', { score: d.detail && d.detail.score, won: d.detail && d.detail.won }); } catch (err) {}
+  }
+});
+
+try { if (window.MKT && MKT.trackEvent) MKT.trackEvent('gauntlet_page_view', { referred: hasRef() }); } catch (e) {}
+</script>
+</body>
+</html>
