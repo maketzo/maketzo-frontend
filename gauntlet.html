@@ -83,7 +83,11 @@ html.mkt-auth .nav-login-btn:hover{color:var(--mk-text-on-gold);background:var(-
 /* ── The embedded game ───────────────────────────────────────────────────── */
 .gaunt-embed-section { padding: 6px 0 20px; background: var(--mk-surface-page); }
 .gaunt-embed-frame { max-width: 540px; margin: 0 auto; background: #0D0F14; border: 1px solid rgba(212,175,55,.16); border-radius: var(--mk-radius-card); overflow: hidden; box-shadow: 0 24px 64px rgba(0,0,0,.45); }
-.gaunt-embed { width: 100%; border: 0; display: block; height: 660px; background: #0D0F14; transition: height var(--mk-dur-fast) linear; }
+/* First-party mount point. The game (a shadow-DOM web component) paints its own
+   surface with a 500px inner max-width, centered here. Natural flow — the card
+   grows and shrinks with each screen, so there is no iframe height to relay. */
+#gauntlet-host { display: block; min-height: 520px; padding: 14px 14px 20px; background: #0D0F14; }
+.gaunt-embed-msg { max-width: 420px; margin: 64px auto; padding: 0 16px; text-align: center; color: var(--mk-text-secondary); font-size: 14px; line-height: 1.5; }
 @media (max-width: 600px) { .gaunt-embed-frame { margin: 0 12px; border-radius: var(--mk-radius-button); } }
 .gaunt-embed-disclaimer { max-width: 620px; margin: 20px auto 0; padding: 0 24px; font-size: 13px; line-height: 1.6; color: var(--mk-text-secondary); text-align: center; }
 .gaunt-embed-disclaimer a { color: var(--mk-brand); text-decoration: underline; }
@@ -168,12 +172,12 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 
   <section class="gaunt-embed-section">
     <div class="gaunt-embed-frame">
-      <!-- allow web-share + clipboard so the game's "Share result" works INSIDE
-           this cross-origin embed: the Web Share API (native sheet on desktop
-           Chrome/Edge/Safari + all mobile) and the clipboard copy fallback are
-           both Permissions-Policy gated and silently no-op in an iframe without
-           this delegation. That was why desktop share "did nothing." -->
-      <iframe id="gauntletFrame" class="gaunt-embed" title="Play The Gauntlet" scrolling="no" loading="eager" allow="web-share; clipboard-write"></iframe>
+      <!-- First-party embed: gauntlet-embed.js (served from the matching app tier)
+           boots the game chunk straight into this host — NO iframe. Same-origin,
+           so the branded Share menu, the daily-lock localStorage, and a plain
+           console reset all work natively (the iframe broke all three). Reset from
+           the console: localStorage.removeItem('mk_gauntlet_daily_v3');location.reload() -->
+      <div id="gauntlet-host"><div class="gaunt-embed-msg">Loading The Gauntlet&hellip;</div></div>
     </div>
     <p class="gaunt-embed-disclaimer">The Gauntlet is a trivia game for entertainment and educational purposes only. It is not financial, investment, or trading advice, and nothing in it is a recommendation or solicitation to buy, sell, or hold any security. Trading involves substantial risk of loss. See the full <a href="https://maketzo.co/disclaimer">disclaimer</a>.</p>
   </section>
@@ -257,31 +261,31 @@ function hasRef(){ try { return !!(window.MKT && MKT.getRef && MKT.getRef()); } 
   if (a) a.href = appBase() + '/#focus-room/brain-teasers?game=gauntlet';
 })();
 
-// Boot the embedded game (public kiosk on the matching app tier).
+// Boot the first-party game embed. The loader lives on the matching app tier and
+// injects the SAME game chunk straight into #gauntlet-host — no iframe.
 (function embed(){
-  var f = document.getElementById('gauntletFrame');
-  if (f) f.src = appBase() + '/gauntlet-play.html';
+  var s = document.createElement('script');
+  s.src = appBase() + '/gauntlet-embed.js';
+  s.defer = true;
+  document.head.appendChild(s);
 })();
 
-// The kiosk relays its height (so the iframe fits with no inner scrollbar) and
-// its finished result (so we nudge attention to the signup CTA at peak interest).
+// The game dispatches bt:result (bubbling + composed, so it crosses the shadow
+// boundary up to document) when a run ends — nudge attention to the signup CTA at
+// the moment of peak interest. First-party now, so it's a plain DOM event, not a
+// cross-origin postMessage.
 var _flashed = false;
-window.addEventListener('message', function (e) {
-  try { if (String(e.origin).replace(/^https?:\/\//,'').indexOf('maketzo.co') === -1) return; } catch (err) { return; }
-  var d = e.data || {};
-  if (d.type === 'mk-gauntlet-height' && d.height) {
-    var f = document.getElementById('gauntletFrame');
-    if (f) f.style.height = Math.max(320, d.height) + 'px';
-  } else if (d.type === 'mk-gauntlet-result' && !_flashed) {
-    _flashed = true;
-    var box = document.getElementById('convertInner');
-    if (box) {
-      box.classList.add('flash');
-      box.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      setTimeout(function(){ box.classList.remove('flash'); }, 2400);
-    }
-    try { if (window.MKT && MKT.trackEvent) MKT.trackEvent('gauntlet_public_finish', { score: d.detail && d.detail.score, won: d.detail && d.detail.won }); } catch (err) {}
+document.addEventListener('bt:result', function (e) {
+  if (_flashed) return;
+  _flashed = true;
+  var box = document.getElementById('convertInner');
+  if (box) {
+    box.classList.add('flash');
+    box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    setTimeout(function(){ box.classList.remove('flash'); }, 2400);
   }
+  var d = (e && e.detail) || {};
+  try { if (window.MKT && MKT.trackEvent) MKT.trackEvent('gauntlet_public_finish', { score: d.score, won: d.won }); } catch (err) {}
 });
 
 try { if (window.MKT && MKT.trackEvent) MKT.trackEvent('gauntlet_page_view', { referred: hasRef() }); } catch (e) {}
