@@ -86,7 +86,7 @@ html.mkt-auth .nav-login-btn:hover{color:var(--mk-text-on-gold);background:var(-
 /* First-party mount point. The game (a shadow-DOM web component) paints its own
    surface with a 500px inner max-width, centered here. Natural flow — the card
    grows and shrinks with each screen, so there is no iframe height to relay. */
-#gauntlet-host { display: block; min-height: 520px; padding: 14px 14px 20px; background: #0D0F14; }
+#gauntlet-host { display: flex; flex-direction: column; justify-content: center; min-height: 520px; padding: 14px 14px 20px; background: #0D0F14; }
 .gaunt-embed-msg { max-width: 420px; margin: 64px auto; padding: 0 16px; text-align: center; color: var(--mk-text-secondary); font-size: 14px; line-height: 1.5; }
 @media (max-width: 600px) { .gaunt-embed-frame { margin: 0 12px; border-radius: var(--mk-radius-button); } }
 .gaunt-embed-disclaimer { max-width: 620px; margin: 20px auto 0; padding: 0 24px; font-size: 13px; line-height: 1.6; color: var(--mk-text-secondary); text-align: center; }
