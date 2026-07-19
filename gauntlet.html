@@ -89,6 +89,12 @@ html.mkt-auth .nav-login-btn:hover{color:var(--mk-text-on-gold);background:var(-
 #gauntlet-host { display: flex; flex-direction: column; justify-content: center; min-height: 520px; padding: 14px 14px 20px; background: #0D0F14; }
 .gaunt-embed-msg { max-width: 420px; margin: 64px auto; padding: 0 16px; text-align: center; color: var(--mk-text-secondary); font-size: 14px; line-height: 1.5; }
 @media (max-width: 600px) { .gaunt-embed-frame { margin: 0 12px; border-radius: var(--mk-radius-button); } }
+/* Arcade lock: while a duel is live on a phone, the game pins itself to the
+   viewport (see .g--playing in the game chunk) and adds this class so the page
+   behind can't scroll. overflow:hidden (not position:fixed) so the scroll
+   position is preserved — on finish the class drops and the debrief is right
+   where the game was. JS only ever adds it on phones, but scope it anyway. */
+@media (max-width: 640px) { html.mk-gauntlet-lock, html.mk-gauntlet-lock body { overflow: hidden; } }
 .gaunt-embed-disclaimer { max-width: 620px; margin: 20px auto 0; padding: 0 24px; font-size: 13px; line-height: 1.6; color: var(--mk-text-secondary); text-align: center; }
 .gaunt-embed-disclaimer a { color: var(--mk-brand); text-decoration: underline; }
 
