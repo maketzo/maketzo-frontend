@@ -271,19 +271,15 @@ function hasRef(){ try { return !!(window.MKT && MKT.getRef && MKT.getRef()); } 
 })();
 
 // The game dispatches bt:result (bubbling + composed, so it crosses the shadow
-// boundary up to document) when a run ends — nudge attention to the signup CTA at
-// the moment of peak interest. First-party now, so it's a plain DOM event, not a
-// cross-origin postMessage.
-var _flashed = false;
+// boundary up to document) when a run ends. First-party now, so the debrief
+// renders inline right where the player is looking — do NOT scroll them away to
+// the signup CTA (that shoved the debrief off-screen; the old iframe needed it
+// because the debrief lived inside the frame). Just record the finish; the CTA
+// sits directly below for anyone who scrolls on.
+var _finished = false;
 document.addEventListener('bt:result', function (e) {
-  if (_flashed) return;
-  _flashed = true;
-  var box = document.getElementById('convertInner');
-  if (box) {
-    box.classList.add('flash');
-    box.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    setTimeout(function(){ box.classList.remove('flash'); }, 2400);
-  }
+  if (_finished) return;
+  _finished = true;
   var d = (e && e.detail) || {};
   try { if (window.MKT && MKT.trackEvent) MKT.trackEvent('gauntlet_public_finish', { score: d.score, won: d.won }); } catch (err) {}
 });
