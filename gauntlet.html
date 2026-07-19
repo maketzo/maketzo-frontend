@@ -168,7 +168,12 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 
   <section class="gaunt-embed-section">
     <div class="gaunt-embed-frame">
-      <iframe id="gauntletFrame" class="gaunt-embed" title="Play The Gauntlet" scrolling="no" loading="eager"></iframe>
+      <!-- allow web-share + clipboard so the game's "Share result" works INSIDE
+           this cross-origin embed: the Web Share API (native sheet on desktop
+           Chrome/Edge/Safari + all mobile) and the clipboard copy fallback are
+           both Permissions-Policy gated and silently no-op in an iframe without
+           this delegation. That was why desktop share "did nothing." -->
+      <iframe id="gauntletFrame" class="gaunt-embed" title="Play The Gauntlet" scrolling="no" loading="eager" allow="web-share; clipboard-write"></iframe>
     </div>
     <p class="gaunt-embed-disclaimer">The Gauntlet is a trivia game for entertainment and educational purposes only. It is not financial, investment, or trading advice, and nothing in it is a recommendation or solicitation to buy, sell, or hold any security. Trading involves substantial risk of loss. See the full <a href="https://maketzo.co/disclaimer">disclaimer</a>.</p>
   </section>
