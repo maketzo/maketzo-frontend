@@ -97,6 +97,16 @@ html.mkt-auth .nav-login-btn:hover{color:var(--mk-text-on-gold);background:var(-
 @media (max-width: 640px) { html.mk-gauntlet-lock, html.mk-gauntlet-lock body { overflow: hidden; } }
 .gaunt-embed-disclaimer { max-width: 620px; margin: 20px auto 0; padding: 0 24px; font-size: 13px; line-height: 1.6; color: var(--mk-text-secondary); text-align: center; }
 .gaunt-embed-disclaimer a { color: var(--mk-brand); text-decoration: underline; }
+/* Logged-in members don't play the anonymous kiosk duel. Its lock is localStorage
+   on THIS origin and can't see the account's server-side once-a-day lock, so a
+   member who already played in the app would be dealt a second, un-comparable run.
+   Steer them to the app (where the streak and the real lock live) and skip booting
+   the game entirely (see the embed IIFE). Strangers get the playable game untouched. */
+.gaunt-embed-in { display: none; text-align: center; padding: 48px 24px 8px; }
+.gaunt-embed-in .gaunt-c-sub { margin-bottom: 26px; }
+html.mkt-auth .gaunt-embed-out { display: none; }
+html.mkt-auth .gaunt-embed-in { display: block; }
+html.mkt-auth .gaunt-convert { display: none; }
 
 /* ── Conversion (stranger vs member) ─────────────────────────────────────── */
 .gaunt-convert { padding: 44px 0 78px; background: var(--mk-obsidian-950); text-align: center; border-top: var(--mk-border-hairline); }
@@ -177,15 +187,26 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
   </section>
 
   <section class="gaunt-embed-section">
-    <div class="gaunt-embed-frame">
-      <!-- First-party embed: gauntlet-embed.js (served from the matching app tier)
-           boots the game chunk straight into this host — NO iframe. Same-origin,
-           so the branded Share menu, the daily-lock localStorage, and a plain
-           console reset all work natively (the iframe broke all three). Reset from
-           the console: localStorage.removeItem('mk_gauntlet_daily_v3');location.reload() -->
-      <div id="gauntlet-host"><div class="gaunt-embed-msg">Loading The Gauntlet&hellip;</div></div>
+    <!-- Strangers (no member session): the playable anonymous game. -->
+    <div class="gaunt-embed-out">
+      <div class="gaunt-embed-frame">
+        <!-- First-party embed: gauntlet-embed.js (served from the matching app tier)
+             boots the game chunk straight into this host — NO iframe. Same-origin,
+             so the branded Share menu, the daily-lock localStorage, and a plain
+             console reset all work natively (the iframe broke all three). Reset from
+             the console: localStorage.removeItem('mk_gauntlet_daily_v3');location.reload() -->
+        <div id="gauntlet-host"><div class="gaunt-embed-msg">Loading The Gauntlet&hellip;</div></div>
+      </div>
+      <p class="gaunt-embed-disclaimer">The Gauntlet is a trivia game for entertainment and educational purposes only. It is not financial, investment, or trading advice, and nothing in it is a recommendation or solicitation to buy, sell, or hold any security. Trading involves substantial risk of loss. See the full <a href="https://maketzo.co/disclaimer">disclaimer</a>.</p>
     </div>
-    <p class="gaunt-embed-disclaimer">The Gauntlet is a trivia game for entertainment and educational purposes only. It is not financial, investment, or trading advice, and nothing in it is a recommendation or solicitation to buy, sell, or hold any security. Trading involves substantial risk of loss. See the full <a href="https://maketzo.co/disclaimer">disclaimer</a>.</p>
+    <!-- Members: the account has the real once-a-day lock, so play in the app, not
+         the anonymous embed. This slot replaces the game for a logged-in visitor. -->
+    <div class="gaunt-embed-in">
+      <p class="gaunt-c-eyebrow">Member</p>
+      <h2 class="gaunt-c-title">Open It in Your App</h2>
+      <p class="gaunt-c-sub">Your streak and the full session are waiting.</p>
+      <a class="btn-primary" id="memberOpenLinkTop" href="https://app.maketzo.co">Open the Gauntlet &rarr;</a>
+    </div>
   </section>
 
   <section class="gaunt-convert">
@@ -261,15 +282,23 @@ function hasRef(){ try { return !!(window.MKT && MKT.getRef && MKT.getRef()); } 
   if (ic) ic.setAttribute('d', REC_PLANE);
 })();
 
-// Point the member CTA straight at the Gauntlet inside the app (not app home).
+// Point the member CTAs straight at the Gauntlet inside the app (not app home).
+// Both the in-slot member card (top) and the conversion card (bottom) get the link.
 (function setMemberLink(){
-  var a = document.getElementById('memberOpenLink');
-  if (a) a.href = appBase() + '/#focus-room/brain-teasers?game=gauntlet';
+  var url = appBase() + '/#focus-room/brain-teasers?game=gauntlet';
+  ['memberOpenLink', 'memberOpenLinkTop'].forEach(function (id) {
+    var a = document.getElementById(id);
+    if (a) a.href = url;
+  });
 })();
 
 // Boot the first-party game embed. The loader lives on the matching app tier and
-// injects the SAME game chunk straight into #gauntlet-host — no iframe.
+// injects the SAME game chunk straight into #gauntlet-host — no iframe. Members are
+// steered to the app instead (the kiosk's anonymous lock can't see their account's
+// once-a-day server lock), so skip the boot for them: it would fetch the chunk for
+// nothing and could seed an orphaned anonymous daily record in localStorage.
 (function embed(){
+  if (document.documentElement.classList.contains('mkt-auth')) return;
   var s = document.createElement('script');
   s.src = appBase() + '/gauntlet-embed.js';
   s.defer = true;
