@@ -204,7 +204,7 @@
 .mkr-step-n { flex:0 0 auto; width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center;
   font-family:'Bebas Neue',Impact,sans-serif; font-size:20px; color:#d4af37; border:1px solid rgba(212,175,55,0.5); background:rgba(212,175,55,0.08); }
 .mkr-step p { margin:0; }
-.mkr-how-note { max-width:640px; font-size:13.5px; line-height:1.6; opacity:0.82; }
+.mkr-how-note { font-size:13.5px; line-height:1.6; opacity:0.82; }
 
 @media (max-width:720px) {
   .mkr-tool { padding:16px 13px 13px; }
