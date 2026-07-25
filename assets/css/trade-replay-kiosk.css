@@ -93,6 +93,10 @@
 .mkr-input--buy:focus { border-color:var(--rep-green); box-shadow:0 0 0 2px rgba(23,125,60,0.16); }
 .mkr-input--sell:focus { border-color:var(--rep-red); box-shadow:0 0 0 2px rgba(189,47,39,0.15); }
 .mkr-input::placeholder { color:#8b93a1; }
+/* Permanent "$" on the Buy/Sell money inputs (trader never types it); Shares has none. */
+.mkr-inwrap { position:relative; display:block; }
+.mkr-insign { position:absolute; left:9px; top:50%; transform:translateY(-50%); color:var(--rep-ink3); font-size:12px; pointer-events:none; z-index:1; }
+.mkr-input--buy, .mkr-input--sell { padding-left:19px; text-align:left; }
 .mkr-del { width:22px; height:22px; line-height:1; padding:0; border:none; background:transparent;
   color:var(--rep-ink3); font-size:16px; cursor:pointer; border-radius:4px; transition:color .12s,background .12s; }
 .mkr-del:hover { color:var(--rep-red); background:rgba(198,47,38,0.1); }

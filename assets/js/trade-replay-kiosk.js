@@ -326,6 +326,13 @@
       if (aria) inp.setAttribute('aria-label', aria);
       return inp;
     }
+    // Wrap a money input with a fixed left "$" the trader never types.
+    function moneyWrap(inp){
+      var w = document.createElement('span'); w.className = 'mkr-inwrap';
+      var s = document.createElement('span'); s.className = 'mkr-insign'; s.setAttribute('aria-hidden', 'true'); s.textContent = '$';
+      w.appendChild(s); w.appendChild(inp);
+      return w;
+    }
 
     function buildRow(i){
       var tr = document.createElement('tr');
@@ -349,7 +356,7 @@
       inBuy.value = (f.buy === '' ? '' : f.buy);
       inSell.value = (f.sell === '' ? '' : f.sell);
       inSh.value = (f.shares === '' ? '' : f.shares);
-      cBuy.appendChild(inBuy); cSell.appendChild(inSell); cSh.appendChild(inSh);
+      cBuy.appendChild(moneyWrap(inBuy)); cSell.appendChild(moneyWrap(inSell)); cSh.appendChild(inSh);
 
       var del = document.createElement('button');
       del.type = 'button'; del.className = 'mkr-del'; del.setAttribute('aria-label', 'Delete fill'); del.textContent = '×';
