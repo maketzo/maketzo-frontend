@@ -353,8 +353,9 @@
       var inBuy = makeInput('mkr-input mkr-input--buy', 'Buy price');
       var inSell = makeInput('mkr-input mkr-input--sell', 'Sell price');
       var inSh = makeInput('mkr-input mkr-input--sh', 'Shares');
-      inBuy.value = (f.buy === '' ? '' : f.buy);
-      inSell.value = (f.sell === '' ? '' : f.sell);
+      // Money fields render with two decimals (Ed: "3 reads as $3.00"); Shares is a plain count.
+      inBuy.value = (f.buy === '' ? '' : Number(f.buy).toFixed(2));
+      inSell.value = (f.sell === '' ? '' : Number(f.sell).toFixed(2));
       inSh.value = (f.shares === '' ? '' : f.shares);
       cBuy.appendChild(moneyWrap(inBuy)); cSell.appendChild(moneyWrap(inSell)); cSh.appendChild(inSh);
 
@@ -379,6 +380,9 @@
         onEdit();
       });
       inSh.addEventListener('input', function(){ fills[i].shares = parseField(inSh.value); onEdit(); });
+      // On blur, snap the money field to two decimals so the ledger reads as accounting.
+      inBuy.addEventListener('blur', function(){ var v = parseField(inBuy.value); inBuy.value = (v === '' ? '' : Number(v).toFixed(2)); });
+      inSell.addEventListener('blur', function(){ var v = parseField(inSell.value); inSell.value = (v === '' ? '' : Number(v).toFixed(2)); });
       del.addEventListener('click', function(){ removeRow(refs); });
 
       return refs;

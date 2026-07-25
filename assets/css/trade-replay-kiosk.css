@@ -163,9 +163,20 @@
 .mkr-expand { margin-left:auto; font-size:9px; color:var(--rep-gold); font-weight:700; text-transform:uppercase; letter-spacing:0.06em; }
 
 /* actions */
-.mkr-actions { display:flex; justify-content:space-between; align-items:center; gap:12px;
+.mkr-actions { display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;
   padding-top:13px; border-top:1px solid var(--rep-line-strong); margin-top:2px; }
 .mkr-disclaimer { font-size:11px; color:var(--rep-ink3); line-height:1.5; max-width:62%; margin:0; }
+.mkr-actbtns { display:flex; align-items:center; gap:10px; flex-shrink:0; }
+/* The share widget is the shared marketing .mk-share (audio-player.js); restyle only its
+   trigger to match the light working surface (its dropdown menu stays the brand default). */
+.mkr-share-trigger { display:inline-flex; align-items:center; gap:7px; padding:7px 14px; background:var(--rep-card);
+  border:1px solid var(--rep-line-strong); border-radius:8px; color:var(--rep-ink2); font-family:inherit;
+  font-size:12px; font-weight:600; cursor:pointer; transition:border-color .12s,color .12s; }
+.mkr-share-trigger:hover { border-color:var(--rep-gold); color:var(--rep-ink); }
+.mkr-share-trigger .mk-share__icon { width:14px; height:14px; fill:currentColor; flex-shrink:0; }
+.mkr-memberlink { font-size:11.5px; color:var(--rep-ink3); margin:10px 0 0; text-align:right; }
+.mkr-memberlink a { color:var(--rep-gold); font-weight:600; text-decoration:none; }
+.mkr-memberlink a:hover { text-decoration:underline; }
 .mkr-clear { flex:0 0 auto; padding:7px 15px; background:var(--rep-card); border:1px solid var(--rep-line-strong);
   border-radius:8px; color:var(--rep-ink2); font-family:inherit; font-size:12px; font-weight:600; cursor:pointer; transition:border-color .12s,color .12s; }
 .mkr-clear:hover { border-color:var(--rep-red); color:var(--rep-ink); }
