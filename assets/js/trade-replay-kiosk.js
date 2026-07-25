@@ -386,7 +386,9 @@
         fills.push({ buy: '', sell: '', shares: '' });
         var refs = buildRow(fills.length - 1); rowEls.push(refs); tbody.appendChild(refs.tr);
       }
-      save(); syncDerived();
+      save(); syncDerived(); refreshScaleInState();   // a new fill can open/close a position,
+                                                      // so re-check the scale-in enabled state
+                                                      // every edit (was stuck stale-disabled)
     }
     function removeRow(refs){
       var idx = rowEls.indexOf(refs);
