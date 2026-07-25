@@ -70,7 +70,7 @@
   border:1px dashed var(--rep-line-strong); border-radius:10px; background:var(--rep-card); }
 .mkr-empty[hidden] { display:none; }
 .mkr-ledgerwrap { background:var(--rep-card); overflow-x:auto; }
-.mkr-table { width:100%; border-collapse:separate; border-spacing:0; min-width:620px; }
+.mkr-table { width:100%; border-collapse:separate; border-spacing:0; min-width:690px; }
 .mkr-table th { font-family:var(--rep-mono); font-size:9.5px; font-weight:700; letter-spacing:0.07em;
   text-transform:uppercase; color:var(--rep-ink3); text-align:center; padding:9px 8px;
   border-top:1px solid var(--rep-line-strong); border-bottom:1px solid var(--rep-line-strong); white-space:nowrap; background:var(--rep-head); }
@@ -83,6 +83,7 @@
 .mkr-c--act { color:var(--rep-ink2); font-size:11.5px; }
 .mkr-c--pl.is-up { color:var(--rep-green); }
 .mkr-c--pl.is-down { color:var(--rep-red); }
+.mkr-c--fee { color:var(--rep-ink3); }
 .mkr-c--del { width:28px; padding:0 4px; }
 .mkr-input { width:100%; box-sizing:border-box; padding:7px 8px; background:var(--rep-card);
   border:1px solid var(--rep-line-strong); border-radius:8px; color:var(--rep-ink);
@@ -103,6 +104,7 @@
 .mkr-fc--lbl { text-align:left; font-size:9.5px; letter-spacing:0.08em; color:var(--rep-ink3); }
 .mkr-fc--pl.is-up { color:var(--rep-green); }
 .mkr-fc--pl.is-down { color:var(--rep-red); }
+.mkr-fc--fee { color:var(--rep-ink3); }
 
 /* ── controls ── */
 .mkr-controls { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:14px; }

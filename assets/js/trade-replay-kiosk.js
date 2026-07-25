@@ -253,6 +253,7 @@
     var footShares = document.getElementById('mkrFootShares');
     var footPos  = document.getElementById('mkrFootPos');
     var footAvg  = document.getElementById('mkrFootAvg');
+    var footFees = document.getElementById('mkrFootFees');
     var footPl   = document.getElementById('mkrFootPl');
     var tgls     = tool.querySelectorAll('.mkr-tgl');
     var avgRange = document.getElementById('mkrAvgRange');
@@ -338,6 +339,7 @@
       var cAct = document.createElement('td'); cAct.className = 'mkr-c mkr-c--act';
       var cPos = document.createElement('td'); cPos.className = 'mkr-c mkr-c--n';
       var cAvg = document.createElement('td'); cAvg.className = 'mkr-c mkr-c--n';
+      var cFee = document.createElement('td'); cFee.className = 'mkr-c mkr-c--n mkr-c--fee';
       var cPl = document.createElement('td'); cPl.className = 'mkr-c mkr-c--n mkr-c--pl';
       var cDel = document.createElement('td'); cDel.className = 'mkr-c mkr-c--del';
 
@@ -354,9 +356,9 @@
       cDel.appendChild(del);
 
       tr.appendChild(cNum); tr.appendChild(cBuy); tr.appendChild(cSell); tr.appendChild(cSh);
-      tr.appendChild(cAct); tr.appendChild(cPos); tr.appendChild(cAvg); tr.appendChild(cPl); tr.appendChild(cDel);
+      tr.appendChild(cAct); tr.appendChild(cPos); tr.appendChild(cAvg); tr.appendChild(cFee); tr.appendChild(cPl); tr.appendChild(cDel);
 
-      var refs = { tr: tr, num: cNum, act: cAct, pos: cPos, avg: cAvg, pl: cPl,
+      var refs = { tr: tr, num: cNum, act: cAct, pos: cPos, avg: cAvg, fee: cFee, pl: cPl,
                    buy: inBuy, sell: inSell, sh: inSh, del: del };
 
       inBuy.addEventListener('input', function(){
@@ -403,17 +405,22 @@
       refs.tr.classList.toggle('is-invalid', !!row.invalid);
       refs.tr.classList.toggle('is-blank', !!row.blank);
       refs.num.textContent = (row.blank || row.invalid) ? '' : String(row.seqNo || '');
-      if (row.blank){ refs.act.textContent = ''; refs.pos.textContent = ''; refs.avg.textContent = ''; refs.pl.textContent = ''; refs.pl.className = 'mkr-c mkr-c--n mkr-c--pl'; return; }
-      if (row.invalid){ refs.act.textContent = 'check entry'; refs.pos.textContent = ''; refs.avg.textContent = ''; refs.pl.textContent = ''; refs.pl.className = 'mkr-c mkr-c--n mkr-c--pl'; return; }
+      if (row.blank){ refs.act.textContent = ''; refs.pos.textContent = ''; refs.avg.textContent = ''; refs.fee.textContent = ''; refs.pl.textContent = ''; refs.pl.className = 'mkr-c mkr-c--n mkr-c--pl'; return; }
+      if (row.invalid){ refs.act.textContent = 'check entry'; refs.pos.textContent = ''; refs.avg.textContent = ''; refs.fee.textContent = ''; refs.pl.textContent = ''; refs.pl.className = 'mkr-c mkr-c--n mkr-c--pl'; return; }
       var lbl = actionLabel(row);
       if (row.capped) lbl += ' · capped to ' + intStr(row.cappedTo);
       refs.act.textContent = lbl;
       refs.pos.textContent = row.posAfter === 0 ? 'flat' : signedShares(row.posAfter);
       refs.pos.classList.toggle('is-short', row.posAfter < 0);
       refs.avg.textContent = row.posAfter === 0 ? '—' : money(row.avgCostAfter);
+      // Fees: every fill costs a commission (buys and sells alike), shown as a minus cost.
+      refs.fee.textContent = row.commissionThisFill > 0 ? money(-row.commissionThisFill) : '—';
+      // P/L is realized on exits only, and follows the Gross/Net toggle: in Net mode each
+      // exit nets its OWN fee (net-per-exit); entry fees show in the Fees column + the total.
       var booked = (row.action === 'TRIM' || row.action === 'CLOSE');
-      refs.pl.textContent = booked ? money(row.realizedThisFill) : '—';
-      refs.pl.className = 'mkr-c mkr-c--n mkr-c--pl' + (booked ? (row.realizedThisFill > 0 ? ' is-up' : (row.realizedThisFill < 0 ? ' is-down' : '')) : '');
+      var pl = booked ? ((mode !== 'gross') ? r2(row.realizedThisFill - row.commissionThisFill) : row.realizedThisFill) : 0;
+      refs.pl.textContent = booked ? money(pl) : '—';
+      refs.pl.className = 'mkr-c mkr-c--n mkr-c--pl' + (booked ? (pl > 0 ? ' is-up' : (pl < 0 ? ' is-down' : '')) : '');
     }
 
     function syncDerived(){
@@ -457,6 +464,7 @@
           if (footShares) footShares.textContent = intStr(s.sharesBought);
           if (footPos) footPos.textContent = s.openShares ? signedShares(s.openDirection === 'short' ? -s.openShares : s.openShares) : 'flat';
           if (footAvg) footAvg.textContent = s.openShares ? money(s.openAvgCost) : '—';
+          if (footFees) footFees.textContent = s.totalCommission > 0 ? money(-s.totalCommission) : '—';
           if (footPl){ footPl.textContent = money(headline); footPl.className = 'mkr-fc mkr-fc--pl' + (headline > 0 ? ' is-up' : (headline < 0 ? ' is-down' : '')); }
         }
       }

@@ -21,8 +21,8 @@
 <script src="assets/js/newsletter.js?v=4" defer></script>
 <script src="assets/js/mkt-consent.js?v=1" defer></script>
 <script src="assets/js/checkout.js?v=10" defer></script>
-<link rel="stylesheet" href="assets/css/trade-replay-kiosk.css?v=2">
-<script src="assets/js/trade-replay-kiosk.js?v=2" defer></script>
+<link rel="stylesheet" href="assets/css/trade-replay-kiosk.css?v=3">
+<script src="assets/js/trade-replay-kiosk.js?v=3" defer></script>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; overflow-y: scroll; }
@@ -463,7 +463,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
           <table class="mkr-table">
             <thead>
               <tr>
-                <th>#</th><th>Buy</th><th>Sell</th><th>Shares</th><th>Action</th><th>Position</th><th>Avg Cost</th><th>P/L</th><th aria-label="Delete"></th>
+                <th>#</th><th>Buy</th><th>Sell</th><th>Shares</th><th>Action</th><th>Position</th><th>Avg Cost</th><th>Fees</th><th>P/L</th><th aria-label="Delete"></th>
               </tr>
             </thead>
             <tbody id="mkrRows"></tbody>
@@ -475,6 +475,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
                 <td class="mkr-fc"></td>
                 <td class="mkr-fc mkr-fc--pos" id="mkrFootPos"></td>
                 <td class="mkr-fc mkr-fc--avg" id="mkrFootAvg"></td>
+                <td class="mkr-fc mkr-fc--fee" id="mkrFootFees"></td>
                 <td class="mkr-fc mkr-fc--pl" id="mkrFootPl"></td>
                 <td class="mkr-fc"></td>
               </tr>
