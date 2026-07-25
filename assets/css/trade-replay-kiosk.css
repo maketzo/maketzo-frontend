@@ -1,0 +1,220 @@
+/* assets/css/trade-replay-kiosk.css — PUBLIC Trade Replay kiosk.
+ *
+ * Self-contained, own .mkr-* namespace. The tool keeps the in-app tool's muted-light
+ * "working paper" surface (deliberately light, NOT the dark marketing chrome, so a long
+ * data-entry session doesn't fatigue the eye) via a scoped palette on .mkr-tool. In-page
+ * (no fixed overlay); the page scrolls naturally. Losses render as minus, never parens.
+ */
+
+.mkr-wrap { max-width: 920px; margin: 0 auto; padding: 0 20px; }
+.mkr-section { padding-top: 8px; }
+
+.mkr-tool {
+  position: relative;                 /* anchor for the signup gate overlay */
+  /* scoped MUTED-light palette — soft calm grey, not glaring white, not dark chrome */
+  --rep-surface:#d2d6dd; --rep-card:#e2e5ea; --rep-line:#c2c8d1; --rep-line-strong:#aeb6c1;
+  --rep-ink:#262b35; --rep-ink2:#4d5565; --rep-ink3:#6f7787; --rep-head:#c8cdd6;
+  --rep-gold:#8a6410; --rep-goldbg:rgba(176,138,26,0.20); --rep-goldbd:rgba(138,100,16,0.55);
+  --rep-green:#177d3c; --rep-red:#bd2f27;
+  --rep-mono:'DM Mono', ui-monospace, monospace;
+  --rep-display:'Bebas Neue', Impact, sans-serif;
+  background: var(--rep-surface);
+  border: 1px solid var(--rep-line-strong);
+  border-radius: 16px;
+  padding: 20px 20px 15px;
+  color: var(--rep-ink);
+  box-shadow: 0 18px 46px rgba(0,0,0,0.34);
+}
+
+/* ── header: verdict + toggle + tiles (incl. the free-replay meter) ── */
+.mkr-hero { display:flex; align-items:center; gap:18px; flex-wrap:wrap;
+  padding:15px 18px; margin-bottom:10px; background:var(--rep-card);
+  border:1px solid var(--rep-line-strong); border-radius:14px; }
+.mkr-heromain { display:flex; flex-direction:column; gap:2px; min-width:0; }
+.mkr-herotop { display:flex; align-items:center; gap:10px; margin-bottom:1px; }
+.mkr-hlabel { font-family:var(--rep-mono); font-size:10px; font-weight:700; letter-spacing:0.16em; color:var(--rep-ink3); white-space:nowrap; }
+.mkr-toggle { display:inline-flex; margin-left:auto; flex-shrink:0; border:1px solid var(--rep-line-strong);
+  border-radius:6px; overflow:hidden; background:var(--rep-surface); }
+.mkr-tgl { padding:3px 8px; min-width:58px; box-sizing:border-box; text-align:center;
+  background:transparent; border:none; font-family:var(--rep-mono); font-size:10px; font-weight:700;
+  letter-spacing:0.06em; text-transform:uppercase; color:var(--rep-ink3); cursor:pointer; transition:background .12s,color .12s; }
+.mkr-tgl + .mkr-tgl { border-left:1px solid var(--rep-line-strong); }
+.mkr-tgl.is-active { background:#2b3039; color:#fff; }
+.mkr-net { font-family:var(--rep-display); font-size:42px; line-height:1; letter-spacing:0.02em; color:var(--rep-ink); }
+.mkr-net.is-up { color:var(--rep-green); }
+.mkr-net.is-down { color:var(--rep-red); }
+.mkr-return { font-size:13px; font-weight:700; color:var(--rep-ink2); margin-top:3px; min-height:16px; }
+.mkr-tiles { display:flex; gap:8px; margin-left:auto; flex-wrap:wrap; }
+.mkr-tile { text-align:center; min-width:80px; padding:9px 12px; background:var(--rep-surface);
+  border:1px solid var(--rep-line-strong); border-radius:10px; }
+.mkr-tlabel { font-family:var(--rep-mono); font-size:9px; font-weight:700; letter-spacing:0.09em; color:var(--rep-ink3); margin-bottom:4px; }
+.mkr-tval { font-size:15px; font-weight:700; color:var(--rep-ink); }
+.mkr-tile--meter { background:var(--rep-goldbg); border-color:var(--rep-goldbd); }
+.mkr-meter { font-size:12px; color:var(--rep-ink2); line-height:1.3; }
+.mkr-meter strong { color:var(--rep-gold); font-size:15px; }
+.mkr-meter.is-low strong { color:var(--rep-red); }
+
+/* fee row */
+.mkr-feerow { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:12px; }
+.mkr-feelabel { font-family:var(--rep-mono); font-size:10px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--rep-ink3); }
+.mkr-feewrap { position:relative; display:inline-flex; align-items:center; }
+.mkr-feesign { position:absolute; left:9px; color:var(--rep-ink3); font-size:12px; pointer-events:none; }
+.mkr-fee { width:86px; padding:6px 8px 6px 20px; background:var(--rep-card); border:1px solid var(--rep-line-strong);
+  border-radius:8px; color:var(--rep-ink); font-family:var(--rep-mono); font-size:12.5px; text-align:right; outline:none; }
+.mkr-fee:focus { border-color:var(--rep-gold); }
+.mkr-feenote { font-size:11px; color:var(--rep-ink3); line-height:1.4; flex:1 1 200px; min-width:180px; }
+
+/* ── ledger ── */
+.mkr-body { margin-bottom:14px; }
+.mkr-empty { font-size:12.5px; color:var(--rep-ink2); text-align:center; padding:18px;
+  border:1px dashed var(--rep-line-strong); border-radius:10px; background:var(--rep-card); }
+.mkr-empty[hidden] { display:none; }
+.mkr-ledgerwrap { background:var(--rep-card); overflow-x:auto; }
+.mkr-table { width:100%; border-collapse:separate; border-spacing:0; min-width:620px; }
+.mkr-table th { font-family:var(--rep-mono); font-size:9.5px; font-weight:700; letter-spacing:0.07em;
+  text-transform:uppercase; color:var(--rep-ink3); text-align:center; padding:9px 8px;
+  border-top:1px solid var(--rep-line-strong); border-bottom:1px solid var(--rep-line-strong); white-space:nowrap; background:var(--rep-head); }
+.mkr-c { padding:5px 8px; border-bottom:1px solid var(--rep-line); font-size:13px; vertical-align:middle;
+  font-family:var(--rep-mono); color:var(--rep-ink); text-align:center; white-space:nowrap; }
+.mkr-row:last-child .mkr-c { border-bottom:none; }
+.mkr-row.is-trade-start .mkr-c { border-top:2px solid var(--rep-line-strong); }
+.mkr-c--num { color:var(--rep-ink3); font-size:11px; width:34px; }
+.mkr-c--in { width:104px; padding:3px 5px; }
+.mkr-c--act { color:var(--rep-ink2); font-size:11.5px; }
+.mkr-c--pl.is-up { color:var(--rep-green); }
+.mkr-c--pl.is-down { color:var(--rep-red); }
+.mkr-c--del { width:28px; padding:0 4px; }
+.mkr-input { width:100%; box-sizing:border-box; padding:7px 8px; background:var(--rep-card);
+  border:1px solid var(--rep-line-strong); border-radius:8px; color:var(--rep-ink);
+  font-family:var(--rep-mono); font-size:13px; text-align:center; outline:none; transition:border-color .12s, box-shadow .12s; }
+.mkr-input:hover { border-color:#9aa3b0; }
+.mkr-input:focus { border-color:var(--rep-gold); box-shadow:0 0 0 2px var(--rep-goldbg); }
+.mkr-input--buy:focus { border-color:var(--rep-green); box-shadow:0 0 0 2px rgba(23,125,60,0.16); }
+.mkr-input--sell:focus { border-color:var(--rep-red); box-shadow:0 0 0 2px rgba(189,47,39,0.15); }
+.mkr-input::placeholder { color:#8b93a1; }
+.mkr-del { width:22px; height:22px; line-height:1; padding:0; border:none; background:transparent;
+  color:var(--rep-ink3); font-size:16px; cursor:pointer; border-radius:4px; transition:color .12s,background .12s; }
+.mkr-del:hover { color:var(--rep-red); background:rgba(198,47,38,0.1); }
+.mkr-row.is-blank .mkr-del { visibility:hidden; }
+.mkr-row.is-invalid .mkr-c--act { color:var(--rep-red); }
+.mkr-foot .mkr-fc { padding:9px 8px; border-top:2px solid var(--rep-line-strong); text-align:center;
+  font-family:var(--rep-mono); font-size:12.5px; font-weight:700; color:var(--rep-ink); background:var(--rep-head); }
+.mkr-foot[hidden] { display:none; }
+.mkr-fc--lbl { text-align:left; font-size:9.5px; letter-spacing:0.08em; color:var(--rep-ink3); }
+.mkr-fc--pl.is-up { color:var(--rep-green); }
+.mkr-fc--pl.is-down { color:var(--rep-red); }
+
+/* ── controls ── */
+.mkr-controls { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:14px; }
+.mkr-hint { font-size:11.5px; color:var(--rep-ink3); line-height:1.4; max-width:60%; }
+.mkr-scalein { display:flex; align-items:center; gap:7px; margin-left:auto; }
+.mkr-scalein-lbl { font-size:11.5px; color:var(--rep-ink2); }
+.mkr-pctwrap { position:relative; display:inline-flex; align-items:center; }
+.mkr-pct { width:56px; padding:7px 20px 7px 9px; background:var(--rep-card); border:1px solid var(--rep-line-strong);
+  border-radius:8px; color:var(--rep-ink); font-family:var(--rep-mono); font-size:12.5px; text-align:right; outline:none; }
+.mkr-pct:focus { border-color:var(--rep-gold); }
+.mkr-pctsign { position:absolute; right:9px; color:var(--rep-ink3); font-size:12px; pointer-events:none; }
+.mkr-addsize { padding:8px 14px; background:var(--rep-goldbg); border:1px solid var(--rep-goldbd);
+  border-radius:8px; color:var(--rep-gold); font-family:inherit; font-size:12px; font-weight:700; cursor:pointer; transition:background .12s; }
+.mkr-addsize:hover { background:rgba(212,175,55,0.26); }
+.mkr-addsize.is-off, .mkr-addsize:disabled { opacity:0.45; cursor:not-allowed; }
+
+/* per-trade recap */
+.mkr-tradelist { margin-bottom:14px; }
+.mkr-tradelist:empty { display:none; }
+.mkr-tsum { width:100%; border-collapse:collapse; border:1px solid var(--rep-line-strong);
+  border-radius:10px; overflow:hidden; background:var(--rep-card); }
+.mkr-tsum td { padding:8px 12px; border-bottom:1px solid var(--rep-line); font-family:var(--rep-mono); font-size:12px; white-space:nowrap; color:var(--rep-ink); }
+.mkr-tsum tr:last-child td { border-bottom:none; }
+.mkr-ts-trade { font-weight:700; width:80px; }
+.mkr-ts-dir { color:var(--rep-ink2); width:60px; }
+.mkr-ts-size { color:var(--rep-ink3); text-align:right; width:108px; }
+.mkr-ts-pl { text-align:right; font-weight:700; }
+.mkr-ts-pct { text-align:right; font-weight:700; color:var(--rep-ink2); width:80px; }
+.mkr-ts-pl.is-up, .mkr-ts-pct.is-up { color:var(--rep-green); }
+.mkr-ts-pl.is-down, .mkr-ts-pct.is-down { color:var(--rep-red); }
+.mkr-ts-open { text-align:right; color:var(--rep-gold); font-weight:700; }
+.mkr-tsum tr.is-open { background:var(--rep-goldbg); }
+
+/* charts */
+.mkr-viz { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:14px; }
+.mkr-viz[hidden] { display:none; }
+.mkr-chart { background:var(--rep-card); border:1px solid var(--rep-line-strong); border-radius:10px;
+  padding:10px 12px; cursor:pointer; transition:border-color .12s, box-shadow .12s; }
+.mkr-chart:hover { border-color:var(--rep-gold); box-shadow:0 2px 12px rgba(0,0,0,0.08); }
+.mkr-chart:focus-visible { outline:2px solid var(--rep-gold); outline-offset:2px; }
+.mkr-charthead { display:flex; justify-content:space-between; align-items:baseline; gap:8px; margin-bottom:7px; }
+.mkr-chartlabel { font-family:var(--rep-mono); font-size:9px; font-weight:700; letter-spacing:0.09em; color:var(--rep-ink3); }
+.mkr-chartrange { font-family:var(--rep-mono); font-size:10px; color:var(--rep-ink2); white-space:nowrap; }
+.mkr-chart svg { width:100%; height:56px; display:block; overflow:visible; }
+.mkr-legend { display:flex; align-items:center; gap:14px; margin-top:9px; flex-wrap:wrap; }
+.mkr-leg { display:inline-flex; align-items:center; gap:5px; font-size:10.5px; color:var(--rep-ink2); }
+.mkr-dot { width:8px; height:8px; border-radius:50%; display:inline-block; }
+.mkr-dot--buy { background:#128a3e; }
+.mkr-dot--sell { background:#c62f26; }
+.mkr-linekey { width:15px; height:2px; background:#b8860b; display:inline-block; border-radius:1px; }
+.mkr-linekey--pnl { background:#128a3e; }
+.mkr-expand { margin-left:auto; font-size:9px; color:var(--rep-gold); font-weight:700; text-transform:uppercase; letter-spacing:0.06em; }
+
+/* actions */
+.mkr-actions { display:flex; justify-content:space-between; align-items:center; gap:12px;
+  padding-top:13px; border-top:1px solid var(--rep-line-strong); margin-top:2px; }
+.mkr-disclaimer { font-size:11px; color:var(--rep-ink3); line-height:1.5; max-width:62%; margin:0; }
+.mkr-clear { flex:0 0 auto; padding:7px 15px; background:var(--rep-card); border:1px solid var(--rep-line-strong);
+  border-radius:8px; color:var(--rep-ink2); font-family:inherit; font-size:12px; font-weight:600; cursor:pointer; transition:border-color .12s,color .12s; }
+.mkr-clear:hover { border-color:var(--rep-red); color:var(--rep-ink); }
+
+/* ── signup gate (over the tool; the last result teases behind the blur) ── */
+.mkr-gate { position:absolute; inset:0; z-index:20; display:flex; align-items:center; justify-content:center;
+  padding:24px; border-radius:16px;
+  background:rgba(210,214,221,0.72); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); }
+.mkr-gate[hidden] { display:none; }
+.mkr-gate-card { max-width:460px; text-align:center; background:#0d0f14; color:#e7ecf3;
+  border:1px solid rgba(212,175,55,0.5); border-radius:16px; padding:30px 28px;
+  box-shadow:0 24px 60px rgba(0,0,0,0.5); }
+.mkr-gate-eyebrow { font-family:var(--rep-mono); font-size:10px; font-weight:700; letter-spacing:0.2em; color:#d4af37; margin-bottom:12px; }
+.mkr-gate-title { font-family:var(--rep-display); font-weight:400; font-size:30px; line-height:1.05; letter-spacing:0.01em; color:#fff; margin:0 0 12px; }
+.mkr-gate-sub { font-size:14px; line-height:1.6; color:#aab2c0; margin:0 0 22px; }
+.mkr-gate-cta { display:inline-flex; }
+.mkr-gate-note { font-size:12px; color:#7b8494; margin:14px 0 0; }
+
+/* ── chart enlarge modal (fixed overlay) ── */
+.mkr-cm { position:fixed; inset:0; z-index:9999; display:flex; padding:28px 16px; overflow-y:auto;
+  background:rgba(0,0,0,0.72); backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px); }
+.mkr-cm[hidden] { display:none; }
+.mkr-cm-panel { margin:auto; width:min(720px,95vw); --rep-gold:#9a710d;
+  background:#d9dde3; border:1px solid #aeb6c1; border-radius:16px; padding:20px 22px 15px; color:#262b35;
+  box-shadow:0 20px 56px rgba(0,0,0,0.5); }
+.mkr-cm-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+.mkr-cm-title { font-family:'Bebas Neue',Impact,sans-serif; font-weight:400; font-size:26px; letter-spacing:0.02em; color:#262b35; }
+.mkr-cm-close { width:30px; height:30px; border:1px solid #c2c8d1; border-radius:8px; background:#eceef1;
+  color:#4d5565; font-size:20px; line-height:1; cursor:pointer; transition:border-color .12s,color .12s; }
+.mkr-cm-close:hover { border-color:#bd2f27; color:#bd2f27; }
+.mkr-cm-legend { display:flex; gap:16px; flex-wrap:wrap; margin-bottom:11px; }
+.mkr-cm-legend .mkr-leg { color:#4d5565; }
+.mkr-cm-chart { background:#eceef1; border:1px solid #c8cdd6; border-radius:10px; padding:12px 10px; }
+.mkr-cm-explain { font-size:13px; line-height:1.6; color:#4d5565; margin:15px 2px 4px; }
+.mkr-cm-foot { font-size:11px; color:#6f7787; text-align:right; padding-top:8px; }
+.mkr-cm-foot kbd { font-family:var(--rep-mono,monospace); font-size:10.5px; padding:1px 5px; border:1px solid #c2c8d1; border-radius:4px; color:#4d5565; }
+
+/* ── how-it-works strip (dark chrome, below the tool) ── */
+.mkr-how { padding-top:20px; }
+.mkr-steps { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin:28px 0 24px; }
+.mkr-step { display:flex; gap:14px; align-items:flex-start; }
+.mkr-step-n { flex:0 0 auto; width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+  font-family:'Bebas Neue',Impact,sans-serif; font-size:20px; color:#d4af37; border:1px solid rgba(212,175,55,0.5); background:rgba(212,175,55,0.08); }
+.mkr-step p { margin:0; }
+.mkr-how-note { max-width:640px; font-size:13.5px; line-height:1.6; opacity:0.82; }
+
+@media (max-width:720px) {
+  .mkr-tool { padding:16px 13px 13px; }
+  .mkr-net { font-size:34px; }
+  .mkr-tiles { margin-left:0; width:100%; }
+  .mkr-tile { flex:1; }
+  .mkr-toggle { margin-left:auto; }
+  .mkr-scalein { margin-left:0; }
+  .mkr-hint { max-width:100%; }
+  .mkr-viz { grid-template-columns:1fr; }
+  .mkr-disclaimer { max-width:100%; }
+  .mkr-steps { grid-template-columns:1fr; gap:14px; }
+}
