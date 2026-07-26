@@ -136,6 +136,12 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 .footer-copy { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: 0.04em; color: var(--mk-text-tertiary); }
 .footer-disclaimer { font-size: var(--mk-text-xs); color: var(--mk-text-tertiary); line-height: var(--mk-lead-body); }
 @media (max-width: 800px) { .footer-grid { grid-template-columns: 1fr; gap: 24px; } }
+/* Back-to-hub breadcrumb: return to the Free Tools page */
+.back-to-tools { position: absolute; top: 84px; left: 24px; z-index: 20; display: inline-flex; align-items: center; gap: 7px; padding: 7px 15px 7px 12px; font-family: var(--mk-font-sans); font-size: var(--mk-text-sm); font-weight: 500; letter-spacing: 0.02em; color: var(--mk-text-secondary); background: rgba(6,7,10,.55); border: 1px solid rgba(255,255,255,.10); border-radius: var(--mk-radius-pill); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); transition: color var(--mk-dur-fast), border-color var(--mk-dur-fast), background var(--mk-dur-fast); }
+.back-to-tools:hover { color: var(--mk-brand); border-color: rgba(212,175,55,.40); background: rgba(6,7,10,.72); }
+.back-to-tools .btt-arrow { font-size: 1.05em; line-height: 1; transition: transform var(--mk-dur-snap); }
+.back-to-tools:hover .btt-arrow { transform: translateX(-3px); }
+@media (max-width: 560px) { .back-to-tools { top: 72px; left: 14px; padding: 6px 12px; font-size: var(--mk-text-xs); } }
 </style>
 <script>try{if(document.cookie.indexOf('mkt_csrf=')>-1)document.documentElement.classList.add('mkt-auth');}catch(e){}</script>
 </head>
@@ -172,6 +178,8 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
   </ul>
   <button class="hamburger" id="hamburger" onclick="toggleDrawer()" aria-label="Menu"><span></span><span></span><span></span></button>
 </nav>
+
+<a href="https://maketzo.co/tools" class="back-to-tools" data-cta-source="gauntlet" data-cta-target="tools"><span class="btt-arrow" aria-hidden="true">&larr;</span> Free Tools</a>
 
 <main>
   <section class="gaunt-hero">

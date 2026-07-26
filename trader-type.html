@@ -120,6 +120,12 @@ body:has(.sticky-bar.visible) { padding-bottom: 80px; }
 .sticky-bar-close:hover { color: var(--mk-text-primary); }
 .newsletter-error { position: absolute; bottom: calc(100% + 10px); left: 50%; transform: translateX(-50%); background: #ef4444; color: #fff; font-family: var(--mk-font-mono); font-size: 11px; letter-spacing: 0.04em; padding: 6px 12px; border-radius: 4px; white-space: nowrap; box-shadow: 0 6px 16px rgba(0,0,0,0.45); pointer-events: none; }
 @media (max-width: 700px) { .sticky-bar { flex-wrap: wrap; padding: 10px 16px; gap: 10px; } .sticky-bar-form { flex: 1; } .sticky-bar-input { flex: 1; min-width: 0; width: auto; } }
+/* Back-to-hub breadcrumb: return to the Free Tools page */
+.back-to-tools { position: absolute; top: 84px; left: 24px; z-index: 20; display: inline-flex; align-items: center; gap: 7px; padding: 7px 15px 7px 12px; font-family: var(--mk-font-sans); font-size: var(--mk-text-sm); font-weight: 500; letter-spacing: 0.02em; color: var(--mk-text-secondary); background: rgba(6,7,10,.55); border: 1px solid rgba(255,255,255,.10); border-radius: var(--mk-radius-pill); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); transition: color var(--mk-dur-fast), border-color var(--mk-dur-fast), background var(--mk-dur-fast); }
+.back-to-tools:hover { color: var(--mk-brand); border-color: rgba(212,175,55,.40); background: rgba(6,7,10,.72); }
+.back-to-tools .btt-arrow { font-size: 1.05em; line-height: 1; transition: transform var(--mk-dur-snap); }
+.back-to-tools:hover .btt-arrow { transform: translateX(-3px); }
+@media (max-width: 560px) { .back-to-tools { top: 72px; left: 14px; padding: 6px 12px; font-size: var(--mk-text-xs); } }
 </style>
 </head>
 <body>
@@ -155,6 +161,8 @@ body:has(.sticky-bar.visible) { padding-bottom: 80px; }
   </ul>
   <button class="hamburger" id="hamburger" onclick="toggleDrawer()" aria-label="Menu"><span></span><span></span><span></span></button>
 </nav>
+
+<a href="tools.html" class="back-to-tools" data-cta-source="trader-type" data-cta-target="tools"><span class="btt-arrow" aria-hidden="true">&larr;</span> Free Tools</a>
 
 <main class="diag-page">
   <div id="diag-root"></div>

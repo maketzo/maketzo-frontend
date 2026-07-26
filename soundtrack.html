@@ -229,6 +229,12 @@ hr.mk-rule-gold, hr.mk-rule-gold--bold { margin: 0 auto; max-width: 1180px; }
   .soundtrack-hero { padding: 96px 20px 48px; }
   .soundtrack-player-section { padding: 24px 16px 48px; }
 }
+/* Back-to-hub breadcrumb: return to the Free Tools page */
+.back-to-tools { position: absolute; top: 84px; left: 24px; z-index: 20; display: inline-flex; align-items: center; gap: 7px; padding: 7px 15px 7px 12px; font-family: var(--mk-font-sans); font-size: var(--mk-text-sm); font-weight: 500; letter-spacing: 0.02em; color: var(--mk-text-secondary); background: rgba(6,7,10,.55); border: 1px solid rgba(255,255,255,.10); border-radius: var(--mk-radius-pill); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); transition: color var(--mk-dur-fast), border-color var(--mk-dur-fast), background var(--mk-dur-fast); }
+.back-to-tools:hover { color: var(--mk-brand); border-color: rgba(212,175,55,.40); background: rgba(6,7,10,.72); }
+.back-to-tools .btt-arrow { font-size: 1.05em; line-height: 1; transition: transform var(--mk-dur-snap); }
+.back-to-tools:hover .btt-arrow { transform: translateX(-3px); }
+@media (max-width: 560px) { .back-to-tools { top: 72px; left: 14px; padding: 6px 12px; font-size: var(--mk-text-xs); } }
 </style>
 <script>try{if(document.cookie.indexOf('mkt_csrf=')>-1)document.documentElement.classList.add('mkt-auth');}catch(e){}</script>
 </head>
@@ -267,6 +273,8 @@ hr.mk-rule-gold, hr.mk-rule-gold--bold { margin: 0 auto; max-width: 1180px; }
 </nav>
 
 <!-- ─── HERO ─────────────────────────────────────────────────────── -->
+<a href="tools.html" class="back-to-tools" data-cta-source="soundtrack" data-cta-target="tools"><span class="btt-arrow" aria-hidden="true">&larr;</span> Free Tools</a>
+
 <section class="soundtrack-hero">
   <p class="soundtrack-hero-eyebrow reveal">The MAKETZO Soundtrack</p>
   <h1 class="soundtrack-hero-title reveal">We turned trading mistakes <em>into music</em>.</h1>
