@@ -25,7 +25,7 @@
    means anything. Framed, not buried in small print. */
 .diag-same { margin: 0 auto 18px; max-width: 520px; text-align: left; font-size: 13.5px; line-height: 1.5; color: var(--d-dim); background: rgba(212,175,55,.07); border: 1px solid rgba(212,175,55,.28); border-left: 3px solid var(--d-gold); border-radius: 0 10px 10px 0; padding: 11px 14px; }
 .diag-same b { color: var(--d-gold-hi); font-weight: 700; }
-.diag-streak { display: inline-flex; align-items: center; gap: 6px; margin-bottom: 14px; font-family: var(--mk-font-mono, "DM Mono", monospace); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--d-gold-hi); background: rgba(212,175,55,.1); border: 1px solid rgba(212,175,55,.35); border-radius: 999px; padding: 5px 12px; }
+.diag-streak { display: flex; width: fit-content; align-items: center; gap: 6px; margin: 0 auto 14px; font-family: var(--mk-font-mono, "DM Mono", monospace); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--d-gold-hi); background: rgba(212,175,55,.1); border: 1px solid rgba(212,175,55,.35); border-radius: 999px; padding: 5px 12px; }
 .diag-practice-link { display: block; margin: 14px auto 0; background: none; border: 0; color: var(--d-dim); font-size: 12.5px; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 .diag-practice-link:hover { color: var(--d-ink); }
 
