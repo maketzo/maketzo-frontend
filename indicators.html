@@ -4,11 +4,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Indicators — Maketzo Edge + Pulse · MAKETZO</title>
-<meta name="description" content="Maketzo Edge and Maketzo Pulse — proprietary TradingView indicators. Edge surfaces opportunity windows; Pulse confirms momentum. Pro and Elite tier. Invite-only TradingView access within 24 hours.">
+<title>Maketzo Edge + Pulse: TradingView Indicators That Time the Trade · MAKETZO</title>
+<meta name="description" content="Maketzo Edge and Maketzo Pulse: two invite-only TradingView indicators. Edge times the window to trade, Pulse confirms the momentum behind it. Included with Pro and Elite, or standalone at $29/mo.">
 <meta name="theme-color" content="#06070A">
-<meta property="og:title" content="Maketzo Edge + Pulse — MAKETZO">
-<meta property="og:description" content="Two TradingView indicators. Edge for opportunity windows. Pulse for momentum confirmation. Pro and Elite.">
+<meta property="og:title" content="Maketzo Edge + Pulse · MAKETZO">
+<meta property="og:description" content="Two invite-only TradingView indicators. Edge times the window to trade, Pulse confirms the momentum. Pro and Elite, or standalone at $29/mo.">
 <meta property="og:url" content="https://maketzo.co/indicators">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary">
@@ -164,15 +164,7 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
 
 @media (max-width: 600px) { .page-hero { min-height: 480px; padding: 132px 0 72px; } }
 
-/* ── PROBLEM ROW ────────────────────────────────────────────── */
-.problem-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; max-width: 1100px; margin: 0 auto; }
-.problem-card { padding: 28px 26px; background: var(--mk-surface-raised); border: 1px solid rgba(255,255,255,.06); border-radius: var(--mk-radius-card); }
-.problem-num { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); color: var(--mk-danger-500); margin-bottom: 10px; }
-.problem-title { font-family: var(--mk-font-display); font-size: var(--mk-display-md); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); margin-bottom: 10px; line-height: 1.1; }
-.problem-text { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); line-height: 1.55; }
-@media (max-width: 900px) { .problem-grid { grid-template-columns: 1fr; } }
-
-/* ── EDGE PRIME-TIME CARD — CONCEPTUAL VIZ ───────────────────── */
+/* ── EDGE VISUAL — conceptual chart (the one kept illustration) ── */
 .edge-card {
   max-width: 880px; margin: 0 auto;
   padding: 32px 36px;
@@ -275,198 +267,21 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
   .edge-candle { max-width: 12px; }
 }
 
-/* ── PULSE PANEL ────────────────────────────────────────────── */
-.pulse-wrap { max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 36px; align-items: center; }
-.pulse-visual {
-  position: relative;
-  aspect-ratio: 1.4/1;
-  background:
-    radial-gradient(circle at 85% 50%, rgba(74,222,128,.10), transparent 65%),
-    var(--mk-surface-raised);
-  border: 1px solid rgba(74,222,128,.18);
-  border-radius: var(--mk-radius-card);
-  padding: 56px 28px 48px;
-  overflow: hidden;
-  box-shadow: 0 0 60px rgba(74,222,128,.06) inset;
-}
-.pulse-footnote {
-  position: absolute;
-  bottom: 16px; left: 28px; right: 28px;
-  font-family: var(--mk-font-mono);
-  font-size: var(--mk-mono-xs);
-  letter-spacing: var(--mk-track-eyebrow);
-  text-transform: uppercase;
-  color: var(--mk-text-tertiary);
-  opacity: .55;
-  pointer-events: none;
-  text-align: center;
-}
-.pulse-bars { display: flex; align-items: flex-end; gap: 6px; height: 100%; padding: 8px 0; }
-.pulse-bars div {
-  flex: 1; min-width: 0;
-  background: linear-gradient(180deg, var(--bar-c, rgba(255,255,255,.20)), color-mix(in srgb, var(--bar-c, rgba(255,255,255,.20)) 25%, transparent));
-  border-radius: 2px;
-  animation: pulse-bar 2.4s var(--mk-ease-in-out) infinite;
-}
-.pulse-bars div:nth-child(1)  { height: 10%; animation-delay: 0s;    --bar-c: rgba(248, 113, 113, .55); }
-.pulse-bars div:nth-child(2)  { height: 14%; animation-delay: 0.08s; --bar-c: rgba(248, 113, 113, .55); }
-.pulse-bars div:nth-child(3)  { height: 11%; animation-delay: 0.16s; --bar-c: rgba(248, 113, 113, .55); }
-.pulse-bars div:nth-child(4)  { height: 20%; animation-delay: 0.24s; --bar-c: rgba(255, 255, 255, .32); }
-.pulse-bars div:nth-child(5)  { height: 26%; animation-delay: 0.32s; --bar-c: rgba(255, 255, 255, .32); }
-.pulse-bars div:nth-child(6)  { height: 24%; animation-delay: 0.40s; --bar-c: rgba(255, 255, 255, .32); }
-.pulse-bars div:nth-child(7)  { height: 42%; animation-delay: 0.48s; --bar-c: rgba(140, 225, 150, .60); }
-.pulse-bars div:nth-child(8)  { height: 56%; animation-delay: 0.56s; --bar-c: rgba(110, 225, 140, .76); }
-.pulse-bars div:nth-child(9)  { height: 68%; animation-delay: 0.64s; --bar-c: rgba(90, 225, 135, .88); }
-.pulse-bars div:nth-child(10) { height: 78%; animation-delay: 0.72s; --bar-c: var(--mk-profit-500); }
-.pulse-bars div:nth-child(11) { height: 86%; animation-delay: 0.80s; --bar-c: var(--mk-profit-500); }
-.pulse-bars div:nth-child(12) { height: 92%; animation-delay: 0.88s; --bar-c: var(--mk-profit-500); }
-.pulse-bars div:nth-child(13) { height: 96%; animation-delay: 0.96s; --bar-c: var(--mk-profit-500); }
-@keyframes pulse-bar { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(.92); } }
-.pulse-overlay {
-  position: absolute; top: 16px; left: 18px;
-  display: flex; gap: 10px; align-items: center;
-}
-.pulse-overlay-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--mk-profit-500); box-shadow: 0 0 10px var(--mk-profit-500); }
-.pulse-overlay-text { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-profit-500); }
-.pulse-copy h3 { font-family: var(--mk-font-display); font-size: clamp(1.6rem, 3vw, 2.2rem); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); font-weight: 400; margin-bottom: 14px; line-height: 1.1; }
-.pulse-copy h3 em { font-style: normal; background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
-.pulse-copy p { font-size: var(--mk-text-md); color: var(--mk-text-secondary); line-height: var(--mk-lead-body); margin-bottom: 14px; }
-.pulse-states { display: flex; gap: 24px; margin-top: 20px; }
-.pulse-state { flex: 1; padding-left: 14px; border-left: 2px solid currentColor; }
-.pulse-state.rising { color: var(--mk-profit-500); }
-.pulse-state.fading { color: var(--mk-warning-500); }
-.pulse-state-tag { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; margin-bottom: 6px; color: currentColor; }
-.pulse-state-text { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); line-height: 1.5; }
-@media (max-width: 880px) { .pulse-wrap { grid-template-columns: 1fr; gap: 28px; } }
+/* (Pulse + stacked-feed mockup CSS retired with the slim; the Edge chart above is the one kept visual.) */
 
-/* ── STACKED CHART MOCKUP CARD ──────────────────────────────── */
-.tv-card {
-  max-width: 980px; margin: 0 auto;
-  padding: 32px;
-  background:
-    radial-gradient(circle at 50% 60%, rgba(74,222,128,.05), transparent 70%),
-    var(--mk-surface-raised);
-  border: 1px solid rgba(74,222,128,.20);
-  border-radius: var(--mk-radius-card);
-}
-.tv-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 16px; margin-bottom: 20px; border-bottom: var(--mk-border-hairline); }
-.tv-header-left { display: flex; align-items: center; gap: 10px; }
-.tv-header-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--mk-profit-500); box-shadow: 0 0 8px var(--mk-profit-500); }
-.tv-header-text { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-text-tertiary); }
-.tv-ticker { font-family: var(--mk-font-mono); font-size: var(--mk-mono-sm); color: var(--mk-profit-500); }
-
-.feed-chart { display: flex; flex-direction: column; gap: 12px; }
-.feed-panel {
-  position: relative;
-  border: 1px solid rgba(255,255,255,.04);
-  border-radius: var(--mk-radius-sm);
-  overflow: hidden;
-}
-.feed-panel--price {
-  aspect-ratio: 3.2/1;
-  background:
-    linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px) 0 0/100% 25%,
-    linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px) 0 0/calc(100%/14) 100%,
-    rgba(0,0,0,.30);
-}
-.feed-panel--pulse {
-  aspect-ratio: 5.5/1;
-  background:
-    linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px) 0 0/calc(100%/14) 100%,
-    rgba(0,0,0,.30);
-}
-.feed-panel-label {
-  position: absolute; top: 10px; left: 14px;
-  font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs);
-  letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase;
-  color: var(--mk-text-tertiary);
-  z-index: 2;
-}
-.feed-panel--pulse .feed-panel-label { color: var(--mk-profit-500); }
-
-.feed-prime-zone {
-  position: absolute;
-  top: 0; bottom: 0;
-  left: 30%; width: 36%;
-  background: linear-gradient(180deg, rgba(74,222,128,.18), rgba(74,222,128,.05));
-  border-left: 1px dashed rgba(74,222,128,.45);
-  border-right: 1px dashed rgba(74,222,128,.45);
-  pointer-events: none;
-  z-index: 0;
-}
-.feed-prime-zone-label {
-  position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
-  font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs);
-  letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase;
-  color: var(--mk-profit-500);
-  white-space: nowrap;
-}
-
-.feed-chip {
-  position: absolute; top: 10px; right: 14px;
-  display: inline-flex; align-items: center; gap: 7px;
-  padding: 4px 10px; border-radius: 999px;
-  font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs);
-  letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase;
-  border: 1px solid rgba(255,255,255,.08);
-  background: rgba(0,0,0,.40);
-  color: var(--mk-text-tertiary);
-  z-index: 2;
-}
-.feed-chip-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--mk-danger-500); box-shadow: 0 0 6px rgba(248,113,113,.55); }
-
-.feed-candles {
-  position: relative; z-index: 1;
-  height: 100%;
-  display: flex; align-items: flex-end; justify-content: space-between;
-  padding: 32px 14px 10px;
-  gap: 6px;
-}
-.feed-candle {
-  flex: 1; max-width: 14px;
-  height: var(--h, 40%);
-  background: var(--c, var(--mk-text-tertiary));
-  border-radius: 1px;
-  align-self: flex-end;
-}
-.feed-candle--up { --c: var(--mk-profit-500); }
-.feed-candle--down { --c: var(--mk-danger-500); }
-.feed-candle--mute { --c: var(--mk-text-tertiary); opacity: .55; }
-
-.feed-pulse-bars {
-  position: relative; z-index: 1;
-  height: 100%;
-  display: flex; align-items: flex-end;
-  padding: 28px 14px 10px;
-  gap: 6px;
-}
-.feed-pulse-bars div {
-  flex: 1; min-width: 0;
-  background: linear-gradient(180deg, var(--bar-c, rgba(255,255,255,.20)), color-mix(in srgb, var(--bar-c, rgba(255,255,255,.20)) 25%, transparent));
-  border-radius: 2px;
-}
-.feed-pulse-bars div:nth-child(1)  { height: 12%; --bar-c: rgba(248,113,113,.55); }
-.feed-pulse-bars div:nth-child(2)  { height: 16%; --bar-c: rgba(248,113,113,.55); }
-.feed-pulse-bars div:nth-child(3)  { height: 14%; --bar-c: rgba(255,255,255,.28); }
-.feed-pulse-bars div:nth-child(4)  { height: 22%; --bar-c: rgba(255,255,255,.28); }
-.feed-pulse-bars div:nth-child(5)  { height: 44%; --bar-c: rgba(135,225,150,.65); }
-.feed-pulse-bars div:nth-child(6)  { height: 58%; --bar-c: rgba(110,225,140,.78); }
-.feed-pulse-bars div:nth-child(7)  { height: 72%; --bar-c: rgba(90,225,135,.90); }
-.feed-pulse-bars div:nth-child(8)  { height: 84%; --bar-c: var(--mk-profit-500); }
-.feed-pulse-bars div:nth-child(9)  { height: 90%; --bar-c: var(--mk-profit-500); }
-.feed-pulse-bars div:nth-child(10) { height: 76%; --bar-c: var(--mk-profit-500); }
-.feed-pulse-bars div:nth-child(11) { height: 50%; --bar-c: rgba(130,225,150,.55); }
-.feed-pulse-bars div:nth-child(12) { height: 32%; --bar-c: rgba(255,255,255,.26); }
-.feed-pulse-bars div:nth-child(13) { height: 22%; --bar-c: rgba(255,255,255,.22); }
-.feed-pulse-bars div:nth-child(14) { height: 16%; --bar-c: rgba(255,255,255,.18); }
-
-.tv-caption { text-align: center; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-text-tertiary); margin-top: 18px; opacity: .7; }
-
-@media (max-width: 700px) {
-  .tv-card { padding: 20px; }
-  .feed-candles, .feed-pulse-bars { padding: 28px 8px 8px; gap: 4px; }
-  .feed-candle { max-width: 10px; }
-}
+/* ── EDGE + PULSE — two-question cards ─────────────────────── */
+.ep-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 980px; margin: 0 auto 40px; }
+.ep-card { padding: 32px 30px; background: var(--mk-surface-raised); border: 1px solid rgba(255,255,255,.06); border-radius: var(--mk-radius-card); }
+.ep-card[data-ind="edge"] { border-top: 3px solid var(--mk-brand); }
+.ep-card[data-ind="pulse"] { border-top: 3px solid var(--mk-profit-500); }
+.ep-tag { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); margin-bottom: 12px; }
+.ep-card[data-ind="pulse"] .ep-tag { color: var(--mk-profit-500); }
+.ep-q { font-family: var(--mk-font-display); font-size: clamp(1.4rem, 2.6vw, 1.9rem); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); font-weight: 400; line-height: 1.1; margin-bottom: 12px; }
+.ep-text { font-size: var(--mk-text-md); color: var(--mk-text-secondary); line-height: var(--mk-lead-body); margin: 0; }
+.ep-caption { text-align: center; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-text-tertiary); margin: 14px auto 0; opacity: .7; }
+.ep-note { max-width: 760px; margin: 30px auto 0; text-align: center; font-size: var(--mk-text-base); color: var(--mk-text-secondary); line-height: 1.6; }
+.ep-note strong { color: var(--mk-text-primary); }
+@media (max-width: 820px) { .ep-grid { grid-template-columns: 1fr; max-width: 460px; } }
 
 /* ── ACCESS STEPS ───────────────────────────────────────────── */
 .access-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; max-width: 1000px; margin: 0 auto; }
@@ -605,8 +420,8 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
     <div class="page-hero-text">
       <p class="page-hero-eyebrow">TRADE INTELLIGENCE</p>
       <h1 class="page-hero-title">Two indicators. <em>One read on whether to act.</em></h1>
-      <p class="page-hero-sub">Most traders don't need more indicators. They need fewer bad trades. The real challenge is not finding another setup&mdash;it is knowing when momentum is truly on your side, when the odds are stacked against you, and when the smartest trade is no trade at all.</p>
-      <p class="page-hero-sub"><strong>Maketzo Edge</strong> surfaces the narrow windows when conditions align. <strong>Maketzo Pulse</strong> confirms whether the move you're in still has energy or is about to give back. Together they answer two questions on one screen: should I be in this trade, and is it still working.</p>
+      <p class="page-hero-sub">Most traders don't need more indicators. They need fewer bad trades. The hard part was never finding another setup. It's knowing when the odds are actually on your side, and when the smartest trade is no trade at all.</p>
+      <p class="page-hero-sub"><strong>Maketzo Edge</strong> surfaces the narrow windows when conditions align. <strong>Maketzo Pulse</strong> confirms whether the move still has energy or is about to give it back. Two TradingView indicators that time the strategy you already trade. They don't pick your trades for you.</p>
       <div class="page-hero-cta">
         <button class="btn-primary" data-cta-source="page-hero" style="padding:16px 32px;font-size:var(--mk-text-md);" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
         <p class="final-cta-note">7 days free &middot; No charge until day 8 &middot; Cancel in one click.</p>
@@ -617,46 +432,25 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 
 <hr class="mk-rule-gold">
 
-<!-- THE PROBLEM -->
-<section class="section">
-  <div class="section-inner">
-    <p class="section-eyebrow reveal">WHAT THESE INDICATORS SOLVE</p>
-    <h2 class="section-title reveal">Three ways traders <em>misread the day</em></h2>
-    <p class="section-sub reveal">Most losing sessions don't come from bad setups. They come from trading the wrong moments — wrong hour, wrong momentum, wrong exit. Edge and Pulse give you a clean read on each.</p>
-
-    <div class="problem-grid">
-      <div class="problem-card reveal">
-        <div class="problem-num">PROBLEM 01</div>
-        <div class="problem-title">Trading the dead zones</div>
-        <p class="problem-text">Mid-day chop, post-news drift, slow afternoons. The hours when nothing real is happening are the hours most losses get manufactured. You're not making bad trades — you're trading when there's nothing to trade.</p>
-      </div>
-      <div class="problem-card reveal">
-        <div class="problem-num">PROBLEM 02</div>
-        <div class="problem-title">Missing the prime windows</div>
-        <p class="problem-text">The first 30 minutes and the late-afternoon reversal. When conditions align, they don't stay aligned long. Traders who don't have a clear signal for "this is the window" hesitate through it.</p>
-      </div>
-      <div class="problem-card reveal">
-        <div class="problem-num">PROBLEM 03</div>
-        <div class="problem-title">Holding past the exit</div>
-        <p class="problem-text">The setup worked, the move ran, you have profit on screen — and then you give it back. The window doesn't tell you when it closed. Edge does.</p>
-      </div>
-    </div>
-
-    <div class="mk-cta-repeat">
-      <button class="btn-primary" data-cta-source="what-edge" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
-    </div>
-  </div>
-</section>
-
-<hr class="mk-rule-gold">
-
 <!-- EDGE OUTCOME PANELS -->
 <section class="section section-dark">
   <div class="section-inner">
-    <p class="section-eyebrow reveal">MAKETZO EDGE</p>
-    <h2 class="section-title reveal">Three signals. <em>Three decisions.</em></h2>
-    <p class="section-sub reveal">Most traders already know their setups. What they struggle with is selectivity&mdash;knowing when conditions are truly aligned and when the highest-probability window has arrived. Maketzo Edge turns that judgment into a clean visual decision layer.</p>
-    <p class="section-sub reveal">PRIME TIME highlights the narrow periods when momentum, structure, and market context are working together. Risk banners tell you when to scale out, tighten up, or step aside entirely. Fewer second guesses. Fewer impulsive trades. More focus on the moments that matter.</p>
+    <p class="section-eyebrow reveal">EDGE + PULSE</p>
+    <h2 class="section-title reveal">Two questions, <em>answered on one chart</em></h2>
+    <p class="section-sub reveal">Most losing sessions aren't bad setups. They're good setups traded at the wrong moment, or held long past the point the move was over. Edge and Pulse answer the two questions that decide which it is.</p>
+
+    <div class="ep-grid">
+      <div class="ep-card reveal" data-ind="edge">
+        <p class="ep-tag">Maketzo Edge</p>
+        <h3 class="ep-q">Is the window open?</h3>
+        <p class="ep-text">Edge marks the narrow windows when conditions line up for your setup, and just as clearly, when they don't and the play is to stand down. Once you're in, it flags the cues to scale out or step off.</p>
+      </div>
+      <div class="ep-card reveal" data-ind="pulse">
+        <p class="ep-tag">Maketzo Pulse</p>
+        <h3 class="ep-q">Is there energy behind it?</h3>
+        <p class="ep-text">Pulse reads the momentum under the move, rising or fading, at a glance. It runs on top of Edge as a second confirmation, so you hold the moves with real power and stop feeding the ones that are out of gas.</p>
+      </div>
+    </div>
 
     <div class="edge-card reveal">
       <div class="edge-card-header">
@@ -664,7 +458,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
         <span class="edge-card-time">09:38 AM ET</span>
       </div>
       <div class="edge-chart">
-        <svg viewBox="0 0 400 200" fill="none" xmlns="http://www.w3.org/2000/svg" class="edge-chart-svg" role="img" aria-label="A small-cap momentum run: entry at the start of Prime Time near the lows, exit signal fires at the top.">
+        <svg viewBox="0 0 400 200" fill="none" xmlns="http://www.w3.org/2000/svg" class="edge-chart-svg" role="img" aria-label="A small-cap momentum run: entry as the window opens near the lows, exit signal fires at the top.">
           <defs>
             <marker id="edgeArrow" markerWidth="9" markerHeight="9" refX="4.5" refY="4.5" orient="auto" markerUnits="userSpaceOnUse">
               <path d="M0,0 L9,4.5 L0,9 Z" fill="#E6B450"/>
@@ -698,121 +492,21 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
           <line x1="151" y1="146" x2="313" y2="44" stroke="#E6B450" stroke-width="2" marker-end="url(#edgeArrow)" opacity="0.9"/>
           <circle cx="142" cy="152" r="5" fill="#4CAF82"/><circle cx="142" cy="152" r="9" fill="rgba(76,175,130,0.2)"/>
           <circle cx="322" cy="38" r="5" fill="#E05252"/><circle cx="322" cy="38" r="9" fill="rgba(224,82,82,0.2)"/>
-          <text x="220" y="190" text-anchor="middle" font-family="'DM Mono', monospace" font-size="9" fill="#4CAF82" letter-spacing="1.5">PRIME TIME</text>
+          <text x="220" y="190" text-anchor="middle" font-family="'DM Mono', monospace" font-size="9" fill="#4CAF82" letter-spacing="1.5">WINDOW OPEN</text>
           <text x="355" y="190" text-anchor="middle" font-family="'DM Mono', monospace" font-size="9" fill="#E05252" letter-spacing="1.5">EXIT</text>
         </svg>
       </div>
       <div class="edge-card-chips">
         <span class="edge-chip edge-chip--warn">SCALE OUT</span>
-        <span class="edge-chip edge-chip--exit">EXIT NOW</span>
+        <span class="edge-chip edge-chip--exit">EXIT</span>
       </div>
     </div>
+    <p class="ep-caption reveal">Illustrative. The live annotated charts and replay clips live inside the app.</p>
+
+    <p class="ep-note reveal">Neither one picks your trades or sets your risk. <strong>They time the strategy you already trade.</strong></p>
 
     <div class="mk-cta-repeat">
-      <button class="btn-primary" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial</button>
-    </div>
-  </div>
-</section>
-
-<hr class="mk-rule-gold">
-
-<!-- PULSE -->
-<section class="section">
-  <div class="section-inner">
-    <p class="section-eyebrow reveal">MAKETZO PULSE</p>
-    <h2 class="section-title reveal">One glance. <em>Rising or fading.</em></h2>
-    <p class="section-sub reveal">Great trades begin long before the entry. Maketzo Pulse measures the underlying energy of the market and makes it obvious when momentum is building, fading, or absent altogether.</p>
-    <p class="section-sub reveal">Instead of forcing trades in dead conditions, you can quickly see when the tape has real power behind it. When Pulse is alive, your setups deserve attention. When it goes quiet, the best trade is often no trade.</p>
-
-    <div class="pulse-wrap">
-      <div class="pulse-visual reveal">
-        <div class="pulse-overlay">
-          <span class="pulse-overlay-dot"></span>
-          <span class="pulse-overlay-text">Strength Building</span>
-        </div>
-        <div class="pulse-bars">
-          <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-        </div>
-        <div class="pulse-footnote">Bars represent momentum strength &mdash; not price candles</div>
-      </div>
-      <div class="pulse-copy reveal">
-        <h3>The momentum read <em>you didn't have to derive</em></h3>
-        <p>Pulse runs on top of Edge as a second confirmation. It answers a different question: "the move I'm in — is it still moving, or am I about to give it all back?"</p>
-        <p>One glance. Rising or fading. That's the entire spec. Designed to be acted on, not interpreted.</p>
-        <div class="pulse-states">
-          <div class="pulse-state rising">
-            <div class="pulse-state-tag">Rising</div>
-            <div class="pulse-state-text">Energy is still building. Hold the position. Add only on your plan, never on Pulse alone.</div>
-          </div>
-          <div class="pulse-state fading">
-            <div class="pulse-state-tag">Fading</div>
-            <div class="pulse-state-text">Energy is leaving. Time to harvest. Combined with Edge "Exit Window," this is the moment to ring the register.</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="mk-cta-repeat">
-      <button class="btn-primary" data-cta-source="pulse" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
-    </div>
-  </div>
-</section>
-
-<hr class="mk-rule-gold">
-
-<!-- TRADINGVIEW FEED MOCKUP -->
-<section class="section section-dark">
-  <div class="section-inner">
-    <p class="section-eyebrow reveal">WHAT YOU'LL SEE</p>
-    <h2 class="section-title reveal">Your private Edge feed <em>in TradingView</em></h2>
-    <p class="section-sub reveal">Together, Edge and Pulse simplify one of the hardest decisions in trading: when to act and when to wait. Pulse tells you whether meaningful momentum is present. Edge shows exactly when structure and timing align.</p>
-    <p class="section-sub reveal">The result is a cleaner chart, clearer decisions, and fewer trades taken out of boredom, fear, or urgency. You still make the decisions. Maketzo makes the favorable conditions far more obvious.</p>
-
-    <div class="tv-card reveal">
-      <div class="tv-header">
-        <div class="tv-header-left">
-          <span class="tv-header-dot"></span>
-          <span class="tv-header-text">Maketzo Edge · Live</span>
-        </div>
-        <span class="tv-ticker">PHIO &middot; 1m</span>
-      </div>
-
-      <div class="feed-chart">
-        <div class="feed-panel feed-panel--price">
-          <span class="feed-panel-label">Price</span>
-          <span class="feed-chip"><span class="feed-chip-dot"></span>No Trade</span>
-          <div class="feed-prime-zone"><span class="feed-prime-zone-label">Prime Time</span></div>
-          <div class="feed-candles">
-            <span class="feed-candle feed-candle--down" style="--h:26%"></span>
-            <span class="feed-candle feed-candle--up"   style="--h:32%"></span>
-            <span class="feed-candle feed-candle--down" style="--h:28%"></span>
-            <span class="feed-candle feed-candle--up"   style="--h:42%"></span>
-            <span class="feed-candle feed-candle--up"   style="--h:54%"></span>
-            <span class="feed-candle feed-candle--up"   style="--h:66%"></span>
-            <span class="feed-candle feed-candle--up"   style="--h:78%"></span>
-            <span class="feed-candle feed-candle--up"   style="--h:88%"></span>
-            <span class="feed-candle feed-candle--up"   style="--h:94%"></span>
-            <span class="feed-candle feed-candle--down" style="--h:89%"></span>
-            <span class="feed-candle feed-candle--down" style="--h:84%"></span>
-            <span class="feed-candle feed-candle--down" style="--h:80%"></span>
-            <span class="feed-candle feed-candle--mute" style="--h:77%"></span>
-            <span class="feed-candle feed-candle--mute" style="--h:75%"></span>
-          </div>
-        </div>
-
-        <div class="feed-panel feed-panel--pulse">
-          <span class="feed-panel-label">Pulse Active</span>
-          <div class="feed-pulse-bars">
-            <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-          </div>
-        </div>
-      </div>
-
-      <p class="tv-caption">Illustrative &mdash; no indicator internals shown</p>
-    </div>
-
-    <div class="mk-cta-repeat">
-      <button class="btn-primary" data-cta-source="feed" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
+      <button class="btn-primary" data-cta-source="edge-pulse" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial</button>
     </div>
   </div>
 </section>
@@ -824,7 +518,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
   <div class="section-inner">
     <p class="section-eyebrow reveal">HOW ACCESS WORKS</p>
     <h2 class="section-title reveal">Three steps. <em>Under 24 hours.</em></h2>
-    <p class="section-sub reveal">Edge and Pulse are private indicators. Access is granted by hand to active subscribers — keeps the signal clean.</p>
+    <p class="section-sub reveal">Edge and Pulse are invite-only indicators, granted by hand to active subscribers. That keeps the group small and the signal clean.</p>
 
     <div class="access-grid">
       <div class="access-card reveal">
@@ -857,7 +551,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
   <div class="section-inner">
     <p class="section-eyebrow reveal">TWO WAYS TO ACCESS</p>
     <h2 class="section-title reveal">Bundled with Pro. <em>Or standalone.</em></h2>
-    <p class="section-sub reveal">Edge and Pulse come included with every <strong>Pro</strong> and <strong>Elite</strong> subscription. If the full MAKETZO platform — journaling, Focus Room, COACH SAYS, the Strike System — isn't what you're shopping for, you can buy the indicators by themselves. Same invite pipeline, same 24-hour SLA.</p>
+    <p class="section-sub reveal">Edge and Pulse come included with every <strong>Pro</strong> and <strong>Elite</strong> subscription. If you're not shopping for the full MAKETZO platform (journaling, Focus Room, COACH SAYS, the Strike System), you can buy the indicators on their own. Same invite pipeline, same 24-hour turnaround.</p>
 
     <div class="path-grid">
       <div class="path-card path-card--bundled reveal">
@@ -868,7 +562,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
           <li>Maketzo <strong>Edge</strong> + <strong>Pulse</strong> · TradingView invite within 24 hours</li>
           <li>Trade journal · P&amp;L tracking · cents/share metrics · discipline score</li>
           <li>COACH SAYS check-ins · State Machine · Strike System · 24-hour lockout</li>
-          <li>Focus Room · Zone Tracks · meditation reset</li>
+          <li>Focus Room · daily contracts · guided resets · warm-up games</li>
         </ul>
         <div class="path-card-cta">
           <button class="btn-primary" data-cta-source="indicators-bundled" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
@@ -894,7 +588,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
         <div class="path-card-cta">
           <button class="btn-secondary" data-cta-source="indicators-standalone" data-tier="indicators" data-interval="month" onclick="handleCheckout(event)">Get Standalone Access &rarr;</button>
           <p class="path-card-cta-note">$29/mo &middot; charged today &middot; no trial &middot; cancel anytime</p>
-          <p class="path-card-cta-note"><a class="path-card-cta-yearly" href="#" data-cta-source="indicators-standalone-yearly" data-tier="indicators" data-interval="year" onclick="handleCheckout(event);return false;">Or pay annually &mdash; $290/yr (save ~17%)</a></p>
+          <p class="path-card-cta-note"><a class="path-card-cta-yearly" href="#" data-cta-source="indicators-standalone-yearly" data-tier="indicators" data-interval="year" onclick="handleCheckout(event);return false;">Or pay annually &middot; $290/yr (save ~17%)</a></p>
         </div>
       </div>
     </div>
@@ -926,7 +620,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 <hr class="mk-rule-gold mk-rule-gold--bold" aria-hidden="true">
 <section class="final-cta-section">
   <p class="final-cta-eyebrow reveal">7-DAY FREE TRIAL · EDGE + PULSE INCLUDED ON PRO</p>
-  <h2 class="final-cta-title reveal">Trade with Edge. Journal with Discipline. <em>Win.</em></h2>
+  <h2 class="final-cta-title reveal">Trade the good windows. <em>Sit out the rest.</em></h2>
   <div class="final-cta-btn-wrap reveal">
     <button class="btn-primary" style="padding:18px 44px;font-size:var(--mk-text-md);" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial</button>
     <p class="final-cta-note">Pro · $49/mo · Edge + Pulse + Focus Room + System · Cancel in one click</p>
