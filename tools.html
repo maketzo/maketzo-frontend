@@ -1,17 +1,21 @@
 <!DOCTYPE html>
-<!-- tools — the free MAKETZO toolkit hub: public no-signup tools + in-app tools free on every plan -->
+<!-- tools: the free MAKETZO toolkit hub. A guided "get sharp" path of no-signup tools plus in-app tools free on every plan. -->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Free Trading Tools for Small-Cap Traders · MAKETZO</title>
-<meta name="description" content="Free tools for small-cap day traders: practice scaling with Trade Replay, drill discipline in The Gauntlet, reset in 3 minutes, and read the Trading OS. Several run free in your browser, no signup. The rest are free in the app on every plan.">
+<meta name="description" content="A guided set of free tools for small-cap day traders. Meet your trading self, rehearse scaling risk-free, drill discipline, and reset your head. Most run right here in your browser, no signup.">
 <meta name="theme-color" content="#06070A">
 <meta property="og:title" content="Free Trading Tools for Small-Cap Traders">
-<meta property="og:description" content="Practice scaling, drill discipline, reset your head, and read the whole trading process on one page. Several run free in your browser, no signup.">
+<meta property="og:description" content="Six free tools, in the order a disciplined trader would use them. Rehearse scaling, drill discipline, reset your head. Most run free in your browser, no signup.">
 <meta property="og:url" content="https://maketzo.co/tools">
 <meta property="og:type" content="website">
+<meta property="og:image" content="https://maketzo.co/assets/logo-mark.png">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Free Trading Tools for Small-Cap Traders">
+<meta name="twitter:description" content="Six free tools, in the order a disciplined trader would use them. Most run free in your browser, no signup.">
+<meta name="twitter:image" content="https://maketzo.co/assets/logo-mark.png">
 <link rel="canonical" href="https://maketzo.co/tools">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -91,32 +95,76 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 .reveal.visible { opacity: 1; transform: translateY(0); }
 
 /* ── Free Tools hub ──────────────────────────────────────────────── */
-.tools-hero { padding: 128px 24px 8px; text-align: center; max-width: 860px; margin: 0 auto; }
+.tools-hero { padding: 128px 24px 8px; text-align: center; max-width: 880px; margin: 0 auto; }
 .tools-eyebrow { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); margin-bottom: 18px; }
-.tools-h1 { font-family: var(--mk-font-display); font-size: clamp(2.4rem, 5vw, 3.8rem); letter-spacing: var(--mk-track-display); text-transform: uppercase; line-height: 1.05; margin-bottom: 20px; }
+.tools-h1 { font-family: var(--mk-font-display); font-size: clamp(2.4rem, 5vw, 3.9rem); letter-spacing: var(--mk-track-display); text-transform: uppercase; line-height: 1.04; margin-bottom: 20px; }
 .tools-h1 em { font-style: normal; background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
-.tools-sub { font-size: 1.15rem; color: var(--mk-text-secondary); line-height: 1.55; max-width: 640px; margin: 0 auto; }
+.tools-sub { font-size: 1.15rem; color: var(--mk-text-secondary); line-height: 1.55; max-width: 660px; margin: 0 auto; }
 
-.tools-section { max-width: 1100px; margin: 0 auto; padding: 30px 24px; }
-.tools-group-label { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); text-align: center; margin-bottom: 24px; }
-.tools-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-.tools-grid--two { max-width: 720px; margin: 0 auto; grid-template-columns: repeat(2, 1fr); }
-.tool-card { display: flex; flex-direction: column; gap: 10px; padding: 24px 22px; background: var(--mk-surface-raised); border: 1px solid rgba(255,255,255,.06); border-radius: var(--mk-radius-card); transition: transform var(--mk-dur-med) var(--mk-ease-out), border-color var(--mk-dur-med); }
+/* ── The guided path ─────────────────────────────────────────────── */
+.path { max-width: 880px; margin: 52px auto 0; padding: 0 24px; }
+.station { display: grid; grid-template-columns: 52px 1fr; column-gap: 24px; }
+.station-rail { display: flex; flex-direction: column; align-items: center; }
+.station-num { flex: 0 0 auto; width: 46px; height: 46px; border-radius: var(--mk-radius-pill); background: var(--mk-gold-gradient); color: var(--mk-text-on-gold); font-family: var(--mk-font-display); font-size: 1.5rem; line-height: 1; display: inline-flex; align-items: center; justify-content: center; border: 1px solid rgba(0,0,0,.18); box-shadow: 0 0 0 0 rgba(212,175,55,0); }
+.station-line { width: 2px; flex: 1 1 auto; min-height: 28px; margin-top: 8px; background: linear-gradient(180deg, var(--mk-gold-700), rgba(122,98,40,.12)); }
+.station:last-child .station-line { display: none; }
+.station-body { padding-top: 4px; padding-bottom: 44px; }
+.station-eyebrow { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); margin-bottom: 8px; }
+.station-title { font-family: var(--mk-font-display); font-size: var(--mk-display-md); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); font-weight: 400; line-height: 1.06; margin-bottom: 16px; }
+.station-cards { display: grid; grid-template-columns: 1fr; gap: 14px; }
+.station-cards--multi { grid-template-columns: repeat(3, 1fr); }
+
+.tool-card { display: flex; flex-direction: column; gap: 10px; padding: 22px 22px; background: var(--mk-surface-raised); border: 1px solid rgba(255,255,255,.06); border-radius: var(--mk-radius-card); transition: transform var(--mk-dur-med) var(--mk-ease-out), border-color var(--mk-dur-med); }
 .tool-card:hover { transform: translateY(-4px); border-color: rgba(212,175,55,.30); }
-.tool-card-tag { align-self: flex-start; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: 0.08em; text-transform: uppercase; color: var(--mk-text-tertiary); border: 1px solid var(--mk-smoke-700, rgba(255,255,255,.1)); border-radius: 99px; padding: 4px 10px; }
+.tool-card--featured { padding: 30px 28px; background: linear-gradient(135deg, rgba(212,175,55,.10), transparent 62%), var(--mk-surface-raised); border-color: rgba(212,175,55,.28); }
+.tool-card-tag { align-self: flex-start; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: 0.08em; text-transform: uppercase; color: var(--mk-text-tertiary); border: 1px solid rgba(255,255,255,.1); border-radius: var(--mk-radius-pill); padding: 4px 10px; }
 .tool-card-name { font-family: var(--mk-font-display); font-size: var(--mk-display-sm); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); font-weight: 400; line-height: 1.1; }
+.tool-card--featured .tool-card-name { font-size: var(--mk-display-md); }
 .tool-card-desc { font-size: var(--mk-text-sm); color: var(--mk-text-tertiary); line-height: 1.55; flex: 1; }
+.tool-card--featured .tool-card-desc { font-size: var(--mk-text-md); color: var(--mk-text-secondary); }
 .tool-card-cta { display: inline-flex; align-items: center; gap: 6px; align-self: flex-start; margin-top: 4px; font-family: var(--mk-font-sans); font-size: var(--mk-text-sm); font-weight: 600; letter-spacing: 0.02em; color: var(--mk-brand); transition: gap var(--mk-dur-snap); }
 .tool-card:hover .tool-card-cta { gap: 10px; }
-.tools-inapp-note { text-align: center; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: 0.04em; color: var(--mk-text-tertiary); margin-top: 22px; }
-@media (max-width: 900px) { .tools-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 560px) { .tools-grid, .tools-grid--two { grid-template-columns: 1fr; } }
+/* single-tool stations fill the width: content left, action (or in-app tag) right */
+.tool-card--row { flex-direction: row; align-items: center; gap: 28px; }
+.tool-card--row .tool-card-main { flex: 1 1 auto; display: flex; flex-direction: column; gap: 8px; }
+.tool-card--row .tool-card-cta { margin-top: 0; flex: 0 0 auto; }
+.tool-card--row .tool-card-tag { align-self: center; flex: 0 0 auto; margin: 0; }
 
-.tools-cta { text-align: center; padding: 40px 24px 96px; }
+/* per-station pill pulse, cascading down the path as each rung reveals */
+.station.visible .station-num { animation: pathPulse 1.05s var(--mk-ease-out) .12s both; }
+@keyframes pathPulse {
+  0% { box-shadow: 0 0 0 0 rgba(212,175,55,0); }
+  42% { box-shadow: 0 0 0 6px rgba(212,175,55,.16), 0 10px 26px -8px rgba(212,175,55,.55); }
+  100% { box-shadow: 0 0 0 0 rgba(212,175,55,0); }
+}
+
+/* ── How the free works ──────────────────────────────────────────── */
+.freebox-wrap { padding: 0 24px; }
+.freebox { max-width: 720px; margin: 56px auto 0; padding: 24px 30px 26px; background: var(--mk-surface-raised); border: 1px solid rgba(212,175,55,.18); border-radius: var(--mk-radius-card); }
+.freebox-title { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); text-align: center; margin-bottom: 8px; }
+.freebox-row { display: grid; grid-template-columns: 190px 1fr; gap: 18px; padding: 14px 0; border-top: 1px solid rgba(255,255,255,.06); }
+.freebox-row:first-of-type { border-top: 0; }
+.freebox-k { font-family: var(--mk-font-sans); font-size: var(--mk-text-sm); font-weight: 600; color: var(--mk-text-primary); }
+.freebox-v { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); line-height: 1.5; }
+
+/* ── Closing CTA ─────────────────────────────────────────────────── */
+.tools-cta { text-align: center; padding: 52px 24px 96px; }
 .tools-cta h2 { font-family: var(--mk-font-display); font-size: clamp(1.7rem, 3.4vw, 2.4rem); letter-spacing: var(--mk-track-display); text-transform: uppercase; margin-bottom: 14px; }
 .tools-cta h2 em { font-style: normal; background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
-.tools-cta p { font-size: 1.05rem; color: var(--mk-text-secondary); line-height: 1.55; max-width: 560px; margin: 0 auto 26px; }
+.tools-cta p { font-size: 1.05rem; color: var(--mk-text-secondary); line-height: 1.55; max-width: 580px; margin: 0 auto 26px; }
 .tools-cta .tools-cta-hint { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: 0.04em; text-transform: none; color: var(--mk-text-tertiary); max-width: none; margin: 18px auto 0; }
+
+@media (max-width: 760px) {
+  .station-cards--multi { grid-template-columns: 1fr; }
+  .freebox-row { grid-template-columns: 1fr; gap: 4px; }
+}
+@media (max-width: 560px) {
+  .path { padding: 0 18px; }
+  .station { column-gap: 16px; grid-template-columns: 44px 1fr; }
+  .station-num { width: 40px; height: 40px; font-size: 1.3rem; }
+  .tool-card--row { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .tool-card--row .tool-card-tag { align-self: flex-start; }
+}
 </style>
 <script>try{if(document.cookie.indexOf('mkt_csrf=')>-1)document.documentElement.classList.add('mkt-auth');}catch(e){}</script>
 </head>
@@ -156,81 +204,148 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 
 <!-- ─── HERO ─────────────────────────────────────────────────────── -->
 <section class="tools-hero">
-  <p class="tools-eyebrow reveal">THE MAKETZO TOOLKIT · FREE</p>
-  <h1 class="tools-h1 reveal">Tools that keep you sharp. <em>Free from the first click.</em></h1>
-  <p class="tools-sub reveal">A working set of tools for small-cap day traders. A few run right here in your browser with no signup. The rest come free inside MAKETZO on every plan, from day one.</p>
+  <p class="tools-eyebrow reveal">04 &middot; FREE TOOLS</p>
+  <h1 class="tools-h1 reveal">Get sharp <em>before you risk a dollar.</em></h1>
+  <p class="tools-sub reveal">A working set of tools for small-cap day traders, free from the first click. Most run right here in your browser, no signup. Walk them top to bottom, in the order a disciplined trader would use them.</p>
 </section>
 
-<hr class="mk-rule-gold">
+<!-- ─── THE PATH ─────────────────────────────────────────────────── -->
+<section class="path" id="tools-path">
 
-<!-- ─── GROUP 1 · RUN FREE RIGHT NOW ─────────────────────────────── -->
-<section class="tools-section" id="tools-public">
-  <p class="tools-group-label reveal">RUN THESE FREE RIGHT NOW · NO SIGNUP</p>
-  <div class="tools-grid">
-    <div class="tool-card reveal">
-      <div class="tool-card-name">Trade Replay</div>
-      <p class="tool-card-desc">Replay any past chart and practice scaling in and out, the hardest skill in trading, with zero capital at risk.</p>
-      <a class="tool-card-cta" href="trade-replay.html" data-cta-source="tools" data-cta-target="trade-replay">Open Trade Replay <span aria-hidden="true">&rarr;</span></a>
+  <!-- 01 -->
+  <div class="station reveal">
+    <div class="station-rail"><span class="station-num">01</span><span class="station-line"></span></div>
+    <div class="station-body">
+      <p class="station-eyebrow">START HERE</p>
+      <h2 class="station-title">Meet your trading self</h2>
+      <div class="station-cards">
+        <div class="tool-card tool-card--featured">
+          <div class="tool-card-name">Can You Trade?</div>
+          <p class="tool-card-desc">Two minutes on a tape that fights back. The money is fake, the tell is real. It shows exactly how you trade and where your discipline leaks, then names the trader you really are.</p>
+          <a class="tool-card-cta" href="trader-type.html" data-cta-source="tools" data-cta-target="trader-type">Take the test <span aria-hidden="true">&rarr;</span></a>
+        </div>
+      </div>
     </div>
-    <div class="tool-card reveal">
-      <div class="tool-card-name">The Gauntlet</div>
-      <p class="tool-card-desc">A rapid-fire discipline game. The only way to win is to skip the trades that were never there.</p>
-      <a class="tool-card-cta" href="gauntlet.html" data-cta-source="tools" data-cta-target="gauntlet">Play The Gauntlet <span aria-hidden="true">&rarr;</span></a>
+  </div>
+
+  <!-- 02 -->
+  <div class="station reveal">
+    <div class="station-rail"><span class="station-num">02</span><span class="station-line"></span></div>
+    <div class="station-body">
+      <h2 class="station-title">Learn the game</h2>
+      <div class="station-cards">
+        <div class="tool-card tool-card--row">
+          <div class="tool-card-main">
+            <div class="tool-card-name">Trading OS</div>
+            <p class="tool-card-desc">The entire trading process on one page: when to trade, when to size down, and when to walk away. Save it, print it, live by it.</p>
+          </div>
+          <a class="tool-card-cta" href="trading-os.html" data-cta-source="tools" data-cta-target="trading-os">Read the Trading OS <span aria-hidden="true">&rarr;</span></a>
+        </div>
+      </div>
     </div>
-    <div class="tool-card reveal">
-      <div class="tool-card-name">3-Minute Reset</div>
-      <p class="tool-card-desc">A guided reset to clear tilt and steady your hands before you touch the next setup.</p>
-      <a class="tool-card-cta" href="zone.html" data-cta-source="tools" data-cta-target="zone">Start the reset <span aria-hidden="true">&rarr;</span></a>
+  </div>
+
+  <!-- 03 -->
+  <div class="station reveal">
+    <div class="station-rail"><span class="station-num">03</span><span class="station-line"></span></div>
+    <div class="station-body">
+      <h2 class="station-title">Rehearse, risk-free</h2>
+      <div class="station-cards">
+        <div class="tool-card tool-card--row">
+          <div class="tool-card-main">
+            <div class="tool-card-name">Trade Replay</div>
+            <p class="tool-card-desc">Replay any past chart and drill the hardest skill in trading, scaling in and out, with zero capital at risk.</p>
+          </div>
+          <a class="tool-card-cta" href="trade-replay.html" data-cta-source="tools" data-cta-target="trade-replay">Open Trade Replay <span aria-hidden="true">&rarr;</span></a>
+        </div>
+      </div>
     </div>
-    <div class="tool-card reveal">
-      <div class="tool-card-name">Trading OS</div>
-      <p class="tool-card-desc">The whole trading process on one page: when to trade, when to size down, and when to walk away.</p>
-      <a class="tool-card-cta" href="trading-os.html" data-cta-source="tools" data-cta-target="trading-os">Read the Trading OS <span aria-hidden="true">&rarr;</span></a>
+  </div>
+
+  <!-- 04 -->
+  <div class="station reveal">
+    <div class="station-rail"><span class="station-num">04</span><span class="station-line"></span></div>
+    <div class="station-body">
+      <h2 class="station-title">Drill the discipline</h2>
+      <div class="station-cards">
+        <div class="tool-card tool-card--row">
+          <div class="tool-card-main">
+            <div class="tool-card-name">The Gauntlet</div>
+            <p class="tool-card-desc">A rapid-fire discipline game. The only way to win is to pass on the trades that were never there.</p>
+          </div>
+          <a class="tool-card-cta" href="gauntlet.html" data-cta-source="tools" data-cta-target="gauntlet">Play The Gauntlet <span aria-hidden="true">&rarr;</span></a>
+        </div>
+      </div>
     </div>
-    <div class="tool-card reveal">
-      <div class="tool-card-name">Knowledge Center</div>
-      <p class="tool-card-desc">A searchable library of terms, setups, and how-tos for small-cap trading, in plain English.</p>
-      <a class="tool-card-cta" href="learn.html" data-cta-source="tools" data-cta-target="learn">Browse the library <span aria-hidden="true">&rarr;</span></a>
+  </div>
+
+  <!-- 05 -->
+  <div class="station reveal">
+    <div class="station-rail"><span class="station-num">05</span><span class="station-line"></span></div>
+    <div class="station-body">
+      <h2 class="station-title">Master your head</h2>
+      <div class="station-cards station-cards--multi">
+        <div class="tool-card">
+          <div class="tool-card-name">3-Minute Reset</div>
+          <p class="tool-card-desc">Three guided minutes to clear tilt and steady your hands before you touch the next setup.</p>
+          <a class="tool-card-cta" href="zone.html" data-cta-source="tools" data-cta-target="zone">Start the reset <span aria-hidden="true">&rarr;</span></a>
+        </div>
+        <div class="tool-card">
+          <div class="tool-card-name">Soundtrack</div>
+          <p class="tool-card-desc">Focus music built for the desk. Mental conditioning that happens to sound like an album.</p>
+          <a class="tool-card-cta" href="soundtrack.html" data-cta-source="tools" data-cta-target="soundtrack">Press play <span aria-hidden="true">&rarr;</span></a>
+        </div>
+        <div class="tool-card">
+          <div class="tool-card-name">Focus Timer</div>
+          <p class="tool-card-desc">A drift-proof break timer that gets you off the screen before boredom turns into a bad click.</p>
+          <div class="tool-card-tag">IN THE APP &middot; FREE</div>
+        </div>
+      </div>
     </div>
-    <div class="tool-card reveal">
-      <div class="tool-card-name">Can You Trade?</div>
-      <p class="tool-card-desc">A 60-second read on the kind of trader you are, and where your discipline tends to leak.</p>
-      <a class="tool-card-cta" href="trader-type.html" data-cta-source="tools" data-cta-target="trader-type">Take the read <span aria-hidden="true">&rarr;</span></a>
+  </div>
+
+  <!-- 06 -->
+  <div class="station reveal">
+    <div class="station-rail"><span class="station-num">06</span><span class="station-line"></span></div>
+    <div class="station-body">
+      <h2 class="station-title">Trade the tape</h2>
+      <div class="station-cards">
+        <div class="tool-card tool-card--row">
+          <div class="tool-card-main">
+            <div class="tool-card-name">Halt Clock</div>
+            <p class="tool-card-desc">Estimate when a halted small-cap reopens, so an LULD halt never catches you flat-footed.</p>
+          </div>
+          <div class="tool-card-tag">IN THE APP &middot; FREE</div>
+        </div>
+      </div>
     </div>
-    <div class="tool-card reveal">
-      <div class="tool-card-name">Soundtrack</div>
-      <p class="tool-card-desc">Focus music built for the desk. Mental conditioning that happens to sound like an album.</p>
-      <a class="tool-card-cta" href="soundtrack.html" data-cta-source="tools" data-cta-target="soundtrack">Press play <span aria-hidden="true">&rarr;</span></a>
+  </div>
+
+</section>
+
+<!-- ─── HOW THE FREE WORKS ───────────────────────────────────────── -->
+<section class="freebox-wrap">
+  <div class="freebox reveal">
+    <p class="freebox-title">HOW THE FREE WORKS</p>
+    <div class="freebox-row">
+      <div class="freebox-k">Run it right now</div>
+      <div class="freebox-v">Every tool above works in your browser. No signup, no card.</div>
+    </div>
+    <div class="freebox-row">
+      <div class="freebox-k">Free in the app</div>
+      <div class="freebox-v">Halt Clock and Focus Timer are built into MAKETZO, free on every plan.</div>
+    </div>
+    <div class="freebox-row">
+      <div class="freebox-k">The full system</div>
+      <div class="freebox-v">The journal, Focus Room, and real-time coaching unlock with the 7-day trial. No charge until day 8.</div>
     </div>
   </div>
 </section>
-
-<hr class="mk-rule-gold">
-
-<!-- ─── GROUP 2 · FREE IN THE APP ────────────────────────────────── -->
-<section class="tools-section" id="tools-inapp">
-  <p class="tools-group-label reveal">ALSO FREE INSIDE THE APP · EVERY PLAN</p>
-  <div class="tools-grid tools-grid--two">
-    <div class="tool-card reveal">
-      <div class="tool-card-tag">IN THE APP</div>
-      <div class="tool-card-name">Halt Clock</div>
-      <p class="tool-card-desc">Estimate when a halted small-cap reopens, so an LULD halt never catches you flat-footed.</p>
-    </div>
-    <div class="tool-card reveal">
-      <div class="tool-card-tag">IN THE APP</div>
-      <div class="tool-card-name">Focus Timer</div>
-      <p class="tool-card-desc">A drift-proof break timer that gets you off the screen before boredom turns into a bad click.</p>
-    </div>
-  </div>
-  <p class="tools-inapp-note reveal">Both live inside MAKETZO, free on every plan and the 7-day trial. No upsell.</p>
-</section>
-
-<hr class="mk-rule-gold">
 
 <!-- ─── CTA ──────────────────────────────────────────────────────── -->
 <section class="tools-cta" id="tools-cta">
-  <h2 class="reveal">The tools get you started. <em>The system keeps you honest.</em></h2>
-  <p class="reveal">MAKETZO is the desk behind the tools: a journal that scores your discipline, a Focus Room that catches the trade you would regret, and real-time coaching that steps in before one red morning becomes a red month.</p>
+  <h2 class="reveal">Now do it for real. <em>The system keeps you honest.</em></h2>
+  <p class="reveal">The tools are the warm-up. MAKETZO is the desk behind them: a journal that scores your discipline, a Focus Room that catches the trade you would regret, and real-time coaching that steps in before one red morning becomes a red month.</p>
   <button class="btn-primary reveal" data-cta-source="tools" data-cta-target="trial" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
   <p class="tools-cta-hint reveal">7 days free &middot; No charge until day 8 &middot; Cancel in one click.</p>
 </section>
