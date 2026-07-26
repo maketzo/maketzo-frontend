@@ -1598,13 +1598,20 @@ hr.mk-rule-gold--bold {
 .faq-a {
   display: none;
   padding: 0 22px 20px;
-  color: var(--mk-text-primary);
+  color: var(--mk-text-secondary);
   font-size: var(--mk-text-md);
   line-height: var(--mk-lead-body);
 }
 .faq-a.open { display: block; }
-.faq-a strong { color: var(--mk-brand); font-weight: 600; }
+/* Emphasis is a brightness step, not a second hue. Gold is reserved for the
+   question (the thing you click); the key phrase inside an answer reads as
+   pure white against the silver body, so the two never compete. */
+.faq-a strong { color: var(--mk-text-primary); font-weight: 600; }
+/* The kicker: a quiet closing aside, dimmer than the body it follows. */
 .faq-a em { color: var(--mk-text-tertiary); font-style: italic; }
+/* The open question wears a whisper of gold on its edge so the active
+   question and its answer read as one unit. */
+.faq-item:has(.faq-q.open) { box-shadow: inset 3px 0 0 var(--mk-gold-700); }
 .faq-list-inner {
   list-style: disc;
   padding-left: 22px;
@@ -3024,7 +3031,7 @@ document.addEventListener("DOMContentLoaded", function() {
     <p class="section-sub reveal">If something isn't answered here, email us at info@maketzo.co, we read every one.</p>
     <div class="faq-list">
       <div class="faq-item reveal"><button class="faq-q" onclick="toggleFaq(this)">I've tried journaling before and quit. Why is MAKETZO different?</button><div class="faq-a">Most journals are passive. You log trades and maybe review them later. <strong>MAKETZO is active.</strong> It reads your session in real time, speaks up through COACH SAYS the moment your behavior turns, runs two daily checkpoints on how the day is going, tracks your strikes, and enforces the rules you set when you were thinking clearly. <em>MAKETZO stops you from doing it in the first place.</em></div></div>
-      <div class="faq-item reveal"><button class="faq-q" onclick="toggleFaq(this)">How is this different from TraderVue or TradeZella?</button><div class="faq-a">TraderVue and TradeZella are solid journals. They record and analyze trades well. <strong>MAKETZO does that too</strong>: DAS import, &cent;/share tracking, win rate, equity curve, streaks, custom date ranges. The difference is what happens before you make a mistake: <em>a behavioral enforcement system</em>, two proprietary indicators, and a Focus Room built around your mental state. It's a complete replacement, and it does something they can't: <strong>stop the damage before it happens.</strong></div></div>
+      <div class="faq-item reveal"><button class="faq-q" onclick="toggleFaq(this)">How is this different from TraderVue or TradeZella?</button><div class="faq-a">TraderVue and TradeZella are solid journals. They record and analyze trades well. <strong>MAKETZO does that too</strong>: DAS import, &cent;/share tracking, win rate, equity curve, streaks, custom date ranges. The difference is what happens before you make a mistake: a behavioral enforcement system, two proprietary indicators, and a Focus Room built around your mental state. It's a complete replacement, and it does something they can't: <strong>stop the damage before it happens.</strong></div></div>
       <div class="faq-item reveal"><button class="faq-q" onclick="toggleFaq(this)">Do I need to connect my broker to start using it?</button><div class="faq-a"><strong>No.</strong> The accountability engine works the moment you log your net P&amp;L manually. DAS Trader CSV import is available for full trade-level analysis but it's optional. <em>Start today. Connect your data when you're ready.</em></div></div>
       <div class="faq-item reveal"><button class="faq-q" onclick="toggleFaq(this)">How does the 7-day free trial work?</button><div class="faq-a">Card required at signup, but <strong>you are not charged until day 8.</strong> Cancel any time before then and you pay nothing. Pro and Elite subscribers receive TradingView indicator access within 24 hours. <em>No tricks. No gotchas. No fine print.</em></div></div>
       <div class="faq-item reveal"><button class="faq-q" onclick="toggleFaq(this)">Is MAKETZO useful if I only trade part-time?</button><div class="faq-a">Absolutely. <strong>Part-time traders often benefit most.</strong> When you only have a limited window to trade, every bad decision costs more. MAKETZO's checkpoints and behavioral gates protect your limited session time. Log your P&amp;L, follow the rules, protect your capital.</div></div>
