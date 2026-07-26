@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<!-- focus — Focus Room: trader state management · 5 mood-based Zone Tracks · meditation zone · anchor images (concept) · COACH SAYS interventions · Pro+ -->
+<!-- focus · Focus Room: MAKETZO's behavioral OS · The Lock-In (9 day-contracts) · The Warm-Up (7 games) · The Reset (6 protocols) · The Soundtrack (2 libraries) · The Anchors · The Debrief · Pro+ -->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Focus Room — MAKETZO · Train the Most Important Edge in Trading: Your State of Mind</title>
-<meta name="description" content="Focus Room is the intervention layer of MAKETZO's behavioral OS. Five mood-based Zone Tracks, a meditation reset, anchor images, and COACH SAYS that steps in when tilt is detected. Pro and Elite.">
+<title>Focus Room: Train Your State of Mind, Your Most Important Edge · MAKETZO</title>
+<meta name="description" content="Focus Room is MAKETZO's behavioral OS for day traders. Lock in your day's contract, warm up before the bell, reset when you tilt, and debrief at the close. Pro and Elite.">
 <meta name="theme-color" content="#06070A">
-<meta property="og:title" content="Focus Room — MAKETZO">
-<meta property="og:description" content="Train the most important edge in trading: your state of mind. Zone Tracks, resets, COACH SAYS interventions.">
+<meta property="og:title" content="Focus Room · MAKETZO">
+<meta property="og:description" content="Train your state of mind, the edge that decides whether you follow your rules. Lock-in day contracts, guided resets, warm-up games, and a daily debrief.">
 <meta property="og:url" content="https://maketzo.co/focus">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary">
@@ -258,49 +258,7 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
 }
 .why-pullquote em { font-style: normal; background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
 
-/* ── ZONE TRACKS — 5 mood-based playlist cards ───────────────────────── */
-.zone-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-  max-width: 1180px;
-  margin: 0 auto;
-}
-.zone-card {
-  display: flex; flex-direction: column;
-  padding: 28px 28px 26px;
-  background: linear-gradient(135deg, var(--mood-glow, rgba(212,175,55,.06)), transparent 60%), var(--mk-surface-raised);
-  border: 1px solid rgba(255,255,255,.06);
-  border-radius: var(--mk-radius-card);
-  transition: transform var(--mk-dur-med) var(--mk-ease-out);
-}
-.zone-card:hover { transform: translateY(-3px); }
-.zone-card[data-mood="get-in-the-zone"] { --mood-glow: rgba(212,175,55,.08); border-color: rgba(212,175,55,.24); }
-.zone-card[data-mood="stay-locked"] { --mood-glow: rgba(45,212,191,.08); border-color: rgba(45,212,191,.24); }
-.zone-card[data-mood="sit-on-hands"] { --mood-glow: rgba(155,135,245,.06); border-color: rgba(155,135,245,.22); }
-.zone-card[data-mood="fire-me-up"] { --mood-glow: rgba(251,146,60,.08); border-color: rgba(251,146,60,.24); }
-.zone-card[data-mood="rule-programming"] { --mood-glow: rgba(74,222,128,.06); border-color: rgba(74,222,128,.22); }
-
-.zone-tag {
-  display: inline-flex; align-items: center; gap: 8px;
-  font-family: var(--mk-font-mono);
-  font-size: var(--mk-mono-xs);
-  letter-spacing: var(--mk-track-eyebrow);
-  text-transform: uppercase;
-  margin-bottom: 14px;
-}
-.zone-card[data-mood="get-in-the-zone"] .zone-tag { color: var(--mk-brand); }
-.zone-card[data-mood="stay-locked"] .zone-tag { color: var(--mk-lockin-500); }
-.zone-card[data-mood="sit-on-hands"] .zone-tag { color: #9B87F5; }
-.zone-card[data-mood="fire-me-up"] .zone-tag { color: var(--mk-warning-500); }
-.zone-card[data-mood="rule-programming"] .zone-tag { color: var(--mk-profit-500); }
-.zone-tag::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: currentColor; box-shadow: 0 0 8px currentColor; }
-
-.zone-name { font-family: var(--mk-font-display); font-size: clamp(1.4rem, 2.4vw, 1.7rem); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); margin-bottom: 10px; line-height: 1.1; }
-.zone-use { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); line-height: 1.55; margin: 0; }
-.zone-use a { color: var(--mk-brand); border-bottom: 1px solid rgba(212,175,55,.4); }
-
-/* Sample tracks · two Spotify embeds shown as previews */
+/* Soundtrack sampler · custom HTML5 player (5-mood grid retired; see .lib-* cards) */
 .zone-samples {
   max-width: 1180px;
   margin: 40px auto 0;
@@ -392,9 +350,7 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
   .mk-zone-album-cta { justify-content: center; }
 }
 
-@media (max-width: 1000px) { .zone-grid { grid-template-columns: repeat(2, 1fr); max-width: 720px; } }
 @media (max-width: 640px) {
-  .zone-grid { grid-template-columns: 1fr; max-width: 480px; }
   .zone-samples-grid { grid-template-columns: 1fr; max-width: 480px; }
 }
 
@@ -550,58 +506,122 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
 }
 @media (max-width: 700px) { .anchor-grid { grid-template-columns: repeat(2, 1fr); max-width: 480px; } .anchor-tile:nth-child(3) { display: none; } }
 
-/* ── COACH SAYS · INTERVENTION CARDS ─────────────────────────────────── */
-.coach-int-grid {
+/* ── THE LOCK-IN — day-contract mode cards ───────────────────────────── */
+.lockin-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 22px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
   max-width: 1180px;
-  margin: 0 auto;
+  margin: 0 auto 32px;
 }
-.coach-int-card {
-  position: relative;
-  padding: 32px 28px 26px;
+.lockin-card {
+  display: flex; flex-direction: column;
+  padding: 26px 24px;
+  background: var(--mk-surface-raised);
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: var(--mk-radius-card);
+  border-top: 3px solid var(--mk-brand);
+  transition: transform var(--mk-dur-med) var(--mk-ease-out);
+}
+.lockin-card:hover { transform: translateY(-3px); }
+.lockin-card[data-mode="aplus"] { border-top-color: var(--mk-brand); }
+.lockin-card[data-mode="recovery"] { border-top-color: var(--mk-lockin-500); }
+.lockin-card[data-mode="red"] { border-top-color: var(--mk-danger-500); }
+.lockin-card[data-mode="cool"] { border-top-color: var(--mk-caution-500); }
+.lockin-card[data-mode="lock"] { border-top-color: var(--mk-profit-500); }
+.lockin-card[data-mode="off"] { border-top-color: var(--mk-smoke-600); }
+.lockin-name { font-family: var(--mk-font-display); font-size: var(--mk-display-md); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); margin-bottom: 10px; line-height: 1.1; }
+.lockin-use { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); line-height: 1.55; margin: 0; }
+.lockin-mech {
+  max-width: 900px; margin: 0 auto;
+  padding: 28px 32px;
   background: linear-gradient(135deg, rgba(212,175,55,.06), transparent 60%), var(--mk-surface-raised);
   border: 1px solid rgba(212,175,55,.22);
-  border-left: 3px solid var(--mk-brand);
   border-radius: var(--mk-radius-card);
-  box-shadow: var(--mk-shadow-2);
+  text-align: center;
 }
-.coach-int-card::before {
-  content: 'COACH SAYS';
-  position: absolute; top: 14px; left: 28px;
-  font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs);
-  letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase;
-  color: var(--mk-brand);
+.lockin-mech p { font-size: var(--mk-text-md); color: var(--mk-text-secondary); line-height: var(--mk-lead-body); margin: 0; }
+.lockin-mech strong { color: var(--mk-text-primary); }
+@media (max-width: 1000px) { .lockin-grid { grid-template-columns: repeat(2, 1fr); max-width: 720px; } }
+@media (max-width: 640px) { .lockin-grid { grid-template-columns: 1fr; max-width: 460px; } }
+
+/* ── THE WARM-UP — game cards ────────────────────────────────────────── */
+.warmup-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(224px, 1fr));
+  gap: 18px;
+  max-width: 1180px;
+  margin: 0 auto 32px;
 }
-.coach-int-trigger {
-  display: block;
-  margin-top: 22px; margin-bottom: 14px;
-  font-family: var(--mk-font-mono);
-  font-size: var(--mk-mono-xs);
-  letter-spacing: var(--mk-track-eyebrow);
-  text-transform: uppercase;
-  color: var(--mk-text-tertiary);
+.warmup-card {
+  padding: 24px 22px;
+  background: var(--mk-surface-raised);
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: var(--mk-radius-card);
+  transition: transform var(--mk-dur-med) var(--mk-ease-out);
 }
-.coach-int-trigger strong { color: var(--mk-warning-500); font-weight: 500; }
-.coach-int-line {
-  font-family: var(--mk-font-display);
-  font-size: clamp(1.2rem, 2vw, 1.5rem);
-  line-height: 1.18;
-  letter-spacing: var(--mk-track-display);
-  text-transform: uppercase;
-  color: var(--mk-text-primary);
+.warmup-card:hover { transform: translateY(-3px); }
+.warmup-card--feature { border-color: rgba(212,175,55,.34); background: linear-gradient(135deg, rgba(212,175,55,.08), transparent 60%), var(--mk-surface-raised); }
+.warmup-num { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-text-tertiary); margin-bottom: 8px; }
+.warmup-card--feature .warmup-num { color: var(--mk-brand); }
+.warmup-name { font-family: var(--mk-font-display); font-size: var(--mk-display-md); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); margin-bottom: 8px; line-height: 1.1; }
+.warmup-use { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); line-height: 1.5; margin: 0; }
+.warmup-use a { color: var(--mk-brand); border-bottom: 1px solid rgba(212,175,55,.4); }
+.warmup-note { text-align: center; font-size: var(--mk-text-base); color: var(--mk-text-secondary); max-width: 640px; margin: 0 auto; line-height: 1.6; }
+.warmup-note strong { color: var(--mk-text-primary); }
+
+/* ── THE RESET — triage cards ────────────────────────────────────────── */
+.triage-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  max-width: 1080px;
+  margin: 0 auto 48px;
 }
-.coach-int-line em { font-style: normal; background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
-.coach-int-action {
-  display: block;
-  margin-top: 16px; padding-top: 14px;
-  border-top: var(--mk-border-hairline);
-  font-size: var(--mk-text-sm);
-  color: var(--mk-text-secondary);
-  line-height: 1.5;
+.triage-card {
+  display: flex; flex-direction: column; justify-content: space-between; gap: 14px;
+  padding: 22px 20px;
+  background: var(--mk-surface-raised);
+  border: 1px solid rgba(45,212,191,.18);
+  border-left: 3px solid var(--mk-lockin-500);
+  border-radius: var(--mk-radius-card);
 }
-.coach-int-action strong { color: var(--mk-text-primary); }
+.triage-feel { font-size: var(--mk-text-base); color: var(--mk-text-primary); font-weight: 500; line-height: 1.4; margin: 0; }
+.triage-meta { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+.triage-name { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-lockin-500); }
+.triage-dur { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); color: var(--mk-text-tertiary); white-space: nowrap; }
+@media (max-width: 900px) { .triage-grid { grid-template-columns: repeat(2, 1fr); max-width: 640px; } }
+@media (max-width: 560px) { .triage-grid { grid-template-columns: 1fr; max-width: 420px; } }
+
+/* ── THE SOUNDTRACK — 2-library cards ────────────────────────────────── */
+.lib-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; max-width: 880px; margin: 0 auto 40px; }
+.lib-card { padding: 26px 26px; background: var(--mk-surface-raised); border: 1px solid rgba(255,255,255,.06); border-radius: var(--mk-radius-card); }
+.lib-card[data-lib="anthems"] { border-top: 3px solid var(--mk-brand); }
+.lib-card[data-lib="binaural"] { border-top: 3px solid var(--mk-lockin-500); }
+.lib-name { font-family: var(--mk-font-display); font-size: var(--mk-display-md); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); margin-bottom: 8px; line-height: 1.1; }
+.lib-use { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); line-height: 1.55; margin: 0; }
+@media (max-width: 640px) { .lib-grid { grid-template-columns: 1fr; max-width: 420px; } }
+
+/* ── THE DEBRIEF — 3-block session review ────────────────────────────── */
+.debrief-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  max-width: 1080px;
+  margin: 0 auto 32px;
+}
+.debrief-card {
+  padding: 30px 26px 26px;
+  background: var(--mk-surface-raised);
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: var(--mk-radius-card);
+}
+.debrief-step { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); margin-bottom: 12px; }
+.debrief-name { font-family: var(--mk-font-display); font-size: var(--mk-display-md); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); margin-bottom: 10px; line-height: 1.1; }
+.debrief-text { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); line-height: 1.55; margin: 0; }
+.debrief-archive { text-align: center; font-size: var(--mk-text-base); color: var(--mk-text-secondary); max-width: 680px; margin: 0 auto; line-height: 1.6; }
+.debrief-archive strong { color: var(--mk-text-primary); }
+@media (max-width: 860px) { .debrief-grid { grid-template-columns: 1fr; max-width: 480px; } }
 
 /* ── PRO TIER GATE ───────────────────────────────────────────────────── */
 .tier-gate {
@@ -736,9 +756,9 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
       </picture>
     </div>
     <div class="page-hero-text">
-      <p class="page-hero-eyebrow">04 · FOCUS ROOM <span class="page-hero-tier-chip">Pro+</span></p>
+      <p class="page-hero-eyebrow">03 · FOCUS ROOM <span class="page-hero-tier-chip">Pro+</span></p>
       <h1 class="page-hero-title">Focus Room. <em>Train the most important edge in trading: your state of mind.</em></h1>
-      <p class="page-hero-sub">Strategy is the easy part. Following it under pressure is the work. Focus Room is the intervention layer of MAKETZO &mdash; the room your worst self walks into and your best self walks out of.</p>
+      <p class="page-hero-sub">Strategy is the easy part. Following it under pressure is the work. Focus Room is the behavioral OS underneath every session, the room your worst self walks into and your best self walks out of.</p>
       <div class="page-hero-cta">
         <button class="btn-primary" data-cta-source="page-hero" style="padding:16px 32px;font-size:var(--mk-text-md);" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
         <p class="final-cta-note">7 days free &middot; No charge until day 8 &middot; Cancel in one click.</p>
@@ -754,7 +774,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
   <div class="section-inner">
     <p class="section-eyebrow reveal">WHY STATE MATTERS</p>
     <h2 class="section-title reveal">Your worst trades <em>aren't analytical mistakes.</em></h2>
-    <p class="section-sub reveal">They're state failures. The trade looked fine. The chart was clean. The plan was right. But you were tired, angry, chasing &mdash; and the click happened anyway. State is the silent variable in every blow-up.</p>
+    <p class="section-sub reveal">They're state failures. The trade looked fine. The chart was clean. The plan was right. But you were tired, angry, or chasing, and the click happened anyway. State is the silent variable in every blow-up.</p>
 
     <div class="why-grid">
       <div class="why-card reveal" data-threat="overtrading">
@@ -791,52 +811,129 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 
 <hr class="mk-rule-gold">
 
-<!-- ─── ZONE TRACKS · 5 mood states + 2 sample players ─────────────── -->
-<section class="section section-dark" id="zone-tracks">
+<!-- ─── THE LOCK-IN · day contract ritual ─────────────────────────── -->
+<section class="section section-dark">
   <div class="section-inner">
-    <p class="section-eyebrow reveal">ZONE TRACKS</p>
-    <h2 class="section-title reveal">Five Mood States. <em>One Disciplined Trader.</em></h2>
-    <p class="section-sub reveal">Your mental state determines whether you follow your rules or break them.</p>
-    <p class="section-sub reveal">Zone Tracks is a curated audio library designed to help you enter the zone, maintain focus, resist impulsive trades, and reinforce the behaviors that protect your capital.</p>
+    <p class="section-eyebrow reveal">THE LOCK-IN</p>
+    <h2 class="section-title reveal">Pick the trader who's <em>allowed to trade today.</em></h2>
+    <p class="section-sub reveal">Before your first click, you choose a contract for the day and lock it in. Nine of them, from your sharpest A+ Only day to a full Off Day. Each is a short list of rules you agree to while you're calm, so the clear-headed version of you writes the rules the tilted version has to trade by.</p>
 
-    <div class="zone-grid">
-      <div class="zone-card reveal" data-mood="get-in-the-zone">
-        <span class="zone-tag">Mood 01</span>
-        <div class="zone-name">Get In The Zone</div>
-        <p class="zone-use">Prepare your mind before the opening bell. Calm, focused, and ready to execute your plan.</p>
+    <div class="lockin-grid">
+      <div class="lockin-card reveal" data-mode="aplus">
+        <div class="lockin-name">A+ Only Day</div>
+        <p class="lockin-use">Only the setups you'd stake your month on. Everything else waits.</p>
       </div>
-
-      <div class="zone-card reveal" data-mood="stay-locked">
-        <span class="zone-tag">Mood 02</span>
-        <div class="zone-name">Stay Locked</div>
-        <p class="zone-use">Maintain steady concentration during live trading without mental drift or distraction.</p>
+      <div class="lockin-card reveal" data-mode="recovery">
+        <div class="lockin-name">Recovery Day</div>
+        <p class="lockin-use">Back from a drawdown. Small, clean, and slow to rebuild the trust you spent.</p>
       </div>
-
-      <div class="zone-card reveal" data-mood="sit-on-hands">
-        <span class="zone-tag">Mood 03</span>
-        <div class="zone-name">Sit On Hands</div>
-        <p class="zone-use">Reduce FOMO and impulsive trades when no valid setup is present.</p>
+      <div class="lockin-card reveal" data-mode="red">
+        <div class="lockin-name">Red Day Protection</div>
+        <p class="lockin-use">The line is drawn. Protect what's left, and don't add to the hole.</p>
       </div>
-
-      <div class="zone-card reveal" data-mood="fire-me-up">
-        <span class="zone-tag">Mood 04</span>
-        <div class="zone-name">Fire Me Up</div>
-        <p class="zone-use">Increase conviction and energy when the opportunity is real and the setup is yours.</p>
+      <div class="lockin-card reveal" data-mode="cool">
+        <div class="lockin-name">Cool Down Day</div>
+        <p class="lockin-use">Coming off tilt. Fewer clicks, tighter rules, nothing forced.</p>
       </div>
-
-      <div class="zone-card reveal" data-mood="rule-programming">
-        <span class="zone-tag">Mood 05</span>
-        <div class="zone-name">Rule Programming</div>
-        <p class="zone-use">Reinforce trading principles through music designed to condition discipline and consistency.</p>
+      <div class="lockin-card reveal" data-mode="lock">
+        <div class="lockin-name">Lock the Green</div>
+        <p class="lockin-use">You're up. The only job left is keeping it, not giving it back.</p>
+      </div>
+      <div class="lockin-card reveal" data-mode="off">
+        <div class="lockin-name">Off Day</div>
+        <p class="lockin-use">Not your day. The honest, hardest move is to not trade it at all.</p>
       </div>
     </div>
 
-    <hr class="mk-rule-gold">
+    <div class="lockin-mech reveal">
+      <p>Every contract carries its own rules, and every rule carries a consequence you set in daylight. Some just log the slip. Some cost you a strike. Cross a hard line and Focus Room steps in. Once you're locked in, the session shows where you stand against your own rules, live.</p>
+    </div>
+
+    <div class="mk-cta-repeat">
+      <button class="btn-primary" data-cta-source="lock-in" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
+    </div>
+  </div>
+</section>
+
+<hr class="mk-rule-gold">
+
+<!-- ─── THE WARM-UP · pre-market games ────────────────────────────── -->
+<section class="section">
+  <div class="section-inner">
+    <p class="section-eyebrow reveal">THE WARM-UP</p>
+    <h2 class="section-title reveal">Sharpen the mind. <em>Then trade.</em></h2>
+    <p class="section-sub reveal">A quick arcade that trains the exact muscles the market punishes: patience, cutting losers, spotting the fake, sitting on your hands. Warm up on these before the bell, instead of warming up with real size.</p>
+
+    <div class="warmup-grid">
+      <div class="warmup-card warmup-card--feature reveal">
+        <p class="warmup-num">Daily &middot; one shot</p>
+        <div class="warmup-name">The Gauntlet</div>
+        <p class="warmup-use">A daily trivia duel against Captain Green. Today's questions only, no retries. <a href="/gauntlet">Play free &rarr;</a></p>
+      </div>
+      <div class="warmup-card reveal">
+        <p class="warmup-num">Game 02</p>
+        <div class="warmup-name">Sit on Your Hands</div>
+        <p class="warmup-use">The hardest rep in trading: doing nothing when there's nothing there.</p>
+      </div>
+      <div class="warmup-card reveal">
+        <p class="warmup-num">Game 03</p>
+        <div class="warmup-name">The Trigger</div>
+        <p class="warmup-use">Real breakout or fakeout? Train the split-second read that costs the most.</p>
+      </div>
+      <div class="warmup-card reveal">
+        <p class="warmup-num">Game 04</p>
+        <div class="warmup-name">Cut It</div>
+        <p class="warmup-use">Cut the loser fast, before it becomes the loss that ruins the day.</p>
+      </div>
+      <div class="warmup-card reveal">
+        <p class="warmup-num">Game 05</p>
+        <div class="warmup-name">Four in a Row</div>
+        <p class="warmup-use">Hold focus under pressure, one deliberate move at a time.</p>
+      </div>
+      <div class="warmup-card reveal">
+        <p class="warmup-num">Game 06</p>
+        <div class="warmup-name">Quick Math</div>
+        <p class="warmup-use">Sixty seconds of mental math to break the impulse loop before it starts.</p>
+      </div>
+      <div class="warmup-card reveal">
+        <p class="warmup-num">Game 07</p>
+        <div class="warmup-name">Snake</div>
+        <p class="warmup-use">Flow state, no clock. Just you and a clean line.</p>
+      </div>
+    </div>
+
+    <p class="warmup-note reveal">These won't hand you an edge. <strong>They condition the discipline that protects the one you already have.</strong></p>
+
+    <div class="mk-cta-repeat">
+      <button class="btn-primary" data-cta-source="warm-up" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
+    </div>
+  </div>
+</section>
+
+<hr class="mk-rule-gold">
+
+<!-- ─── THE SOUNDTRACK · 2 libraries + sampler ─────────────── -->
+<section class="section section-dark" id="zone-tracks">
+  <div class="section-inner">
+    <p class="section-eyebrow reveal">THE SOUNDTRACK</p>
+    <h2 class="section-title reveal">Mental conditioning, <em>disguised as music.</em></h2>
+    <p class="section-sub reveal">Two libraries, built for two different jobs. A player that follows you across every screen in the app, so the right headspace is always one tap away.</p>
+
+    <div class="lib-grid">
+      <div class="lib-card reveal" data-lib="anthems">
+        <div class="lib-name">Trading Anthems</div>
+        <p class="lib-use">For before and between trades. Music that sets the tone, steadies the nerves, and reminds you what kind of trader you decided to be today.</p>
+      </div>
+      <div class="lib-card reveal" data-lib="binaural">
+        <div class="lib-name">Binaural Focus</div>
+        <p class="lib-use">For heads-down, headphones-on execution. Engineered soundscapes that hold your attention on the tape and quiet everything that isn't it.</p>
+      </div>
+    </div>
 
     <div class="zone-samples reveal">
-      <h3 class="zone-samples-title">The MAKETZO Soundtrack</h3>
-      <p class="zone-samples-sub">Three featured tracks engineered to help traders stay disciplined.</p>
-      <p class="zone-samples-body">Laugh at the mistakes in <em>I Paid Tuition to the Market</em>, build conviction with <em>Earn the Right</em>, and lock into the zone with <em>Deep Focus Threshold</em>&mdash;a binaural focus track designed for live trading.</p>
+      <h3 class="zone-samples-title">Hear it for yourself</h3>
+      <p class="zone-samples-sub">Three tracks from the MAKETZO album, playable right here.</p>
+      <p class="zone-samples-body">Laugh at the damage in <em>I Paid Tuition to the Market</em>, build conviction with <em>Earn the Right</em>, and lock in with <em>Deep Focus Threshold</em>, a binaural track made for live trading.</p>
       <p class="zone-samples-body">These are just a few selections from a growing library of music, focus tracks, and mental conditioning tools available inside the Focus Room.</p>
       <p class="zone-samples-body">Because the best traders do not just know their rules.</p>
       <p class="zone-samples-tagline">They condition them.</p>
@@ -846,7 +943,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
         </audio>
         <div class="mk-audio-player__inner">
           <div class="mk-audio-player__art">
-            <img src="assets/album-cover.jpg" alt="Earn the Right &mdash; MAKETZO" onerror="this.style.display='none'">
+            <img src="assets/album-cover.jpg" alt="Earn the Right &middot; MAKETZO" onerror="this.style.display='none'">
           </div>
           <div class="mk-audio-player__main">
             <div class="mk-audio-player__meta">
@@ -927,13 +1024,39 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 
 <hr class="mk-rule-gold">
 
-<!-- ─── MEDITATION ZONE · breathing reset ─────────────────────────── -->
+<!-- ─── THE RESET · guided protocols ──────────────────────────────── -->
 <section class="section">
   <div class="section-inner">
-    <p class="section-eyebrow reveal">MEDITATION ZONE</p>
-    <h2 class="section-title reveal">The reset between <em>setups</em></h2>
-    <p class="section-sub reveal">A short, structured pause designed to prevent the mistakes that do the most damage.</p>
-    <p class="section-sub reveal">After two losses, rising fatigue, or a setup you don't fully trust, step into the room, reset your breathing, and return to baseline.</p>
+    <p class="section-eyebrow reveal">THE RESET</p>
+    <h2 class="section-title reveal">Feel the spiral? <em>Click reset.</em></h2>
+    <p class="section-sub reveal">Six guided resets, one for each way a session goes sideways. Tell the room what you're feeling and it takes it from there.</p>
+
+    <div class="triage-grid">
+      <div class="triage-card reveal">
+        <p class="triage-feel">&ldquo;I just took a loss and I want it back.&rdquo;</p>
+        <div class="triage-meta"><span class="triage-name">Loss Reset</span><span class="triage-dur">3 min</span></div>
+      </div>
+      <div class="triage-card reveal">
+        <p class="triage-feel">&ldquo;I'm clicking because I'm bored.&rdquo;</p>
+        <div class="triage-meta"><span class="triage-name">Sit-On-Hands</span><span class="triage-dur">5 min</span></div>
+      </div>
+      <div class="triage-card reveal">
+        <p class="triage-feel">&ldquo;I'm chasing a move I already missed.&rdquo;</p>
+        <div class="triage-meta"><span class="triage-name">FOMO Reset</span><span class="triage-dur">2 min</span></div>
+      </div>
+      <div class="triage-card reveal">
+        <p class="triage-feel">&ldquo;I'm negotiating with my stop.&rdquo;</p>
+        <div class="triage-meta"><span class="triage-name">Stop Negotiation</span><span class="triage-dur">1 min</span></div>
+      </div>
+      <div class="triage-card reveal">
+        <p class="triage-feel">&ldquo;I'm buying the high because it feels unstoppable.&rdquo;</p>
+        <div class="triage-meta"><span class="triage-name">HOD Heat Check</span><span class="triage-dur">2 min</span></div>
+      </div>
+      <div class="triage-card reveal">
+        <p class="triage-feel">&ldquo;I just want to get back to baseline.&rdquo;</p>
+        <div class="triage-meta"><span class="triage-name">Meditation Zone</span><span class="triage-dur">3-15 min</span></div>
+      </div>
+    </div>
 
     <div class="med-wrap reveal">
       <div class="med-visual">
@@ -941,35 +1064,35 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
         <span class="med-orb-label" aria-hidden="true"><span class="med-cue med-cue--in">Inhale</span><span class="med-cue med-cue--hold">Hold</span><span class="med-cue med-cue--out">Exhale</span></span>
       </div>
       <div class="med-copy">
-        <h3>A 5-minute reset. <em>A different trader walks back out.</em></h3>
-        <p>Two short sessions. One purpose: clear the emotional residue from the last decision before it affects the next one.</p>
-        <p>Step into the room, regulate your breathing, and return to the market calm, objective, and ready to follow your plan.</p>
+        <h3>A few minutes in. <em>A different trader walks back out.</em></h3>
+        <p>A breathing ring paces you through it in one of four cadences. Pick where you want to be while you do it: a beach, a mountain, a dojo, or a blank screen. On the resets that need it, the reason you trade for surfaces on the glass.</p>
+        <p>You don't have to catch the spiral yourself. When you breach a rule you set for the day, the matching reset opens on its own and asks for the pause before you log the next trade.</p>
         <div class="med-controls">
-          <span class="med-pill">5 min reset</span>
-          <span class="med-pill">10 min reset</span>
+          <span class="med-pill">4 breathing cadences</span>
+          <span class="med-pill">6 environments</span>
           <span class="med-controls-note">In-app · Pro</span>
         </div>
       </div>
     </div>
 
     <div class="mk-cta-repeat">
-      <button class="btn-primary" data-cta-source="meditation" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
+      <button class="btn-primary" data-cta-source="reset" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
     </div>
   </div>
 </section>
 
 <hr class="mk-rule-gold">
 
-<!-- ─── ANCHOR IMAGES · concept ───────────────────────────────────── -->
+<!-- ─── THE ANCHORS · 5-slot personal library ─────────────────────── -->
 <section class="section section-dark">
   <div class="section-inner">
-    <p class="section-eyebrow reveal">ANCHOR IMAGES</p>
-    <h2 class="section-title reveal">Trade to protect <em>what matters most</em></h2>
-    <p class="section-sub reveal">Upload the images that remind you why the rule matters. Family, children, pets, memories, and the life this account is meant to support. Surface them when discipline is most likely to slip.</p>
+    <p class="section-eyebrow reveal">THE ANCHORS</p>
+    <h2 class="section-title reveal">The reason you <em>trade for.</em></h2>
+    <p class="section-sub reveal">Upload up to five images of the life this account is really for. The people who depend on you, the thing you're building, the reason the rules exist at all. When a reset fires on tilt, they surface on the glass, right when the rule is hardest to keep.</p>
 
     <div class="anchor-wrap">
       <div class="anchor-concept-row">
-        <span class="anchor-concept-tag">PRO FEATURE</span>
+        <span class="anchor-concept-tag">PRO &middot; UP TO 5</span>
       </div>
 
       <p class="anchor-examples-caption reveal">Examples of the personal anchors you can upload.</p>
@@ -1001,8 +1124,8 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
         </div>
       </div>
 
-      <p class="anchor-line reveal">A single image can restore perspective <em>faster than words</em>.</p>
-      <p class="anchor-subline reveal">The rule becomes clear in one glance.</p>
+      <p class="anchor-line reveal">One image restores perspective <em>faster than any rule.</em></p>
+      <p class="anchor-subline reveal">Five slots. Keep it to what actually matters.</p>
     </div>
 
     <div class="mk-cta-repeat">
@@ -1013,36 +1136,35 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 
 <hr class="mk-rule-gold">
 
-<!-- ─── COACH SAYS · INTERVENTION CARDS ───────────────────────────── -->
+<!-- ─── THE DEBRIEF · end-of-day session review ───────────────────── -->
 <section class="section">
   <div class="section-inner">
-    <p class="section-eyebrow reveal">WHEN COACH SAYS DETECTS TILT</p>
-    <h2 class="section-title reveal">Focus Room <em>opens itself</em></h2>
-    <p class="section-sub reveal">You don't have to recognize the slip. The system does.</p>
-    <p class="section-sub reveal">When losses stack, order frequency accelerates, or your drawdown threshold is reached, Focus Room activates automatically and guides you back to a disciplined state.</p>
+    <p class="section-eyebrow reveal">THE DEBRIEF</p>
+    <h2 class="section-title reveal">Close the day. <em>Feed it forward.</em></h2>
+    <p class="section-sub reveal">At the close, Focus Room writes the day back to you. Not your P&amp;L, the story of how you traded, so tomorrow starts sharper than today did.</p>
 
-    <div class="coach-int-grid">
-      <div class="coach-int-card reveal">
-        <span class="coach-int-trigger">Trigger &middot; <strong>Two strikes &middot; same session</strong></span>
-        <p class="coach-int-line">Two strikes in. <em>Step into the room.</em> Five-minute reset before the next entry.</p>
-        <span class="coach-int-action"><strong>Action:</strong> Order entry pauses. Sit On Hands queues. Breathing reset opens.</span>
+    <div class="debrief-grid">
+      <div class="debrief-card reveal">
+        <p class="debrief-step">Read 01</p>
+        <div class="debrief-name">Today's Read</div>
+        <p class="debrief-text">One honest headline pulled from everything that happened. Not the number, what actually drove the session.</p>
       </div>
-
-      <div class="coach-int-card reveal">
-        <span class="coach-int-trigger">Trigger &middot; <strong>Click-rate spike</strong></span>
-        <p class="coach-int-line">You are clicking <em>faster than you are thinking.</em> Slow the room down.</p>
-        <span class="coach-int-action"><strong>Action:</strong> Sit On Hands track surfaces. A 60-second hold opens before the next order.</span>
+      <div class="debrief-card reveal">
+        <p class="debrief-step">Read 02</p>
+        <div class="debrief-name">Moments That Mattered</div>
+        <p class="debrief-text">The turns worth remembering. The strike you earned back, the reset that held, the rule you broke. Timestamped, in order.</p>
       </div>
-
-      <div class="coach-int-card reveal">
-        <span class="coach-int-trigger">Trigger &middot; <strong>Drawdown line touched</strong></span>
-        <p class="coach-int-line">You are still allowed to trade. <em>But not from this state.</em></p>
-        <span class="coach-int-action"><strong>Action:</strong> Anchor image surfaces. 10-minute reset offered. Walk-Away one-click present.</span>
+      <div class="debrief-card reveal">
+        <p class="debrief-step">Read 03</p>
+        <div class="debrief-name">Write for Tomorrow</div>
+        <p class="debrief-text">A note to the trader who shows up next session. The room hands you a starting line, and keeps every one you write.</p>
       </div>
     </div>
 
+    <p class="debrief-archive reveal">Every note is kept. <strong>The patterns you can't see in a single day become impossible to miss over a month.</strong></p>
+
     <div class="mk-cta-repeat">
-      <button class="btn-primary" data-cta-source="coach-int" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial</button>
+      <button class="btn-primary" data-cta-source="debrief" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial</button>
     </div>
   </div>
 </section>
@@ -1052,7 +1174,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 <!-- ─── PRO TIER GATE ─────────────────────────────────────────────── -->
 <section class="section section-dark">
   <div class="section-inner">
-    <p class="section-eyebrow reveal">UNLOCK TRADER STATE MASTERY</p>
+    <p class="section-eyebrow reveal">THE FULL ROOM</p>
     <h2 class="section-title reveal">Focus Room is on Pro <em>and Elite</em></h2>
 
     <div class="tier-gate reveal">
@@ -1063,7 +1185,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
         </svg>
       </div>
       <h3 class="tier-gate-title">Included with <em>Pro and Elite</em></h3>
-      <p class="tier-gate-text">Zone Tracks, Meditation Zone, Anchor Images, and Coach-triggered interventions are included with <strong>Pro</strong> and <strong>Elite</strong>.</p>
+      <p class="tier-gate-text">The Lock-In, The Warm-Up, The Reset, The Soundtrack, The Anchors, and The Debrief are all included with <strong>Pro</strong> and <strong>Elite</strong>.</p>
       <p class="tier-gate-text">Build the mental discipline to enter the zone, protect your rules, and trade from a state of clarity.</p>
       <div class="tier-gate-cta-row">
         <button class="btn-primary" data-cta-source="tier-gate" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial</button>
@@ -1088,7 +1210,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
   <h2 class="final-cta-title reveal">Walk into the room. <em>Walk out a different trader.</em></h2>
   <div class="final-cta-btn-wrap reveal">
     <button class="btn-primary btn-primary--lg" data-cta-source="final" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial</button>
-    <p class="final-cta-note">Pro &middot; $49/mo &middot; Focus Room + Edge + Pulse + System &middot; Cancel in one click</p>
+    <p class="final-cta-note">Pro &middot; $49/mo &middot; Focus Room, the discipline system, and your journal &middot; Cancel in one click</p>
   </div>
 </section>
 
