@@ -106,7 +106,8 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 .station { display: grid; grid-template-columns: 52px minmax(0, 1fr); column-gap: 24px; }
 .station-rail { display: flex; flex-direction: column; align-items: center; }
 .station-num { flex: 0 0 auto; width: 46px; height: 46px; border-radius: var(--mk-radius-pill); background: var(--mk-gold-gradient); color: var(--mk-text-on-gold); font-family: var(--mk-font-display); font-size: 1.5rem; line-height: 1; display: inline-flex; align-items: center; justify-content: center; border: 1px solid rgba(0,0,0,.18); box-shadow: 0 0 0 0 rgba(212,175,55,0); }
-.station-line { width: 2px; flex: 1 1 auto; min-height: 28px; margin-top: 8px; background: linear-gradient(180deg, var(--mk-gold-700), rgba(122,98,40,.12)); }
+.station-line { position: relative; width: 2px; flex: 1 1 auto; min-height: 28px; margin-top: 8px; background: linear-gradient(180deg, var(--mk-gold-700), rgba(122,98,40,.12)); }
+.station-line::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, var(--mk-brand), var(--mk-gold-700)); transform: scaleY(0); transform-origin: top center; }
 .station:last-child .station-line { display: none; }
 .station-body { padding-top: 4px; padding-bottom: 44px; }
 .station-eyebrow { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); margin-bottom: 8px; }
@@ -130,13 +131,16 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 .tool-card--row .tool-card-cta { margin-top: 0; flex: 0 0 auto; }
 .tool-card--row .tool-card-tag { align-self: center; flex: 0 0 auto; margin: 0; }
 
-/* per-station pill pulse, cascading down the path as each rung reveals */
-.station.visible .station-num { animation: pathPulse 1.05s var(--mk-ease-out) .12s both; }
-@keyframes pathPulse {
-  0% { box-shadow: 0 0 0 0 rgba(212,175,55,0); }
-  42% { box-shadow: 0 0 0 6px rgba(212,175,55,.16), 0 10px 26px -8px rgba(212,175,55,.55); }
-  100% { box-shadow: 0 0 0 0 rgba(212,175,55,0); }
+/* the path lights up rung by rung as each station scrolls in: the number ignites,
+   then a bright gold segment draws down the connector toward the next station */
+.station.visible .station-num { animation: pillIgnite .9s var(--mk-ease-out) .08s both; }
+.station.visible .station-line::after { animation: lineDraw .7s var(--mk-ease-out) .34s forwards; }
+@keyframes pillIgnite {
+  0%   { transform: scale(.7); box-shadow: 0 0 0 0 rgba(212,175,55,0); }
+  55%  { transform: scale(1.06); box-shadow: 0 0 0 7px rgba(212,175,55,.18), 0 12px 30px -8px rgba(212,175,55,.55); }
+  100% { transform: scale(1); box-shadow: 0 0 0 3px rgba(212,175,55,.06), 0 8px 20px -10px rgba(212,175,55,.35); }
 }
+@keyframes lineDraw { to { transform: scaleY(1); } }
 
 /* ── How the free works ──────────────────────────────────────────── */
 .freebox-wrap { padding: 0 24px; }
@@ -164,6 +168,11 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
   .station-num { width: 40px; height: 40px; font-size: 1.3rem; }
   .tool-card--row { flex-direction: column; align-items: flex-start; gap: 12px; }
   .tool-card--row .tool-card-tag { align-self: flex-start; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .station.visible .station-num { animation: none; }
+  .station-line::after { animation: none; transform: scaleY(1); }
+  .reveal { transition: none; }
 }
 </style>
 <script>try{if(document.cookie.indexOf('mkt_csrf=')>-1)document.documentElement.classList.add('mkt-auth');}catch(e){}</script>
