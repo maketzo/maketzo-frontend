@@ -404,8 +404,8 @@
           '<div class="diag-actions">' +
             '<div class="diag-pos" data-pos><span class="diag-pos-state" data-pstate>FLAT</span><span class="diag-pos-pnl" data-upnl></span></div>' +
             '<div class="diag-trade-btns">' +
-              '<button class="diag-trade-btn buy" data-buy disabled>BUY</button>' +
               '<button class="diag-trade-btn sell" data-sell disabled>SHORT</button>' +
+              '<button class="diag-trade-btn buy" data-buy disabled>BUY</button>' +
             '</div>' +
             '<button class="diag-pause-toggle" type="button" data-pausetoggle>❚❚ Pause</button>' +
           '</div>' +
