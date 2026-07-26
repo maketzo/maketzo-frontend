@@ -564,7 +564,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
     <div class="page-hero-text">
       <p class="page-hero-eyebrow">01 · BEHAVIORAL ACCOUNTABILITY</p>
       <h1 class="page-hero-title">Set your rules when you're calm. <em>We enforce them when you're not.</em></h1>
-      <p class="page-hero-sub">The System is your trading constitution. It watches every click, tracks every lapse, and steps in when discipline starts to crack. Three strikes, COACH SAYS check-ins, guided resets, and automatic lockouts turn your rules from good intentions into enforced reality.</p>
+      <p class="page-hero-sub">The System is your trading constitution. Every time you log your P&amp;L, it reads where you are and puts the right guardrails in front of you. A live state read, timed checkpoints, COACH SAYS in real time, a three-strike circuit breaker, and guided resets turn your rules from good intentions into enforced reality.</p>
       <p class="page-hero-sub">Most traders don't blow up because they lack a strategy. They blow up because, at exactly the wrong moment, they stop listening to themselves. The System makes that impossible. You write the rules when you're rational. MAKETZO enforces them when you're not.</p>
       <div class="page-hero-cta">
         <button class="btn-primary" data-cta-source="page-hero" style="padding:16px 32px;font-size:var(--mk-text-md);" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
@@ -580,78 +580,88 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 <section class="section">
   <div class="section-inner">
     <p class="section-eyebrow reveal">SESSION STATE MACHINE</p>
-    <h2 class="section-title reveal">Seven states. <em>One disciplined day.</em></h2>
-    <p class="section-sub reveal">Every session flows through the same seven states. Each one enforces the rule that matters at that moment, automatically, before your worst impulse beats your best plan.</p>
+    <h2 class="section-title reveal">Log your P&amp;L. <em>It knows exactly where you are.</em></h2>
+    <p class="section-sub reveal">There's no script for the day. Every time you log your P&amp;L, the system re-reads your session on the spot, on the climb or on the slide, and puts the exact guardrails you set in front of you. Automatically, before your worst impulse beats your best plan.</p>
 
     <div class="state-grid">
       <div class="state-card reveal" data-state="open">
-        <div class="state-step">01 · Pre-Market</div>
-        <div class="state-name">Open</div>
-        <div class="state-time">5:00 to 9:30 AM ET</div>
-        <p class="state-desc">You arrive, you review yesterday, you set your max-loss and your daily targets. Calm planning, no positions yet.</p>
-        <span class="state-rule"><strong>Rules applied:</strong> Lock daily max-loss before the bell.</span>
-        <span class="state-rule">Acknowledge prior-day strikes before any order entry.</span>
-        <span class="state-rule">No setups before 9:00 AM ET.</span>
+        <div class="state-step">Pre-Market</div>
+        <div class="state-name">The Open</div>
+        <div class="state-time">Before your first fill</div>
+        <p class="state-desc">You set your max-loss and your targets while you're calm. The system holds you to those numbers all day.</p>
+        <span class="state-rule"><strong>Guardrails:</strong> A+ setups only.</span>
+        <span class="state-rule">Starter size first.</span>
+        <span class="state-rule">Wait for your setup.</span>
       </div>
 
-      <div class="state-card reveal" data-state="caution">
-        <div class="state-step">02 · 1st Check-in</div>
-        <div class="state-name">8:30 AM</div>
-        <div class="state-time">First COACH SAYS</div>
-        <p class="state-desc">An hour before the bell, COACH SAYS surfaces yesterday's mistakes and reminds you of the rules you set when calm.</p>
-        <span class="state-rule"><strong>Rules applied:</strong> Acknowledge yesterday's strikes.</span>
-        <span class="state-rule">Confirm today's max-loss is still locked.</span>
-        <span class="state-rule">Note any open emotional residue from the prior session.</span>
-      </div>
-
-      <div class="state-card reveal" data-state="lockin">
-        <div class="state-step">03 · Profit Lock</div>
-        <div class="state-name">2X Lock-In</div>
-        <div class="state-time">After hitting 2× target</div>
-        <p class="state-desc">Hit twice your daily target? Size shrinks automatically and the Give-Back Guard drops a trailing floor under the day's profit. You keep trading, but a green morning can't bleed back to flat.</p>
-        <span class="state-rule"><strong>Rules applied:</strong> Size reduces to 50% post-2X.</span>
-        <span class="state-rule">No new instruments after the lock-in.</span>
-        <span class="state-rule">Walk-Away option surfaced on the next entry.</span>
+      <div class="state-card reveal" data-state="open">
+        <div class="state-step">Checkpoint · Your Time</div>
+        <div class="state-name">8:30 Read</div>
+        <div class="state-time">An early read on the open</div>
+        <p class="state-desc">The system snapshots your P&amp;L and reads how the day is opening. Set the time to whatever fits your session.</p>
+        <span class="state-rule"><strong>Guardrails:</strong> Best setups only.</span>
+        <span class="state-rule">No chasing.</span>
+        <span class="state-rule">Stay selective.</span>
       </div>
 
       <div class="state-card reveal" data-state="profit">
-        <div class="state-step">04 · Triple Hit</div>
-        <div class="state-name">3X Hit</div>
-        <div class="state-time">After hitting 3× target</div>
-        <p class="state-desc">Three times your target. You've had a great day. The system asks, quietly then firmly, to consider walking away.</p>
-        <span class="state-rule"><strong>Rules applied:</strong> Walk-Away prompt fires.</span>
-        <span class="state-rule">One-click session end, no friction to stop winning.</span>
-        <span class="state-rule">Strike audit required before any further entry.</span>
+        <div class="state-step">The Climb · 1×</div>
+        <div class="state-name">Day Made</div>
+        <div class="state-time">At your daily target</div>
+        <p class="state-desc">You hit your number. The job flips from make it to protect it.</p>
+        <span class="state-rule"><strong>Guardrails:</strong> Protect the win.</span>
+        <span class="state-rule">Take profits quickly.</span>
+        <span class="state-rule">Don't force the next target.</span>
+      </div>
+
+      <div class="state-card reveal" data-state="lockin">
+        <div class="state-step">The Climb · 2×</div>
+        <div class="state-name">Lock It In</div>
+        <div class="state-time">At twice your target</div>
+        <p class="state-desc">House money now. The Give-Back Guard keeps a floor under the day so a green run can't bleed back to flat.</p>
+        <span class="state-rule"><strong>Guardrails:</strong> Lock it in.</span>
+        <span class="state-rule">Preserve capital.</span>
+        <span class="state-rule">Don't give it back.</span>
+      </div>
+
+      <div class="state-card reveal" data-state="profit">
+        <div class="state-step">The Climb · 3×</div>
+        <div class="state-name">3× Hit</div>
+        <div class="state-time">At three times your target</div>
+        <p class="state-desc">You did it. The system says it plainly: protect the win, and walking away is fine.</p>
+        <span class="state-rule"><strong>Guardrails:</strong> You did it.</span>
+        <span class="state-rule">Pay yourself.</span>
+        <span class="state-rule">Walking away is fine.</span>
+      </div>
+
+      <div class="state-card reveal" data-state="open">
+        <div class="state-step">Checkpoint · Your Time</div>
+        <div class="state-name">10:30 Read</div>
+        <div class="state-time">The lock-in or wind-down read</div>
+        <p class="state-desc">Still flat, it calls a slow day: protect capital, wind down. Already green, it says protect the win.</p>
+        <span class="state-rule"><strong>Guardrails:</strong> Protect capital.</span>
+        <span class="state-rule">Starter size only.</span>
+        <span class="state-rule">Step away if off.</span>
       </div>
 
       <div class="state-card reveal" data-state="warning">
-        <div class="state-step">05 · 2nd Check-in</div>
-        <div class="state-name">10:30 AM</div>
-        <div class="state-time">Second COACH SAYS</div>
-        <p class="state-desc">Peak emotion window. COACH SAYS surfaces your current P&amp;L, your pace, and any rule breaks. Slow down or sharpen up.</p>
-        <span class="state-rule"><strong>Rules applied:</strong> Pace-check &amp; strike audit.</span>
-        <span class="state-rule">Revisit setup quality, not P&amp;L.</span>
-        <span class="state-rule">Guided reset recommended between trades.</span>
+        <div class="state-step">The Slide</div>
+        <div class="state-name">Caution to Walk Away</div>
+        <div class="state-time">As red deepens</div>
+        <p class="state-desc">Down and sliding? The read escalates with you: caution, slow down, walk away. Each rung tightens the rules before the next mistake.</p>
+        <span class="state-rule"><strong>Guardrails:</strong> Breathe, slow down.</span>
+        <span class="state-rule">A+ setups only.</span>
+        <span class="state-rule">No revenge trading.</span>
       </div>
 
       <div class="state-card reveal" data-state="danger">
-        <div class="state-step">06 · Max-Loss Hit</div>
+        <div class="state-step">The Floor</div>
         <div class="state-name">Stop Trading</div>
-        <div class="state-time">When daily max-loss is breached</div>
-        <p class="state-desc">You hit your max-loss line. New orders are blocked. You can journal, but you can't trade. The rule is the rule.</p>
-        <span class="state-rule"><strong>Rules applied:</strong> Order entry disabled until tomorrow.</span>
-        <span class="state-rule">Journal entry required before tomorrow unlocks.</span>
-        <span class="state-rule">No paper-trading bypass during the lock window.</span>
-      </div>
-
-      <div class="state-card reveal" data-state="lockout">
-        <div class="state-step">07 · Three Strikes</div>
-        <div class="state-name">Lockout</div>
-        <div class="state-time">24-hour cooldown</div>
-        <p class="state-desc">Three rule breaks in one session and the platform locks for a full 24 hours. Tomorrow you come back sharper. Today is done.</p>
-        <span class="state-rule"><strong>Rules applied:</strong> Full platform lock · 24 hrs.</span>
-        <span class="state-rule">Discipline streak resets to zero.</span>
-        <span class="state-rule">Re-onboarding state machine on return.</span>
+        <div class="state-time">At your max-loss line</div>
+        <p class="state-desc">Hit the max-loss you set this morning and new entries stop. You can journal, you can review. You can't keep digging.</p>
+        <span class="state-rule"><strong>Guardrails:</strong> Stop trading now.</span>
+        <span class="state-rule">Close all positions.</span>
+        <span class="state-rule">Walk away from the screen.</span>
       </div>
     </div>
 
@@ -668,7 +678,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
   <div class="section-inner">
     <p class="section-eyebrow reveal">COACH SAYS</p>
     <h2 class="section-title reveal">The voice in the room <em>that doesn't flinch</em></h2>
-    <p class="section-sub reveal">Two scheduled check-ins. One job: drag the rules you set when calm back into the room exactly when emotion is loudest.</p>
+    <p class="section-sub reveal">One job: drag the rules you set when calm back into the room the moment your behavior starts to break them.</p>
 
     <div class="coach-wrap">
       <div class="coach-mock reveal">
@@ -682,12 +692,13 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
       </div>
 
       <div class="coach-copy reveal">
-        <h3>Two firings. <em>Both deliberate.</em></h3>
-        <p>COACH SAYS doesn't nag. It fires at exactly two moments, once before the bell and once mid-morning, when your rule-following is most fragile.</p>
-        <p>It reads yesterday's session, your active rules, and your current state. It surfaces what matters. It stays quiet otherwise.</p>
+        <h3>It speaks when your <em>state turns.</em></h3>
+        <p>COACH SAYS doesn't nag on a clock. It reads your live P&amp;L, your strikes, and your current state, and speaks up the instant your behavior starts to turn.</p>
+        <p>It surfaces the one thing that matters right now, then stays quiet otherwise.</p>
         <ul class="coach-trigger-list">
-          <li><span class="trigger-time">8:30 AM</span><span><strong>Pre-bell prime.</strong> Yesterday's strikes, today's max-loss, the rule you broke last.</span></li>
-          <li><span class="trigger-time">10:30 AM</span><span><strong>Mid-session check.</strong> Your pace, your P&amp;L, and any rule break currently live.</span></li>
+          <li><span class="trigger-time">Tilt</span><span><strong>Two reds in a row.</strong> Step into a reset before the third one costs you the day.</span></li>
+          <li><span class="trigger-time">Strike</span><span><strong>A strike lands.</strong> The rule you just broke, named, before you break the next.</span></li>
+          <li><span class="trigger-time">Target</span><span><strong>You hit your number.</strong> Protect the win, and don't force the next tier.</span></li>
         </ul>
       </div>
     </div>
@@ -705,24 +716,24 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
   <div class="section-inner">
     <p class="section-eyebrow reveal">STRIKE SYSTEM</p>
     <h2 class="section-title reveal">Three strikes. <em>Then the rule is the rule.</em></h2>
-    <p class="section-sub reveal">A single bad trade is human. A repeat pattern is a habit. The strike system lets you wobble, but only so far.</p>
+    <p class="section-sub reveal">A single bad trade is human. A repeat pattern is a habit. A loss past your strike line earns a strike; a win past it earns one back. The system lets you wobble, but only so far.</p>
 
     <div class="strikes-wrap">
       <div class="strikes-row">
         <div class="strike-card reveal">
           <div class="strike-num">1</div>
           <div class="strike-title">First Strike</div>
-          <div class="strike-text">COACH SAYS surfaces the rule you broke. Trading continues. You've been seen, not stopped.</div>
+          <div class="strike-text">A loss past your strike line lands the first one. COACH SAYS names it. Trading continues, but stay selective from here.</div>
         </div>
         <div class="strike-card reveal">
           <div class="strike-num">2</div>
           <div class="strike-title">Second Strike</div>
-          <div class="strike-text">Size reduces to 50%. The cost of breaking rules goes up before the day is lost. Most traders stop here.</div>
+          <div class="strike-text">One more significant loss ends the day. Take only the cleanest setup. Most traders stop right here.</div>
         </div>
         <div class="strike-card reveal">
           <div class="strike-num">3</div>
           <div class="strike-title">Third Strike</div>
-          <div class="strike-text">24-hour lockout. New orders are blocked. You can journal, you can review, but you can't trade.</div>
+          <div class="strike-text">The day closes. New entries stop. You can still journal and review. Getting back in takes a deliberate override, not a click you'll make by accident.</div>
         </div>
       </div>
       <div class="strikes-note reveal">
@@ -743,7 +754,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
   <div class="section-inner">
     <p class="section-eyebrow reveal">RESET PROTOCOL</p>
     <h2 class="section-title reveal">The space between <em>good trades</em></h2>
-    <p class="section-sub reveal">Most blow-ups happen between setups: the overtrade, the revenge entry. The moment MAKETZO catches you tilting, it points you to a Reset Protocol, a guided way back to the zone before you click.</p>
+    <p class="section-sub reveal">Most blow-ups happen between setups: the overtrade, the revenge entry. When a rule you set fires, MAKETZO locks your P&amp;L and surfaces the right Reset Protocol, a guided way back to the zone before you click again.</p>
 
     <div class="waiting-wrap">
       <div class="waiting-visual reveal">
@@ -754,7 +765,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
       </div>
       <div class="waiting-copy reveal">
         <h3>A protocol, a breath, <em>a way back.</em></h3>
-        <p>When COACH SAYS and the State Machine catch you trending toward overtrading, MAKETZO triages the moment and surfaces the right <a href="focus.html">Reset Protocol</a>: a guided breathing reset with a live countdown ring, your own anchors, and the soundtrack. It breaks the tilt before your next setup. Ignore your rules anyway, and the Strike System steps in with a hard 24-hour lockout.</p>
+        <p>When a rule you set fires, a real loss or a give-back near the day's highs, MAKETZO locks your P&amp;L input and surfaces the right <a href="focus.html">Reset Protocol</a>: a guided breathing reset with a live countdown ring, your own anchors, and the soundtrack. Work through it and you come back composed. Keep breaking rules and the Strike System closes the day.</p>
         <p>It's the small structural intervention that costs you nothing on slow days and saves you everything on hot ones.</p>
       </div>
     </div>
@@ -772,14 +783,14 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
   <div class="section-inner">
     <p class="section-eyebrow reveal">24-HOUR LOCKOUT</p>
     <h2 class="section-title reveal">The kill-switch <em>you set for yourself</em></h2>
-    <p class="section-sub reveal">When three strikes hit, the platform locks. Not a soft warning. A hard 24-hour stop. The version of you that's losing doesn't get to keep trying.</p>
+    <p class="section-sub reveal">Hit your strike cap and the day closes. New entries stop cold. Getting back in isn't a click, it's a deliberate override with a "make sure you know why" warning, and the strikes stand. The version of you that's tilting has to stop and choose.</p>
 
     <div class="lockout-wrap">
       <div class="lockout-card reveal">
         <span class="lockout-badge">SESSION LOCKED</span>
         <div class="lockout-title">Three strikes. Trading is closed for the day.</div>
         <div class="lockout-timer" id="lockoutCountdown">23:47:12</div>
-        <p class="lockout-text">Journal access is still open. Use it to write down what went wrong while it's fresh. Tomorrow's COACH SAYS will surface it for you.</p>
+        <p class="lockout-text">Journal access stays open. Write down what went wrong while it's fresh, and it's waiting for you in the debrief when you're back.</p>
       </div>
     </div>
 
@@ -795,14 +806,14 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 <section class="section section-dark">
   <div class="section-inner">
     <p class="section-eyebrow reveal">WHAT YOU ACTUALLY GET</p>
-    <h2 class="section-title reveal">Sessions that <em>build on each other</em></h2>
-    <p class="section-sub reveal">The System isn't a feature you flip on. It's the architecture of every MAKETZO session, and it compounds.</p>
+    <h2 class="section-title reveal">Discipline you can <em>actually see</em></h2>
+    <p class="section-sub reveal">The System isn't a feature you flip on. It's the architecture of every MAKETZO session, and it leaves you a record of how disciplined you actually were.</p>
 
     <div class="results-grid">
       <div class="result-card reveal">
         <div class="result-icon">▲</div>
-        <div class="result-title">Streak Preservation</div>
-        <div class="result-text">Days without a max-loss break compound. Your streak is a number that matters more than any single P&amp;L.</div>
+        <div class="result-title">Green-Day Streaks</div>
+        <div class="result-text">The app counts your consecutive green days, plus your 1× and 2× days. One losing day resets it, so the streak is a number you actually protect.</div>
       </div>
       <div class="result-card reveal">
         <div class="result-icon">$</div>
@@ -812,12 +823,12 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
       <div class="result-card reveal">
         <div class="result-icon">●</div>
         <div class="result-title">Discipline Score</div>
-        <div class="result-text">A weekly composite of strike rate, rule adherence, and session completion. The number that reflects skill, not luck.</div>
+        <div class="result-text">A daily 0-to-10 grade, weighted toward one thing: did you follow the rules you set? It reflects skill, not luck.</div>
       </div>
       <div class="result-card reveal">
         <div class="result-icon">✓</div>
         <div class="result-title">Fewer Bad Days</div>
-        <div class="result-text">The worst sessions don't compound. Three strikes and the day is over before it ruins the week.</div>
+        <div class="result-text">The worst sessions get cut short. Hit your strike cap and the day closes before one red morning takes the week with it.</div>
       </div>
     </div>
 
