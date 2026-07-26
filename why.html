@@ -4,10 +4,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Why MAKETZO — Discipline, Enforced</title>
-<meta name="description" content="Every trading tool reviews the damage. MAKETZO intercepts it. A real-time discipline operating system for the moment your willpower cracks — not a journal, not a course, not a screener.">
+<title>Why MAKETZO: Discipline, Enforced · MAKETZO</title>
+<meta name="description" content="Every trading tool reviews the damage. MAKETZO intercepts it. A real-time discipline operating system for the moment your willpower cracks. Not a journal, not a course, not a screener.">
 <meta name="theme-color" content="#06070A">
-<meta property="og:title" content="Why MAKETZO — Discipline, Enforced">
+<meta property="og:title" content="Why MAKETZO: Discipline, Enforced">
 <meta property="og:description" content="Every trading tool reviews the damage. MAKETZO intercepts it. The real-time discipline operating system for the moment that matters most.">
 <meta property="og:url" content="https://maketzo.co/why">
 <meta property="og:type" content="website">
@@ -68,6 +68,7 @@ html.mkt-auth .nav-login-btn:hover{color:var(--mk-text-on-gold);background:var(-
 .btn-primary, .btn-secondary, .btn-ghost { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-family: var(--mk-font-sans); font-size: var(--mk-text-sm); font-weight: 600; letter-spacing: var(--mk-track-cap); text-transform: uppercase; padding: 12px 22px; border-radius: var(--mk-radius-button); border: 1px solid transparent; cursor: pointer; text-decoration: none; white-space: nowrap; transition: transform var(--mk-dur-snap), box-shadow var(--mk-dur-snap), background var(--mk-dur-snap), border-color var(--mk-dur-snap), color var(--mk-dur-snap); }
 .btn-primary { background: var(--mk-gold-gradient); color: var(--mk-text-on-gold); border-color: rgba(0,0,0,.18); }
 .btn-primary:hover { transform: translateY(-1px); box-shadow: var(--mk-glow-gold-md); color: var(--mk-text-on-gold); }
+.btn-cta-lg { padding: 16px 34px; font-size: var(--mk-text-md); }
 .btn-secondary { background: transparent; color: var(--mk-text-primary); border: var(--mk-border-gold); }
 .btn-secondary:hover { color: var(--mk-brand); border-color: var(--mk-brand); background: rgba(212,175,55,.06); }
 .btn-ghost { background: transparent; color: var(--mk-text-secondary); border-color: var(--mk-smoke-700); padding: 10px 18px; font-size: var(--mk-text-xs); }
@@ -229,6 +230,8 @@ hr.mk-rule-gold, hr.mk-rule-gold--bold { margin: 0 auto; max-width: 1180px; }
 .final-cta-sub:last-of-type { margin-bottom: 36px; }
 .final-cta-btn-wrap { display: flex; flex-direction: column; align-items: center; gap: 14px; }
 .final-cta-note { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: 0.04em; color: var(--mk-text-tertiary); }
+.final-cta-note a { color: var(--mk-text-secondary); text-decoration: underline; text-decoration-color: rgba(212,175,55,.3); }
+.page-hero .final-cta-btn-wrap { margin-top: 38px; }
 
 .sticky-bar { position: fixed; bottom: 0; left: 0; right: 0; z-index: 55; display: flex; align-items: center; justify-content: center; gap: 14px; padding: 10px 64px 10px 24px; background: rgba(13,15,20,.62); backdrop-filter: blur(20px) saturate(140%); border-top: 1px solid rgba(212,175,55,.35); transform: translateY(100%); transition: transform var(--mk-dur-med) var(--mk-ease-out); }
 .sticky-bar.visible { transform: translateY(0); }
@@ -330,7 +333,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 .compare-col-eyebrow { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; }
 .compare-column--them .compare-col-eyebrow { color: var(--mk-text-tertiary); }
 .compare-column--us .compare-col-eyebrow { color: var(--mk-brand); }
-.compare-col-title { font-family: var(--mk-font-display); font-size: clamp(1.2rem, 2vw, 1.5rem); letter-spacing: var(--mk-track-display); text-transform: uppercase; line-height: 1.08; font-weight: 400; }
+.compare-col-title { font-family: var(--mk-font-display); font-size: clamp(1.2rem, 2vw, 1.5rem); letter-spacing: var(--mk-track-display); text-transform: uppercase; line-height: 1.08; font-weight: 400; margin-bottom: 8px; }
 .compare-column--them .compare-col-title { color: var(--mk-text-tertiary); }
 .compare-column--us .compare-col-title { color: var(--mk-text-primary); }
 .compare-row { padding: 16px 0; border-bottom: 1px solid rgba(255,255,255,.04); font-size: var(--mk-text-md); line-height: 1.5; }
@@ -421,8 +424,8 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
     <h1 class="page-hero-title reveal">Every trading tool reviews the damage.<br>MAKETZO <em>intercepts it.</em></h1>
     <p class="page-hero-sub reveal">After-the-fact analytics show you what went wrong. MAKETZO shows you the moment you're about to repeat it.</p>
 
-    <div class="final-cta-btn-wrap reveal" style="margin-top: 38px;">
-      <button class="btn-primary" data-cta-source="page-hero" style="padding:16px 32px;font-size:var(--mk-text-md);" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
+    <div class="final-cta-btn-wrap reveal">
+      <button class="btn-primary btn-cta-lg" data-cta-source="page-hero" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
       <p class="final-cta-note">7 days free &middot; No charge until day 8 &middot; Cancel in one click.</p>
     </div>
   </div>
@@ -437,7 +440,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
     <h2 class="section-title reveal">Knowledge is rarely <em>the problem.</em></h2>
 
     <div class="prose-wrap">
-      <p class="reveal">By the time most traders search for a solution, they've already studied the strategies, developed the rules, and know what disciplined trading looks like. The gap is enacting it — when real money meets real emotion.</p>
+      <p class="reveal">By the time most traders search for a solution, they've already studied the strategies, developed the rules, and know what disciplined trading looks like. The gap is enacting it, when real money meets real emotion.</p>
 
       <div class="pull-quote reveal">That gap between knowing and doing <em>is where performance breaks down.</em></div>
     </div>
@@ -461,12 +464,12 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
       <div class="moment-card reveal">
         <p class="moment-card-eyebrow">01 &middot; THE REVENGE TRADE</p>
         <h3 class="moment-card-title">One loss lands harder than the math says it should.</h3>
-        <p class="moment-card-body">So you re-enter the same setup to "earn it back" — and the third loss is the one that empties the day.</p>
+        <p class="moment-card-body">So you re-enter the same setup to "earn it back," and the third loss is the one that empties the day.</p>
       </div>
       <div class="moment-card reveal">
         <p class="moment-card-eyebrow">02 &middot; THE SIZE-UP</p>
         <h3 class="moment-card-title">Four green days in a row.</h3>
-        <p class="moment-card-body">The fifth trade goes in at 2&times; size — and quietly gives back the entire week. The green trade wasn't the reward. It was the setup.</p>
+        <p class="moment-card-body">The fifth trade goes in at 2&times; size, and quietly gives back the entire week. The green trade wasn't the reward. It was the setup.</p>
       </div>
       <div class="moment-card reveal">
         <p class="moment-card-eyebrow">03 &middot; AVERAGING DOWN</p>
@@ -494,7 +497,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
   <div class="section-inner">
     <p class="section-eyebrow reveal">HOW MAKETZO CLOSES THE GAP</p>
     <h2 class="section-title reveal">Discipline, <em>enforced.</em></h2>
-    <p class="section-sub reveal">Four systems, one operating loop &mdash; between the rules you set and the rules you follow.</p>
+    <p class="section-sub reveal">Four systems, one operating loop between the rules you set and the rules you follow.</p>
 
     <div class="pillar-grid">
       <a href="system.html" class="pillar-card reveal" data-cta-source="why-pillar" data-cta-target="system">
@@ -503,22 +506,22 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
         <p class="pillar-card-body">Set your rules when you're calm. <strong>MAKETZO enforces them when you're not.</strong> Strikes, lockouts, and live coach prompts intervene before the next click, not after the close.</p>
         <span class="pillar-card-link">The System &rarr;</span>
       </a>
-      <a href="indicators.html" class="pillar-card reveal" data-cta-source="why-pillar" data-cta-target="indicators">
+      <a href="journal.html" class="pillar-card reveal" data-cta-source="why-pillar" data-cta-target="journal">
         <span class="pillar-card-num">02</span>
-        <h3 class="pillar-card-title">Indicators</h3>
-        <p class="pillar-card-body">Know exactly when your window is open. <strong>And when to sit on your hands.</strong> A signal designed for execution moments, not analysis paralysis.</p>
-        <span class="pillar-card-link">Indicators &rarr;</span>
+        <h3 class="pillar-card-title">The Discipline Score</h3>
+        <p class="pillar-card-body">Every session lands a 0-to-10 grade on the one question that counts: <strong>did you follow the rules you set?</strong> The number you can't argue with, tracked until the gap closes.</p>
+        <span class="pillar-card-link">Journal &rarr;</span>
       </a>
       <a href="system.html" class="pillar-card reveal" data-cta-source="why-pillar" data-cta-target="coach-says">
         <span class="pillar-card-num">03</span>
         <h3 class="pillar-card-title">COACH SAYS</h3>
-        <p class="pillar-card-body">The voice in your ear when the data says you're about to break your own rule. <strong>A coach who watches the trade with you</strong> &mdash; not a report you read tomorrow.</p>
+        <p class="pillar-card-body">The voice in the room the moment the data says you're about to break your own rule. <strong>A coach reading your session live</strong>, not a report you read tomorrow.</p>
         <span class="pillar-card-link">The System &rarr;</span>
       </a>
       <a href="focus.html" class="pillar-card reveal" data-cta-source="why-pillar" data-cta-target="focus">
         <span class="pillar-card-num">04</span>
         <h3 class="pillar-card-title">Focus Room</h3>
-        <p class="pillar-card-body">A pre-market ritual, environment, and soundtrack that condition <strong>the state you trade from</strong> &mdash; not just the trades you take.</p>
+        <p class="pillar-card-body">A pre-market ritual, environment, and soundtrack that condition <strong>the state you trade from</strong>, not just the trades you take.</p>
         <span class="pillar-card-link">Focus Room &rarr;</span>
       </a>
     </div>
@@ -543,7 +546,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
         <div class="compare-col-head">
           <span class="compare-col-eyebrow">Traditional Journals</span>
         </div>
-        <div class="compare-col-title" style="margin-bottom: 8px;">Review the damage.</div>
+        <div class="compare-col-title">Review the damage.</div>
         <div class="compare-row">Tell you what happened.</div>
         <div class="compare-row">Activate after the trade closes.</div>
         <div class="compare-row">Require you to review them.</div>
@@ -554,11 +557,11 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
         <div class="compare-col-head">
           <span class="compare-col-eyebrow">MAKETZO</span>
         </div>
-        <div class="compare-col-title" style="margin-bottom: 8px;">Intercept the damage.</div>
+        <div class="compare-col-title">Intercept the damage.</div>
         <div class="compare-row">Tell you what's <em>about to happen.</em></div>
         <div class="compare-row">Activate before the next one <em>opens.</em></div>
         <div class="compare-row">Enforce in <em>real time.</em></div>
-        <div class="compare-row">Block the rule you're <em>about to break.</em></div>
+        <div class="compare-row">Catch the rule you're <em>about to break.</em></div>
         <div class="compare-row">Hold the line when <em>willpower doesn't.</em></div>
       </div>
     </div>
@@ -588,7 +591,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
       </div>
       <div class="affirm-line reveal">
         <span class="affirm-line-num">03</span>
-        <span>The trader you almost are &mdash; <em>that's the one who shows up.</em></span>
+        <span>The trader you almost are. <em>That's the one who shows up.</em></span>
       </div>
     </div>
 
@@ -609,9 +612,9 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
     <div class="founder-with-image">
       <div class="founder-card reveal">
         <p>We've all been on the wrong side of our own trades. The setup was right. The size was right. The rule was clear. And somehow the trade we took wasn't the one we wrote down.</p>
-        <p>We built MAKETZO because the gap between what a trader knows and what a trader does is the only gap that actually empties accounts. Everything else &mdash; strategy, indicators, market structure &mdash; is solvable with study. <strong>This one isn't.</strong></p>
+        <p>We built MAKETZO because the gap between what a trader knows and what a trader does is the only gap that actually empties accounts. Everything else, strategy, indicators, market structure, is solvable with study. <strong>This one isn't.</strong></p>
         <p>So we built a system that holds the line for you. Not a journal that reviews the damage. Not a course that explains the theory. <strong>A real-time enforcement layer between the rules you set and the rules you follow.</strong></p>
-        <div class="founder-sign">&mdash; The MAKETZO Team</div>
+        <div class="founder-sign">The MAKETZO Team</div>
       </div>
       <figure class="founder-team-image reveal">
         <picture>
@@ -633,10 +636,10 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 <section class="final-cta-section">
   <p class="final-cta-eyebrow reveal">7-DAY FREE TRIAL &middot; NO CHARGE UNTIL DAY 8</p>
   <h2 class="final-cta-title reveal">Become the trader <em>you almost are.</em></h2>
-  <p class="final-cta-sub reveal">MAKETZO is built for the trader you've been trying to be &mdash; the one with rules that hold, sessions that end on purpose, and a system that does the remembering.</p>
+  <p class="final-cta-sub reveal">MAKETZO is built for the trader you've been trying to be: the one with rules that hold, sessions that end on purpose, and a system that does the remembering.</p>
   <div class="final-cta-btn-wrap reveal">
-    <button class="btn-primary" style="padding:18px 44px;font-size:var(--mk-text-md);" data-cta-source="final-cta" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
-    <p class="final-cta-note">Cancel in one click &middot; <a href="pricing.html" style="color: var(--mk-text-secondary); text-decoration: underline; text-decoration-color: rgba(212,175,55,.3);">See pricing</a></p>
+    <button class="btn-primary btn-cta-lg" data-cta-source="final-cta" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
+    <p class="final-cta-note">Cancel in one click &middot; <a href="pricing.html">See pricing</a></p>
   </div>
 </section>
 
