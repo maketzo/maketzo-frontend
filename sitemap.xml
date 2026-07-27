@@ -21,6 +21,7 @@
   <url><loc>https://maketzo.co/terms</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
   <url><loc>https://maketzo.co/disclaimer</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
   <!-- BLOG:START -->
+  <url><loc>https://maketzo.co/blog/fomo-costs-the-next-trade</loc><lastmod>2026-07-27</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://maketzo.co/blog/winning-traders-skip-more-trades</loc><lastmod>2026-07-24</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://maketzo.co/blog/low-float-punishes-size-not-thesis</loc><lastmod>2026-07-23</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://maketzo.co/blog/meditation-isnt-wellness-risk-management</loc><lastmod>2026-07-22</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
