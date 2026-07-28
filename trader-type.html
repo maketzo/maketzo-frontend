@@ -23,24 +23,16 @@
 <link rel="stylesheet" href="assets/css/tokens.css">
 <link rel="stylesheet" href="assets/css/components.css">
 <link rel="stylesheet" href="assets/css/audio-player.css?v=9">
-<link rel="stylesheet" href="assets/css/trader-diagnostic.css?v=22">
 <script src="assets/js/mkt-analytics.js?v=5" defer></script>
 <script src="assets/js/newsletter.js?v=4" defer></script>
 <script src="assets/js/mkt-consent.js?v=1" defer></script>
 <script src="assets/js/checkout.js?v=10" defer></script>
 <script src="assets/js/audio-player.js?v=9" defer></script>
-<!-- badge-engine.js is the pure scoring module. It must load BEFORE trader-diagnostic.js
-     (which calls window.MaketzoBadges.evaluate at end of run). Both are `defer`, so they
-     execute in document order. -->
-<script src="assets/js/badge-engine.js?v=3" defer></script>
-<!-- badge-vault.js is the localStorage collection. Kept out of badge-engine.js so the
-     engine stays pure (no I/O), which is what makes it node-testable and a clean copy
-     into the app. Load order does not matter between the two; both precede the sim. -->
-<script src="assets/js/badge-vault.js?v=1" defer></script>
-<!-- daily.js owns the NY-midnight clock, the seed, and the once-a-day gate. Must load
-     before trader-diagnostic.js, which seeds its RNG from it at the start of every run. -->
-<script src="assets/js/daily.js?v=1" defer></script>
-<script src="assets/js/trader-diagnostic.js?v=43" defer></script>
+<!-- The game is now the SAME chunk the in-app Warm-Up card runs, loaded first-party via
+     trader-type-embed.js (injected at the bottom of this page). The old standalone engine
+     (trader-diagnostic.js + badge-engine + badge-vault + daily) is retired so the kiosk and
+     the app can never drift again, and the countdown + resume-integrity fixes flow here for
+     free. See the port-kiosk-game-to-app skill, "Kiosk convergence." -->
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
@@ -78,6 +70,10 @@ html.mkt-auth .nav-cta { display: none; }
 /* diagnostic page shell */
 .diag-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 120px 20px 80px; position: relative; }
 .diag-page::before { content: ""; position: absolute; inset: 0; background: radial-gradient(1100px 600px at 50% -10%, rgba(212,175,55,.10), transparent 60%); pointer-events: none; }
+/* First-party embed host: the shared app game chunk mounts <mk-game-trader-type> here.
+   The game self-sizes to max-width 900px inside its shadow root. */
+#trader-type-host { position: relative; width: 100%; max-width: 940px; margin: 0 auto; }
+.tt-embed-msg { max-width: 420px; margin: 64px auto; padding: 0 16px; text-align: center; color: var(--mk-text-secondary); font-size: 14px; line-height: 1.5; }
 
 @media (max-width: 880px) {
   #mainNav { padding: 12px 18px; }
@@ -165,7 +161,7 @@ body:has(.sticky-bar.visible) { padding-bottom: 80px; }
 <a href="tools.html" class="back-to-tools" data-cta-source="trader-type" data-cta-target="tools"><span class="btt-arrow" aria-hidden="true">&larr;</span> Free Tools</a>
 
 <main class="diag-page">
-  <div id="diag-root"></div>
+  <div id="trader-type-host"><div class="tt-embed-msg">Loading Trader Type&hellip;</div></div>
 </main>
 
 <hr class="mk-rule-gold">
@@ -204,6 +200,34 @@ function closeDrawer(){document.getElementById('mobileDrawer').classList.remove(
 window.addEventListener('scroll',()=>{
   document.getElementById('mainNav').style.borderBottomColor=window.scrollY>60?'rgba(201,168,76,0.25)':'rgba(201,168,76,0.12)';
 });
+
+// Tier-matched app origin (frontend dev.maketzo.co -> app dev-app.maketzo.co, etc).
+function ttAppBase(){
+  var h = location.hostname;
+  if (h.indexOf('dev') === 0) return 'https://dev-app.maketzo.co';
+  if (h.indexOf('staging') === 0) return 'https://staging-app.maketzo.co';
+  return 'https://app.maketzo.co';
+}
+// First-party embed: the loader lives on the matching app tier and injects the SAME
+// <mk-game-trader-type> chunk the in-app Warm-Up runs straight into #trader-type-host.
+// No iframe, no second engine. Booted for everyone (the sim has no account lock).
+(function embed(){
+  var s = document.createElement('script');
+  s.src = ttAppBase() + '/trader-type-embed.js';
+  s.defer = true;
+  document.head.appendChild(s);
+})();
+// The game dispatches bt:result (bubbling + composed, so it crosses the shadow boundary
+// to document) when a run ends. The debrief + share render inline where the player is;
+// just record the finish for the funnel. The nav CTA is the signup path.
+var _ttFinished = false;
+document.addEventListener('bt:result', function (e) {
+  if (_ttFinished) return;
+  _ttFinished = true;
+  var d = (e && e.detail) || {};
+  try { if (window.MKT && MKT.trackEvent) MKT.trackEvent('trader_type_public_finish', { score: d.score, won: d.won }); } catch (err) {}
+});
+try { if (window.MKT && MKT.trackEvent) MKT.trackEvent('trader_type_page_view', {}); } catch (e) {}
 </script>
 </body>
 </html>
