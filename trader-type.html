@@ -4,6 +4,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Auth signal before first paint: sets html.mkt-auth from the mkt_csrf cookie so the
+     signed-in nav renders correctly AND the game's kiosk member-steer can read it. -->
+<script>try{if(document.cookie.indexOf('mkt_csrf=')>-1)document.documentElement.classList.add('mkt-auth');}catch(e){}</script>
 <title>What Kind of Trader Are You? — MAKETZO · The Two-Minute Tape Test</title>
 <meta name="description" content="Two minutes on a simulated small-cap tape that fights back. Go long or short and watch the P&L move, then it tries to take it all back. The money is fake. What it shows about how you trade is not. Free, no login, not financial advice.">
 <meta name="theme-color" content="#06070A">
