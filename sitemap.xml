@@ -21,6 +21,7 @@
   <url><loc>https://maketzo.co/terms</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
   <url><loc>https://maketzo.co/disclaimer</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
   <!-- BLOG:START -->
+  <url><loc>https://maketzo.co/blog/green-to-red-give-back-profits</loc><lastmod>2026-07-30</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://maketzo.co/blog/trades-share-nothing-in-common</loc><lastmod>2026-07-29</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://maketzo.co/blog/trading-operating-system-not-motivation</loc><lastmod>2026-07-28</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://maketzo.co/blog/the-line-you-drew-then-crossed</loc><lastmod>2026-07-27</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
