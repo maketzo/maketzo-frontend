@@ -70,13 +70,47 @@ html.mkt-auth .nav-cta { display: none; }
 .hamburger { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 6px; }
 .hamburger span { width: 24px; height: 2px; background: var(--mk-text-primary, #fff); transition: .2s; }
 
-/* diagnostic page shell */
-.diag-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 120px 20px 80px; position: relative; }
-.diag-page::before { content: ""; position: absolute; inset: 0; background: radial-gradient(1100px 600px at 50% -10%, rgba(212,175,55,.10), transparent 60%); pointer-events: none; }
+/* diagnostic page shell. Normal flow (was a 100vh flex centering box back when the page
+   held nothing but the embed host); the hero, game and convert sections now stack. */
+.diag-page { position: relative; padding: 0 0 40px; }
+.diag-page::before { content: ""; position: absolute; inset: 0 0 auto; height: 720px; background: radial-gradient(1100px 600px at 50% -10%, rgba(212,175,55,.10), transparent 60%); pointer-events: none; }
+
+/* ── Hero ─────────────────────────────────────────────────────────────── */
+.tt-hero { position: relative; padding: 132px 20px 30px; }
+.tt-hero-inner { max-width: 760px; margin: 0 auto; text-align: center; }
+.tt-eyebrow { font-family: var(--mk-font-mono); font-size: var(--mk-mono-sm, 12px); letter-spacing: var(--mk-track-cap, .16em); text-transform: uppercase; color: var(--mk-brand); margin-bottom: 14px; }
+.tt-title { font-family: var(--mk-font-display, "Bebas Neue", sans-serif); font-size: clamp(40px, 7vw, 74px); line-height: 1.02; letter-spacing: var(--mk-track-display, .02em); text-transform: uppercase; color: var(--mk-text-primary); margin-bottom: 20px; }
+.tt-title em { font-style: italic; color: var(--mk-brand); }
+.tt-lead { font-size: var(--mk-text-lg, 17px); line-height: var(--mk-lead-body, 1.65); color: var(--mk-text-secondary); max-width: 640px; margin: 0 auto; }
+.tt-meta { font-family: var(--mk-font-mono); font-size: var(--mk-mono-sm, 12px); letter-spacing: .1em; text-transform: uppercase; color: var(--mk-text-tertiary); margin-top: 18px; }
+
+/* ── Game ─────────────────────────────────────────────────────────────── */
+.tt-embed-section { position: relative; padding: 8px 20px 0; }
+.tt-embed-frame { max-width: 940px; margin: 0 auto; }
 /* First-party embed host: the shared app game chunk mounts <mk-game-trader-type> here.
    The game self-sizes to max-width 900px inside its shadow root. */
-#trader-type-host { position: relative; width: 100%; max-width: 940px; margin: 0 auto; }
+#trader-type-host { position: relative; width: 100%; margin: 0 auto; }
 .tt-embed-msg { max-width: 420px; margin: 64px auto; padding: 0 16px; text-align: center; color: var(--mk-text-secondary); font-size: 14px; line-height: 1.5; }
+.tt-embed-disclaimer { max-width: 720px; margin: 26px auto 0; text-align: center; font-size: var(--mk-text-xs, 12px); line-height: 1.6; color: var(--mk-text-tertiary); }
+.tt-embed-disclaimer a { color: var(--mk-text-secondary); text-decoration: underline; text-underline-offset: 2px; }
+.tt-embed-disclaimer a:hover { color: var(--mk-brand); }
+
+/* ── Convert. Auth-aware via the html.mkt-auth head signal, same idiom as the nav. ── */
+.tt-convert { padding: 64px 20px 24px; }
+.tt-convert-inner { max-width: 660px; margin: 0 auto; text-align: center; padding: 40px 32px; border: var(--mk-border-soft, 1px solid rgba(255,255,255,.1)); border-radius: var(--mk-radius-card, 16px); background: rgba(20,24,33,.42); }
+.tt-convert-in { display: none; }
+html.mkt-auth .tt-convert-out { display: none; }
+html.mkt-auth .tt-convert-in { display: block; }
+.tt-c-eyebrow { font-family: var(--mk-font-mono); font-size: var(--mk-mono-sm, 12px); letter-spacing: var(--mk-track-cap, .16em); text-transform: uppercase; color: var(--mk-brand); margin-bottom: 10px; }
+.tt-c-title { font-family: var(--mk-font-display, "Bebas Neue", sans-serif); font-size: clamp(26px, 4vw, 38px); line-height: 1.1; letter-spacing: var(--mk-track-display, .02em); text-transform: uppercase; color: var(--mk-text-primary); margin-bottom: 14px; }
+.tt-c-sub { font-size: var(--mk-text-md, 16px); line-height: var(--mk-lead-body, 1.65); color: var(--mk-text-secondary); margin-bottom: 24px; }
+.tt-c-note { font-size: var(--mk-text-xs, 12px); color: var(--mk-text-tertiary); margin-top: 14px; }
+
+@media (max-width: 560px) {
+  .tt-hero { padding: 108px 18px 24px; }
+  .tt-convert { padding: 48px 16px 16px; }
+  .tt-convert-inner { padding: 32px 22px; }
+}
 
 @media (max-width: 880px) {
   #mainNav { padding: 12px 18px; }
@@ -164,7 +198,48 @@ body:has(.sticky-bar.visible) { padding-bottom: 80px; }
 <a href="tools.html" class="back-to-tools" data-cta-source="trader-type" data-cta-target="tools"><span class="btt-arrow" aria-hidden="true">&larr;</span> Free Tools</a>
 
 <main class="diag-page">
-  <div id="trader-type-host"><div class="tt-embed-msg">Loading Trader Type&hellip;</div></div>
+
+  <!-- Hero. RESTORED 2026-07-31 after a regression: this page's explainer copy used to be
+       rendered at runtime by the standalone trader-diagnostic.js intro screen, which the
+       kiosk-convergence commit (aee069d) retired in favour of the shared app chunk. The
+       chunk renders the game as it appears IN the app, where the Warm-Up card already
+       says what it is, so the kiosk was left with a bare game and no explanation. Static
+       page copy now lives HERE, in the HTML, where no engine swap can take it away.
+       Mirrors gauntlet.html, which kept its page copy through the same convergence. -->
+  <section class="tt-hero">
+    <div class="tt-hero-inner">
+      <p class="tt-eyebrow">Trader Type</p>
+      <h1 class="tt-title">Can You Trade,<br><em>or Do You Just Think So?</em></h1>
+      <p class="tt-lead">Two minutes on a simulated small-cap tape that fights back. Go long or short, read the Level 2, watch your P&amp;L move on every fill. Everyone who plays today trades the same tape: same open, same tricks, same rug. The money is fake. What it shows about how you trade is not.</p>
+      <p class="tt-meta">Free &middot; 2 minutes &middot; one run a day</p>
+    </div>
+  </section>
+
+  <section class="tt-embed-section">
+    <div class="tt-embed-frame">
+      <div id="trader-type-host"><div class="tt-embed-msg">Loading Trader Type&hellip;</div></div>
+    </div>
+    <p class="tt-embed-disclaimer">What Kind of Trader Are You? is a behavioral simulation for entertainment and educational purposes only. Play money on a simulated tape: not a real brokerage, no live market data, and no order ever reaches a market. It is not financial, investment, or trading advice, and nothing in it is a recommendation or solicitation to buy, sell, or hold any security. Your result is not a measure of skill and does not predict future results. Trading involves substantial risk of loss. See the full <a href="disclaimer.html">disclaimer</a>.</p>
+  </section>
+
+  <section class="tt-convert">
+    <div class="tt-convert-inner">
+      <div class="tt-convert-out">
+        <p class="tt-c-eyebrow">Join MAKETZO</p>
+        <h2 class="tt-c-title">This Is Just the Diagnosis</h2>
+        <p class="tt-c-sub">Two minutes shows you how you trade when it turns on you. MAKETZO holds you to it all session: a journal that makes you face every trade, a Focus Room that stops the tilt before it costs you, and a contract you sign before the open.</p>
+        <button class="btn-primary" onclick="handleCheckout('pro',event)" data-cta-source="trader-type" data-cta-target="trial">Start Your 7-Day Free Trial &rarr;</button>
+        <p class="tt-c-note">7 days free &middot; cancel anytime</p>
+      </div>
+      <div class="tt-convert-in">
+        <p class="tt-c-eyebrow">Member</p>
+        <h2 class="tt-c-title">Open It in Your App</h2>
+        <p class="tt-c-sub">Your badges and the full session are waiting.</p>
+        <a class="btn-primary" href="/app" data-cta-source="trader-type" data-cta-target="app">Open Trader Type &rarr;</a>
+      </div>
+    </div>
+  </section>
+
 </main>
 
 <hr class="mk-rule-gold">
