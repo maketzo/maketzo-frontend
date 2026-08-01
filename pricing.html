@@ -842,7 +842,7 @@ footer {
 }
 .toolkit-grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 16px;
   max-width: 1100px;
   margin: 0 auto 30px;
@@ -857,6 +857,22 @@ footer {
               border-color var(--mk-dur-med);
 }
 .toolkit-card:hover { transform: translateY(-4px); border-color: rgba(212,175,55,.30); }
+/* Dilution Check is the one toolkit entry that needs Pro. The tag is the only
+   thing that marks it, so it sits above the name where an eyebrow would: the
+   plan is the first thing you read, not a footnote under the description. */
+.toolkit-card--pro { border-color: rgba(212,175,55,.20); }
+.toolkit-card-tag {
+  align-self: flex-start;
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-xs);
+  letter-spacing: var(--mk-track-eyebrow);
+  text-transform: uppercase;
+  color: var(--mk-brand);
+  border: 1px solid rgba(212,175,55,.35);
+  border-radius: var(--mk-radius-pill);
+  padding: 3px 10px;
+  white-space: nowrap;
+}
 .toolkit-card-name {
   font-family: var(--mk-font-display);
   font-size: var(--mk-display-sm);
@@ -1032,9 +1048,9 @@ footer {
 <!-- RESOURCE TOOLKIT PILLAR -->
 <section class="section">
   <div class="section-inner">
-    <p class="section-eyebrow reveal">THE TOOLKIT · INCLUDED FREE</p>
+    <p class="section-eyebrow reveal">THE TOOLKIT</p>
     <h2 class="section-title reveal">Tools built for the <em>small-cap trader</em></h2>
-    <p class="section-sub reveal">Every plan opens the full toolkit on day one, nothing locked behind a higher tier. A couple you can run right now with no signup.</p>
+    <p class="section-sub reveal">Five of these open on every plan, day one. Dilution Check is the one that needs Pro.</p>
 
     <div class="toolkit-grid reveal">
       <div class="toolkit-card">
@@ -1057,9 +1073,14 @@ footer {
         <div class="toolkit-card-name">Knowledge Center</div>
         <p class="toolkit-card-desc">A searchable library of terms, how-tos, and setups, built right into the app.</p>
       </div>
+      <div class="toolkit-card toolkit-card--pro">
+        <div class="toolkit-card-tag">PRO</div>
+        <div class="toolkit-card-name">Dilution Check</div>
+        <p class="toolkit-card-desc">Enter a ticker and read their SEC filings: whether they can sell stock today, whether they already have, and how long their cash lasts.</p>
+      </div>
     </div>
 
-    <p class="toolkit-freeline reveal">Two you can run free right now, no signup: <a href="trade-replay.html">Trade Replay</a> and the <a href="trading-os.html">Trading OS</a>.</p>
+    <p class="toolkit-freeline reveal">Run two right now, no signup: the <a href="trading-os.html">Trading OS</a>, and <a href="trade-replay.html">Trade Replay</a> for 10 free replays. Dilution Check needs Pro, and you can <a href="dilution-check.html">see how it reads a filing</a> first.</p>
   </div>
 </section>
 
@@ -1089,6 +1110,7 @@ footer {
           <tr><td>Focus Timer (drift-proof break timer)</td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
           <tr><td>Trading OS (one-page playbook)</td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
           <tr><td>Knowledge Center (searchable in-app library)</td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
+          <tr><td>Dilution Check (read any ticker's SEC filings)</td><td><span class="compare-dash">—</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
 
           <tr class="group-header"><td colspan="4">JOURNALING &amp; ANALYTICS</td></tr>
           <tr><td>Trade journal &amp; daily session log</td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
@@ -1119,7 +1141,6 @@ footer {
 
           <tr class="group-header"><td colspan="4">INDICATORS</td></tr>
           <tr><td>Maketzo Edge + Pulse on TradingView (invite within 24 hrs)</td><td><span class="compare-dash">—</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
-          <tr><td>Dilution Check (read any ticker's SEC filings)</td><td><span class="compare-dash">—</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
 
           <tr class="group-header"><td colspan="4">COMMUNITY &amp; SUPPORT</td></tr>
           <tr><td>Email support</td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
@@ -1293,7 +1314,7 @@ footer {
       </details>
       <details class="faq-item reveal">
         <summary>Do I have to pay to use the tools?</summary>
-        <div class="faq-body"><p>No. Trade Replay and the Knowledge Center are open to anyone right now, no signup. And every paid plan unlocks the full in-app toolkit, Halt Clock, Focus Timer, Trading OS, and the rest, from day one. No tool is locked behind a higher tier.</p></div>
+        <div class="faq-body"><p>Mostly no. Two run right here with no signup: the Trading OS, and Trade Replay for 10 free replays. Inside the app, Halt Clock, Focus Timer, the Trading OS, and the Knowledge Center are on every plan from day one, Journal included. One tool needs Pro: <a href="dilution-check.html" style="color:var(--mk-brand);">Dilution Check</a>, which reads a company's SEC filings.</p></div>
       </details>
       <details class="faq-item reveal">
         <summary>Can I switch between Journal, Pro, and Elite later?</summary>
@@ -1344,8 +1365,8 @@ footer {
         </div>
         <p class="footer-tagline"><strong>Stop the trade you'd regret.</strong>Discipline in every session. Edge in every trade. Accountability when it counts.</p>
       </div>
-      <div><div class="footer-col-title">Product</div><ul class="footer-links"><li><a href="system.html">The System</a></li><li><a href="journal.html">Journal</a></li><li><a href="indicators.html">Indicators</a></li><li><a href="focus.html">Focus Room</a></li><li><a href="tools.html">Free Tools</a></li><li><a href="pricing.html" data-cta-source="footer-product" data-cta-target="pricing">Pricing</a></li></ul></div>
-      <div><div class="footer-col-title">Explore</div><ul class="footer-links"><li><a href="trader-type.html" data-cta-source="footer-explore" data-cta-target="trader-type">Can You Trade?</a></li><li><a href="why.html" data-cta-source="footer-explore" data-cta-target="why">Why MAKETZO</a></li><li><a href="soundtrack.html" data-cta-source="footer-explore" data-cta-target="soundtrack">Soundtrack</a></li><li><a href="contact.html" data-cta-source="footer-explore" data-cta-target="contact">Contact Us</a></li></ul></div>
+      <div><div class="footer-col-title">Product</div><ul class="footer-links"><li><a href="system.html">The System</a></li><li><a href="journal.html">Journal</a></li><li><a href="indicators.html">Indicators</a></li><li><a href="focus.html">Focus Room</a></li><li><a href="tools.html">Free Tools</a></li><li><a href="dilution-check.html">Dilution Check</a></li><li><a href="pricing.html" data-cta-source="footer-product" data-cta-target="pricing">Pricing</a></li></ul></div>
+      <div><div class="footer-col-title">Explore</div><ul class="footer-links"><li><a href="trader-type.html" data-cta-source="footer-explore" data-cta-target="trader-type">Can You Trade?</a></li><li><a href="trade-replay.html" data-cta-source="footer-explore" data-cta-target="trade-replay">Trade Replay</a></li><li><a href="trading-os.html" data-cta-source="footer-explore" data-cta-target="trading-os">Trading OS</a></li><li><a href="why.html" data-cta-source="footer-explore" data-cta-target="why">Why MAKETZO</a></li><li><a href="soundtrack.html" data-cta-source="footer-explore" data-cta-target="soundtrack">Soundtrack</a></li><li><a href="contact.html" data-cta-source="footer-explore" data-cta-target="contact">Contact Us</a></li></ul></div>
       <div><div class="footer-col-title">Legal</div><ul class="footer-links"><li><a href="privacy.html">Privacy Policy</a></li><li><a href="terms.html">Terms of Service</a></li><li><a href="disclaimer.html">Risk Disclaimer</a></li></ul></div>
     </div>
     <div class="footer-bottom">

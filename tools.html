@@ -124,6 +124,11 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 .tool-card--featured .tool-card-desc { font-size: var(--mk-text-md); color: var(--mk-text-secondary); }
 .tool-card-cta { display: inline-flex; align-items: center; gap: 6px; align-self: flex-start; margin-top: 4px; font-family: var(--mk-font-sans); font-size: var(--mk-text-sm); font-weight: 600; letter-spacing: 0.02em; color: var(--mk-brand); transition: gap var(--mk-dur-snap); }
 .tool-card:hover .tool-card-cta { gap: 10px; }
+/* A row card normally carries EITHER a link or a plan tag on the right. Dilution
+   Check needs both, so its tag moves inline with the name and the right slot
+   stays free for the link. */
+.tool-card-nameline { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.tool-card-tag--pro { color: var(--mk-brand); border-color: rgba(212,175,55,.35); }
 /* single-tool stations fill the width: content left, action (or in-app tag) right */
 .tool-card--row { flex-direction: row; align-items: center; gap: 28px; }
 .tool-card--row .tool-card-main { flex: 1 1 auto; display: flex; flex-direction: column; gap: 8px; }
@@ -206,7 +211,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 <section class="tools-hero">
   <p class="tools-eyebrow reveal">04 &middot; FREE TOOLS</p>
   <h1 class="tools-h1 reveal">Get sharp <em>before you risk a dollar.</em></h1>
-  <p class="tools-sub reveal">A working set of tools for small-cap day traders, free from the first click. Most run right here in your browser, no signup. Go top to bottom, from knowing yourself to trading the tape.</p>
+  <p class="tools-sub reveal">A working set of tools for small-cap day traders. Most run right here in your browser, free, no signup. Go top to bottom, from knowing yourself to trading the tape.</p>
 </section>
 
 <!-- ─── THE PATH ─────────────────────────────────────────────────── -->
@@ -240,6 +245,13 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
             <p class="tool-card-desc">The entire trading process on one page: when to trade, when to size down, and when to walk away. Save it, print it, live by it.</p>
           </div>
           <a class="tool-card-cta" href="trading-os.html" data-cta-source="tools" data-cta-target="trading-os">Read the Trading OS <span aria-hidden="true">&rarr;</span></a>
+        </div>
+        <div class="tool-card tool-card--row">
+          <div class="tool-card-main">
+            <div class="tool-card-name">Knowledge Center</div>
+            <p class="tool-card-desc">A searchable library of terms, how-tos, and setups, from what an ATM offering is to why the third loss costs the most.</p>
+          </div>
+          <div class="tool-card-tag">IN THE APP &middot; FREE</div>
         </div>
       </div>
     </div>
@@ -317,6 +329,16 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
           </div>
           <div class="tool-card-tag">IN THE APP &middot; FREE</div>
         </div>
+        <div class="tool-card tool-card--row">
+          <div class="tool-card-main">
+            <div class="tool-card-nameline">
+              <div class="tool-card-name">Dilution Check</div>
+              <div class="tool-card-tag tool-card-tag--pro">IN THE APP &middot; PRO</div>
+            </div>
+            <p class="tool-card-desc">Enter a ticker and read their SEC filings: whether they can sell stock today, whether they already have, and how long their cash lasts. Every line is dated and links to the filing.</p>
+          </div>
+          <a class="tool-card-cta" href="dilution-check.html" data-cta-source="tools" data-cta-target="dilution-check">See how it reads a filing <span aria-hidden="true">&rarr;</span></a>
+        </div>
       </div>
     </div>
   </div>
@@ -333,7 +355,11 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
     </div>
     <div class="freebox-row">
       <div class="freebox-k">Free in the app</div>
-      <div class="freebox-v">Halt Clock and Focus Timer are built into MAKETZO, free on every plan.</div>
+      <div class="freebox-v">Halt Clock, Focus Timer, the Trading OS, and the Knowledge Center are built into MAKETZO, free on every plan.</div>
+    </div>
+    <div class="freebox-row">
+      <div class="freebox-k">Needs Pro</div>
+      <div class="freebox-v">Dilution Check is the one tool above that isn't free. Pro and Elite open it.</div>
     </div>
     <div class="freebox-row">
       <div class="freebox-k">The full system</div>
@@ -362,8 +388,8 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
         </div>
         <p class="footer-tagline"><strong>Stop the trade you'd regret.</strong>Discipline in every session. Edge in every trade. Accountability when it counts.</p>
       </div>
-      <div><div class="footer-col-title">Product</div><ul class="footer-links"><li><a href="system.html">The System</a></li><li><a href="journal.html">Journal</a></li><li><a href="focus.html">Focus Room</a></li><li><a href="tools.html">Free Tools</a></li><li><a href="indicators.html">Indicators</a></li><li><a href="pricing.html" data-cta-source="footer-product" data-cta-target="pricing">Pricing</a></li></ul></div>
-      <div><div class="footer-col-title">Explore</div><ul class="footer-links"><li><a href="trader-type.html" data-cta-source="footer-explore" data-cta-target="trader-type">Can You Trade?</a></li><li><a href="why.html" data-cta-source="footer-explore" data-cta-target="why">Why MAKETZO</a></li><li><a href="soundtrack.html" data-cta-source="footer-explore" data-cta-target="soundtrack">Soundtrack</a></li><li><a href="contact.html" data-cta-source="footer-explore" data-cta-target="contact">Contact Us</a></li></ul></div>
+      <div><div class="footer-col-title">Product</div><ul class="footer-links"><li><a href="system.html">The System</a></li><li><a href="journal.html">Journal</a></li><li><a href="focus.html">Focus Room</a></li><li><a href="tools.html">Free Tools</a></li><li><a href="dilution-check.html">Dilution Check</a></li><li><a href="indicators.html">Indicators</a></li><li><a href="pricing.html" data-cta-source="footer-product" data-cta-target="pricing">Pricing</a></li></ul></div>
+      <div><div class="footer-col-title">Explore</div><ul class="footer-links"><li><a href="trader-type.html" data-cta-source="footer-explore" data-cta-target="trader-type">Can You Trade?</a></li><li><a href="trade-replay.html" data-cta-source="footer-explore" data-cta-target="trade-replay">Trade Replay</a></li><li><a href="trading-os.html" data-cta-source="footer-explore" data-cta-target="trading-os">Trading OS</a></li><li><a href="why.html" data-cta-source="footer-explore" data-cta-target="why">Why MAKETZO</a></li><li><a href="soundtrack.html" data-cta-source="footer-explore" data-cta-target="soundtrack">Soundtrack</a></li><li><a href="contact.html" data-cta-source="footer-explore" data-cta-target="contact">Contact Us</a></li></ul></div>
       <div><div class="footer-col-title">Legal</div><ul class="footer-links"><li><a href="privacy.html">Privacy Policy</a></li><li><a href="terms.html">Terms of Service</a></li><li><a href="disclaimer.html">Risk Disclaimer</a></li></ul></div>
     </div>
     <div class="footer-bottom">

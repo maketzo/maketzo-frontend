@@ -1086,6 +1086,20 @@ hr.mk-rule-gold--bold {
   color: var(--mk-text-secondary);
   line-height: 1.5;
 }
+/* Plan marker for a stack card that isn't on every plan (Dilution Check).
+   Inline with the title so the tier reads in the same glance as the name. */
+.focus-feature-tag {
+  display: inline-block;
+  margin-left: 8px;
+  vertical-align: middle;
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-xs);
+  letter-spacing: var(--mk-track-eyebrow);
+  color: var(--mk-brand);
+  border: 1px solid rgba(212,175,55,.35);
+  border-radius: var(--mk-radius-pill);
+  padding: 2px 8px;
+}
 .focus-closing-line {
   margin-top: 22px;
   padding: 18px 22px;
@@ -2695,10 +2709,10 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
     <div class="teaser-block reveal">
       <div class="teaser-text">
         <div class="teaser-eyebrow">06 &middot; The Toolkit</div>
-        <h2 class="teaser-title">A full desk of tools.<br><em>Free on every plan.</em></h2>
+        <h2 class="teaser-title">A full desk of tools.<br><em>Most of it free.</em></h2>
         <p class="teaser-body">Beyond the journal and the coach, MAKETZO ships a working toolkit. <strong>Trade Replay</strong> to practice scaling with zero risk, a <strong>Halt Clock</strong> for LULD reopens, a drift-proof <strong>Focus Timer</strong>, the <strong>Trading OS</strong> playbook, and a searchable <strong>Knowledge Center</strong>.</p>
-        <p class="teaser-body">The whole toolkit is free on every plan, from Journal on up, and a couple you can run right now with no signup.</p>
-        <p class="teaser-body">Pro and Elite also add the Maketzo Edge and Pulse indicators on TradingView.</p>
+        <p class="teaser-body">That toolkit is free on every plan, from Journal on up, and a couple you can run right now with no signup.</p>
+        <p class="teaser-body">Pro and Elite add the Maketzo Edge and Pulse indicators on TradingView, plus <strong><a href="dilution-check.html">Dilution Check</a></strong>, which reads a company's SEC filings and shows how close they are to selling stock.</p>
         <div class="teaser-cta-row"><a href="tools.html" class="btn-ghost">Explore the Toolkit &rarr;</a></div>
       </div>
       <div class="teaser-visual">
@@ -2722,6 +2736,13 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
             <div>
               <div class="focus-feature-title">Trading OS</div>
               <p class="focus-feature-text">The whole trading process on one page: when to trade, when to size down, and when to walk away.</p>
+            </div>
+          </div>
+          <div class="focus-feature-card">
+            <span class="focus-feature-num">4</span>
+            <div>
+              <div class="focus-feature-title">Dilution Check <span class="focus-feature-tag">PRO</span></div>
+              <p class="focus-feature-text">Enter a ticker and read their SEC filings: whether they can sell stock today, whether they already have, and how long their cash lasts.</p>
             </div>
           </div>
         </div>
@@ -3123,8 +3144,8 @@ No software installation required. MAKETZO runs in your browser alongside your e
         </div>
         <p class="footer-tagline"><strong>Stop the trade you'd regret.</strong>Discipline in every session. Edge in every trade. Accountability when it counts.</p>
       </div>
-      <div><div class="footer-col-title">Product</div><ul class="footer-links"><li><a href="system.html">The System</a></li><li><a href="journal.html">Journal</a></li><li><a href="indicators.html">Indicators</a></li><li><a href="focus.html">Focus Room</a></li><li><a href="tools.html">Free Tools</a></li><li><a href="pricing.html" data-cta-source="footer-product" data-cta-target="pricing">Pricing</a></li></ul></div>
-      <div><div class="footer-col-title">Explore</div><ul class="footer-links"><li><a href="trader-type.html" data-cta-source="footer-explore" data-cta-target="trader-type">Can You Trade?</a></li><li><a href="why.html" data-cta-source="footer-explore" data-cta-target="why">Why MAKETZO</a></li><li><a href="soundtrack.html" data-cta-source="footer-explore" data-cta-target="soundtrack">Soundtrack</a></li><li><a href="contact.html" data-cta-source="footer-explore" data-cta-target="contact">Contact Us</a></li></ul></div>
+      <div><div class="footer-col-title">Product</div><ul class="footer-links"><li><a href="system.html">The System</a></li><li><a href="journal.html">Journal</a></li><li><a href="indicators.html">Indicators</a></li><li><a href="focus.html">Focus Room</a></li><li><a href="tools.html">Free Tools</a></li><li><a href="dilution-check.html">Dilution Check</a></li><li><a href="pricing.html" data-cta-source="footer-product" data-cta-target="pricing">Pricing</a></li></ul></div>
+      <div><div class="footer-col-title">Explore</div><ul class="footer-links"><li><a href="trader-type.html" data-cta-source="footer-explore" data-cta-target="trader-type">Can You Trade?</a></li><li><a href="trade-replay.html" data-cta-source="footer-explore" data-cta-target="trade-replay">Trade Replay</a></li><li><a href="trading-os.html" data-cta-source="footer-explore" data-cta-target="trading-os">Trading OS</a></li><li><a href="why.html" data-cta-source="footer-explore" data-cta-target="why">Why MAKETZO</a></li><li><a href="soundtrack.html" data-cta-source="footer-explore" data-cta-target="soundtrack">Soundtrack</a></li><li><a href="contact.html" data-cta-source="footer-explore" data-cta-target="contact">Contact Us</a></li></ul></div>
       <div><div class="footer-col-title">Legal</div><ul class="footer-links"><li><a href="privacy.html">Privacy Policy</a></li><li><a href="terms.html">Terms of Service</a></li><li><a href="disclaimer.html">Risk Disclaimer</a></li></ul></div>
     </div>
     <div class="footer-bottom">
