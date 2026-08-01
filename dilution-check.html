@@ -23,6 +23,54 @@
 <meta name="twitter:description" content="Can the company sell stock into this spike? Dilution Check reads their SEC filings and answers it, every line dated and linked.">
 <meta name="twitter:image" content="https://maketzo.co/assets/logo-mark.png">
 <link rel="canonical" href="https://maketzo.co/dilution-check">
+<!-- Structured data. Joins the site @graph by @id (Organization + WebSite are declared on
+     the homepage) rather than redeclaring them. The DefinedTermSet is the substantive part:
+     this page really does define these eight terms, which is the search intent it targets.
+     No SoftwareApplication/Offer node here on purpose, that lives on /pricing and duplicate
+     Offer signals across pages are worse than none. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": "https://maketzo.co/dilution-check#webpage",
+      "url": "https://maketzo.co/dilution-check",
+      "name": "Dilution Check: Read Any Small Cap's SEC Filings",
+      "description": "Enter a ticker and see whether the company can sell stock today, whether they already have, and how long their cash lasts. Every line is dated and links to the SEC filing it came from.",
+      "inLanguage": "en-US",
+      "isPartOf": { "@id": "https://maketzo.co/#website" },
+      "publisher": { "@id": "https://maketzo.co/#organization" },
+      "breadcrumb": { "@id": "https://maketzo.co/dilution-check#breadcrumb" },
+      "about": { "@id": "https://maketzo.co/dilution-check#terms" }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://maketzo.co/dilution-check#breadcrumb",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://maketzo.co/" },
+        { "@type": "ListItem", "position": 2, "name": "Dilution Check", "item": "https://maketzo.co/dilution-check" }
+      ]
+    },
+    {
+      "@type": "DefinedTermSet",
+      "@id": "https://maketzo.co/dilution-check#terms",
+      "name": "Small-cap dilution and share-supply terms",
+      "url": "https://maketzo.co/dilution-check",
+      "hasDefinedTerm": [
+        { "@type": "DefinedTerm", "name": "Shelf registration (S-3)", "inDefinedTermSet": { "@id": "https://maketzo.co/dilution-check#terms" }, "description": "A registration that pre-clears a pool of stock so a company can sell it in pieces over about three years without filing a fresh registration each time. It must be declared effective by the SEC before anything can be sold off it." },
+        { "@type": "DefinedTerm", "name": "At-the-market offering (ATM)", "inDefinedTermSet": { "@id": "https://maketzo.co/dilution-check#terms" }, "description": "An agreement with a broker to sell registered shares directly into the open market at the prevailing price, a little at a time. No announcement accompanies an individual sale, so the supply arrives without a headline." },
+        { "@type": "DefinedTerm", "name": "Prospectus supplement (424B5)", "inDefinedTermSet": { "@id": "https://maketzo.co/dilution-check#terms" }, "description": "The filing a company makes when it actually sells shares off an existing shelf. It is what turns can sell into did sell." },
+        { "@type": "DefinedTerm", "name": "Pre-funded warrant", "inDefinedTermSet": { "@id": "https://maketzo.co/dilution-check#terms" }, "description": "A warrant paid for almost entirely up front, leaving a token exercise price behind, often a tenth of a cent. The holder can convert to stock essentially whenever they choose, with nothing for the company to file first." },
+        { "@type": "DefinedTerm", "name": "Equity line of credit (ELOC)", "inDefinedTermSet": { "@id": "https://maketzo.co/dilution-check#terms" }, "description": "A standing commitment from an investor to buy stock from the company on demand, up to an agreed cap. The company draws on it when it wants cash, on its own timing." },
+        { "@type": "DefinedTerm", "name": "Convertible note", "inDefinedTermSet": { "@id": "https://maketzo.co/dilution-check#terms" }, "description": "Debt that turns into stock. When the conversion price floats with the market price rather than being fixed, a falling stock creates more and more shares, the mechanic behind the phrase toxic financing." },
+        { "@type": "DefinedTerm", "name": "Reverse split", "inDefinedTermSet": { "@id": "https://maketzo.co/dilution-check#terms" }, "description": "Existing shares combined at a ratio, so the price goes up and the share count comes down. Often done to hold an exchange listing, and it usually leaves a much larger pool of authorized but unissued shares behind it." },
+        { "@type": "DefinedTerm", "name": "Going concern", "inDefinedTermSet": { "@id": "https://maketzo.co/dilution-check#terms" }, "description": "Language in an audited report stating there is substantial doubt about the company's ability to keep operating for the next twelve months." }
+      ]
+    }
+  ]
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/tokens.css">
