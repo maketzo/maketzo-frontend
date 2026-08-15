@@ -66,6 +66,16 @@
   // Events that ALSO go to the backend (business-critical, need DB JOIN).
   // Everything else is PostHog-only (page_view, scroll_depth, form_start,
   // outbound_click).
+  //
+  // The map below is CLOSED and stays that way — those names predate the prefix
+  // and renaming them would orphan their history. Everything NEW uses the open
+  // `mkt_` prefix instead, mirroring the app's `app_` namespace: a new marketing
+  // surface ships instrumentation without editing this file OR redeploying the
+  // backend. That per-event deploy tax is exactly what let instrumentation rot
+  // (2026-08-15 audit). The backend applies the same prefix rule, and the 32-char
+  // eventType column cap plus the props gate remain the safety envelope.
+  var MKT_PREFIX = /^mkt_[a-z0-9_]{1,26}$/;
+
   var DUAL_FIRE_EVENTS = {
     cta_click: true,
     form_submit: true,
@@ -248,7 +258,7 @@
   // ── Public API ───────────────────────────────────────────────────────
   function trackEvent(eventType, props) {
     props = props || {};
-    if (DUAL_FIRE_EVENTS[eventType]) sendToBackend(eventType, props);
+    if (DUAL_FIRE_EVENTS[eventType] || MKT_PREFIX.test(eventType)) sendToBackend(eventType, props);
     sendToPostHog(eventType, props);
   }
 
