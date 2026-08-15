@@ -159,7 +159,16 @@
       page: window.location.pathname,
       referrer: document.referrer || null,
       utm_source: utm.utm_source,
-      utm_campaign: utm.utm_campaign
+      utm_campaign: utm.utm_campaign,
+      // The property bag (migration 108). Marketing events are still gated by the
+      // ANALYTICS_EVENTS whitelist server-side, but their PROPERTIES are now kept
+      // instead of discarded — so a cta_click can finally say WHICH cta, and a
+      // form_submit WHICH form, in SQL rather than PostHog alone.
+      //
+      // Sent raw, sanitised server-side by lib/analytics-props.js. A client-side
+      // gate would be advisory: this file runs on an anonymous marketing page
+      // where anything can be edited, so the PII rule is enforced where it cannot.
+      props: props || null
     };
     try {
       fetch(API_BASE + "/analytics/event", {
