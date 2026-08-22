@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<!-- resume — the landing page for an abandoned-checkout recovery link.
+     Ed, 2026-08-22, after the first real signup reached the Stripe card form
+     and stopped: reclaim people who went far in the purchase cycle.
+
+     WHY THIS PAGE EXISTS AT ALL, RATHER THAN THE EMAIL LINKING STRAIGHT TO
+     STRIPE. Corporate mail security follows links before the human does. A GET
+     that created the Stripe session would be fired by a scanner, so the person
+     would arrive at a session someone (something) else already opened. Nothing
+     happens here until a real click POSTs, which scanners do not issue.
+
+     THE PLAN IS NOT IN THIS URL. The backend reads it from the checkout_pay_
+     consumed audit row written when they first reached the card, so a forwarded
+     or hand-edited link cannot be turned into a cheaper tier. -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Finish setting up — MAKETZO</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#06070A">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/css/auth.css?v=1">
+</head>
+<body class="auth-body">
+
+<div class="bg-trading" aria-hidden="true">
+  <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+    <g stroke="#C9A84C" stroke-width="0.5" opacity="0.5">
+      <line x1="0" y1="150" x2="1440" y2="150"/><line x1="0" y1="300" x2="1440" y2="300"/><line x1="0" y1="450" x2="1440" y2="450"/><line x1="0" y1="600" x2="1440" y2="600"/>
+      <line x1="180" y1="0" x2="180" y2="900"/><line x1="360" y1="0" x2="360" y2="900"/><line x1="540" y1="0" x2="540" y2="900"/><line x1="720" y1="0" x2="720" y2="900"/><line x1="900" y1="0" x2="900" y2="900"/><line x1="1080" y1="0" x2="1080" y2="900"/><line x1="1260" y1="0" x2="1260" y2="900"/>
+    </g>
+  </svg>
+</div>
+
+<main class="auth-shell">
+  <a href="/" class="auth-brand mk-brand-lockup mk-brand-lockup--stacked" aria-label="MAKETZO home">
+    <img class="mk-brand-lockup__mark" src="assets/logo-mark.png" alt="">
+    <img class="mk-brand-lockup__wordmark" src="assets/logo-wordmark.png" alt="MAKETZO">
+  </a>
+
+  <div class="auth-card" id="readyView" hidden>
+    <div class="auth-status">
+      <div class="auth-status-icon auth-status-icon--info" aria-hidden="true">→</div>
+      <h1 class="auth-title">Pick up where you left off.</h1>
+      <p class="auth-sub">Your details are saved. This takes you back to the payment step for the plan you chose. Your first 7 days are free and nothing is charged until day 8.</p>
+    </div>
+    <button class="btn-primary auth-submit" id="goBtn" type="button">Continue to payment &rarr;</button>
+    <div class="auth-foot">
+      Changed your mind about the plan? <a href="/pricing">Compare them again</a>.
+    </div>
+  </div>
+
+  <div class="auth-card" id="errView" hidden>
+    <div class="auth-status">
+      <div class="auth-status-icon auth-status-icon--info" aria-hidden="true">!</div>
+      <h1 class="auth-title">This link has expired.</h1>
+      <p class="auth-sub" id="errSub">Recovery links are good for 7 days. Pick your plan again and it will only take a minute.</p>
+    </div>
+    <a class="btn-primary auth-submit" href="/pricing">Go to pricing &rarr;</a>
+  </div>
+</main>
+
+<script>
+// API base derived from the page host, same rule as signup.html, so a new tier
+// needs no JS change here.
+const API = (() => {
+  const h = window.location.hostname;
+  if (h === 'localhost' || h.startsWith('127.')) return 'http://localhost:3000';
+  if (h === 'maketzo.co') return 'https://api.maketzo.co';
+  const parts = h.split('.');
+  if (parts.length >= 3) return `https://${parts[0]}-api.${parts.slice(1).join('.')}`;
+  return `https://api.${h}`;
+})();
+
+const token = new URLSearchParams(location.search).get('t') || '';
+const readyView = document.getElementById('readyView');
+const errView = document.getElementById('errView');
+const errSub = document.getElementById('errSub');
+const goBtn = document.getElementById('goBtn');
+
+function fail(msg) {
+  if (msg) errSub.textContent = msg;
+  readyView.hidden = true;
+  errView.hidden = false;
+}
+
+if (!token) {
+  fail('This link is missing its code. Pick your plan again and it will only take a minute.');
+} else {
+  readyView.hidden = false;
+}
+
+goBtn.addEventListener('click', async () => {
+  const orig = goBtn.textContent;
+  goBtn.textContent = 'Opening checkout...';
+  goBtn.disabled = true;
+  try {
+    const res = await fetch(`${API}/billing/create-checkout`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ resumeToken: token })
+    });
+    const data = await res.json().catch(() => ({}));
+    if (res.ok && data.url) { window.location.href = data.url; return; }
+    // Converted between the email and this click. Send them to the app rather
+    // than starting a second subscription or showing an error for good news.
+    if (res.status === 409) { window.location.href = '/app'; return; }
+    fail(data.error || 'We could not reopen your checkout. Pick your plan again and it will only take a minute.');
+  } catch (e) {
+    goBtn.textContent = orig;
+    goBtn.disabled = false;
+    fail('Network error. Check your connection and try again.');
+  }
+});
+</script>
+</body>
+</html>
