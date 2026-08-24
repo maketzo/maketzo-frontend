@@ -29,6 +29,7 @@
   <url><loc>https://maketzo.co/terms</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
   <url><loc>https://maketzo.co/disclaimer</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
   <!-- BLOG:START -->
+  <url><loc>https://maketzo.co/blog/size-that-unmakes-you</loc><lastmod>2026-08-24</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://maketzo.co/blog/overtrade-sitting-still-feels-losing</loc><lastmod>2026-08-21</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://maketzo.co/blog/perfect-entry-before-the-click</loc><lastmod>2026-08-20</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://maketzo.co/blog/small-loss-keeps-you-here</loc><lastmod>2026-08-19</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
