@@ -102,11 +102,7 @@
       // successful POST is success — we trust it.
       if (window.MKT) {
         try { window.MKT.trackEvent("newsletter_subscribe", { source: source || "unknown" }); } catch (e) {}
-        // No account exists yet, so there is no user id to identify by. Tag
-        // the still-anonymous person; when they sign up later, PostHog's merge
-        // carries this across onto their user id.
-        try { window.MKT.linkSession(v.email); } catch (e) {}
-        try { window.MKT.setPerson({ newsletter_subscriber: true }); } catch (e) {}
+        try { window.MKT.identify(v.email); } catch (e) {}
       }
       return { ok: true };
     }).catch(function () {

@@ -16,8 +16,6 @@
 <link rel="stylesheet" href="assets/css/tokens.css">
 <link rel="stylesheet" href="assets/css/components.css">
 <link rel="stylesheet" href="assets/css/auth.css?v=1">
-<script src="assets/js/mkt-analytics.js?v=8" defer></script>
-<script src="assets/js/mkt-consent.js?v=1" defer></script>
 </head>
 <body class="auth-body">
 
@@ -50,7 +48,7 @@
 
     <div class="auth-divider"><span>or</span></div>
 
-    <form id="loginForm" data-form-id="login" novalidate>
+    <form id="loginForm" novalidate>
       <div class="mk-form-field">
         <label for="email">Email</label>
         <input id="email" name="email" type="email" autocomplete="email" required maxlength="200">
@@ -190,16 +188,6 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
     });
     const data = await res.json().catch(() => ({}));
     if (res.ok && data.ok) {
-      // THE line this page was missing. A returning trader was anonymous
-      // across the whole marketing site because nothing here ever identified
-      // them. Identifying on the integer user id -- the same distinctId the
-      // app and the backend use -- merges this browser's anonymous history
-      // onto the person. The email is deliberately not sent.
-      if (window.MKT) {
-        try { window.MKT.linkSession(email); } catch (_) {}
-        try { window.MKT.identifyUser(data.userId); } catch (_) {}
-        window.MKT.trackEvent('mkt_login_ok', { to_checkout: !!hasPlan });
-      }
       if (hasPlan) {
         const ok = await startStripeCheckoutWithSession();
         if (!ok) { btn.innerHTML = orig; btn.disabled = false; }
@@ -207,17 +195,6 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
       }
       window.location.href = '/app';
       return;
-    }
-    // Bucketed reasons only. Never the message, never the address -- a failed
-    // login attempt is exactly where a raw email would be most tempting.
-    if (window.MKT && window.MKT.trackEvent) {
-      window.MKT.trackEvent('mkt_login_fail', {
-        reason: res.status === 429 ? 'rate_limited'
-              : res.status === 403 ? 'blocked'
-              : res.status >= 500  ? 'server'
-              : 'bad_credentials',
-        status: res.status
-      });
     }
     if (res.status === 403 && data.code === 'PENDING_DELETION') {
       showBanner('This account is scheduled for deletion. Email info@maketzo.co to restore it.', 'error');

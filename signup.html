@@ -21,7 +21,7 @@
 <link rel="stylesheet" href="assets/css/tokens.css">
 <link rel="stylesheet" href="assets/css/components.css">
 <link rel="stylesheet" href="assets/css/auth.css?v=1">
-<script src="assets/js/mkt-analytics.js?v=8" defer></script>
+<script src="assets/js/mkt-analytics.js?v=7" defer></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
 <body class="auth-body">
@@ -323,18 +323,8 @@ async function startStripeCheckout(payToken) {
   });
   const data = await res.json().catch(() => ({}));
   if (data.url) {
-    // This page has its own checkout flow rather than using checkout.js, so
-    // the whole signup -> Stripe leg emitted nothing. A trial that started
-    // here was invisible in both PostHog and track_events.
-    if (window.MKT && window.MKT.trackEvent) {
-      window.MKT.trackEvent('trial_started',
-        Object.assign({ source_path: window.location.pathname, path: 'signup_paytoken' }, planBody()));
-    }
     window.location.href = data.url;
     return true;
-  }
-  if (window.MKT && window.MKT.trackEvent) {
-    window.MKT.trackEvent('mkt_checkout_fail', { path: 'signup_paytoken' });
   }
   showBanner(data.error || 'Could not start checkout. Please try again.', 'error');
   return false;
@@ -353,15 +343,8 @@ async function startStripeCheckoutWithSession() {
   });
   const data = await res.json().catch(() => ({}));
   if (data.url) {
-    if (window.MKT && window.MKT.trackEvent) {
-      window.MKT.trackEvent('trial_started',
-        Object.assign({ source_path: window.location.pathname, path: 'signup_session' }, planBody()));
-    }
     window.location.href = data.url;
     return true;
-  }
-  if (window.MKT && window.MKT.trackEvent) {
-    window.MKT.trackEvent('mkt_checkout_fail', { path: 'signup_session' });
   }
   showBanner(data.error || 'Could not start checkout. Please try again.', 'error');
   return false;
@@ -432,34 +415,16 @@ document.getElementById('signupForm').addEventListener('submit', async (e) => {
     });
     const data = await res.json().catch(() => ({}));
     if (!(res.ok && data.ok)) {
-      // Every failure branch here used to emit nothing at all, so a signup form
-      // that rejects everyone would look identical to one nobody submitted.
-      // The reason is BUCKETED, never the message and never the address.
-      if (window.MKT && window.MKT.trackEvent) {
-        window.MKT.trackEvent('mkt_signup_fail', {
-          reason: res.status === 429 ? 'rate_limited'
-                : res.status === 409 ? 'exists'
-                : res.status >= 500  ? 'server'
-                : 'rejected',
-          status: res.status
-        });
-      }
       if (res.status === 429) showBanner(data.error || 'Too many signup attempts. Please try again later.', 'error');
       else                    showBanner(data.error || 'Signup failed. Please try again.', 'error');
       if (TURNSTILE_SITE_KEY && window.turnstile && turnstileWidgetId !== null) window.turnstile.reset(turnstileWidgetId);
       return;
     }
 
-    // Identity stitch, and THE moment the marketing funnel joins the product.
-    // linkSession writes anon_id -> email HASH in our own database, which is
-    // what the Stripe webhook backfill resolves against. identifyUser then
-    // merges this browser's entire anonymous history -- every pageview, the
-    // UTM source, every CTA click -- onto the integer user id, which is the
-    // same distinctId the app and the backend already use. The email is
-    // deliberately NOT sent to PostHog (Ed, 2026-08-25: pseudonymous).
-    if (window.MKT) {
-      try { window.MKT.linkSession(email); } catch (_) {}
-      try { window.MKT.identifyUser(data.userId); } catch (_) {}
+    // Identity stitch: link the anon_id → email so all prior anonymous
+    // marketing-page events can be JOINed against the user after conversion.
+    if (window.MKT && window.MKT.identify) {
+      try { window.MKT.identify(email); } catch (_) {}
       window.MKT.trackEvent('form_submit', { form: 'signup', plan: (hasPlan ? (activeTier + '/' + activeInterval) : null) });
     }
 
