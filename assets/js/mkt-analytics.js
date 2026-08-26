@@ -112,6 +112,19 @@
   // properties that carry the text a user wrote or read on screen.
   var RESERVED_DENY = { $el_text: 1, $selected_content: 1 };
 
+  // PostHog TRANSPORT fields. These do not start with "$", so without this
+  // they fall through to the author-content rules below -- and DENY_KEY
+  // contains the literal string "token".
+  //
+  // That is not cosmetic. posthog-js reads the project key back OUT of the
+  // property bag to build the request envelope:
+  //     api_key = properties.token ?? event.token
+  // and there is no other source. Strip properties.token and every event ships
+  // with NO api_key, so PostHog rejects the whole batch and ingestion silently
+  // drops to zero -- which is exactly what happened on prod 2026-08-25.
+  // These two names are posthog-js's own required-field list.
+  var RESERVED_PASS = { token: 1, distinct_id: 1 };
+
   // Per-element keys inside $elements that can hold user-authored strings.
   var ELEMENT_DENY = ["text", "$el_text", "attr__value", "attr__title",
     "attr__placeholder", "attr__alt", "attr__aria-label"];
@@ -223,6 +236,8 @@
           continue;
         }
 
+        // Transport fields, never user content. Must precede deniedKey().
+        if (RESERVED_PASS[k]) { out[k] = v; continue; }
         if (deniedKey(k)) continue;
         if (custom >= MAX_CUSTOM_KEYS) continue;
         var cleaned = cleanValue(k, v);
