@@ -27,9 +27,22 @@
  *   - The consent module sets the value and dispatches `window.dispatchEvent(new Event('mkt:consent-changed'))`.
  *
  * PostHog project key:
- *   - This file ships with empty keys per host. Ed fills them in (one per
- *     tier) after signing up at us.posthog.com. While empty, PostHog is
- *     skipped silently; backend analytics still fire. See PR2 setup notes.
+ *   - LIVE since commit d290ce0. One real project token, shared by all four
+ *     tiers (filter by host in dashboards). It is a write-only token and is
+ *     safe to embed client-side per PostHog's docs.
+ *   - This block previously described the keys as empty and pending a manual
+ *     paste. True at PR2, false from d290ce0 onward, and on 2026-08-25 that
+ *     stale note cost an investigation: it pointed straight at a missing-key
+ *     theory while the real defect was that nothing emitted `$pageview`.
+ *     A comment describing a setup step is a claim with an expiry date.
+ *
+ * PAGEVIEWS — read this before changing the init options below:
+ *   PostHog's entire Web Analytics product (pageviews, unique visitors,
+ *   sessions, bounce, referrers) keys EXCLUSIVELY off the reserved `$pageview`
+ *   event. A custom event named `page_view` is, to PostHog, an unrelated event:
+ *   it lands in Activity and is invisible to every built-in metric. This file
+ *   sent only `page_view` for months, so the Web Analytics tab was structurally
+ *   empty the entire time while ingestion was perfectly healthy.
  */
 (function () {
   "use strict";
@@ -219,16 +232,46 @@
     window.posthog.init(key, {
       api_host: POSTHOG_HOST,
       persistence: persistence,
-      capture_pageview: false,   // We fire page_view manually with our anon_id.
-      autocapture: false,         // We instrument explicitly via data-cta-*.
+      // TRUE, and it must stay true. PostHog owns the pageview lifecycle: it
+      // stamps $session_id, derives sessions and bounce rate, and handles
+      // history navigation. A hand-rolled posthog.capture('$pageview') gets
+      // none of that right. Our own dimensions ride along via register()
+      // below, which is what the old manual send was really trying to do.
+      capture_pageview: true,
+      // Marketing pages are public copy, so element-level capture costs us no
+      // privacy. NOTE the app deliberately does the OPPOSITE — see the comment
+      // in maketzo-app/lib/app-analytics.js before "fixing" the inconsistency.
+      autocapture: true,
       disable_session_recording: true,
-      // Only create PostHog "person" records after MKT.identify(email). Anon
-      // visitors still fire events but don't burn through the free-tier
-      // person quota until they convert. Matches PostHog's privacy-first
-      // recommendation in their HTML snippet template.
-      person_profiles: 'identified_only',
-      loaded: function () { posthogReady = true; drainQueue(); }
+      // 'always', so anonymous visitors get person records and the unique /
+      // returning visitor counts are real. Under the previous
+      // 'identified_only' only newsletter, contact and signup submitters ever
+      // became people, so unique visitors was near-zero BY DESIGN and looked
+      // exactly like a broken pipeline. Ed's call, 2026-08-25; this is a
+      // billing dial (PostHog charges partly on person profiles) and reverting
+      // it is a one-word change.
+      person_profiles: 'always',
+      loaded: function () {
+        posthogReady = true;
+        registerSuperProps();
+        drainQueue();
+      }
     });
+  }
+
+  // Dimensions that must ride on EVERY event, including PostHog's own
+  // automatic $pageview. Registered rather than passed per-call, because the
+  // $pageview we now rely on is fired by the SDK and we never see it.
+  function registerSuperProps() {
+    try {
+      var utm = getUtm();
+      window.posthog.register({
+        $anon_id: getAnonId(),
+        mkt_tier: window.location.hostname,
+        utm_source: utm.utm_source || null,
+        utm_campaign: utm.utm_campaign || null
+      });
+    } catch (e) {}
   }
 
   function drainQueue() {
@@ -262,15 +305,19 @@
     sendToPostHog(eventType, props);
   }
 
+  // The initial pageview is fired by PostHog itself (capture_pageview: true),
+  // so this is NOT called on load any more — calling it there would double
+  // count. It stays on the public API for explicit SPA-style re-navigation.
+  //
+  // It emits the RESERVED `$pageview`, not a custom `page_view`. Every property
+  // the old custom version attached is captured natively by PostHog already:
+  // path/referrer as $current_url and $referrer, viewport as $viewport_width /
+  // $viewport_height, and utm_* parsed straight off the URL. The rest ride
+  // along as super-properties from registerSuperProps().
   function trackPage() {
-    sendToPostHog("page_view", {
-      path: window.location.pathname,
-      referrer: document.referrer || null,
-      viewport_w: window.innerWidth,
-      viewport_h: window.innerHeight,
-      utm_source: getUtm().utm_source,
-      utm_campaign: getUtm().utm_campaign
-    });
+    if (posthogReady && window.posthog) {
+      try { window.posthog.capture("$pageview"); } catch (e) {}
+    }
   }
 
   function identify(email, props) {
@@ -478,7 +525,10 @@
         if (!getConsent()) safeLocal("set", CONSENT_KEY, "all");
       }
       loadPostHog();
-      trackPage();
+      // NO trackPage() here. PostHog fires its own $pageview on init now
+      // (capture_pageview: true), so calling ours as well would count every
+      // visit twice. This line used to send the custom `page_view` that Web
+      // Analytics could never see.
     });
 
     initCtaTracking();
