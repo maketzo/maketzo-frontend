@@ -68,6 +68,12 @@
   // Renders a 2-choice modal when a logged-in user clicks a trial CTA.
   // Returns a Promise that resolves with 'upgrade' | 'signout' | 'cancel'.
   function showInterceptModal(email) {
+    // A hard fork in the funnel that recorded nothing: shown, dismissed and
+    // chosen were all the same non-event, so a modal that everybody cancels
+    // looked exactly like a modal nobody saw.
+    if (window.MKT && window.MKT.trackEvent) {
+      window.MKT.trackEvent('mkt_intercept_shown', {});
+    }
     return new Promise(function (resolve) {
       const root = document.createElement('div');
       root.setAttribute('role', 'dialog');
@@ -101,6 +107,10 @@
       function close(result) {
         document.removeEventListener('keydown', onKey);
         if (root.parentNode) root.parentNode.removeChild(root);
+        // upgrade | signout | cancel. Never the email that was shown.
+        if (window.MKT && window.MKT.trackEvent) {
+          window.MKT.trackEvent('mkt_intercept_choice', { choice: result || 'cancel' });
+        }
         resolve(result);
       }
       function onKey(e) { if (e.key === 'Escape') close('cancel'); }
@@ -155,11 +165,21 @@
       ? ('tier=' + encodeURIComponent(tier) + '&interval=' + encodeURIComponent(interval))
       : ('plan=' + encodeURIComponent(priceId));
 
-    // Analytics — fire BEFORE the network/redirect. If the button already has
-    // data-cta-source the wrapper will have fired cta_click on the same click;
-    // we still want a plan-aware echo here so the analytics row carries the plan
-    // even on unsourced CTAs (mobile drawer, nav buttons, etc).
-    if (window.MKT && window.MKT.trackEvent) {
+    // Analytics — fire BEFORE the network/redirect.
+    //
+    // This used to fire unconditionally, so any button carrying
+    // data-cta-source produced TWO cta_click events for one click: one from
+    // initCtaTracking in mkt-analytics.js and one from here. Every CTA
+    // conversion rate computed off that number was wrong, and wrong by a
+    // different factor per button depending on whether it happened to be
+    // sourced. The wrapper now folds every data-cta-* attribute into its own
+    // props, so it is plan-aware natively; this echo is only needed for CTAs
+    // that carry no source at all.
+    //
+    // NOTE the volume of cta_click roughly HALVES on sourced buttons from the
+    // deploy date. That is the double count going away, not a conversion drop.
+    const _sourced = !!(btn && btn.dataset && btn.dataset.ctaSource);
+    if (!_sourced && window.MKT && window.MKT.trackEvent) {
       window.MKT.trackEvent('cta_click', {
         source: btn && btn.dataset ? (btn.dataset.ctaSource || 'unsourced') : 'unsourced',
         target: 'checkout',
@@ -181,8 +201,21 @@
       const me = await getMe();
 
       if (!me) {
-        // Unauthenticated → signup. The signup page will fire identify() on
-        // success, which links the anon_id to the email.
+        // Unauthenticated → signup. The signup page identifies on the user id
+        // returned by /auth/signup, which merges this browser's anonymous
+        // marketing history onto the person.
+        //
+        // This branch used to emit NOTHING, so the single largest step in the
+        // funnel -- cold visitor clicks a trial CTA and is sent to signup --
+        // was invisible. Every "why does pricing convert badly" question ran
+        // into a gap right here.
+        if (window.MKT && window.MKT.trackEvent) {
+          window.MKT.trackEvent('mkt_checkout_to_signup', {
+            tier: tier || null,
+            interval: tier ? interval : null,
+            source_path: window.location.pathname
+          });
+        }
         window.location.href = '/signup.html?' + signupQuery;
         return;
       }

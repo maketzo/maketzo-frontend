@@ -17,7 +17,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/tokens.css">
 <link rel="stylesheet" href="assets/css/components.css">
-<script src="assets/js/mkt-analytics.js?v=7" defer></script>
+<script src="assets/js/mkt-analytics.js?v=8" defer></script>
 <script src="assets/js/mkt-consent.js?v=1" defer></script>
 <script src="assets/js/checkout.js?v=10" defer></script>
 <style>
@@ -517,7 +517,11 @@ document.getElementById('contactForm').addEventListener('submit',async function(
     const json=await res.json();
     if(res.ok&&json.ok){
       if(window.MKT&&window.MKT.trackEvent)window.MKT.trackEvent('form_submit',{form:'contact',subject:data.subject||null});
-      if(window.MKT&&window.MKT.identify)window.MKT.identify(email,{firstName,lastName});
+      // Was the only caller passing a real person's name to PostHog. The
+      // person is pseudonymous by decision, so the name stays in our own
+      // systems and PostHog gets a boolean.
+      if(window.MKT&&window.MKT.linkSession)window.MKT.linkSession(email);
+      if(window.MKT&&window.MKT.setPerson)window.MKT.setPerson({contact_submitted:true});
       if(newsletterOptIn&&window.MKT&&window.MKT.trackEvent)window.MKT.trackEvent('newsletter_subscribe',{source:'contact_form'});
       form.style.display='none';success.classList.add('show');
     }
