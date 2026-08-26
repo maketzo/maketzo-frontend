@@ -15,7 +15,12 @@
  * Public API on window.MKT:
  *   trackEvent(name, props)         dual-fire when business-critical, else PostHog only
  *   trackPage()                     fired automatically on load; exposed for SPA-style nav
- *   identify(email, props)          server-side via /analytics/identify + posthog.identify(email, props)
+ *   identifyUser(userId, set, once) THE person join. PostHog distinctId is the
+ *                                   integer user id, never the email.
+ *   setPerson(props)                tag the still-anonymous person (no account yet)
+ *   linkSession(email)               anon_id -> email HASH in our own DB only
+ *   identify(email)                 legacy shim: linkSession + setPerson, and
+ *                                   deliberately NO email to PostHog
  *   getAnonId() / getSessionId()    UUID accessors (read-only)
  *   isEuVisitor()                   resolves to bool once /geoinfo returns
  *   onReady(fn)                     fn fires after consent + ids resolved
@@ -44,6 +49,207 @@
  *   sent only `page_view` for months, so the Web Analytics tab was structurally
  *   empty the entire time while ingestion was perfectly healthy.
  */
+/* MK-PII-GATE:BEGIN v1 */
+/*
+ * The client-side PII gate. Byte-identical in maketzo-app/lib/app-analytics.js
+ * and maketzo-frontend/assets/js/mkt-analytics.js. Do not edit one copy.
+ *
+ * WHY THIS HAS TO EXIST, given the backend already gates.
+ *
+ * lib/analytics-props.js runs on the SERVER, at POST /analytics/event. It has
+ * always protected track_events. It has never protected PostHog: track() fans
+ * out to both sinks from the same raw bag, so the identical object that gets
+ * bucketed and stripped on its way into Postgres was reaching PostHog Cloud
+ * completely ungated. That was survivable while ~85 hand-written events passed
+ * hand-picked scalars. It stops being survivable the moment autocapture is on
+ * and the number of call sites multiplies.
+ *
+ * PostHog has no backend of ours to catch anything. For PostHog, this is the
+ * only gate there is.
+ *
+ * A client gate is bypassable by anyone with devtools, and that is fine: the
+ * server gate remains the authority for anything we persist. This one exists to
+ * stop OUR OWN code shipping a caption, a journal line or a raw P&L to a third
+ * party by accident, which is the realistic failure, not a malicious user
+ * editing their own analytics.
+ *
+ * WHY IT IS NOT A STRAIGHT PORT OF THE SERVER RULES. Four of them are actively
+ * wrong in a browser, and each would break something silently:
+ *
+ *   MAX_KEYS = 24        a $pageview carries 40-60 properties. Capping the bag
+ *                        would drop $session_id and quietly end sessions.
+ *   MAX_SERIALIZED       would truncate $elements_chain mid-string.
+ *   deniedKey substring  $initial_utm_content contains "content", so real
+ *                        attribution data would be thrown away.
+ *   objects dropped      $set and $set_once ARE objects, so identify() would
+ *                        stop attaching person properties entirely.
+ *
+ * So: PostHog reserved keys ($-prefixed) pass through, with named exceptions;
+ * everything we author ourselves gets the full server rule set.
+ */
+(function () {
+  "use strict";
+  if (window.MaketzoAnalyticsProps) return;
+
+  // Verbatim from maketzo-backend/lib/analytics-props.js. The browser gate is
+  // never allowed to be weaker than the server gate, and a test asserts it.
+  var DENY_KEY = [
+    "email", "password", "passwd", "secret", "token", "apikey", "api_key", "auth",
+    "cookie", "session_token", "csrf", "ssn", "phone", "address", "postcode",
+    "zip", "dob", "birth", "card", "iban", "account_number", "routing",
+    "note", "notetext", "caption", "comment", "feedback", "message", "body",
+    "lesson", "mistake", "observation", "prose", "content", "text",
+    "dataurl", "data_url", "blob", "base64", "image", "screenshot", "file"
+  ];
+  var MONEY_KEY = /(^|_)(pnl|profit|loss|balance|equity|amount|revenue|cents|dollars|price|mrr|arr)(_|$)/i;
+  var EMAIL_LIKE = /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i;
+  var PROSE_LIKE = /^\S+(\s+\S+){5,}/;
+  var MAX_CUSTOM_KEYS = 24;
+  var MAX_STR_LEN = 120;
+  var MAX_ARRAY = 10;
+
+  // $-prefixed keys pass by default. These are the exceptions: PostHog's own
+  // properties that carry the text a user wrote or read on screen.
+  var RESERVED_DENY = { $el_text: 1, $selected_content: 1 };
+
+  // Per-element keys inside $elements that can hold user-authored strings.
+  var ELEMENT_DENY = ["text", "$el_text", "attr__value", "attr__title",
+    "attr__placeholder", "attr__alt", "attr__aria-label"];
+
+  function deniedKey(key) {
+    var k = String(key).toLowerCase().replace(/[^a-z0-9_]/g, "");
+    for (var i = 0; i < DENY_KEY.length; i++) {
+      if (k.indexOf(DENY_KEY[i]) >= 0) return true;
+    }
+    return false;
+  }
+
+  // Sign-preserving bands. Negative money uses a leading minus, never
+  // accounting parentheses, matching the app-wide display rule.
+  function bucketMoney(n) {
+    if (!isFinite(n)) return null;
+    var neg = n < 0, a = Math.abs(n), band;
+    if (a === 0) return "flat";
+    else if (a < 100) band = "0-100";
+    else if (a < 500) band = "100-500";
+    else if (a < 1000) band = "500-1k";
+    else if (a < 5000) band = "1k-5k";
+    else if (a < 10000) band = "5k-10k";
+    else band = "10k+";
+    return (neg ? "-" : "+") + band;
+  }
+
+  function cleanValue(key, v) {
+    if (v === null || v === undefined) return null;
+    if (typeof v === "boolean") return v;
+
+    if (typeof v === "number") {
+      if (!isFinite(v)) return null;
+      return MONEY_KEY.test(key) ? bucketMoney(v) : v;
+    }
+
+    if (typeof v === "string") {
+      var s = v.trim();
+      if (!s) return null;
+      // Money that arrived as a STRING. data-mk-* attributes are ALWAYS
+      // strings, because that is how dataset works, so data-mk-pnl="-450"
+      // used to sail past a bucketing rule that only ran for typeof number.
+      // The server had the identical hole and is fixed in the same commit.
+      if (MONEY_KEY.test(key) && /^-?\d+(\.\d+)?$/.test(s)) return bucketMoney(Number(s));
+      if (EMAIL_LIKE.test(s)) return null;
+      if (PROSE_LIKE.test(s)) return null;
+      return s.length > MAX_STR_LEN ? s.slice(0, MAX_STR_LEN) : s;
+    }
+
+    if (Object.prototype.toString.call(v) === "[object Array]") {
+      var out = [];
+      for (var i = 0; i < v.length && out.length < MAX_ARRAY; i++) {
+        var c = cleanValue(key, v[i]);
+        if (c !== null) out.push(c);
+      }
+      return out.length ? out : null;
+    }
+
+    return null;
+  }
+
+  // Autocapture ships a DOM chain. mask_all_text already suppresses element
+  // text, but this is the belt to that suspender: if a masking option is ever
+  // dropped from the config, or a PostHog build honours one of them
+  // differently, the text still never leaves.
+  function scrubElements(list) {
+    if (Object.prototype.toString.call(list) !== "[object Array]") return list;
+    var out = [];
+    for (var i = 0; i < list.length; i++) {
+      var el = list[i];
+      if (!el || typeof el !== "object") { out.push(el); continue; }
+      var copy = {};
+      for (var k in el) {
+        if (!Object.prototype.hasOwnProperty.call(el, k)) continue;
+        if (ELEMENT_DENY.indexOf(k) >= 0) continue;
+        var val = el[k];
+        if (typeof val === "string" && (EMAIL_LIKE.test(val) || PROSE_LIKE.test(val))) continue;
+        copy[k] = val;
+      }
+      out.push(copy);
+    }
+    return out;
+  }
+
+  function sanitizeProperties(props, eventName) {
+    try {
+      if (!props || typeof props !== "object") return props;
+      var out = {}, custom = 0, k;
+      for (k in props) {
+        if (!Object.prototype.hasOwnProperty.call(props, k)) continue;
+        var v = props[k];
+
+        if (k.charAt(0) === "$") {
+          if (RESERVED_DENY[k]) continue;
+          if (k === "$elements") { out[k] = scrubElements(v); continue; }
+          if (k === "$elements_chain") {
+            if (typeof v === "string" && EMAIL_LIKE.test(v)) continue;
+            out[k] = v;
+            continue;
+          }
+          // Person properties. Recurse rather than drop: these are objects, and
+          // dropping them would silently stop identify() attaching plan, tier
+          // and subscription status.
+          if ((k === "$set" || k === "$set_once") && v && typeof v === "object") {
+            out[k] = sanitizeProperties(v, eventName);
+            continue;
+          }
+          out[k] = v;
+          continue;
+        }
+
+        if (deniedKey(k)) continue;
+        if (custom >= MAX_CUSTOM_KEYS) continue;
+        var cleaned = cleanValue(k, v);
+        if (cleaned === null) continue;
+        out[k] = cleaned;
+        custom++;
+      }
+      return out;
+    } catch (e) {
+      // Fail CLOSED for anything we authored, OPEN for PostHog's own reserved
+      // properties. A gate must never throw into the SDK, and it must never
+      // fail into "send everything".
+      try {
+        var safe = { pii_gate_error: 1 };
+        for (var kk in props) {
+          if (kk.charAt(0) === "$" && !RESERVED_DENY[kk]) safe[kk] = props[kk];
+        }
+        return safe;
+      } catch (e2) {
+        return { pii_gate_error: 1 };
+      }
+    }
+  }
+
+  window.MaketzoAnalyticsProps = { sanitizeProperties: sanitizeProperties };
+})();
+/* MK-PII-GATE:END */
 (function () {
   "use strict";
 
@@ -71,6 +277,11 @@
     "localhost":          "phc_t4DFgxhUSgonk6g6FHBWaixHzMCnTeqTSKhZXW2rW65Q"
   };
   var POSTHOG_HOST = "https://us.i.posthog.com";
+  var MKT_TIERS = {
+    "maketzo.co": "prod",
+    "staging.maketzo.co": "staging",
+    "dev.maketzo.co": "dev"
+  };
 
   var ANON_KEY    = "mkt_aid";
   var SESSION_KEY = "mkt_sid";
@@ -250,6 +461,17 @@
       // exactly like a broken pipeline. Ed's call, 2026-08-25; this is a
       // billing dial (PostHog charges partly on person profiles) and reverting
       // it is a one-word change.
+      // Runs INSIDE the SDK, so it covers autocapture, $pageview, $pageleave
+      // and $identify -- every event posthog-js generates that our own code
+      // never sees. A wrapper around track() could only ever cover our own.
+      sanitize_properties: function (props, eventName) {
+        var g = window.MaketzoAnalyticsProps;
+        return g ? g.sanitizeProperties(props, eventName) : props;
+      },
+      // Session duration and bounce rate. Set explicitly rather than relying
+      // on the 'if_capture_pageview' default, so it cannot be lost as a side
+      // effect of someone touching capture_pageview.
+      capture_pageleave: true,
       person_profiles: 'always',
       loaded: function () {
         posthogReady = true;
@@ -265,8 +487,32 @@
   function registerSuperProps() {
     try {
       var utm = getUtm();
+      // First touch, written ONCE. These are the properties that make a funnel
+      // answer "which campaign produced a paying trader", and they only mean
+      // anything if the FIRST value is the one that survives.
+      try {
+        if (window.posthog.setPersonPropertiesForFlags || window.posthog.setPersonProperties) {
+          window.posthog.setPersonProperties({}, {
+            first_utm_source: utm.utm_source || "direct",
+            first_utm_campaign: utm.utm_campaign || null,
+            first_landing_path: window.location.pathname,
+            first_referrer_host: (function () {
+              try { return document.referrer ? new URL(document.referrer).hostname : "none"; }
+              catch (e) { return "none"; }
+            })()
+          });
+        }
+      } catch (e) {}
       window.posthog.register({
         $anon_id: getAnonId(),
+        // tier + surface are the CROSS-SURFACE pair: the app registers the
+        // same two, so one filter separates prod from dev on both at once.
+        // All four tiers share one PostHog project token, so without this
+        // every dashboard silently mixes prod with dev, staging and local.
+        tier: MKT_TIERS[window.location.hostname.replace(/^www\./, "")] || "local",
+        surface: "marketing",
+        // KEPT. Any insight already built on mkt_tier stays working; tier is
+        // additive, not a rename.
         mkt_tier: window.location.hostname,
         utm_source: utm.utm_source || null,
         utm_campaign: utm.utm_campaign || null
@@ -320,12 +566,29 @@
     }
   }
 
-  function identify(email, props) {
+  // ── Identity ─────────────────────────────────────────────────────────
+  // THE RULE: the PostHog person is the integer user id. Never the email.
+  //
+  // Until 2026-08-25 this function called posthog.identify(EMAIL), while the
+  // app and the backend both identified on String(userId). Nothing joined the
+  // two, so one human was two PostHog people: an email-keyed person holding
+  // every pre-signup pageview, UTM source and CTA click, and a userId-keyed
+  // person holding all in-app behaviour, neither aware of the other. No funnel
+  // could span signup to activation. docs/analytics-setup.md claimed an
+  // "identify() + alias() in parallel" chain stitched them; posthog.alias() has
+  // never appeared anywhere in this codebase.
+  //
+  // The join needs no alias() and no email. PostHog merges the CURRENT
+  // anonymous person into whatever id you identify as, and the anon id is
+  // already shared across *.maketzo.co because both surfaces persist with
+  // "localStorage+cookie". So identifying by user id at signup and at login is
+  // the whole fix.
+
+  // Writes a SessionLink row (anon_id -> email HASH) in our own database. That
+  // is what the Stripe webhook backfill resolves against. It is a binding
+  // table, not a person store, and no raw email reaches PostHog through it.
+  function linkSession(email) {
     if (!email || typeof email !== "string") return;
-    // 1. Server-side: writes a SessionLink row (anon_id ↔ email_hash). Props
-    //    are NOT sent to the backend — SessionLink is a binding table, not
-    //    a person store. PostHog person properties carry the structured
-    //    attributes (first/last name etc.).
     try {
       fetch(API_BASE + "/analytics/identify", {
         method: "POST",
@@ -336,15 +599,38 @@
         mode: "cors"
       }).catch(function () {});
     } catch (e) {}
-    // 2. PostHog: link anon → known user, attach any caller-provided person
-    //    properties (firstName/lastName from contact form, etc.). Existing
-    //    callers using identify(email) without props continue to work — the
-    //    Object.assign with `props || {}` defaults gracefully.
+  }
+
+  // A newsletter or contact submitter has NO account yet, so there is no id to
+  // identify by. Do not invent one: tag the still-anonymous person instead.
+  // When they later sign up, the merge carries these properties across.
+  function setPerson(props) {
+    if (!props || typeof props !== "object") return;
+    if (posthogReady && window.posthog && window.posthog.setPersonProperties) {
+      try { window.posthog.setPersonProperties(props); } catch (e) {}
+    }
+  }
+
+  // Called at signup and at login, the two moments a browser on maketzo.co
+  // learns who it is. Merges the anonymous marketing history into the person.
+  function identifyUser(userId, props, onceProps) {
+    if (userId === null || userId === undefined || userId === "") return;
     if (posthogReady && window.posthog) {
       try {
-        window.posthog.identify(email, Object.assign({ anon_id: getAnonId() }, props || {}));
+        window.posthog.identify(String(userId), props || {}, onceProps || {});
       } catch (e) {}
     }
+  }
+
+  // Kept for callers that still hand us an email. It links the session in our
+  // own database and tags the anonymous person, and DELIBERATELY does not pass
+  // the address, or any caller-supplied name, to PostHog.
+  function identify(email, props) {
+    if (!email || typeof email !== "string") return;
+    linkSession(email);
+    var flags = {};
+    if (props && props.person_kind) flags[props.person_kind] = true;
+    setPerson(flags);
   }
 
   // EU detection — server resolves country via cf-ipcountry header. Cached
@@ -395,6 +681,7 @@
   }
 
   // ── CTA + scroll-depth + outbound auto-instrumentation ───────────────
+
   function initCtaTracking() {
     document.addEventListener("click", function (e) {
       var t = e.target && e.target.closest && e.target.closest("[data-cta-source], [data-cta-target]");
@@ -402,7 +689,21 @@
         var src = t.getAttribute("data-cta-source") || null;
         var tgt = t.getAttribute("data-cta-target") || null;
         var label = (t.textContent || "").trim().slice(0, 64) || null;
-        trackEvent("cta_click", { source: src, target: tgt, label: label });
+        // Any OTHER data-cta-* attribute becomes a property, so a button can
+        // carry its own tier/interval without checkout.js firing a second
+        // event to add them. That duplicate echo was producing two cta_click
+        // rows per click on every sourced button.
+        var props = { source: src, target: tgt, label: label };
+        if (t.dataset) {
+          Object.keys(t.dataset).forEach(function (k) {
+            if (k === "ctaSource" || k === "ctaTarget") return;
+            if (k.indexOf("cta") !== 0) return;
+            var key = k.slice(3);
+            key = key.charAt(0).toLowerCase() + key.slice(1);
+            if (key) props[key] = t.dataset[k];
+          });
+        }
+        trackEvent("cta_click", props);
         return;
       }
       // Back-compat: legacy /pricing anchors without data-cta-*.
@@ -423,6 +724,39 @@
         }
       }
     }, true);
+  }
+
+  // Percentage depth. No markup, no selector, works on all 92 pages including
+  // every blog post, and it is the only thing that answers "do people read
+  // this". Deduped per pageload, throttled to a frame.
+  function initScrollPercent() {
+    var marks = [25, 50, 75, 100];
+    var hit = {};
+    var ticking = false;
+    function measure() {
+      ticking = false;
+      var doc = document.documentElement;
+      var body = document.body;
+      var height = Math.max(doc.scrollHeight, body ? body.scrollHeight : 0);
+      var viewport = window.innerHeight || doc.clientHeight || 0;
+      var scrollable = height - viewport;
+      if (scrollable <= 0) return;              // page fits, nothing to scroll
+      var y = window.pageYOffset || doc.scrollTop || 0;
+      var pct = Math.round((y / scrollable) * 100);
+      for (var i = 0; i < marks.length; i++) {
+        var m = marks[i];
+        if (pct >= m && !hit[m]) {
+          hit[m] = true;
+          sendToPostHog("scroll_depth", { depth: m, path: window.location.pathname });
+        }
+      }
+    }
+    window.addEventListener("scroll", function () {
+      if (ticking) return;
+      ticking = true;
+      (window.requestAnimationFrame || function (fn) { setTimeout(fn, 100); })(measure);
+    }, { passive: true });
+    measure();
   }
 
   function initScrollDepth() {
@@ -537,6 +871,7 @@
       document.addEventListener("DOMContentLoaded", initScrollDepth);
     } else {
       initScrollDepth();
+    initScrollPercent();
     }
   }
 
@@ -556,6 +891,9 @@
     trackEvent: trackEvent,
     trackPage: trackPage,
     identify: identify,
+    identifyUser: identifyUser,
+    setPerson: setPerson,
+    linkSession: linkSession,
     getAnonId: getAnonId,
     getSessionId: getSessionId,
     isEuVisitor: isEuVisitor,
