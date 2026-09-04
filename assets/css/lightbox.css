@@ -1,0 +1,156 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   IMAGE LIGHTBOX  ·  blog post images, opened full-screen and uncropped
+   Pairs with assets/js/lightbox.js. Classes and tokens only, no inline styles.
+
+   WHY THIS EXISTS. Blog figures are drawn inside a fixed frame: aspect-ratio
+   4/3 (16/9 full-width) with object-fit:cover, plus a radial gradient that
+   paints the page background over the photo from 40% radius outward. That is
+   the magazine look and it stays. The cost is that part of every photo is
+   cropped away or washed out, and on a phone there is no way to get at it.
+   This is the escape hatch: tap the image, see the whole thing, zoom into it.
+
+   The page frame is UNCHANGED by this file. The overlay is a separate element
+   that renders the same source with object-fit:contain and no feather, so what
+   opens is the real photo rather than a bigger copy of the crop.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── The affordance, on the page image ──────────────────────────────────────
+   Scoped to the three blog figure classes on purpose. Author avatars, the
+   brand lockup and share icons are images too and must never become zoomable.
+   .blog-hero-figure is the legacy class still carried by 15 published posts. */
+.blog-fig img.mk-zoomable,
+.blog-embed img.mk-zoomable,
+.blog-hero-figure img.mk-zoomable { cursor: zoom-in; }
+
+/* .blog-fig and .blog-hero-figure already establish a containing block; the
+   author-inserted .blog-embed does not, and the badge is positioned. */
+.blog-embed { position: relative; }
+
+.mk-zoom-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;                       /* above the ::after feather overlay */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 1px solid rgba(255,255,255,.16);
+  border-radius: 50%;
+  background: rgba(6,7,10,.62);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  color: var(--mk-text-primary);
+  cursor: zoom-in;
+  opacity: .5;
+  transition: opacity var(--mk-dur-fast) var(--mk-ease-out),
+              background var(--mk-dur-fast) var(--mk-ease-out),
+              color var(--mk-dur-fast) var(--mk-ease-out),
+              transform var(--mk-dur-fast) var(--mk-ease-out);
+}
+.mk-zoom-badge svg { display: block; width: 15px; height: 15px; fill: currentColor; }
+.mk-zoom-badge:hover {
+  opacity: 1;
+  background: var(--mk-gold-gradient);
+  color: var(--mk-text-on-gold);
+  transform: translateY(-1px);
+}
+.mk-zoom-badge:focus-visible {
+  opacity: 1;
+  outline: 2px solid var(--mk-gold-300);
+  outline-offset: 2px;
+}
+
+/* A pointer device gets the badge on hover so it stays out of the layout.
+   Touch has no hover, so there it is always visible or it is undiscoverable. */
+@media (hover: hover) and (pointer: fine) {
+  .mk-zoom-badge { opacity: 0; }
+  figure:hover > .mk-zoom-badge { opacity: .85; }
+  .mk-zoom-badge:focus-visible { opacity: 1; }
+}
+
+/* ── The overlay ───────────────────────────────────────────────────────────
+   touch-action:none because the gestures below are ours: the browser's own
+   pinch and double-tap zoom would fight the transform math in lightbox.js. */
+.mk-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;                   /* above the share menu, which sits at 9999 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(6,7,10,.94);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  opacity: 0;
+  touch-action: none;
+  overscroll-behavior: contain;
+  -webkit-user-select: none;
+  user-select: none;
+  transition: opacity var(--mk-dur-snap) var(--mk-ease-out);
+}
+.mk-lightbox[hidden] { display: none; }
+.mk-lightbox.is-open { opacity: 1; }
+
+.mk-lightbox__img {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;              /* the WHOLE photo. no crop, no feather. */
+  cursor: zoom-in;
+  /* NO will-change:transform here. It promotes the image to a layer rastered
+     once at its fit size, so zooming scales that raster instead of redrawing
+     from the source: at 2.5x the type and grid turned to mush while the same
+     render without it was sharp. One line, and it defeats the whole feature.
+     Verified by A/B render, 2026-09-04. */
+  -webkit-user-drag: none;
+  -webkit-touch-callout: none;
+}
+.mk-lightbox.is-zoomed  .mk-lightbox__img { cursor: grab; }
+.mk-lightbox.is-panning .mk-lightbox__img { cursor: grabbing; }
+
+.mk-lightbox__close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 1px solid rgba(255,255,255,.16);
+  border-radius: 50%;
+  background: rgba(6,7,10,.7);
+  color: var(--mk-text-primary);
+  cursor: pointer;
+  transition: background var(--mk-dur-fast) var(--mk-ease-out),
+              color var(--mk-dur-fast) var(--mk-ease-out),
+              transform var(--mk-dur-fast) var(--mk-ease-out);
+}
+.mk-lightbox__close svg { display: block; width: 18px; height: 18px; fill: currentColor; }
+.mk-lightbox__close:hover {
+  background: var(--mk-gold-gradient);
+  color: var(--mk-text-on-gold);
+  transform: translateY(-1px);
+}
+.mk-lightbox__close:focus-visible {
+  outline: 2px solid var(--mk-gold-300);
+  outline-offset: 2px;
+}
+
+/* Scroll lock while the overlay owns the screen. */
+html.mk-lightbox-lock,
+html.mk-lightbox-lock body { overflow: hidden; }
+
+@media (prefers-reduced-motion: reduce) {
+  .mk-lightbox,
+  .mk-lightbox__img,
+  .mk-lightbox__close,
+  .mk-zoom-badge { transition: none; }
+}

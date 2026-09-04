@@ -237,6 +237,13 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 .blog-browse-more-arrow { font-family: var(--mk-font-mono); font-size: var(--mk-text-sm); color: var(--mk-brand); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; }
 </style>
 <script>try{if(document.cookie.indexOf('mkt_csrf=')>-1)document.documentElement.classList.add('mkt-auth');}catch(e){}</script>
+<!-- Image lightbox. Root-relative on purpose, unlike the absolute asset URLs above:
+     that lets dev.maketzo.co and staging.maketzo.co serve their own copy so the
+     feature is QA-able on a tier. Cost is the admin post-preview (rendered from the
+     api origin) not loading it, which is a preview-only gap. Loaded last so it wins
+     any tie with the inline <style> block. -->
+<link rel="stylesheet" href="/assets/css/lightbox.css?v=1">
+<script src="/assets/js/lightbox.js?v=1" defer></script>
 </head>
 <body>
 
