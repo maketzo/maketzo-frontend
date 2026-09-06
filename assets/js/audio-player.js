@@ -665,7 +665,12 @@ var MK_SHARE_ICON_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1
       +     'data-title="' + escapeAttr(displayName) + '" '
       +     'data-eyebrow="' + escapeAttr(eyebrow) + '">'
       +   '<span class="mk-audio-player__item-num">' + num + '</span>'
-      +   '<span class="mk-audio-player__item-title">' + escapeHtml(displayName) + '</span>'
+      +   '<span class="mk-audio-player__item-titlewrap">'
+      +     '<span class="mk-audio-player__item-title">' + escapeHtml(displayName) + '</span>'
+      +     (t.hasExplicitLyrics
+              ? '<span class="mk-audio-player__explicit" role="img" aria-label="Explicit lyrics" title="Explicit lyrics">E</span>'
+              : '')
+      +   '</span>'
       +   '<span class="mk-audio-player__item-dur"></span>'
       +   '<button class="mk-audio-player__share-trigger" type="button" '
       +           'data-share-source="track" '
@@ -728,6 +733,10 @@ var MK_SHARE_ICON_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1
         var eyebrowEl = player.querySelector(".mk-audio-player__eyebrow");
         if (audio && tracks[0].src) audio.src = tracks[0].src;
         if (titleEl && tracks[0].name) titleEl.textContent = tracks[0].name;
+        // Content advisory for the track the player is cued to. Class toggle rather
+        // than markup injection: titleEl is written with textContent everywhere else,
+        // and mixing the two is how a title ends up escaping or double-rendering.
+        player.classList.toggle("is-explicit", !!tracks[0].hasExplicitLyrics);
         if (eyebrowEl) eyebrowEl.textContent = eyebrow;
 
         // Shared-song arrival reframe: when the backend honored ?track=<slug> and

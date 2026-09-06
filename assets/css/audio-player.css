@@ -315,6 +315,50 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+/* Explicit-lyrics advisory (Ed 2026-09-05). Title and badge share the 1fr grid
+   cell so the row still has four children and duration/share stay in column. */
+.mk-audio-player__item-titlewrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+/* Outlined rose, never the P&L red. The border is doing the work, so this reads as
+   an advisory rather than an alert on a page selling calm. */
+.mk-audio-player__explicit {
+  --mk-explicit: #C43C5C;
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border: 1px solid color-mix(in srgb, var(--mk-explicit) 50%, transparent);
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--mk-explicit) 10%, transparent);
+  color: var(--mk-explicit);
+  font-family: var(--mk-font-mono);
+  font-size: 9.5px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  cursor: default;
+}
+/* Hero badge: present in the HTML for screen readers, revealed only when the
+   player is cued to an explicit track. */
+.mk-audio-player__explicit--full {
+  display: none;
+  margin-left: 10px;
+  height: 17px;
+  padding: 0 7px;
+  font-size: 9px;
+  letter-spacing: 0.09em;
+  vertical-align: middle;
+  transform: translateY(-2px);
+}
+.mk-audio-player.is-explicit .mk-audio-player__explicit--full { display: inline-flex; }
 .mk-audio-player__item-dur {
   font-family: var(--mk-font-mono);
   font-size: var(--mk-mono-xs);
