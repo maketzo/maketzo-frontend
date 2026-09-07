@@ -5,19 +5,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The Trading Operating System — MAKETZO</title>
-<meta name="description" content="The whole trading process on one page: when to trade, when to size down, and when to walk away. Stay safe first, capture opportunity second, never let one decision ruin the day. Free to read, save, and share.">
+<meta name="description" content="The whole trading system on one page: what to check before you click, how to manage what you took, and when to call the day. Keep your mistakes small enough to learn from. Free to read, save, and share.">
 <meta name="theme-color" content="#06070A">
 <meta property="og:title" content="The Trading Operating System &mdash; MAKETZO">
-<meta property="og:description" content="The whole trading process on one page. Stay safe first. Capture opportunity second. Never let one decision ruin the day. Free to read and share.">
+<meta property="og:description" content="The whole trading system on one page. What to check before you click, how to manage what you took, and when to call the day. Keep your mistakes small enough to learn from. Free to read and share.">
 <meta property="og:url" content="https://maketzo.co/trading-os">
 <meta property="og:type" content="website">
-<meta property="og:image" content="https://maketzo.co/assets/trading-os-og.jpg?v=3">
+<meta property="og:image" content="https://maketzo.co/assets/trading-os-og.jpg?v=4">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="The Trading Operating System &mdash; MAKETZO">
-<meta name="twitter:description" content="The whole trading process on one page. Stay safe first. Capture opportunity second. Never let one decision ruin the day. Free.">
-<meta name="twitter:image" content="https://maketzo.co/assets/trading-os-og.jpg?v=3">
+<meta name="twitter:description" content="The whole trading system on one page. What to check before you click, how to manage what you took, and when to call the day. Keep your mistakes small enough to learn from. Free.">
+<meta name="twitter:image" content="https://maketzo.co/assets/trading-os-og.jpg?v=4">
 <link rel="canonical" href="https://maketzo.co/trading-os">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -112,27 +112,39 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 
 .tos-section { max-width: 860px; margin: 0 auto; padding: 24px 24px; }
 .tos-sec-eyebrow { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); text-align: center; margin-bottom: 20px; }
-.tos-phases { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-.tos-phase { background: var(--mk-surface-base); border: 1px solid var(--mk-smoke-800, rgba(255,255,255,.1)); border-left-width: 4px; border-radius: 12px; padding: 18px 18px; }
-.tos-phase-p1 { border-left-color: #5b8def; } .tos-phase-p2 { border-left-color: #57c98a; } .tos-phase-p3 { border-left-color: #e5c572; } .tos-phase-p4 { border-left-color: #37c1c9; } .tos-phase-p5 { border-left-color: #ff6b6b; }
-.tos-phase-n { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: .1em; text-transform: uppercase; color: var(--mk-text-tertiary); margin-bottom: 6px; }
-.tos-phase-t { font-family: var(--mk-font-display); font-size: 1.3rem; letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); margin-bottom: 8px; }
-.tos-phase-b { font-size: .98rem; color: var(--mk-text-secondary); line-height: 1.55; }
-@media (max-width: 640px) { .tos-phases { grid-template-columns: 1fr; } }
-
-.tos-check { background: var(--mk-surface-base); border: 1px solid rgba(212,175,55,.28); border-radius: 16px; padding: 22px; }
-.tos-check-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
-.tos-check-item { text-align: center; }
-.tos-check-k { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: .08em; text-transform: uppercase; color: var(--mk-brand); margin-bottom: 4px; }
-.tos-check-q { font-size: .92rem; color: var(--mk-text-secondary); }
-.tos-gate { text-align: center; margin-top: 18px; font-family: var(--mk-font-display); font-size: 1.25rem; letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); }
-.tos-gate em { font-style: normal; color: #ff6b6b; }
-@media (max-width: 640px) { .tos-check-grid { grid-template-columns: 1fr 1fr; } }
-
-.tos-manifesto { max-width: 760px; margin: 28px auto; text-align: center; padding: 0 24px; }
-.tos-manifesto p { font-family: var(--mk-font-display); font-size: clamp(1.4rem, 3vw, 2rem); letter-spacing: var(--mk-track-display); text-transform: uppercase; line-height: 1.25; color: var(--mk-text-primary); }
-.tos-manifesto p em { font-style: normal; background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
-.tos-manifesto cite { display: block; margin-top: 14px; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); font-style: normal; }
+/* Three bands, six stations. Mirrors the poster it sits under. */
+.tos-band { max-width: 900px; margin: 0 auto; padding: 10px 24px 22px; }
+.tos-band-label { font-family: var(--mk-font-display); font-size: clamp(1.5rem, 3.4vw, 2.1rem); letter-spacing: var(--mk-track-display); text-transform: uppercase; text-align: center; color: var(--mk-brand); margin-bottom: 6px; }
+.tos-band-note { text-align: center; font-size: .95rem; color: var(--mk-text-tertiary); margin-bottom: 18px; }
+.tos-band-label + .tos-stations, .tos-band-label + .tos-gate { margin-top: 18px; }
+.tos-stations { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.tos-stations--wide { grid-template-columns: 1fr; }
+.tos-station { background: var(--mk-surface-base); border: 1px solid rgba(212,175,55,.28); border-radius: 12px; padding: 20px; }
+.tos-station-head { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.tos-station-n { flex: 0 0 auto; font-family: var(--mk-font-mono); font-size: .78rem; font-weight: 500; letter-spacing: .06em; color: var(--mk-text-on-gold); background: var(--mk-gold-gradient); border-radius: 6px; padding: 3px 9px; }
+.tos-station-t { font-family: var(--mk-font-display); font-size: 1.3rem; letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); }
+.tos-station-sub { font-style: italic; font-size: .95rem; color: var(--mk-text-tertiary); margin-bottom: 14px; }
+.tos-station-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.tos-station-h { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: .08em; text-transform: uppercase; color: var(--mk-brand); margin-bottom: 8px; }
+.tos-list { list-style: none; margin: 0 0 14px; padding: 0; }
+.tos-list li { position: relative; padding-left: 15px; font-size: .95rem; color: var(--mk-text-secondary); line-height: 1.55; margin-bottom: 7px; }
+.tos-list li::before { content: ""; position: absolute; left: 0; top: .72em; width: 7px; height: 1px; background: var(--mk-brand); }
+.tos-rule { border-left: 2px solid var(--mk-brand); padding-left: 13px; margin: 0 0 14px; font-size: .98rem; color: var(--mk-text-primary); line-height: 1.5; }
+.tos-rule b { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--mk-brand); }
+.tos-in { border-top: 1px solid var(--mk-smoke-800, rgba(255,255,255,.1)); padding-top: 11px; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: .04em; color: var(--mk-text-tertiary); }
+.tos-gate { max-width: 900px; margin: 0 auto; padding: 4px 24px 22px; }
+.tos-gate-inner { border: 2px solid var(--mk-brand); border-radius: 12px; padding: 20px 22px; text-align: center; box-shadow: 0 0 34px rgba(212,175,55,.16); }
+.tos-gate-k { font-family: var(--mk-font-display); font-size: clamp(1.4rem, 3vw, 1.9rem); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-brand); margin-bottom: 10px; }
+.tos-gate-q { font-size: 1.02rem; color: var(--mk-text-primary); line-height: 1.5; max-width: 560px; margin: 0 auto; }
+.tos-strip { margin-top: 14px; background: rgba(255,255,255,.03); border-radius: 12px; padding: 18px 20px; text-align: center; }
+.tos-strip-k { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); margin-bottom: 8px; line-height: 1.5; }
+.tos-strip-p { font-size: .98rem; color: var(--mk-text-secondary); line-height: 1.5; margin-bottom: 12px; }
+.tos-strip .tos-in { border-top: none; padding-top: 0; }
+.tos-principles { max-width: 900px; margin: 0 auto; padding: 26px 24px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; text-align: center; }
+.tos-principle-k { font-family: var(--mk-font-display); font-size: 1.1rem; letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-brand); padding-bottom: 9px; border-bottom: 1px solid var(--mk-smoke-800, rgba(255,255,255,.1)); margin-bottom: 11px; }
+.tos-principle-p { font-size: .98rem; color: var(--mk-text-secondary); line-height: 1.5; }
+.tos-kc-note { text-align: center; font-size: .92rem; color: var(--mk-text-tertiary); padding: 0 24px 8px; }
+@media (max-width: 700px) { .tos-stations, .tos-station-cols, .tos-principles { grid-template-columns: 1fr; } }
 
 .tos-cta { text-align: center; padding: 40px 24px 96px; }
 .tos-cta h2 { font-family: var(--mk-font-display); font-size: clamp(1.7rem, 3.4vw, 2.4rem); letter-spacing: var(--mk-track-display); text-transform: uppercase; margin-bottom: 14px; }
@@ -149,9 +161,9 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 .tos-vbtn:hover { border-color: var(--mk-brand); }
 .tos-vbtn--primary { background: var(--mk-gold-gradient); color: var(--mk-text-on-gold); border-color: rgba(0,0,0,.18); }
 .tos-vscroll { flex: 1; overflow: auto; -webkit-overflow-scrolling: touch; padding: 20px 12px 60px; text-align: center; }
-.tos-vimg { display: block; margin: 0 auto; width: min(1024px, 96vw); height: auto; border-radius: 8px; cursor: zoom-in; box-shadow: 0 12px 50px rgba(0,0,0,.6); }
-.tos-vimg.zoomed { width: 1500px; max-width: none; cursor: zoom-out; }
-@media (max-width: 520px) { .tos-vimg.zoomed { width: 1100px; } }
+.tos-vimg { display: block; margin: 0 auto; width: min(864px, 96vw); height: auto; border-radius: 8px; cursor: zoom-in; box-shadow: 0 12px 50px rgba(0,0,0,.6); }
+.tos-vimg.zoomed { width: 1264px; max-width: none; cursor: zoom-out; }
+@media (max-width: 520px) { .tos-vimg.zoomed { width: 950px; } }
 /* Back-to-hub breadcrumb: return to the Free Tools page */
 .back-to-tools { position: absolute; top: 84px; left: 24px; z-index: 20; display: inline-flex; align-items: center; gap: 7px; padding: 7px 15px 7px 12px; font-family: var(--mk-font-sans); font-size: var(--mk-text-sm); font-weight: 500; letter-spacing: 0.02em; color: var(--mk-text-secondary); background: rgba(6,7,10,.55); border: 1px solid rgba(255,255,255,.10); border-radius: var(--mk-radius-pill); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); transition: color var(--mk-dur-fast), border-color var(--mk-dur-fast), background var(--mk-dur-fast); }
 .back-to-tools:hover { color: var(--mk-brand); border-color: rgba(212,175,55,.40); background: rgba(6,7,10,.72); }
@@ -201,18 +213,18 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 <section class="tos-hero">
   <p class="tos-eyebrow reveal">The MAKETZO Trading Operating System</p>
   <h1 class="tos-h1 reveal">Your whole trading system, <em>on one page</em>.</h1>
-  <p class="tos-sub reveal">Stay safe first. Capture opportunity second. Never let one decision ruin the day. The full MAKETZO process, free to read, save, and send to a trading friend.</p>
+  <p class="tos-sub reveal">Keep your mistakes small enough to learn from. The whole MAKETZO system on one page, free to read, save, and send to a trading friend.</p>
 </section>
 
 <!-- ─── THE GRAPHIC ──────────────────────────────────────────────── -->
 <section class="tos-graphic-wrap" id="tos-graphic">
   <button type="button" class="tos-graphic-btn reveal" data-tos-zoom aria-label="View the Trading Operating System full size">
-    <img class="tos-graphic-img" src="assets/trading-os.jpg?v=3" alt="The MAKETZO Trading Operating System, the full one-page trading system">
+    <img class="tos-graphic-img" src="assets/trading-os.jpg?v=4" alt="The MAKETZO Trading Operating System, the full one-page trading system">
     <span class="tos-zoom-hint">Tap to view full size</span>
   </button>
   <div class="tos-actions reveal">
     <div class="mk-share">
-      <button class="mk-share__trigger mk-share__trigger--primary" type="button" data-share-source="trading-os" data-share-title="The Trading Operating System" data-share-url="https://maketzo.co/trading-os" data-share-text="Stay safe first. Capture opportunity second. Never let one decision ruin the day. The whole trading system on one page, free:" data-share-subject="The trading system on one page" aria-haspopup="true" aria-expanded="false">
+      <button class="mk-share__trigger mk-share__trigger--primary" type="button" data-share-source="trading-os" data-share-title="The Trading Operating System" data-share-url="https://maketzo.co/trading-os" data-share-text="Keep your mistakes small enough to learn from. The whole trading system on one page, free:" data-share-subject="The trading system on one page" aria-haspopup="true" aria-expanded="false">
         <svg class="mk-share__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/></svg>
         <span>Share with a trading friend</span>
       </button>
@@ -226,46 +238,154 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
         <button class="mk-share__item mk-share__item--wide" type="button" data-platform="copy" role="menuitem"><svg class="mk-share__item-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg><span>Copy link</span></button>
       </div>
     </div>
-    <a class="btn-secondary" href="assets/trading-os.jpg?v=3" download="MAKETZO-Trading-Operating-System.jpg" data-tos-dl>Download</a>
+    <a class="btn-secondary" href="assets/trading-os.jpg?v=4" download="MAKETZO-Trading-Operating-System.jpg" data-tos-dl>Download</a>
   </div>
   <div class="mk-share-toast" role="status" aria-live="polite" hidden>Link copied</div>
 </section>
 
 <hr class="mk-rule-gold">
 
-<!-- ─── THE FOUR PHASES ──────────────────────────────────────────── -->
-<section class="tos-section" id="tos-phases">
-  <p class="tos-sec-eyebrow reveal">The Four Phases</p>
-  <div class="tos-phases">
-    <div class="tos-phase tos-phase-p1 reveal"><div class="tos-phase-n">Phase 1</div><div class="tos-phase-t">Before the Trade</div><div class="tos-phase-b">Should I even participate? Read the environment and the stock's quality first. If nothing is happening, walk away. Great setups are obvious.</div></div>
-    <div class="tos-phase tos-phase-p2 reveal"><div class="tos-phase-n">Phase 2</div><div class="tos-phase-t">Before I Click Buy</div><div class="tos-phase-b">The defensive checklist. Don't fight the trend, don't chase, don't trade out of boredom. If you can't take a small loss here, don't enter.</div></div>
-    <div class="tos-phase tos-phase-p3 reveal"><div class="tos-phase-n">Phase 3</div><div class="tos-phase-t">While in the Trade</div><div class="tos-phase-b">Trade like a defender, not an attacker. Slow and steady, greed in check, plan the trade and trade the plan. Rules over gut, gut over hope.</div></div>
-    <div class="tos-phase tos-phase-p4 reveal"><div class="tos-phase-n">Phase 4</div><div class="tos-phase-t">Protect the Day</div><div class="tos-phase-b">Where traders win or lose. Stay green and grateful, never lose more than your average winning day, and walk the moment you start to spiral.</div></div>
-  </div>
-</section>
-
-<!-- ─── THE 5 QUESTIONS ──────────────────────────────────────────── -->
-<section class="tos-section" id="tos-checklist">
-  <p class="tos-sec-eyebrow reveal">The 5 Questions I Must Answer</p>
-  <div class="tos-check reveal">
-    <div class="tos-check-grid">
-      <div class="tos-check-item"><div class="tos-check-k">Environment</div><div class="tos-check-q">Is it good?</div></div>
-      <div class="tos-check-item"><div class="tos-check-k">Stock Quality</div><div class="tos-check-q">Is it worthy?</div></div>
-      <div class="tos-check-item"><div class="tos-check-k">Obvious Setup</div><div class="tos-check-q">Would others see it?</div></div>
-      <div class="tos-check-item"><div class="tos-check-k">Risk Control</div><div class="tos-check-q">Can I lose small?</div></div>
-      <div class="tos-check-item"><div class="tos-check-k">Protect the Day</div><div class="tos-check-q">Can I protect it?</div></div>
-    </div>
-    <p class="tos-gate">If any answer is <em>no</em>, you don't have a trade.</p>
+<!-- ─── BAND ONE: SET YOUR RULES ─────────────────────────────────── -->
+<section class="tos-band" id="tos-set">
+  <h2 class="tos-band-label reveal">SET YOUR RULES</h2>
+  <div class="tos-stations">
+    <article class="tos-station reveal">
+    <div class="tos-station-head"><span class="tos-station-n">01</span><h3 class="tos-station-t">Establish Context</h3></div>
+    <p class="tos-station-sub">Is today worth trading at all?</p>
+    <ul class="tos-list">
+      <li>Is the broad market trending, or choppy and heavy? Any Fed or jobs report today?</li>
+      <li>How many clean gappers over 40 percent, and is one clearly leading?</li>
+      <li>Are you sharp today, or a little off?</li>
+    </ul>
+    <p class="tos-rule"><b>Rule:</b> If nothing is happening, walk away. A day off costs nothing.</p>
+    <p class="tos-in">In MAKETZO: Market Context</p>
+    </article>
+    <article class="tos-station reveal">
+    <div class="tos-station-head"><span class="tos-station-n">02</span><h3 class="tos-station-t">Commit Before You Click</h3></div>
+    <p class="tos-station-sub">Decide it now, while you can still think.</p>
+    <ul class="tos-list">
+      <li>Write down your max loss and your daily target.</li>
+      <li>Pick one shape for the day: A+ only, recovery, or sitting out.</li>
+      <li>Decide now what you will do if you break a rule. Stop for the day? Step away? Pick one.</li>
+    </ul>
+    <p class="tos-rule"><b>Rule:</b> The floor you set calm is the only one you will respect bleeding.</p>
+    <p class="tos-in">In MAKETZO: Morning Lock-In, 9 session modes</p>
+    </article>
   </div>
 </section>
 
 <hr class="mk-rule-gold">
 
-<!-- ─── MANIFESTO ────────────────────────────────────────────────── -->
-<blockquote class="tos-manifesto reveal">
-  <p>Trade like a defender, not an attacker. <em>Small losses win</em> over time.</p>
-  <cite>MAKETZO</cite>
-</blockquote>
+<!-- ─── BAND TWO: TRADE YOUR RULES ───────────────────────────────── -->
+<section class="tos-band" id="tos-trade">
+  <h2 class="tos-band-label reveal">TRADE YOUR RULES</h2>
+  <p class="tos-band-note reveal">This part repeats, every trade, all day.</p>
+  <div class="tos-stations tos-stations--wide">
+    <article class="tos-station reveal">
+    <div class="tos-station-head"><span class="tos-station-n">03</span><h3 class="tos-station-t">Before the Trade</h3></div>
+    <p class="tos-station-sub">Does this one qualify?</p>
+      <div class="tos-station-cols">
+        <div>
+          <p class="tos-station-h">IS THE STOCK ANY GOOD?</p>
+    <ul class="tos-list">
+      <li>Is the trend intact, or are you buying a bounce in a downtrend?</li>
+      <li>Is there real volume, or is no one really viewing this stock?</li>
+      <li>Is the spread tight, or will you be red the moment you fill?</li>
+      <li>Do the one-minute candles have enough range to work with?</li>
+    </ul>
+        </div>
+        <div>
+          <p class="tos-station-h">SMALL CAP TRAPS</p>
+    <ul class="tos-list">
+      <li>Can this company sell new stock into you today?</li>
+      <li>Is there real news behind this move, or is it running on nothing?</li>
+      <li>Is this early in the move, or after it already ran?</li>
+    </ul>
+        </div>
+      </div>
+    <p class="tos-rule"><b>Rule:</b> Great setups are obvious. If you have to convince yourself, it is not there.</p>
+    <p class="tos-in">In MAKETZO: Dilution Check, Halt Clock, Knowledge Center</p>
+    </article>
+  </div>
+</section>
+
+<div class="tos-gate">
+  <div class="tos-gate-inner reveal">
+    <p class="tos-gate-k">The Gate</p>
+    <p class="tos-gate-q">If it fails the second you are in, can you take that loss and be fine? If no, do not enter.</p>
+  </div>
+</div>
+
+<section class="tos-band" id="tos-trade-2">
+  <div class="tos-stations">
+    <article class="tos-station reveal">
+    <div class="tos-station-head"><span class="tos-station-n">04</span><h3 class="tos-station-t">Manage the Trade</h3></div>
+    <p class="tos-station-sub">Trade like a defender, not an attacker.</p>
+    <ul class="tos-list">
+      <li>Know where you are getting out before you are in.</li>
+      <li>The stop is the stop. You do not negotiate with it.</li>
+      <li>Extension is not opportunity.</li>
+    </ul>
+    <p class="tos-rule"><b>Rule:</b> Rules over gut. Gut over hope.</p>
+    <p class="tos-in">In MAKETZO: Edge and Pulse timing</p>
+    </article>
+    <article class="tos-station reveal">
+    <div class="tos-station-head"><span class="tos-station-n">05</span><h3 class="tos-station-t">After the Trade</h3></div>
+    <p class="tos-station-sub">The next click gets decided right here.</p>
+    <ul class="tos-list">
+      <li>Name the setup and write what happened, while you still remember why.</li>
+      <li>A loss is a fact, not a debt. The market does not owe you.</li>
+      <li>If you are speeding up or forcing things, pause and reset.</li>
+    </ul>
+    <p class="tos-rule"><b>Rule:</b> Do not try to make it all back today. Journal every setup you take. Your own record will tell you which of yours works over time.</p>
+    <p class="tos-in">In MAKETZO: Journal, The Reset, Setup performance</p>
+    </article>
+  </div>
+  <div class="tos-strip reveal">
+    <p class="tos-strip-k">Running the whole time: your loss limit &middot; your profit floor &middot; your strike count</p>
+    <p class="tos-strip-p">When one of them says stop, that is not a new decision. You made it before your first trade.</p>
+    <p class="tos-in">In MAKETZO: Profit Floor, Strike System, COACH SAYS</p>
+  </div>
+</section>
+
+<hr class="mk-rule-gold">
+
+<!-- ─── BAND THREE: REVIEW YOUR RULES ────────────────────────────── -->
+<section class="tos-band" id="tos-review">
+  <h2 class="tos-band-label reveal">REVIEW YOUR RULES</h2>
+  <div class="tos-stations tos-stations--wide">
+    <article class="tos-station reveal">
+    <div class="tos-station-head"><span class="tos-station-n">06</span><h3 class="tos-station-t">Close the Day</h3></div>
+    <p class="tos-station-sub">Where traders actually win and lose.</p>
+    <ul class="tos-list">
+      <li>Green: the only job left is not giving it back.</li>
+      <li>Red: the floor you signed is the floor. Today is over.</li>
+      <li>Score how you traded, not what you made. Then journal the one thing you will focus on tomorrow.</li>
+    </ul>
+    <p class="tos-rule"><b>Rule:</b> Grade the process. The money follows it, not the other way round.</p>
+    <p class="tos-in">In MAKETZO: The Debrief, Picard Score</p>
+    </article>
+  </div>
+</section>
+
+<hr class="mk-rule-gold">
+
+<!-- ─── THE THREE PRINCIPLES ─────────────────────────────────────── -->
+<div class="tos-principles reveal">
+  <div>
+    <p class="tos-principle-k">Environment Over Setup</p>
+    <p class="tos-principle-p">Patience creates opportunity.</p>
+  </div>
+  <div>
+    <p class="tos-principle-k">Defense Over Offense</p>
+    <p class="tos-principle-p">Protect the day, every day.</p>
+  </div>
+  <div>
+    <p class="tos-principle-k">Small Losses Win</p>
+    <p class="tos-principle-p">Avoid the big one. Time does the rest.</p>
+  </div>
+</div>
+<p class="tos-kc-note reveal">New to any of these terms? Every one has an article in the MAKETZO Knowledge Center.</p>
 
 <hr class="mk-rule-gold">
 
@@ -306,12 +426,12 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
     <span class="tos-vtitle">Trading Operating System</span>
     <div class="tos-vactions">
       <button type="button" class="tos-vbtn" id="tosViewerZoom">Zoom in</button>
-      <a class="tos-vbtn" href="assets/trading-os.jpg?v=3" download="MAKETZO-Trading-Operating-System.jpg">Download</a>
+      <a class="tos-vbtn" href="assets/trading-os.jpg?v=4" download="MAKETZO-Trading-Operating-System.jpg">Download</a>
       <button type="button" class="tos-vbtn tos-vbtn--primary" id="tosViewerClose">Close</button>
     </div>
   </div>
   <div class="tos-vscroll" id="tosViewerScroll">
-    <img class="tos-vimg" id="tosViewerImg" src="assets/trading-os.jpg?v=3" alt="The MAKETZO Trading Operating System, full size">
+    <img class="tos-vimg" id="tosViewerImg" src="assets/trading-os.jpg?v=4" alt="The MAKETZO Trading Operating System, full size">
   </div>
 </div>
 
