@@ -88,6 +88,10 @@ Reference role-mapped tokens (`--mk-surface-page`, `--mk-text-primary`, `--mk-br
 - `mk-rule-gold` — 1px gold gradient horizontal rule (default — signature section break)
 - `mk-rule-gold--bold` — 2px brighter-center variant (use sparingly: final-CTA top edge, hero close)
 - `mk-rule-gold--short` — width-capped variant (240px max, centered — for callouts)
+- `mk-tabband`, `mk-tabband__tab`, `mk-tabband__num` — full-width header band of numbered steps (UPPERCASE tracked mono, raised surface, gold rule above and below). States `.is-active`, `.is-done`. Host sets `--mk-tabband-gutter`. For peer views use `mk-tab-nav`. First used by the app's Market Context read (2026-10-03).
+- `mk-reading` — the one "work in flight" indicator: gold ink and a six-frame page that writes itself. Render it only while the work runs.
+
+**The app ships a subset.** `maketzo-app/_design-components.css` holds the blocks the app uses, copied unchanged from `components.css` (added 2026-10-03; before that the app loaded tokens only and every widget hand-built its own tabs and buttons). Build a component here first, tokens only, then copy the block. Gold text uses `--mk-brand-ink`, which flips with the theme; `--mk-brand` is a fill.
 Margins are NOT baked in — apply page-side spacing in the host stylesheet. Absolute positioning at a section's top edge is a host-stylesheet concern (e.g., `.section--accent-top .mk-rule-gold { position: absolute; top: 0; ... }`). Works on `<hr>` and `<div>`.
 
 ### Strike System
