@@ -105,6 +105,7 @@ html.mkt-auth .nav-login-btn:hover{color:var(--mk-text-on-gold);background:var(-
 .legal-body ul li { position: relative; padding-left: 20px; font-size: var(--mk-text-md); line-height: var(--mk-lead-body); }
 .legal-body ul li::before { content: '·'; position: absolute; left: 6px; top: -2px; color: var(--mk-brand); font-size: 1.4em; }
 .legal-body ul li strong { color: var(--mk-text-primary); }
+.legal-body code { font-family: var(--mk-font-mono); }
 .legal-body .legal-callout {
   padding: 18px 22px;
   background:
@@ -177,7 +178,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
   <div class="legal-hero-inner">
     <p class="legal-hero-eyebrow">PRIVACY POLICY</p>
     <h1 class="legal-hero-title">Your Data. Your Trades. <em style="font-style:normal;background:var(--mk-gold-gradient);-webkit-background-clip:text;background-clip:text;color:transparent;">Your Control.</em></h1>
-    <p class="legal-hero-sub">Last updated: 26 July 2026 · Effective: 26 July 2026 · Operated by Abinic, LLC</p>
+    <p class="legal-hero-sub">Last updated: 6 October 2026 · Effective: 6 October 2026 · Operated by Abinic, LLC</p>
   </div>
 </header>
 
@@ -218,7 +219,8 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
       <h2>2. What we collect</h2>
       <p>We collect the following categories of information, most of which you provide or create by using the Service:</p>
       <ul>
-        <li><strong>Account and identity.</strong> Your name and email, and either a password (stored only as an argon2id hash, never in plain text) or, if you sign in with Google, your Google account identifier and profile photo. We also record whether your email is verified.</li>
+        <li><strong>Account and identity.</strong> Your name and email, and either a password (stored only as an argon2id hash, never in plain text) or, if you sign in with Google, your Google account identifier and profile photo. We also record whether your email is verified, when you last changed your password, and whether your password has appeared in a known data breach (see Section 9).</li>
+        <li><strong>Sign-in security settings.</strong> If you turn on two-step sign-in, the secret your authenticator app uses to make codes (stored encrypted) and your recovery codes (stored only as one-way hashes). If you add a passkey, its public key and identifier, a usage counter, the name you give it, which passkey provider created it (for example Windows Hello or iCloud Keychain), whether it is synced across your devices, and the browser and operating system you added it from. <strong>The private part of a passkey never leaves your device, and we never receive your face, fingerprint, or device PIN.</strong> Your device checks those itself and tells us only that the check passed.</li>
         <li><strong>Profile and self-reported details.</strong> Information you choose to add to tailor your experience, such as trading experience, trading style, markets traded, discipline challenge, and goals, plus any optional details you enter such as location, birthday, or a short bio. If you request indicator access, your TradingView username.</li>
         <li><strong>Trading and financial data.</strong> The trades, profit and loss, sessions, notes, and statistics you log, and data you import from your broker (for example a DAS Trader export), which can include a broker account number, per-trade fills, commissions, and fees. This data exists because you create or import it.</li>
         <li><strong>Behavioral data.</strong> Signals the discipline engine uses on your behalf, such as strike events, max-loss adherence, COACH SAYS triggers, lockout history, streaks, your Discipline Score, and reset and anchor events.</li>
@@ -226,7 +228,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
         <li><strong>Billing information.</strong> Your plan, subscription status, Stripe customer and subscription identifiers, and any account credit balance. <strong>We never see, store, or process your card details.</strong> Those are entered into and held by Stripe.</li>
         <li><strong>Communications and consent.</strong> Emails you send us, contact-form submissions (including the consent choices you make on that form), your newsletter status, and, when you use a share or email feature, the recipient address you choose and the content you send.</li>
         <li><strong>Referral data.</strong> Your referral code and, if you were referred or refer others, the connection between the accounts, which may include a referred person's email address.</li>
-        <li><strong>Technical, security, and audit data.</strong> IP address, browser and device type, pages viewed, and error logs needed to run and secure the Service. For security-sensitive actions we may keep an audit record that includes IP address and browser user agent. Some anti-abuse and analytics processes use a one-way hashed form of your email rather than the address itself.</li>
+        <li><strong>Technical, security, and audit data.</strong> IP address, browser and device type, pages viewed, and error logs needed to run and secure the Service. For security-sensitive actions, such as signing in, changing your password, turning two-step sign-in on or off, and adding or removing a passkey, we keep an audit record that includes IP address and browser user agent. Some anti-abuse and analytics processes use a one-way hashed form of your email rather than the address itself.</li>
       </ul>
     </section>
 
@@ -278,15 +280,16 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
         <li><strong>TradingView.</strong> To grant indicator access, we provide the TradingView username you give us so your account can be added to our invite-only indicators.</li>
         <li><strong>Off-site backups.</strong> Encrypted database backups are stored with a cloud storage provider on a short retention schedule.</li>
       </ul>
-      <p>Some providers we use for editorial content, market data, or publishing (for example our AI model provider, our stock-image provider, our market-data provider, and our code host) do not receive your personal information. We may also disclose information to comply with law, enforce our Terms, protect our rights and the safety of others, or in connection with a merger, acquisition, financing, or sale of assets, in which case we will require the recipient to honor this policy.</p>
+      <p>Some providers we use for editorial content, market data, or publishing (for example our AI model provider, our stock-image provider, our market-data provider, and our code host) do not receive your personal information. The same is true of the breach check described in Section 9: when we check a password against the Have I Been Pwned database, we send only the first five characters of a one-way hash of it, never the password itself and nothing that identifies you. We may also disclose information to comply with law, enforce our Terms, protect our rights and the safety of others, or in connection with a merger, acquisition, financing, or sale of assets, in which case we will require the recipient to honor this policy.</p>
     </section>
 
     <section id="cookies">
       <h2>7. Cookies, analytics &amp; tracking</h2>
       <p>We use the following cookies and similar technologies:</p>
       <ul>
-        <li><strong>Essential.</strong> First-party cookies required to run the Service: a secure, httpOnly session cookie (<code style="font-family:var(--mk-font-mono);">mkt_sess</code>) and a CSRF-protection cookie (<code style="font-family:var(--mk-font-mono);">mkt_csrf</code>). These keep you logged in securely and are not used for advertising.</li>
-        <li><strong>Referral.</strong> A first-party cookie (<code style="font-family:var(--mk-font-mono);">mkt_ref</code>) that remembers who referred you so a referral can be credited.</li>
+        <li><strong>Essential.</strong> First-party cookies required to run the Service: a secure, httpOnly session cookie (<code>mkt_sess</code>, up to seven days) and a CSRF-protection cookie (<code>mkt_csrf</code>). These keep you logged in securely and are not used for advertising.</li>
+        <li><strong>Sign-in security.</strong> If you tick &ldquo;Trust this device for 30 days&rdquo; on the two-step code screen, a first-party httpOnly cookie (<code>mkt_trust</code>, 30 days) remembers that this device passed the check. It holds no password and no code, and it stops working the moment you turn two-step sign-in off or set it up again. While you add a passkey or sign in with one, a first-party httpOnly cookie (<code>mkt_pk</code>, five minutes) holds the one-time challenge your device signs; it is cleared as soon as it is used.</li>
+        <li><strong>Referral.</strong> A first-party cookie (<code>mkt_ref</code>) that remembers who referred you so a referral can be credited.</li>
         <li><strong>Analytics.</strong> We use PostHog to understand usage. This may set an analytics cookie or store an anonymous identifier. Analytics are subject to your consent choice where required.</li>
         <li><strong>Stripe.</strong> Stripe sets its own cookies in the billing flow, governed by <a href="https://stripe.com/privacy" target="_blank" rel="noopener">Stripe's privacy policy</a>.</li>
       </ul>
@@ -301,7 +304,17 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 
     <section id="security">
       <h2>9. Security</h2>
-      <p>We use commercially reasonable technical and organizational measures to protect your information, including encryption of data in transit, hashing of passwords with argon2id, httpOnly session cookies with CSRF protection, access controls, and encrypted off-site backups. No method of transmission or storage is perfectly secure, and we cannot guarantee absolute security. You are responsible for keeping your password and devices secure.</p>
+      <p>We use commercially reasonable technical and organizational measures to protect your information, including encryption of data in transit, httpOnly session cookies with CSRF protection, access controls, and encrypted off-site backups. Your sign-in is protected in these specific ways:</p>
+      <ul>
+        <li><strong>Passwords.</strong> We store your MAKETZO password only as an argon2id hash, so no one at MAKETZO can read it. A new password must be at least 12 characters and include an upper-case letter, a lower-case letter, a number, and a symbol. When you set a password, and each time you sign in with one, we check it against the Have I Been Pwned database of passwords exposed in public data breaches, using the privacy-preserving method described in Section 6. If your password appears there, we refuse it when you set it, or ask you to change it after you sign in. We do not force password changes on a schedule.</li>
+        <li><strong>Google sign-in.</strong> If you sign in with Google, Google confirms who you are and shares only your name, email address, and profile photo with us. We never see or store your Google password. Your MAKETZO password, if you set one, is separate and unaffected by any change to your Google account.</li>
+        <li><strong>Two-step sign-in (optional).</strong> When it is on, every sign-in also needs a six-digit code from an authenticator app on your phone, whichever way you signed in. The secret behind those codes is encrypted at rest (AES-256-GCM), and recovery codes are stored only as one-way hashes and work once each. A copy of our database alone is therefore not enough to pass this step.</li>
+        <li><strong>Passkeys (optional).</strong> A passkey signs you in with your device&rsquo;s own face, fingerprint, or PIN check. We hold only the public key, which cannot be used to sign in on its own. Because your device has already confirmed it is you, a passkey sign-in does not also ask for a two-step code. Adding a passkey never removes your password or Google sign-in, so losing a device never locks you out.</li>
+        <li><strong>Sessions and limits.</strong> Changing or resetting your password signs you out on every other device, and you can do the same at any time from your account security settings. We limit repeated sign-in, code, and passkey attempts from the same address or for the same account.</li>
+        <li><strong>Notices and support.</strong> We email you when a passkey is added to your account. Our support staff cannot see your password or your two-step secret. If you lose both your phone and your recovery codes, support can turn two-step sign-in off for you; that action is logged with a written reason, signs you out everywhere, and is confirmed to you by email. We will never ask you for your password or a sign-in code.</li>
+        <li><strong>Exports.</strong> A data export never includes your password hash, your two-step secret, your recovery codes, or your Google account identifier.</li>
+      </ul>
+      <p>No method of transmission or storage is perfectly secure, and we cannot guarantee absolute security. You are responsible for keeping your password, devices, and recovery codes secure.</p>
       <p><strong>Breach notification.</strong> If a breach affecting your personal data occurs, we will notify you and the relevant authorities as, and within the time, required by applicable law.</p>
     </section>
 
@@ -325,7 +338,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
         <li><strong>Correct.</strong> Update your information directly in the app, or email us for anything the interface does not expose.</li>
         <li><strong>Unsubscribe.</strong> Use the one-click link in any newsletter. Service messages are required for account function.</li>
         <li><strong>Manage analytics.</strong> Use the consent banner where offered, or a Global Privacy Control signal, to limit non-essential analytics.</li>
-        <li><strong>Sign out other devices.</strong> End all other sessions from your account security settings.</li>
+        <li><strong>Secure your sign-in.</strong> From your account security settings, change your password, turn two-step sign-in on or off, add, rename, or remove passkeys, disconnect Google, and sign out every other device.</li>
       </ul>
       <p>To make any request, use your account settings or email <a href="mailto:info@maketzo.co">info@maketzo.co</a>. We may need to verify your identity before acting on a request.</p>
     </section>
