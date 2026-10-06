@@ -15,8 +15,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/tokens.css">
 <link rel="stylesheet" href="assets/css/components.css">
-<link rel="stylesheet" href="assets/css/auth.css?v=1">
+<link rel="stylesheet" href="assets/css/auth.css?v=2">
 <script src="assets/js/mkt-analytics.js?v=9" defer></script>
+<script src="assets/js/passkey-client.js?v=1"></script>
 <script src="assets/js/mkt-consent.js?v=1" defer></script>
 </head>
 <body class="auth-body">
@@ -48,12 +49,18 @@
       Continue with Google
     </button>
 
+    <!-- Shown only when this browser can use passkeys (assets/js/passkey-client.js). -->
+    <button id="passkeyBtn" class="btn-passkey" type="button" hidden>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="7" r="4"/><path d="M2 21v-2a4 4 0 0 1 4-4h5"/><circle cx="17" cy="15" r="3"/><path d="M19.5 17.5 22 20"/></svg>
+      Sign in with a passkey
+    </button>
+
     <div class="auth-divider"><span>or</span></div>
 
     <form id="loginForm" data-form-id="login" novalidate>
       <div class="mk-form-field">
         <label for="email">Email</label>
-        <input id="email" name="email" type="email" autocomplete="email" required maxlength="200">
+        <input id="email" name="email" type="email" autocomplete="username webauthn" required maxlength="200">
       </div>
       <div class="mk-form-field">
         <label for="password">Password</label>
@@ -173,6 +180,52 @@ document.getElementById('googleBtn').addEventListener('click', () => {
   window.location.href = url;
 });
 
+// After any successful sign-in on this page (password or passkey): identify,
+// then checkout if a plan was chosen, else into the app. Resolves false when
+// checkout could not start, so the caller can re-enable its button.
+async function onSignedIn(data, email, method) {
+  // THE line this page was missing. A returning trader was anonymous
+  // across the whole marketing site because nothing here ever identified
+  // them. Identifying on the integer user id -- the same distinctId the
+  // app and the backend use -- merges this browser's anonymous history
+  // onto the person. The email is deliberately not sent.
+  if (window.MKT) {
+    if (email) { try { window.MKT.linkSession(email); } catch (_) {} }
+    try { window.MKT.identifyUser(data.userId); } catch (_) {}
+    window.MKT.trackEvent('mkt_login_ok', { to_checkout: !!hasPlan, method });
+  }
+  if (hasPlan) return startStripeCheckoutWithSession();
+  window.location.href = '/app';
+  return true;
+}
+
+// A refused sign-in, in the trader's words. Bucketed reasons only in the
+// event. Never the message, never the address -- a failed login attempt is
+// exactly where a raw email would be most tempting.
+function onSignInRefused(res, data, method) {
+  if (window.MKT && window.MKT.trackEvent) {
+    window.MKT.trackEvent('mkt_login_fail', {
+      reason: res.status === 429 ? 'rate_limited'
+            : res.status === 403 ? 'blocked'
+            : res.status >= 500  ? 'server'
+            : 'bad_credentials',
+      status: res.status,
+      method
+    });
+  }
+  if (res.status === 403 && data.code === 'PENDING_DELETION') {
+    showBanner('This account is scheduled for deletion. Email info@maketzo.co to restore it.', 'error');
+  } else if (res.status === 429) {
+    showBanner(data.error || 'Too many attempts. Please wait a minute and try again.', 'error');
+  } else if (method === 'passkey') {
+    showBanner(data.error === 'unknown_passkey'
+      ? 'MAKETZO does not know that passkey. Sign in another way, then add a passkey in Account › Security.'
+      : 'That passkey did not work. Try again, or sign in another way.', 'error');
+  } else {
+    showBanner(data.error || 'Invalid email or password.', 'error');
+  }
+}
+
 document.getElementById('loginForm').addEventListener('submit', async (e) => {
   e.preventDefault();
   const btn = document.getElementById('loginSubmit');
@@ -190,41 +243,9 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
     });
     const data = await res.json().catch(() => ({}));
     if (res.ok && data.ok) {
-      // THE line this page was missing. A returning trader was anonymous
-      // across the whole marketing site because nothing here ever identified
-      // them. Identifying on the integer user id -- the same distinctId the
-      // app and the backend use -- merges this browser's anonymous history
-      // onto the person. The email is deliberately not sent.
-      if (window.MKT) {
-        try { window.MKT.linkSession(email); } catch (_) {}
-        try { window.MKT.identifyUser(data.userId); } catch (_) {}
-        window.MKT.trackEvent('mkt_login_ok', { to_checkout: !!hasPlan });
-      }
-      if (hasPlan) {
-        const ok = await startStripeCheckoutWithSession();
-        if (!ok) { btn.innerHTML = orig; btn.disabled = false; }
-        return;
-      }
-      window.location.href = '/app';
-      return;
-    }
-    // Bucketed reasons only. Never the message, never the address -- a failed
-    // login attempt is exactly where a raw email would be most tempting.
-    if (window.MKT && window.MKT.trackEvent) {
-      window.MKT.trackEvent('mkt_login_fail', {
-        reason: res.status === 429 ? 'rate_limited'
-              : res.status === 403 ? 'blocked'
-              : res.status >= 500  ? 'server'
-              : 'bad_credentials',
-        status: res.status
-      });
-    }
-    if (res.status === 403 && data.code === 'PENDING_DELETION') {
-      showBanner('This account is scheduled for deletion. Email info@maketzo.co to restore it.', 'error');
-    } else if (res.status === 429) {
-      showBanner(data.error || 'Too many attempts. Please wait a minute and try again.', 'error');
+      if (await onSignedIn(data, email, 'password')) return;
     } else {
-      showBanner(data.error || 'Invalid email or password.', 'error');
+      onSignInRefused(res, data, 'password');
     }
   } catch (err) {
     showBanner('Network error. Please try again.', 'error');
@@ -232,6 +253,55 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
     btn.innerHTML = orig; btn.disabled = false;
   }
 });
+
+// ── Passkeys ─────────────────────────────────────────────────
+// Two doors to the same function: the button, and the browser's own autofill
+// list on the email field (autocomplete="username webauthn"), which offers the
+// passkeys this device holds for maketzo.co. The server mints a session with
+// the two-step claim, so no code screen follows.
+const PK = window.MaketzoPasskeyClient;
+const passkeyBtn = document.getElementById('passkeyBtn');
+let passkeyAutofill = null;
+
+async function passkeySignIn(extra) {
+  const optRes = await fetch(API + '/auth/passkeys/sign-in/options', { method: 'POST', credentials: 'include' });
+  if (!optRes.ok) throw { name: 'ServerError', status: optRes.status };
+  const response = await PK.get(await optRes.json(), extra);
+  const res = await fetch(API + '/auth/passkeys/sign-in/verify', {
+    method: 'POST', credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ response })
+  });
+  const data = await res.json().catch(() => ({}));
+  if (res.ok && data.ok) return onSignedIn(data, null, 'passkey');
+  onSignInRefused(res, data, 'passkey');
+  return false;
+}
+
+if (PK && PK.supported()) {
+  passkeyBtn.hidden = false;
+  passkeyBtn.addEventListener('click', async () => {
+    if (passkeyAutofill) { passkeyAutofill.abort(); passkeyAutofill = null; }
+    const orig = passkeyBtn.innerHTML;
+    passkeyBtn.disabled = true;
+    banner.hidden = true;
+    try {
+      await passkeySignIn();
+    } catch (err) {
+      showBanner(err && err.name === 'ServerError' ? 'Could not reach MAKETZO. Please try again.' : PK.explain(err, false), 'error');
+    } finally {
+      passkeyBtn.innerHTML = orig; passkeyBtn.disabled = false;
+    }
+  });
+  PK.conditionalAvailable().then((can) => {
+    if (!can) return;
+    passkeyAutofill = new AbortController();
+    passkeySignIn({ mediation: 'conditional', signal: passkeyAutofill.signal }).catch((err) => {
+      if (err && (err.name === 'AbortError' || err.name === 'ServerError')) return;
+      showBanner(PK.explain(err, false), 'error');
+    });
+  });
+}
 
 document.getElementById('magicLinkToggle').addEventListener('click', (e) => {
   e.preventDefault();

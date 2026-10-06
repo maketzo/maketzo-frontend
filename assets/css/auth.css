@@ -188,6 +188,29 @@ html { scroll-behavior: smooth; }
 }
 .btn-google:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(0,0,0,.35); }
 
+/* Sign in with a passkey: the quiet twin of the Google button, shown only
+   when the browser can use passkeys (login.html toggles `hidden`). */
+.btn-passkey {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  width: 100%;
+  margin-top: 10px;
+  padding: 12px 18px;
+  background: transparent;
+  color: var(--mk-text-primary);
+  font-family: var(--mk-font-sans);
+  font-size: var(--mk-text-sm); font-weight: 600;
+  letter-spacing: 0.02em;
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: var(--mk-radius-button);
+  cursor: pointer;
+  transition: transform var(--mk-dur-snap), border-color var(--mk-dur-snap), box-shadow var(--mk-dur-snap);
+}
+.btn-passkey:hover { transform: translateY(-1px); border-color: rgba(212,175,55,.5); box-shadow: 0 6px 18px rgba(0,0,0,.35); }
+.btn-passkey:disabled { opacity: .65; cursor: not-allowed; transform: none; }
+/* The bare display:inline-flex above would beat the `hidden` attribute, the
+   way .auth-gift once did. Class plus attribute wins. */
+.btn-passkey[hidden] { display: none; }
+
 .auth-divider {
   display: flex; align-items: center; gap: 12px;
   margin: 18px 0;
