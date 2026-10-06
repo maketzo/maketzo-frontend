@@ -138,6 +138,20 @@ html { scroll-behavior: smooth; }
   font-size: var(--mk-mono-xs);
   color: var(--mk-text-tertiary);
 }
+.mk-form-hint:empty { display: none; }
+
+/* Password checklist, drawn by assets/js/password-rules.js attach(). Same
+   markup and classes as the app's Account > Security form. */
+.mk-pw-checks { list-style: none; margin: 10px 0 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px 16px; }
+.mk-pw-checks[hidden] { display: none; }
+.mk-pw-check { display: flex; align-items: center; gap: 8px; font-size: var(--mk-text-sm); color: var(--mk-text-tertiary); line-height: 1.4; transition: color var(--mk-dur-fast); }
+.mk-pw-check-mark { width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid var(--mk-border-strong, rgba(255,255,255,0.18)); flex: 0 0 16px; position: relative; box-sizing: border-box; transition: background var(--mk-dur-fast), border-color var(--mk-dur-fast); }
+.mk-pw-check.is-pass { color: var(--mk-text-primary); }
+.mk-pw-check.is-pass .mk-pw-check-mark { background: var(--mk-profit-500); border-color: var(--mk-profit-500); }
+.mk-pw-check.is-pass .mk-pw-check-mark::after { content: ''; position: absolute; left: 4px; top: 1px; width: 4px; height: 8px; border: solid #0d0f14; border-width: 0 2px 2px 0; transform: rotate(45deg); }
+.mk-pw-check.is-fail { color: var(--mk-text-secondary, var(--mk-text-tertiary)); }
+.mk-pw-check.is-fail .mk-pw-check-mark { border-color: var(--mk-danger-500); }
+@media (max-width: 520px) { .mk-pw-checks { grid-template-columns: 1fr; } }
 
 .btn-primary {
   display: inline-flex; align-items: center; justify-content: center;

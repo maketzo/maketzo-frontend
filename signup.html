@@ -22,6 +22,7 @@
 <link rel="stylesheet" href="assets/css/components.css">
 <link rel="stylesheet" href="assets/css/auth.css?v=1">
 <script src="assets/js/mkt-analytics.js?v=9" defer></script>
+<script src="assets/js/password-rules.js?v=1"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
 <body class="auth-body">
@@ -72,7 +73,7 @@
       <div class="mk-form-field" id="passwordField">
         <label for="password">Password</label>
         <input id="password" name="password" type="password" autocomplete="new-password" minlength="12">
-        <span class="mk-form-hint" id="passwordHint">At least 12 characters · No requirements on symbols or case</span>
+        <span class="mk-form-hint" id="passwordHint"></span>
       </div>
 
       <div class="turnstile-wrap" id="turnstileWrap"></div>
@@ -243,7 +244,15 @@ function applyMode(next) {
     passwordInput.required = true;
     passwordInput.minLength = 12;
     passwordInput.autocomplete = 'new-password';
-    passwordHint.textContent = 'At least 12 characters · No requirements on symbols or case';
+    passwordHint.textContent = '';
+    // The live checklist (assets/js/password-rules.js, the same rules the server
+    // enforces). Attached once; shown only while creating an account.
+    if (window.MaketzoPasswordRules && !passwordInput.dataset.pwChecks) {
+      passwordInput.dataset.pwChecks = '1';
+      MaketzoPasswordRules.attach(passwordInput, { email: function () { return document.getElementById('email').value.trim(); } });
+    }
+    const checks = passwordField.querySelector('.mk-pw-checks');
+    if (checks) checks.hidden = false;
     turnstileWrap.style.display = '';
     divider.style.display = '';
     submitBtn.textContent = tier ? (tier.isIndicator ? `Subscribe — ${tier.amount}` : `Start ${isReferred ? 14 : 7}-day free trial`) : 'Create account';
@@ -258,6 +267,8 @@ function applyMode(next) {
     passwordInput.removeAttribute('minlength');
     passwordInput.autocomplete = 'current-password';
     passwordHint.textContent = '';
+    const checksOff = passwordField.querySelector('.mk-pw-checks');
+    if (checksOff) checksOff.hidden = true;
     turnstileWrap.style.display = 'none';
     divider.style.display = '';
     submitBtn.textContent = tier ? (tier.isIndicator ? `Sign in & subscribe — ${tier.amount}` : 'Sign in & start trial') : 'Sign in';
@@ -411,7 +422,8 @@ document.getElementById('signupForm').addEventListener('submit', async (e) => {
     // mode === 'signup'
     const name = document.getElementById('name').value.trim();
     if (!name)              { showBanner('Name is required.', 'error'); return; }
-    if (password.length < 12){ showBanner('Password must be at least 12 characters.', 'error'); return; }
+    const passwordProblem = window.MaketzoPasswordRules ? MaketzoPasswordRules.firstError(password, email) : (password.length < 12 ? 'Password must be at least 12 characters' : null);
+    if (passwordProblem){ showBanner(passwordProblem + '.', 'error'); return; }
 
     let turnstileToken = '';
     if (TURNSTILE_SITE_KEY && window.turnstile && turnstileWidgetId !== null) {
