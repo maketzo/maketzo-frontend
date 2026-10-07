@@ -116,7 +116,7 @@ RewriteRule ^learn/[a-z0-9][a-z0-9-]*$ /learn.html [L]
 RewriteCond %{DOCUMENT_ROOT}/$1.html -f
 RewriteRule ^([^.]+)$ /$1.html [L]
 
-# Cache static assets aggressively. HTML stays fresh.
+# Cache images aggressively. HTML stays fresh.
 <IfModule mod_expires.c>
   ExpiresActive On
   ExpiresByType image/avif "access plus 30 days"
@@ -124,7 +124,20 @@ RewriteRule ^([^.]+)$ /$1.html [L]
   ExpiresByType image/png "access plus 30 days"
   ExpiresByType image/jpeg "access plus 30 days"
   ExpiresByType image/svg+xml "access plus 30 days"
-  ExpiresByType text/css "access plus 7 days"
-  ExpiresByType application/javascript "access plus 7 days"
   ExpiresByType text/html "access plus 0 seconds"
+</IfModule>
+
+# Scripts and styles: the browser checks with the server on EVERY load (an
+# unchanged file is a tiny 304 Not Modified via its ETag). They used to be kept
+# 7 days, which was only safe if whoever changed a file also bumped its ?v= on
+# every page that loads it. On 2026-10-06 passkey-client.js gained functions
+# without a bump: any browser that had opened the sign-in page that week paired
+# the new page with the old script, and "Sign in with a passkey" did nothing
+# (Ed, 2026-10-07). With this rule a changed file is picked up on the next page
+# load whatever its ?v= says. The ?v= values stay, harmless.
+<IfModule mod_headers.c>
+  <FilesMatch "\.(js|css)$">
+    Header set Cache-Control "no-cache"
+    Header unset Expires
+  </FilesMatch>
 </IfModule>
