@@ -113,6 +113,47 @@
     return adding ? 'Could not add a passkey on this device.' : 'Could not sign in with a passkey on this device.';
   }
 
+  // WHAT THIS DEVICE CALLS ITS UNLOCK, and what to call the device, from the
+  // name the server read off it ("iPhone", "Android", "Windows"). Every phone,
+  // not only an iPhone (Ed, 2026-10-06: "must work on all smartphones").
+  function unlockWord(device) {
+    if (device === 'iPhone' || device === 'iPad') return 'Face ID';
+    if (device === 'Mac') return 'Touch ID';
+    if (device === 'Windows') return 'Windows Hello';
+    if (device === 'Android') return 'your fingerprint or face';
+    return 'your screen lock';
+  }
+  function deviceNoun(device) {
+    if (device === 'iPhone' || device === 'iPad' || device === 'Mac') return device;
+    if (device === 'Android') return 'phone';
+    if (device === 'Windows' || device === 'Chromebook' || device === 'Linux') return 'computer';
+    return 'device';
+  }
+
+  // A hint the sign-in page on maketzo.co can read: "this browser has a
+  // passkey for you". The page cannot know who is signing in, so without it
+  // a phone with no passkey would answer a passkey tap with a QR code.
+  // Shared across maketzo.co subdomains; a hint only, never a credential.
+  var HINT = 'mk_pk_here';
+  function hereHinted() {
+    try { return /(?:^|;\s*)mk_pk_here=1(?:;|$)/.test(String(root.document.cookie || '')); } catch (e) { return false; }
+  }
+  // The same reading the server makes ("iPhone", "Android", "Windows"), for the
+  // sign-in page, which has no account to ask the server about.
+  function deviceOf(ua) {
+    var s = String(ua == null ? ((root.navigator && root.navigator.userAgent) || '') : ua);
+    return /iPhone/.test(s) ? 'iPhone' : /iPad/.test(s) ? 'iPad' : /Android/.test(s) ? 'Android' :
+      /Mac OS X|Macintosh/.test(s) ? 'Mac' : /Windows/.test(s) ? 'Windows' : /CrOS/.test(s) ? 'Chromebook' :
+      /Linux/.test(s) ? 'Linux' : null;
+  }
+  function markHere(on) {
+    try {
+      var host = String((root.location && root.location.hostname) || '');
+      var domain = /(^|\.)maketzo\.co$/.test(host) ? '; Domain=maketzo.co' : '';
+      root.document.cookie = HINT + '=' + (on ? '1; Max-Age=34560000' : '; Max-Age=0') + '; Path=/' + domain + '; Secure; SameSite=Lax';
+    } catch (e) {}
+  }
+
   root.MaketzoPasskeyClient = {
     supported: supported,
     platformAvailable: platformAvailable,
@@ -120,6 +161,11 @@
     create: create,
     get: get,
     explain: explain,
+    unlockWord: unlockWord,
+    deviceNoun: deviceNoun,
+    deviceOf: deviceOf,
+    hereHinted: hereHinted,
+    markHere: markHere,
     _internals: { toBuffer: toBuffer, fromBuffer: fromBuffer, creationOptions: creationOptions, requestOptions: requestOptions, credentialJson: credentialJson }
   };
 })(typeof window !== 'undefined' ? window : this);

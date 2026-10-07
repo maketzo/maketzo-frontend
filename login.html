@@ -278,9 +278,27 @@ async function passkeySignIn(extra) {
   return false;
 }
 
+// NO PASSKEY ON THIS DEVICE YET (Ed, 2026-10-06, on his iPhone: tapping it
+// showed a QR code). This page cannot know who is signing in, so it reads the
+// hint the app leaves on a device that has one of the trader's passkeys
+// (MaketzoPasskeyClient.markHere). Without it, the first tap says so in plain
+// words and the second tap still asks, for a passkey on another device.
+function noPasskeyHere() {
+  const device = PK.deviceOf();
+  const noun = PK.deviceNoun(device);
+  return 'This ' + noun + ' has no MAKETZO passkey yet. Sign in with Google or your email, and you can turn on '
+    + PK.unlockWord(device) + ' right after.';
+}
+
 if (PK && PK.supported()) {
   passkeyBtn.hidden = false;
   passkeyBtn.addEventListener('click', async () => {
+    if (!PK.hereHinted() && passkeyBtn.dataset.warned !== '1') {
+      passkeyBtn.dataset.warned = '1';
+      showBanner(noPasskeyHere(), 'info');
+      passkeyBtn.lastChild.textContent = ' Use a passkey from another device';
+      return;
+    }
     if (passkeyAutofill) { passkeyAutofill.abort(); passkeyAutofill = null; }
     const orig = passkeyBtn.innerHTML;
     passkeyBtn.disabled = true;
