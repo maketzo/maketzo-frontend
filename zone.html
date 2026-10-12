@@ -101,17 +101,10 @@ strong { color: var(--mk-text-primary); font-weight: 600; }
 /* ── The breathing stage (ring + countdown + commit + buttons) ───── */
 .zone-stage { position: relative; z-index: 3; display: flex; flex-direction: column; align-items: center; gap: 24px; }
 
-.zone-breathing { position: relative; width: 280px; height: 280px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle, rgba(251,191,36,0.10), transparent 65%); }
-.zone-breathing::before, .zone-breathing::after { content: ""; position: absolute; inset: 0; border-radius: 50%; border: 1px solid rgba(251,191,36,0.40); }
-.zone-breathing::after { border-color: rgba(251,191,36,0.22); }
-.zone-breathing-inner { width: 60%; height: 60%; border-radius: 50%; background: radial-gradient(circle, rgba(251,191,36,0.22), rgba(251,191,36,0.05) 70%); border: 1px solid rgba(251,191,36,0.55); box-shadow: 0 0 44px rgba(251,191,36,0.24); animation: zone-breathe 12s ease-in-out infinite; }
-@keyframes zone-breathe {
-  0%   { transform: scale(0.55); box-shadow: 0 0 24px rgba(251,191,36,0.16); }
-  33%  { transform: scale(1);    box-shadow: 0 0 64px rgba(251,191,36,0.36); }
-  50%  { transform: scale(1);    box-shadow: 0 0 64px rgba(251,191,36,0.36); }
-  100% { transform: scale(0.55); box-shadow: 0 0 24px rgba(251,191,36,0.16); }
-}
-.zone-breathing-label { position: absolute; font-family: var(--mk-font-mono); font-size: 15px; font-weight: 600; letter-spacing: 0.20em; color: var(--mk-brand); text-transform: uppercase; transition: opacity 240ms ease; text-shadow: 0 1px 6px rgba(0,0,0,0.8); }
+/* The breathing visual is the app's own reset visual, assets/js/breath-orb.js (a
+   copy of maketzo-app/lib/breath-orb.js, kept identical by the app build). It
+   carries its own styles; this page only sets its size. */
+.zone-breath-orb { --mk-borb-size: 320px; }
 .zone-pace { font-family: var(--mk-font-mono); font-size: 11px; letter-spacing: 0.16em; color: rgba(255,255,255,0.55); text-transform: uppercase; text-shadow: 0 1px 4px rgba(0,0,0,0.7); }
 
 /* ── Countdown ring (hidden until Begin pressed) ─────────────────── */
@@ -179,7 +172,7 @@ footer { background: var(--mk-surface-base); padding: 60px 24px 32px; border-top
   .zone-env-thumb { flex-shrink: 0; width: 52px; height: 36px; }
   .zone-env-thumb-label { font-size: 8px; }
   .zone-audio { align-self: flex-end; }
-  .zone-breathing { width: 220px; height: 220px; }
+  .zone-breath-orb { --mk-borb-size: 260px; }
   .zone-timer { width: 96px; height: 96px; }
   .zone-timer-text { font-size: 18px; }
   .zone-commit { font-size: 15px; }
@@ -258,11 +251,8 @@ footer { background: var(--mk-surface-base); padding: 60px 24px 32px; border-top
 
   <!-- The stage: ring + countdown + commit + begin button -->
   <div class="zone-stage" id="zoneStage">
-    <div class="zone-breathing" id="zoneBreathing">
-      <div class="zone-breathing-inner"></div>
-      <div class="zone-breathing-label" id="zoneBreathingLabel">Inhale</div>
-    </div>
-    <div class="zone-pace">Inhale 4 &middot; Hold 2 &middot; Exhale 6</div>
+    <div class="zone-breath-orb" id="zoneBreathOrb"></div>
+    <div class="zone-pace">Inhale 5.5 &middot; Exhale 5.5</div>
 
     <div class="zone-timer" id="zoneTimer">
       <svg class="zone-timer-ring" viewBox="0 0 120 120" aria-hidden="true">
@@ -323,6 +313,8 @@ footer { background: var(--mk-surface-base); padding: 60px 24px 32px; border-top
   </div>
 </footer>
 
+<!-- Loaded before the page script below, which starts the breathing on load. -->
+<script src="assets/js/breath-orb.js?v=1"></script>
 <script>
 // ── Shared: drawer toggle + scroll-reveal (matches soundtrack.html) ─
 function toggleDrawer(){const d=document.getElementById('mobileDrawer');const o=document.getElementById('mobileOverlay');const h=document.getElementById('hamburger');d.classList.toggle('open');o.classList.toggle('open');h.classList.toggle('open');document.body.style.overflow=d.classList.contains('open')?'hidden':'';}
@@ -340,7 +332,6 @@ window.addEventListener('scroll',()=>{document.getElementById('mainNav').style.b
   // Cached refs
   const stage = document.getElementById('zoneStage');
   const beginBtn = document.getElementById('zoneBegin');
-  const breathingLabel = document.getElementById('zoneBreathingLabel');
   const timerEl = document.getElementById('zoneTimer');
   const timerText = document.getElementById('zoneTimerText');
   const timerProgress = document.getElementById('zoneTimerProgress');
@@ -451,23 +442,17 @@ window.addEventListener('scroll',()=>{document.getElementById('mainNav').style.b
     if (window.MKT && window.MKT.trackEvent) window.MKT.trackEvent('zone_audio_toggle', { layer: 'silence', on: goingSilent });
   });
 
-  // ── Breathing label rotation (4-2-6 cycle, 12s loop) ───────────
-  let breatheHandle = null;
-  function startBreathingLabel(){
-    if (breatheHandle) clearInterval(breatheHandle);
-    const cycleStart = Date.now();
-    breatheHandle = setInterval(() => {
-      const t = ((Date.now() - cycleStart) / 1000) % 12;
-      let text;
-      if (t < 4) text = 'Inhale';
-      else if (t < 6) text = 'Hold';
-      else text = 'Exhale';
-      if (breathingLabel.textContent !== text){
-        breathingLabel.style.opacity = '0';
-        setTimeout(() => { breathingLabel.textContent = text; breathingLabel.style.opacity = '1'; }, 120);
-      }
-    }, 250);
-  }
+  // ── Breathing: the app's own visual and pattern, from page load ─
+  // Resonant 5.5-5.5, the pattern the app's Meditation Zone runs (Ed 2026-10-12),
+  // so a visitor breathes exactly what members get. ONE clock draws the word,
+  // the ring and the light together. The old page ran its circle on a CSS loop
+  // from page load and its word on a timer from Begin, so the two could disagree.
+  const RESONANT = [
+    { k:'inhale', label:'Inhale', sec:5.5, scale:1.0 },
+    { k:'exhale', label:'Exhale', sec:5.5, scale:0.55 }
+  ];
+  const breathOrb = window.MaketzoBreathOrb ? window.MaketzoBreathOrb.mount(document.getElementById('zoneBreathOrb')) : null;
+  if (breathOrb) breathOrb.start(RESONANT);
 
   // ── Session timer ──────────────────────────────────────────────
   let timerHandle = null;
@@ -505,11 +490,11 @@ window.addEventListener('scroll',()=>{document.getElementById('mainNav').style.b
     tick();
     timerHandle = setInterval(tick, 1000);
 
-    startBreathingLabel();
     if (window.MKT && window.MKT.trackEvent) window.MKT.trackEvent('zone_begin_click', {});
   }
 
   function onSessionComplete(){
+    if (breathOrb) breathOrb.finish();   // the gold ring and slow glow the app shows at 0:00
     if (window.MKT && window.MKT.trackEvent) window.MKT.trackEvent('zone_session_complete', {});
     // Smooth-scroll to the CTA section to surface signup after completion
     setTimeout(() => {

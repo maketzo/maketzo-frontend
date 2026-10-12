@@ -52,6 +52,7 @@
 <script src="assets/js/checkout.js?v=10" defer></script>
 <script src="assets/js/audio-player.js?v=11" defer></script>
 <script src="assets/js/newsletter.js?v=5" defer></script>
+<script src="assets/js/breath-orb.js?v=1" defer></script>
 <style>
 /* ====================================================================
    MAKETZO landing — page-specific styles.
@@ -1983,48 +1984,11 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
   background: radial-gradient(circle at 50% 45%, rgba(24,19,6,.93), rgba(6,7,10,.96));
   backdrop-filter: blur(7px);
 }
-/* Breathing ring — a faithful PORT of the app's Reset Protocol ring
-   (.fr-breathing-ring): same DOM structure, same phase colors, same
-   WAAPI scale/glow engine (see sim script: startBreath / visScale /
-   ringShadow, lifted from app.js startBreathing). The scale pulse is
-   driven by JS WAAPI on .sim-breathing-ring-inner — NOT a CSS keyframe
-   — because that's how the real reset breathes. Do not reinvent. */
-.sim-breathing-ring {
-  position: relative;
-  width: 220px; height: 220px;
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  --phase-color: 251,191,36;
-  background: radial-gradient(circle, rgba(var(--phase-color),0.10), transparent 65%);
-  transition: background 700ms ease;
-}
-.sim-breathing-ring[data-phase="inhale"] { --phase-color: 251,191,36; }
-.sim-breathing-ring[data-phase="hold"]   { --phase-color: 56,189,248; }
-.sim-breathing-ring[data-phase="exhale"] { --phase-color: 110,231,183; }
-.sim-breathing-ring::before,
-.sim-breathing-ring::after {
-  content: ""; position: absolute; inset: 0; border-radius: 50%;
-  border: 1px solid rgba(var(--phase-color),0.40);
-  transition: border-color 700ms ease;
-}
-.sim-breathing-ring::after { border-color: rgba(var(--phase-color),0.22); }
-.sim-breathing-ring-inner {
-  width: 60%; height: 60%; border-radius: 50%;
-  background: radial-gradient(circle, rgba(var(--phase-color),0.22), rgba(var(--phase-color),0.05) 70%);
-  border: 1px solid rgba(var(--phase-color),0.55);
-  box-shadow: 0 0 40px rgba(var(--phase-color),0.24);
-  transform: scale(0.46);
-  transition: border-color 700ms ease, background 700ms ease;
-}
-.sim-breathing-ring-label {
-  position: absolute;
-  font-family: var(--mk-font-mono);
-  font-size: 14px; letter-spacing: 0.20em;
-  color: rgb(var(--phase-color,251,191,36));
-  text-transform: uppercase;
-  transition: opacity 240ms ease, color 700ms ease;
-  text-shadow: 0 1px 6px rgba(0,0,0,0.8);
-}
+/* Breathing visual: NOT a port. It is the app's own reset visual, the same file
+   (assets/js/breath-orb.js, a copy of maketzo-app/lib/breath-orb.js that the app
+   build keeps identical), so the demo can never drift from the product again.
+   It carries its own styles; this page only sets its size. */
+.sim-breath-orb { --mk-borb-size: 220px; }
 .sim-reset-text {
   font-family: var(--mk-font-mono);
   font-size: var(--mk-mono-xs);
@@ -2153,7 +2117,7 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
   .sim-state { min-width: 104px; font-size: var(--mk-mono-sm); padding: 6px 12px; }
   .sim-coach { min-height: 150px; }
   .sim-note { min-height: 150px; }
-  .sim-breathing-ring { width: 180px; height: 180px; }
+  .sim-breath-orb { --mk-borb-size: 180px; }
   .sim-transport { flex-wrap: wrap; row-gap: 10px; }
   .sim-step { width: 100%; text-align: center; order: 3; }
 }
@@ -2341,10 +2305,7 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
           <span class="sim-coach-msg" id="simCoachMsg">You're green out of the gate. Protect it.</span>
         </div>
         <div class="sim-reset" id="simReset" hidden>
-          <div class="sim-breathing-ring" id="simBreathRing" data-phase="inhale">
-            <div class="sim-breathing-ring-inner"></div>
-            <div class="sim-breathing-ring-label" id="simBreathLabel">Inhale</div>
-          </div>
+          <div class="sim-breath-orb" id="simBreathOrb"></div>
           <div class="sim-reset-text">Reset Protocol &middot; breathe with the ring</div>
         </div>
         <div class="sim-spot" id="simSpot" hidden></div>
@@ -2409,45 +2370,20 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
       elStrikesWrap = document.getElementById('simStrikes'),
       elCoachBox    = sim.querySelector('.sim-coach'),
       elPnlWrap     = sim.querySelector('.sim-pnl-wrap'),
-      breathRing  = document.getElementById('simBreathRing'),
-      breathInner = breathRing && breathRing.querySelector('.sim-breathing-ring-inner'),
-      breathLabel = document.getElementById('simBreathLabel'),
+      breathHost = document.getElementById('simBreathOrb'),
       strikes  = sim.querySelectorAll('.sim-strike');
 
   var ICON_PLAY  = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>';
   var ICON_PAUSE = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg>';
 
-  // ── Breathing engine — ported from app.js startBreathing (WAAPI scale + glow
-  // on the inner ring). Same math as the real Reset Protocol; quicker cadence
-  // here (3-3) so the breathing is ONE beat of the story, not the headline. ──
-  var PHASE_RGB = { inhale:'251,191,36', hold:'56,189,248', exhale:'110,231,183' };
+  // ── Breathing: the app's own reset visual (assets/js/breath-orb.js). A quicker
+  // cadence here (3-3) so the breathing is ONE beat of the story, not the headline.
   var BREATH = [ { k:'inhale', label:'Inhale', sec:3, scale:1.0 }, { k:'exhale', label:'Exhale', sec:3, scale:0.55 } ];
-  function _vis(s){ return 0.46 + (s - 0.55) / 0.45 * 0.66; }
-  function _gpx(v){ return 18 + (v - 0.46) / 0.66 * 92; }
-  function _ga(v){ return 0.12 + (v - 0.46) / 0.66 * 0.34; }
-  function _shadow(v, rgb){ return '0 0 ' + _gpx(v).toFixed(0) + 'px rgba(' + rgb + ',' + _ga(v).toFixed(2) + ')'; }
-  var _bt = null, _bl = _vis(0.55);
-  function stopBreath(){
-    if (_bt){ clearTimeout(_bt); _bt = null; }
-    if (breathInner && breathInner.getAnimations) breathInner.getAnimations().forEach(function(a){ try { a.cancel(); } catch(e){} });
-  }
+  var breathOrb = null;
+  function stopBreath(){ if (breathOrb) breathOrb.stop(); }
   function startBreath(){
-    stopBreath(); if (!breathRing || !breathInner) return;
-    _bl = _vis(0.55); var i = 0;
-    (function s(){
-      var ph = BREATH[i % BREATH.length]; breathRing.setAttribute('data-phase', ph.k);
-      var rgb = PHASE_RGB[ph.k] || '251,191,36', v = _vis(ph.scale);
-      if (breathInner.animate) breathInner.animate(
-        [ { transform:'scale('+_bl.toFixed(3)+')', boxShadow:_shadow(_bl,rgb) },
-          { transform:'scale('+v.toFixed(3)+')',  boxShadow:_shadow(v,rgb) } ],
-        { duration: ph.sec*1000, easing:'ease-in-out', fill:'forwards' });
-      _bl = v;
-      if (breathLabel && breathLabel.textContent !== ph.label){
-        breathLabel.style.opacity = '0';
-        setTimeout(function(){ breathLabel.textContent = ph.label; breathLabel.style.opacity = '1'; }, 140);
-      }
-      _bt = setTimeout(function(){ i++; s(); }, ph.sec*1000);
-    })();
+    if (!breathOrb && breathHost && window.MaketzoBreathOrb) breathOrb = window.MaketzoBreathOrb.mount(breathHost);
+    if (breathOrb) breathOrb.start(BREATH);
   }
 
   var beats = [
