@@ -9,10 +9,14 @@
  * WHAT IT DRAWS. The ring is a map of ONE breath: an arc per phase, its length that
  * phase's share of the cycle, the current arc bold and filling as a bead travels it,
  * so a trader can see how much of a hold is left. Inside, a glass orb whose light
- * brightens on the inhale and settles on the exhale, swelling about 10%, with sparks
- * rising on the exhale. Above it ONE word, faded out completely before the next one
- * fades in: the first preview cross-faded two words and Ed saw them bleed together.
- * finish() is the 0:00 moment: one gold ring, a slow 5.2 s glow, no word, no sparks.
+ * brightens on the inhale and settles on the exhale, swelling about 10%. Above it ONE
+ * word, faded out completely before the next one fades in: the first preview
+ * cross-faded two words and Ed saw them bleed together.
+ * THE EXHALE is hundreds of fine motes in the air between the viewer and the orb,
+ * carried away INTO the screen by the breath (see "Exhale motes" below). They draw
+ * on a second canvas larger than the orb, so the HOST PAGE must clip it: an
+ * overflow:hidden ancestor, or overflow-x:hidden on a scrolling one.
+ * finish() is the 0:00 moment: one gold ring, a slow 5.2 s glow, no word, no motes.
  * ready() is the moment before: the first frame of start(), held still, for a page
  * whose breathing waits for a Begin button (Ed, on /zone: "Nothing should start
  * until user clicks BEGIN").
@@ -103,6 +107,8 @@
     '.mk-borb-word.is-on{opacity:1;transition:opacity 520ms ease;}',
     '.mk-borb-orb{position:relative;width:var(--mk-borb-size,320px);height:var(--mk-borb-size,320px);max-width:100%;}',
     '.mk-borb-canvas,.mk-borb-ring{position:absolute;inset:0;width:100%;height:100%;}',
+    // The motes' canvas: 2.2x the orb, centred on it, lighting what is under it.
+    '.mk-borb-fx{position:absolute;left:50%;top:50%;width:220%;height:220%;transform:translate(-50%,-50%);pointer-events:none;mix-blend-mode:screen;}',
     '.mk-borb-ring{overflow:visible;}',
     '.mk-borb-arc{fill:none;stroke-linecap:round;stroke-width:2.5;opacity:0.38;transition:stroke-width 500ms ease,opacity 600ms ease;}',
     '.mk-borb-arc.is-active{stroke-width:6;opacity:0.5;}',
@@ -143,6 +149,7 @@
             '<path class="mk-borb-fill" d=""></path>' +
             '<circle class="mk-borb-bead" r="6.5" cx="160" cy="19"></circle>' +
           '</svg>' +
+          '<canvas class="mk-borb-fx" aria-hidden="true"></canvas>' +
         '</div>' +
       '</div>';
     var root = host.firstChild;
@@ -152,11 +159,13 @@
     var arcsG = root.querySelector('.mk-borb-arcs');
     var fill = root.querySelector('.mk-borb-fill');
     var bead = root.querySelector('.mk-borb-bead');
+    var fx = root.querySelector('.mk-borb-fx');
+    var fctx = fx.getContext && fx.getContext('2d');
 
     var st = {
       mode: 'idle', phases: null, spans: [], t0: 0, doneAt: 0, raf: 0, last: 0,
       onCycle: null, cycle: -1, phaseKey: null, word: '', wordTimer: 0,
-      halo: null, swellNow: 1, sparks: [], spawnAcc: 0, size: 0, dpr: 1,
+      halo: null, swellNow: 1, motes: [], spawnAcc: 0, size: 0, dpr: 1, fxSize: 0, fxDpr: 0,
       swell: opts.swell !== false
     };
 
@@ -216,8 +225,106 @@
       ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, len, 0, Math.PI * 2); ctx.fill(); ctx.restore();
     }
 
+    // ── Exhale motes ────────────────────────────────────────────────────
+    // Ed, 2026-10-12, after three rejected rounds of tails and rays: "It has to
+    // look like particles flying in air not comets", and "If you're exhaling the
+    // force is going INTO the screen". The reference is tripp.com's exhale:
+    // hundreds of hairline embers. He tuned the preview's sliders and chose the
+    // defaults, which are the numbers below.
+    // Each mote is a tiny lit point in 3D air between the viewer and the orb
+    // (z = 1 is the orb's plane, smaller is nearer). The breath is a gust that
+    // carries the air AWAY from the viewer: it swells and fades with the exhale,
+    // air drag lets the motes hang as the breath ends, a slow drift keeps them
+    // floating, and a slight clockwise swirl follows the bead. A mote's only
+    // streak is motion blur, so a slow one is a point and a fast one a hairline.
+    // Nothing undulates (Ed, on the first try: "I don't want it to look sperm").
+    var Z_FAR = 7, Z_NEAR = 0.38;
+
+    function newMote(cx, cy, k, gust) {
+      var a = Math.random() * Math.PI * 2, rr = st.size * 0.7 * Math.sqrt(Math.random());
+      return { ox: Math.cos(a) * rr, oy: Math.sin(a) * rr, z: Z_NEAR + Math.pow(Math.random(), 1.6) * 1.2,
+               vx: 0, vy: 0, vz: 0.3 * gust, life: 0, max: 3 + Math.random() * 3,
+               r: (0.6 + Math.random() * 1.1) * Math.max(0.7, k),
+               ph1: Math.random() * 6.28, ph2: Math.random() * 6.28,
+               f1: 0.5 + Math.random() * 0.9, f2: 0.5 + Math.random() * 0.9, tw: Math.random() * 6.28,
+               sx: cx + Math.cos(a) * rr, sy: cy + Math.sin(a) * rr, bx: 0, by: 0, bl: 0 };
+    }
+
+    function stepMote(q, dt, gust, t, cx, cy) {
+      if (dt <= 0) return;
+      var k = st.size / 320;
+      q.vz += gust * 2.0 * dt;                                          // the breath pushes the air away
+      q.vx += Math.sin(t * q.f1 + q.ph1) * 26 * k * dt;                 // slow drift
+      q.vy += Math.cos(t * q.f2 + q.ph2) * 26 * k * dt;
+      q.vx *= Math.exp(-1.1 * dt); q.vy *= Math.exp(-1.1 * dt); q.vz *= Math.exp(-0.9 * dt);   // air drag
+      q.ox += q.vx * dt; q.oy += q.vy * dt; q.z += q.vz * dt;
+      var sw = 0.45 * (0.25 + gust) * dt;                               // clockwise, the bead's direction
+      var c = Math.cos(sw), s = Math.sin(sw), nx = q.ox * c - q.oy * s;
+      q.oy = q.ox * s + q.oy * c; q.ox = nx;
+      var nsx = cx + q.ox / q.z, nsy = cy + q.oy / q.z;
+      // Motion blur: the streak is the distance travelled in the last ~70 ms.
+      var mx = nsx - q.sx, my = nsy - q.sy, m = Math.sqrt(mx * mx + my * my);
+      var len = Math.min(30, (m / dt) * 0.07);
+      if (m > 0.0001) { q.bx = mx / m * len; q.by = my / m * len; q.bl = len; }
+      q.sx = nsx; q.sy = nsy;
+    }
+
+    function drawMote(q, rgb, cx, cy) {
+      var H = st.fxSize / 2, dx = q.sx - cx, dy = q.sy - cy, dist = Math.sqrt(dx * dx + dy * dy);
+      var a = Math.min(1, q.life / 0.4) * Math.min(1, (q.max - q.life) / 0.9);
+      a *= Math.max(0, Math.min(1, (Z_FAR - q.z) / 3));                // fades with depth
+      a *= Math.max(0, Math.min(1, (H * 0.95 - dist) / (H * 0.3)));    // and toward the canvas edge
+      a *= 0.78 + 0.22 * Math.sin(q.tw + q.life * 3.1);                // a faint twinkle
+      if (a < 0.02) return;
+      var rad = Math.min(2.4, q.r / q.z), g;
+      if (q.bl > 0.8) {
+        var ex = q.sx - q.bx, ey = q.sy - q.by;
+        g = fctx.createLinearGradient(q.sx, q.sy, ex, ey);
+        g.addColorStop(0, 'rgba(' + rgb + ',' + (0.88 * a).toFixed(3) + ')');
+        g.addColorStop(1, 'rgba(' + rgb + ',0)');
+        fctx.strokeStyle = g; fctx.lineWidth = Math.max(0.5, rad * 0.8); fctx.lineCap = 'round';
+        fctx.beginPath(); fctx.moveTo(q.sx, q.sy); fctx.lineTo(ex, ey); fctx.stroke();
+      }
+      fctx.fillStyle = 'rgba(' + rgb + ',' + (0.1 * a).toFixed(3) + ')';
+      fctx.beginPath(); fctx.arc(q.sx, q.sy, rad * 2.8, 0, Math.PI * 2); fctx.fill();
+      fctx.fillStyle = 'rgba(' + rgb + ',' + (0.22 * a).toFixed(3) + ')';
+      fctx.beginPath(); fctx.arc(q.sx, q.sy, rad * 1.6, 0, Math.PI * 2); fctx.fill();
+      fctx.fillStyle = 'rgba(255,255,255,' + (0.92 * a).toFixed(3) + ')';
+      fctx.beginPath(); fctx.arc(q.sx, q.sy, Math.max(0.4, rad * 0.65), 0, Math.PI * 2); fctx.fill();
+    }
+
+    // Size and clear the motes' canvas, and draw in the orb's own coordinates.
+    function beginFx(cx, cy) {
+      if (!fctx) return false;
+      var w = fx.clientWidth || 0, dpr = st.dpr || 1;
+      if (w > 0 && (w !== st.fxSize || dpr !== st.fxDpr)) {
+        st.fxSize = w; st.fxDpr = dpr; fx.width = Math.round(w * dpr); fx.height = Math.round(w * dpr);
+      }
+      if (!st.fxSize) return false;
+      fctx.setTransform(1, 0, 0, 1, 0, 0);
+      fctx.clearRect(0, 0, fx.width, fx.height);
+      fctx.setTransform(dpr, 0, 0, dpr, (st.fxSize / 2 - cx) * dpr, (st.fxSize / 2 - cy) * dpr);
+      fctx.globalCompositeOperation = 'lighter';
+      return true;
+    }
+
+    // A soft round edge, so no mote is ever cut by the square of the canvas.
+    function endFx(cx, cy) {
+      var H = st.fxSize / 2, g = fctx.createRadialGradient(cx, cy, 0, cx, cy, H);
+      g.addColorStop(0, 'rgba(0,0,0,1)'); g.addColorStop(0.68, 'rgba(0,0,0,1)'); g.addColorStop(1, 'rgba(0,0,0,0)');
+      fctx.globalCompositeOperation = 'destination-in';
+      fctx.fillStyle = g; fctx.fillRect(cx - H, cy - H, H * 2, H * 2);
+      fctx.globalCompositeOperation = 'source-over';
+    }
+
+    function clearFx() {
+      if (fctx && fx.width) { fctx.setTransform(1, 0, 0, 1, 0, 0); fctx.clearRect(0, 0, fx.width, fx.height); }
+    }
+
     // I is the breath: 0 at the bottom of the exhale, 1 at the top of the inhale.
-    function drawOrb(I, target, sparkRate, sparkRGB, t, dt) {
+    // moteRate is motes per second at the peak of the breath; gust is the push.
+    function drawOrb(I, target, moteRate, moteRGB, t, dt, gust) {
+      gust = gust || 0;
       if (!ctx || !sizeCanvas()) return;
       st.halo = st.halo ? mix(st.halo, target, 1 - Math.exp(-dt / 0.35)) : target;
       var swellTarget = st.swell ? (1 - SWELL + SWELL * I) : 1;
@@ -287,30 +394,25 @@
       g.addColorStop(1, 'rgba(' + H + ',0)');
       ctx.fillStyle = g; ctx.beginPath(); ctx.arc(cx, cy, coreR, 0, Math.PI * 2); ctx.fill();
 
-      // Sparks rise while breathing out. Far fewer under reduced motion. Their
-      // count, size and speed scale with the orb (k), or a small orb, like the
-      // homepage demo's, crowds with full-size sparks.
-      var k = S / 320;
-      st.spawnAcc += (reduced ? sparkRate * 0.15 : sparkRate) * k * dt;
-      while (st.spawnAcc >= 1 && st.sparks.length < 90) {
-        st.spawnAcc -= 1;
-        st.sparks.push({ x: cx + (Math.random() - 0.5) * R * 1.15, y: cy + R * (0.15 + Math.random() * 0.6),
-                         vx: (Math.random() - 0.5) * 16 * k, vy: -(14 + Math.random() * 30) * k, life: 0,
-                         max: 1.4 + Math.random() * 1.4, r: (0.7 + Math.random() * 1.5) * Math.max(0.6, k) });
-      }
-      if (st.spawnAcc > 1) st.spawnAcc = 0;
-      for (var s = st.sparks.length - 1; s >= 0; s--) {
-        var q = st.sparks[s];
-        q.life += dt;
-        if (q.life >= q.max) { st.sparks.splice(s, 1); continue; }
-        q.x += q.vx * dt; q.y += q.vy * dt; q.vy *= (1 - 0.25 * dt);
-        var a = Math.sin(Math.PI * q.life / q.max);
-        ctx.fillStyle = 'rgba(' + sparkRGB + ',' + (0.85 * a).toFixed(3) + ')';
-        ctx.beginPath(); ctx.arc(q.x, q.y, q.r * 1.8, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = 'rgba(255,255,255,' + (0.9 * a).toFixed(3) + ')';
-        ctx.beginPath(); ctx.arc(q.x, q.y, q.r * 0.6, 0, Math.PI * 2); ctx.fill();
-      }
       ctx.globalCompositeOperation = 'source-over';
+
+      // The motes come in with the breath, thickest at the middle of the exhale.
+      // Far fewer under reduced motion. Count, size and speed scale with the orb
+      // (k), so the homepage demo's small orb is not crowded.
+      var k = S / 320, rate = moteRate * (0.35 + 0.65 * gust);
+      st.spawnAcc += (reduced ? rate * 0.15 : rate) * k * dt;
+      while (st.spawnAcc >= 1 && st.motes.length < 700) { st.spawnAcc -= 1; st.motes.push(newMote(cx, cy, k, gust)); }
+      if (st.spawnAcc > 1) st.spawnAcc = 0;
+      var fxOn = beginFx(cx, cy);
+      for (var s = st.motes.length - 1; s >= 0; s--) {
+        var q = st.motes[s];
+        q.life += dt;
+        if (!reduced) stepMote(q, dt, gust, t, cx, cy);
+        else stepMote(q, dt, gust * 0.4, t, cx, cy);
+        if (q.life >= q.max || q.z >= Z_FAR) { st.motes.splice(s, 1); continue; }
+        if (fxOn) drawMote(q, moteRGB, cx, cy);
+      }
+      if (fxOn) endFx(cx, cy);
     }
 
     function drawBreath(sec, dt) {
@@ -330,8 +432,11 @@
       fill.setAttribute('d', arcD(span[0], Math.max(span[0], Math.min(span[1], ang))));
       var b = pt(ang);
       bead.setAttribute('cx', b[0].toFixed(2)); bead.setAttribute('cy', b[1].toFixed(2));
-      var rate = br.ph.k === 'exhale' ? 26 : (br.ph.k === 'hold2' ? 3 : 0);
-      drawOrb((br.b - 0.55) / 0.45, rgb, rate, PHASE_RGB.exhale, sec, dt);
+      // The gust follows the exhale's own pace: nothing at its start, strongest
+      // in the middle, nothing at its end. Between breaths the air barely moves.
+      var ex = br.ph.k === 'exhale';
+      var gust = ex ? Math.sin(Math.PI * br.p) : (br.ph.k === 'hold2' ? 0.1 : 0.04);
+      drawOrb((br.b - 0.55) / 0.45, rgb, ex ? 104 : (br.ph.k === 'hold2' ? 12 : 0), PHASE_RGB.exhale, sec, dt, gust);
     }
 
     function frame(now) {
@@ -371,6 +476,8 @@
       if (st.raf) { win.cancelAnimationFrame(st.raf); st.raf = 0; }
       win.clearTimeout(st.wordTimer);
       st.mode = 'idle';
+      st.motes.length = 0;
+      clearFx();          // the motes' canvas sits outside the orb, so never leave it frozen
     }
 
     // Start breathing `phases` from the top of a cycle. onCycle(n) fires at the
@@ -384,7 +491,7 @@
       st.t0 = win.performance.now();
       st.cycle = 0;
       st.phaseKey = null;
-      st.sparks.length = 0;
+      st.motes.length = 0;
       root.classList.remove('is-finished');
       buildArcs();
       if (st.onCycle) { try { st.onCycle(0); } catch (e) {} }
@@ -399,7 +506,7 @@
       st.phases = phases;
       st.mode = 'ready';
       st.phaseKey = null;
-      st.sparks.length = 0;
+      st.motes.length = 0;
       root.classList.remove('is-finished');
       buildArcs();
       fill.setAttribute('d', '');
@@ -412,7 +519,7 @@
     function finish() {
       st.mode = 'done';
       st.doneAt = win.performance.now();
-      st.sparks.length = 0;
+      st.motes.length = 0;
       root.classList.add('is-finished');
       setWord('', null);
       run();
