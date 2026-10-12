@@ -13,6 +13,9 @@
  * rising on the exhale. Above it ONE word, faded out completely before the next one
  * fades in: the first preview cross-faded two words and Ed saw them bleed together.
  * finish() is the 0:00 moment: one gold ring, a slow 5.2 s glow, no word, no sparks.
+ * ready() is the moment before: the first frame of start(), held still, for a page
+ * whose breathing waits for a Begin button (Ed, on /zone: "Nothing should start
+ * until user clicks BEGIN").
  *
  * ONE FILE, TWO SITES. The app's reset loads this as lib/breath-orb.js; maketzo.co
  * (/zone and the homepage demo) loads the identical file as assets/js/breath-orb.js.
@@ -347,6 +350,14 @@
         if (!host.getClientRects().length) return;
         var t = (now - st.doneAt) / 1000;
         drawOrb(0.45 + 0.15 * Math.sin(2 * Math.PI * t / 5.2), DONE_RGB, 0, DONE_RGB, t, dt);
+      } else if (st.mode === 'ready') {
+        // One still frame, the one start() opens on, then the loop ends.
+        if (!host.getClientRects().length) return;
+        var b0 = breathAt(st.phases, 0), I0 = (b0.b - 0.55) / 0.45, rgb0 = PHASE_RGB[b0.ph.k] || DONE_RGB;
+        st.halo = rgb0;
+        st.swellNow = st.swell ? (1 - SWELL + SWELL * I0) : 1;
+        drawOrb(I0, rgb0, 0, rgb0, 0, 0);
+        if (st.size > 0) { win.cancelAnimationFrame(st.raf); st.raf = 0; }
       }
     }
 
@@ -380,6 +391,23 @@
       run();
     }
 
+    // Before Begin: the ring map, the bead parked at 12 o'clock, no word, nothing
+    // moving. start() then opens on exactly this frame, so Begin does not jump.
+    function ready(phases) {
+      if (!Array.isArray(phases) || !phases.length) return;
+      stop();
+      st.phases = phases;
+      st.mode = 'ready';
+      st.phaseKey = null;
+      st.sparks.length = 0;
+      root.classList.remove('is-finished');
+      buildArcs();
+      fill.setAttribute('d', '');
+      bead.setAttribute('cx', CX); bead.setAttribute('cy', CY - RR);
+      setWord('', null);
+      run();
+    }
+
     // The 0:00 moment.
     function finish() {
       st.mode = 'done';
@@ -392,7 +420,7 @@
 
     function destroy() { stop(); host.innerHTML = ''; }
 
-    return { start: start, stop: stop, finish: finish, destroy: destroy,
+    return { ready: ready, start: start, stop: stop, finish: finish, destroy: destroy,
              setSwell: function (on) { st.swell = !!on; } };
   }
 

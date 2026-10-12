@@ -314,7 +314,7 @@ footer { background: var(--mk-surface-base); padding: 60px 24px 32px; border-top
 </footer>
 
 <!-- Loaded before the page script below, which starts the breathing on load. -->
-<script src="assets/js/breath-orb.js?v=1"></script>
+<script src="assets/js/breath-orb.js?v=2"></script>
 <script>
 // ── Shared: drawer toggle + scroll-reveal (matches soundtrack.html) ─
 function toggleDrawer(){const d=document.getElementById('mobileDrawer');const o=document.getElementById('mobileOverlay');const h=document.getElementById('hamburger');d.classList.toggle('open');o.classList.toggle('open');h.classList.toggle('open');document.body.style.overflow=d.classList.contains('open')?'hidden':'';}
@@ -442,17 +442,17 @@ window.addEventListener('scroll',()=>{document.getElementById('mainNav').style.b
     if (window.MKT && window.MKT.trackEvent) window.MKT.trackEvent('zone_audio_toggle', { layer: 'silence', on: goingSilent });
   });
 
-  // ── Breathing: the app's own visual and pattern, from page load ─
+  // ── Breathing: the app's own visual and pattern, from Begin ────
   // Resonant 5.5-5.5, the pattern the app's Meditation Zone runs (Ed 2026-10-12),
   // so a visitor breathes exactly what members get. ONE clock draws the word,
-  // the ring and the light together. The old page ran its circle on a CSS loop
-  // from page load and its word on a timer from Begin, so the two could disagree.
+  // the ring and the light together. Until Begin the orb holds still on its
+  // first frame. Ed: "Nothing should start until user clicks BEGIN 3 MIN RESET."
   const RESONANT = [
     { k:'inhale', label:'Inhale', sec:5.5, scale:1.0 },
     { k:'exhale', label:'Exhale', sec:5.5, scale:0.55 }
   ];
   const breathOrb = window.MaketzoBreathOrb ? window.MaketzoBreathOrb.mount(document.getElementById('zoneBreathOrb')) : null;
-  if (breathOrb) breathOrb.start(RESONANT);
+  if (breathOrb) breathOrb.ready(RESONANT);
 
   // ── Session timer ──────────────────────────────────────────────
   let timerHandle = null;
@@ -464,6 +464,7 @@ window.addEventListener('scroll',()=>{document.getElementById('mainNav').style.b
     stage.classList.add('is-running');
     timerEl.classList.add('is-active');
     commit.classList.add('is-active');
+    if (breathOrb) breathOrb.start(RESONANT);
 
     // Begin audio if toggles are on
     if (isOn(musicBtn)) startMusic();
