@@ -70,6 +70,13 @@ RewriteRule ^edge/?$ /indicators [R=301,L]
 # same morning and was renamed kungfu.html; this keeps any link already shared alive.
 RewriteRule ^kung-fu-trader(\.html)?/?$ /kungfu [R=301,L]
 
+# Partner and outreach links (2026-10-14). maketzo.co/go/CODE lands on the home
+# page with ?ref=CODE, which assets/js/mkt-analytics.js keeps in the mkt_ref
+# cookie for 30 days and signup.html sends with the new account. The backend
+# (lib/referrals.js) then gives a partner's referee the 30-day no-card trial.
+# 302, not 301, so a code can be retired without browsers caching the hop.
+RewriteRule ^go/([A-Za-z0-9]{3,32})/?$ /?ref=$1 [R=302,L,QSA]
+
 # Tier-aware /app redirect. Every marketing page's "Log In" nav link points to
 # /app (relative). Same-domain link works for SEO + survives port changes, but
 # users must be routed to the matching app subdomain per tier so the auth flow
