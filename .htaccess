@@ -65,6 +65,11 @@ RewriteRule ^resubscribe$ https://api.maketzo.co/resubscribe [R=302,L,QSA]
 # 301 (permanent) so search engines update their index promptly.
 RewriteRule ^edge/?$ /indicators [R=301,L]
 
+# Legacy /kung-fu-trader -> /kungfu (2026-10-14). Ed wanted a vanity URL that is easy
+# to remember and type, with no hyphens. The page shipped as kung-fu-trader.html the
+# same morning and was renamed kungfu.html; this keeps any link already shared alive.
+RewriteRule ^kung-fu-trader(\.html)?/?$ /kungfu [R=301,L]
+
 # Tier-aware /app redirect. Every marketing page's "Log In" nav link points to
 # /app (relative). Same-domain link works for SEO + survives port changes, but
 # users must be routed to the matching app subdomain per tier so the auth flow
