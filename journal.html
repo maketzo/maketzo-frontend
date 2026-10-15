@@ -188,14 +188,13 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
 }
 
 /* ── FOUR FEATURE PILLARS ───────────────────────────────────── */
-.feature-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; max-width: 1180px; margin: 0 auto; }
-.feature-card { padding: 28px 24px; background: var(--mk-surface-raised); border: 1px solid rgba(212,175,55,.14); border-radius: var(--mk-radius-card); display: flex; flex-direction: column; gap: 12px; }
-.feature-icon { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 12px; background: rgba(212,175,55,.08); border: var(--mk-border-gold-soft); color: var(--mk-brand); font-family: var(--mk-font-mono); font-size: var(--mk-mono-md); font-weight: 600; }
-.feature-tag { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-text-tertiary); }
-.feature-title { font-family: var(--mk-font-display); font-size: var(--mk-display-sm); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); line-height: 1.1; }
-.feature-text { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); line-height: 1.55; }
-@media (max-width: 1000px) { .feature-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 560px) { .feature-grid { grid-template-columns: 1fr; } }
+.jf-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; max-width: 1180px; margin: 0 auto; }
+.jf-col h3 { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); margin: 0 0 12px; }
+.jf-col ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.jf-col li { padding: 14px 16px; background: var(--mk-surface-raised); border: 1px solid rgba(212,175,55,.14); border-radius: var(--mk-radius-card); }
+.jf-name { display: block; color: var(--mk-text-primary); font-weight: 600; font-size: var(--mk-text-sm); margin-bottom: 3px; }
+.jf-note { display: block; font-size: var(--mk-text-sm); color: var(--mk-text-secondary); line-height: 1.5; }
+@media (max-width: 900px) { .jf-grid { grid-template-columns: 1fr; } }
 
 /* ── WHERE PROFITS COME FROM (rule-followed vs rule-broken) ─── */
 .profit-source { max-width: 980px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
@@ -435,38 +434,39 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
   </div>
 </section>
 <hr class="mk-rule-gold">
-<!-- FOUR FEATURE PILLARS -->
+<!-- THE JOURNAL, IN FULL: the nineteen journal-plan capabilities, grouped (2026-10-15; the four-card block that duplicated the homepage is gone) -->
 <section class="section">
   <div class="section-inner">
     <p class="section-eyebrow reveal">THE JOURNAL, IN FULL</p>
     <h2 class="section-title reveal">Everything you'd expect. <em>Nothing you'd settle for.</em></h2>
-    <p class="section-sub reveal">If you're shopping for a journal, the core capabilities are non-negotiable. We cover every one of them, then add the layer no journal has.</p>
+    <p class="section-sub reveal">Nineteen things, every one on the Journal plan. The table stakes first, then the layer no other journal has.</p>
 
-    <div class="feature-grid">
-      <div class="feature-card reveal">
-        <div class="feature-icon">01</div>
-        <div class="feature-tag">Broker Import</div>
-        <div class="feature-title">Bring your trades in</div>
-        <p class="feature-text">CSV upload with auto-parse for major retail brokers. Drag your trade history in: symbol, side, fill price, fees, all mapped without manual cleanup. Day-one historicals supported.</p>
-      </div>
-      <div class="feature-card reveal">
-        <div class="feature-icon">02</div>
-        <div class="feature-tag">P&amp;L Analytics</div>
-        <div class="feature-title">See where you actually win</div>
-        <p class="feature-text">Performance sliced by symbol, time-of-day, day-of-week, hold time, and tag. Spot the hours where you bleed and the tags where you shine. No averaging hides the truth.</p>
-      </div>
-      <div class="feature-card reveal">
-        <div class="feature-icon">03</div>
-        <div class="feature-tag">Tagging &amp; Filtering</div>
-        <div class="feature-title">Slice your own way</div>
-        <p class="feature-text">Custom tags per trade. Multi-dimensional filters: combine tags, dates, symbols, and outcomes. Your taxonomy, not ours.</p>
-      </div>
-      <div class="feature-card reveal">
-        <div class="feature-icon">04</div>
-        <div class="feature-tag">Session Review</div>
-        <div class="feature-title">A review that fills itself</div>
-        <p class="feature-text">Your journal page fills itself from the day's trades: performance, P&amp;L by hour, equity curve, streak. The calendar reads the week. Any closed trade’s chart opens with the entry and exit marked, and Trade Replay lets you run it again with the fills you wish you’d made. On Pro, the Debrief reads the day back to you at the close, right where you trade.</p>
-      </div>
+    <div class="jf-grid reveal">
+      <div class="jf-col"><h3>Record</h3><ul>
+        <li><span class="jf-name">Trade journal &amp; daily session log</span><span class="jf-note">Every fill and the story behind it, captured before tomorrow blurs the details.</span></li>
+        <li><span class="jf-name">Net P&amp;L by hand</span><span class="jf-note">Type one number and the day exists. No broker needed.</span></li>
+        <li><span class="jf-name">Broker CSV import</span><span class="jf-note">Drop in an export and it maps the columns: DAS, Webull, TradeZero, ThinkorSwim, Lightspeed.</span></li>
+        <li><span class="jf-name">Sticky Notes</span><span class="jf-note">A scratchpad that pops out over your platform. One click sends a note to the journal.</span></li>
+        <li><span class="jf-name">No-Trade Day</span><span class="jf-note">A day you sat out, recorded as a kept decision, not a gap.</span></li>
+        <li><span class="jf-name">Journal export</span><span class="jf-note">Print, PDF, Word, OneNote, or email it to a trading partner.</span></li>
+      </ul></div>
+      <div class="jf-col"><h3>Analyze</h3><ul>
+        <li><span class="jf-name">P&amp;L &amp; &cent;/share</span><span class="jf-note">Broken out by symbol, time of day, hold time, and tag.</span></li>
+        <li><span class="jf-name">Calendar &amp; streaks</span><span class="jf-note">A month of green and red days with your streaks, downloadable as an image.</span></li>
+        <li><span class="jf-name">Reports</span><span class="jf-note">Equity curve, by price, by symbol, risk metrics.</span></li>
+        <li><span class="jf-name">Trades blotter</span><span class="jf-note">Every fill, with commission and fees split out.</span></li>
+        <li><span class="jf-name">View Chart</span><span class="jf-note">Any closed trade on its chart with the entry and exit marked, and a screenshot to share.</span></li>
+        <li><span class="jf-name">Custom tags &amp; filters</span><span class="jf-note">Your labels, filtered across date, symbol, side, hold time, and outcome.</span></li>
+        <li><span class="jf-name">Performance by Setup</span><span class="jf-note">One tally, on the Dashboard, in the Journal, and in Reports.</span></li>
+      </ul></div>
+      <div class="jf-col"><h3>Discipline, inside the journal</h3><ul>
+        <li><span class="jf-name">Picard Score</span><span class="jf-note">A daily grade on following your rules, not on the P&amp;L.</span></li>
+        <li><span class="jf-name">Rule Check</span><span class="jf-note">Your own rules, graded daily: Followed, Broke, N/A. Breaking one moves the score.</span></li>
+        <li><span class="jf-name">Custom rule pills</span><span class="jf-note">Your non-negotiables, pinned to every session.</span></li>
+        <li><span class="jf-name">Market Context &amp; Daily Watchlist</span><span class="jf-note">The morning read (Cold, Mixed, Active) and the names you looked at, kept with the day.</span></li>
+        <li><span class="jf-name">Setups &amp; Mistakes</span><span class="jf-note">Chart screenshots you mark up: tags, arrows, the decision candle, a takeaway.</span></li>
+        <li><span class="jf-name">My Playbook &amp; Flash Cards</span><span class="jf-note">Your long-form notes on setups, turned into a deck and reviewed on a schedule.</span></li>
+      </ul></div>
     </div>
 
     <div class="mk-cta-repeat">
