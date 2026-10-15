@@ -297,6 +297,21 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 .footer-copy { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: 0.04em; color: var(--mk-text-tertiary); }
 .footer-disclaimer { font-size: var(--mk-text-xs); color: var(--mk-text-tertiary); line-height: var(--mk-lead-body); }
 @media (max-width: 800px) { .footer-grid { grid-template-columns: 1fr; gap: 24px; } }
+
+/* Phone fold (2026-10-15): the trial button sat at 990px of an 844px screen behind two paragraphs. At 600px and under the
+   button follows the title and the paragraphs follow the button, and the photo band drops to 38vh, as on the homepage. */
+@media (max-width: 600px) {
+  .page-hero-bg { height: 38vh; }
+  .page-hero-scrim { height: 46vh; }
+  .page-hero-inner { padding: 33vh 22px 44px; }
+  .page-hero-eyebrow { order: 0; }
+  .page-hero-title { order: 1; }
+  .page-hero-cta { order: 2; margin-top: 22px; margin-bottom: 26px; }
+  .page-hero-sub { order: 3; }
+  .page-hero .page-hero-cta { transition-delay: 700ms; }
+  .page-hero .page-hero-sub { transition-delay: 950ms; }
+  .page-hero .page-hero-sub + .page-hero-sub { transition-delay: 1100ms; }
+}
 </style>
 <script>try{if(document.cookie.indexOf('mkt_csrf=')>-1)document.documentElement.classList.add('mkt-auth');}catch(e){}</script>
 </head>
