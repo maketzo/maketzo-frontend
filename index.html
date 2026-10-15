@@ -2209,7 +2209,27 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
 .hp-pills { display: flex; flex-wrap: wrap; gap: 6px; }
 .hp-pills span { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: .08em; padding: 4px 9px; border-radius: var(--mk-radius-pill); border: 1px solid rgba(255,255,255,.1); color: var(--mk-text-tertiary); }
 .hp-pills span.on { color: var(--mk-brand); border-color: rgba(212,175,55,.45); background: rgba(212,175,55,.08); }
-.pain3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; max-width: 1100px; margin: 36px auto 0; }
+/* 01 Why MAKETZO: without / with, two cards from Ed's mock (2026-10-15). Red card = the trader alone, gold card = with the system. */
+.vs-sub strong { color: var(--mk-text-primary); font-weight: 600; }
+.vs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; max-width: 1180px; margin: 40px auto 0; }
+.vs-card { position: relative; overflow: hidden; padding: 30px 28px 26px; border-radius: 22px; background: var(--mk-surface-raised); border: 1px solid rgba(255,255,255,.08); }
+.vs-card--without { background: linear-gradient(160deg, rgba(248,113,113,.07), transparent 55%), var(--mk-surface-raised); border-color: rgba(248,113,113,.38); box-shadow: var(--mk-glow-danger); }
+.vs-card--with { background: linear-gradient(160deg, rgba(212,175,55,.10), transparent 55%), var(--mk-surface-raised); border-color: rgba(212,175,55,.45); box-shadow: var(--mk-glow-gold-sm); }
+.vs-pill { position: relative; z-index: 1; padding: 8px 16px; letter-spacing: .16em; margin-bottom: 18px; }
+.vs-title { position: relative; z-index: 1; font-family: var(--mk-font-display); font-size: clamp(2rem, 3.4vw, 2.9rem); line-height: .98; letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); margin: 0 0 22px; font-weight: 400; }
+.vs-title em { font-style: normal; display: block; }
+.vs-card--without .vs-title em { color: var(--mk-danger-500); }
+.vs-card--with .vs-title em { background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.vs-list { position: relative; z-index: 1; list-style: none; margin: 0; padding: 0; border-top: 1px solid rgba(255,255,255,.07); }
+.vs-list li { display: flex; align-items: center; gap: 16px; padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,.07); font-size: var(--mk-text-md); color: var(--mk-text-primary); line-height: 1.4; }
+.vs-icon { flex: 0 0 auto; width: 34px; height: 34px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; }
+.vs-card--without .vs-icon { color: var(--mk-danger-500); border: 2px solid rgba(248,113,113,.7); box-shadow: 0 0 14px rgba(248,113,113,.35); background: rgba(248,113,113,.08); }
+.vs-card--with .vs-icon { color: var(--mk-brand); border: 2px solid rgba(212,175,55,.7); box-shadow: 0 0 14px rgba(212,175,55,.35); background: rgba(212,175,55,.08); }
+.vs-chart { position: absolute; top: 22px; right: 22px; width: 230px; height: auto; color: var(--mk-brand); opacity: .55; pointer-events: none; }
+.vs-chart-bars { fill: rgba(212,175,55,.22); }
+.vs-chart-line { fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.vs-more { position: relative; z-index: 1; display: inline-block; margin-top: 18px; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: .14em; text-transform: uppercase; color: var(--mk-brand); text-decoration: none; }
+@media (max-width: 900px) { .vs { grid-template-columns: 1fr; gap: 18px; } .vs-card { padding: 24px 20px 22px; } .vs-chart { width: 150px; top: 16px; right: 16px; opacity: .4; } }
 /* how it works: the three steps stacked at left, the dashboard at the 10:30 checkpoint at right, the whole shot one link to The System */
 .how-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 32px; align-items: center; max-width: 1100px; margin: 36px auto 0; }
 .how-steps { display: grid; gap: 14px; min-width: 0; }
@@ -2217,10 +2237,8 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
 .how-shot:hover { transform: translateY(-3px); }
 .how-shot-cap { text-align: center; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-text-tertiary); margin: 0 0 12px; }
 .how-shot-more { text-align: center; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: .14em; text-transform: uppercase; color: var(--mk-brand); margin: 14px 0 0; }
-.pain3-card { padding: 24px 22px; background: var(--mk-surface-raised); border: var(--mk-border-hairline); border-radius: var(--mk-radius-card); }
-.pain3-time { font-family: var(--mk-font-mono); font-size: var(--mk-mono-sm); color: var(--mk-state-danger); letter-spacing: .08em; }
-.pain3-card h3, .how3-card h3 { font-family: var(--mk-font-display); font-size: var(--mk-display-sm); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); margin: 8px 0 8px; font-weight: 400; line-height: 1.1; }
-.pain3-card p, .how3-card p { margin: 0; font-size: var(--mk-text-sm); color: var(--mk-text-secondary); line-height: 1.55; }
+.how3-card h3 { font-family: var(--mk-font-display); font-size: var(--mk-display-sm); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); margin: 8px 0 8px; font-weight: 400; line-height: 1.1; }
+.how3-card p { margin: 0; font-size: var(--mk-text-sm); color: var(--mk-text-secondary); line-height: 1.55; }
 .how3-card { padding: 26px 24px; background: var(--mk-surface-raised); border: 1px solid rgba(212,175,55,.14); border-radius: var(--mk-radius-card); display: flex; flex-direction: column; gap: 10px; }
 .how3-card h3 { margin: 0; }
 .how3-card p { flex: 1; }
@@ -2238,7 +2256,7 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
 .wyg-line, .sec-more { text-align: center; max-width: 760px; margin: 28px auto 0; font-size: var(--mk-text-sm); color: var(--mk-text-secondary); line-height: 1.6; }
 /* the deeper links: a gold underlined word wherever a feature is named in running copy */
 .wyg-line a, .sec-more a, .faq-a a, .proof-sub a { color: var(--mk-brand); border-bottom: 1px solid rgba(212,175,55,.4); text-decoration: none; }
-@media (max-width: 900px) { .phero { padding: 112px 20px 48px; } .phero-grid { grid-template-columns: 1fr; gap: 32px; } .pain3, .how-grid { grid-template-columns: 1fr; } .tool-grid--4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 900px) { .phero { padding: 112px 20px 48px; } .phero-grid { grid-template-columns: 1fr; gap: 32px; } .how-grid { grid-template-columns: 1fr; } .tool-grid--4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 420px) { .tool-grid--4 { grid-template-columns: 1fr; } .hp-tiles { grid-template-columns: 1fr 1fr; } }
 
 /* h1: the photo hero with the dashboard over its right half */
@@ -2350,13 +2368,47 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
 
 <section class="section" id="why">
   <div class="section-inner">
-    <p class="section-eyebrow reveal">01 &middot; The Problem</p>
+    <p class="section-eyebrow reveal">01 &middot; Why MAKETZO</p>
     <h2 class="section-title reveal">You don't have a <em>strategy</em> problem.</h2>
-    <p class="section-sub reveal">You know what to do. You can't make yourself do it when it counts. That is a discipline gap, and no journal alone closes it, because a journal only talks after the close.</p>
-    <div class="pain3 reveal">
-      <div class="pain3-card"><span class="pain3-time">9:47 AM</span><h3>The revenge trade</h3><p>One loss past your line, and the next entry is about the loss, not the setup.</p></div>
-      <div class="pain3-card"><span class="pain3-time">10:42 AM</span><h3>The max loss you wrote down</h3><p>Set when you were calm. Crossed when you weren't, because nothing stood in the way.</p></div>
-      <div class="pain3-card"><span class="pain3-time">11:30 AM</span><h3>The green morning, handed back</h3><p>Up $400 at 10:30, flat by lunch. The best day of the week became a lesson instead.</p></div>
+    <p class="section-sub vs-sub reveal">Every retail trader who keeps losing has the same diagnosis: they know exactly what to do. They just can't make themselves do it when it counts. That's not a knowledge gap. That's a <strong>discipline gap</strong>. And no journal alone fixes that.</p>
+    <!-- Without / With MAKETZO, from Ed's mock (2026-10-15); the three time-stamped pain cards read as a story that made no sense in order -->
+    <div class="vs reveal">
+      <div class="vs-card vs-card--without">
+        <span class="mk-pill mk-pill--danger vs-pill">WITHOUT MAKETZO</span>
+        <h3 class="vs-title">Good intentions. <em>Same outcome.</em></h3>
+        <ul class="vs-list">
+          <li><span class="vs-icon" aria-hidden="true">&#10005;</span>You know your rules, and break them in the moment</li>
+          <li><span class="vs-icon" aria-hidden="true">&#10005;</span>You revenge trade after a loss</li>
+          <li><span class="vs-icon" aria-hidden="true">&#10005;</span>You chase extended moves when you know you shouldn't</li>
+          <li><span class="vs-icon" aria-hidden="true">&#10005;</span>You blow up a good week in one bad afternoon</li>
+          <li><span class="vs-icon" aria-hidden="true">&#10005;</span>Your journal is a graveyard of good intentions</li>
+        </ul>
+      </div>
+      <div class="vs-card vs-card--with">
+        <svg class="vs-chart" viewBox="0 0 230 170" aria-hidden="true" focusable="false">
+          <g class="vs-chart-bars">
+            <rect x="8" y="128" width="22" height="34" rx="3"/>
+            <rect x="40" y="112" width="22" height="50" rx="3"/>
+            <rect x="72" y="118" width="22" height="44" rx="3"/>
+            <rect x="104" y="92" width="22" height="70" rx="3"/>
+            <rect x="136" y="98" width="22" height="64" rx="3"/>
+            <rect x="168" y="60" width="22" height="102" rx="3"/>
+            <rect x="200" y="36" width="22" height="126" rx="3"/>
+          </g>
+          <path class="vs-chart-line" d="M6 140 C 70 134, 120 112, 160 74 S 206 28, 224 12"/>
+          <path class="vs-chart-line" d="M206 10 L224 12 L220 30"/>
+        </svg>
+        <span class="mk-pill mk-pill--brand vs-pill">WITH MAKETZO</span>
+        <h3 class="vs-title">Discipline. <em>Real results.</em></h3>
+        <ul class="vs-list">
+          <li><span class="vs-icon" aria-hidden="true">&#10003;</span>Your rules are enforced while the day is live, not filed away</li>
+          <li><span class="vs-icon" aria-hidden="true">&#10003;</span>Strikes and checkpoints stop a bad day before it compounds</li>
+          <li><span class="vs-icon" aria-hidden="true">&#10003;</span>COACH SAYS tells you to sit down, and you listen</li>
+          <li><span class="vs-icon" aria-hidden="true">&#10003;</span>Checkpoints protect your week on autopilot</li>
+          <li><span class="vs-icon" aria-hidden="true">&#10003;</span>Your journal shows exactly why you win and lose</li>
+        </ul>
+        <a class="vs-more" href="system.html" data-cta-source="why" data-cta-target="system">How strikes and checkpoints work &rarr;</a>
+      </div>
     </div>
   </div>
 </section>
