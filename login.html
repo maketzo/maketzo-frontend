@@ -135,11 +135,25 @@ function planBody() { return hasPlan ? { tier: activeTier, interval: activeInter
 const checkoutToken = hasPlan ? (activeTier + ':' + activeInterval) : legacyPlanId;
 const planQuery = hasPlan ? ('tier=' + activeTier + '&interval=' + activeInterval) : (legacyPlanId ? ('plan=' + encodeURIComponent(legacyPlanId)) : '');
 
+// Same three cases as signup.html: standalone Edge + Pulse has no trial and is
+// charged today; a referred friend gets 14 days; everyone else 7.
+function readRefCode() {
+  try { var m = document.cookie.match(/(?:^|;\s*)mkt_ref=([^;]+)/); return m ? decodeURIComponent(m[1]) : ''; }
+  catch (e) { return ''; }
+}
 if (tier) {
-  document.getElementById('eyebrow').textContent = `START ${tier.name.toUpperCase()} TRIAL`;
-  document.getElementById('title').innerHTML = `Sign in to start <em>${tier.name}.</em>`;
-  document.getElementById('sub').textContent = `${tier.amount} · 7-day free trial · no charge until day 8.`;
-  document.getElementById('loginSubmit').textContent = 'Sign in & start trial';
+  if (tier.isIndicator) {
+    document.getElementById('eyebrow').textContent = 'EDGE + PULSE STANDALONE';
+    document.getElementById('title').innerHTML = `Sign in to get <em>Edge + Pulse.</em>`;
+    document.getElementById('sub').textContent = `${tier.amount} · Charged today · TradingView invite within 24 hours · Cancel anytime.`;
+    document.getElementById('loginSubmit').textContent = `Sign in & subscribe, ${tier.amount}`;
+  } else {
+    const days = readRefCode() ? 14 : 7;
+    document.getElementById('eyebrow').textContent = `START ${tier.name.toUpperCase()} TRIAL`;
+    document.getElementById('title').innerHTML = `Sign in to start <em>${tier.name}.</em>`;
+    document.getElementById('sub').textContent = `${tier.amount} · ${days}-day free trial · no charge until day ${days + 1}.`;
+    document.getElementById('loginSubmit').textContent = 'Sign in & start trial';
+  }
   document.getElementById('signupLink').setAttribute('href', 'signup.html?' + planQuery);
 }
 

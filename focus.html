@@ -527,6 +527,9 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
 .lockin-card[data-mode="cool"] { border-top-color: var(--mk-caution-500); }
 .lockin-card[data-mode="lock"] { border-top-color: var(--mk-profit-500); }
 .lockin-card[data-mode="off"] { border-top-color: var(--mk-smoke-600); }
+.lockin-card[data-mode="momentum"] { border-top-color: var(--mk-brand); }
+.lockin-card[data-mode="probe"] { border-top-color: var(--mk-lockin-500); }
+.lockin-card[data-mode="rehab"] { border-top-color: var(--mk-caution-500); }
 .lockin-name { font-family: var(--mk-font-display); font-size: var(--mk-display-md); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); margin-bottom: 10px; line-height: 1.1; }
 .lockin-use { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); line-height: 1.55; margin: 0; }
 .lockin-mech {
@@ -819,9 +822,17 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
         <div class="lockin-name">A+ Only Day</div>
         <p class="lockin-use">Only the setups you'd stake your month on. Everything else waits.</p>
       </div>
+      <div class="lockin-card reveal" data-mode="momentum">
+        <div class="lockin-name">Momentum Day</div>
+        <p class="lockin-use">The trend is strong and clean. Trade it at your normal size and A+ standards. The tailwind is the edge, not bigger size.</p>
+      </div>
       <div class="lockin-card reveal" data-mode="recovery">
         <div class="lockin-name">Recovery Day</div>
         <p class="lockin-use">Back from a drawdown. Small, clean, and slow to rebuild the trust you spent.</p>
+      </div>
+      <div class="lockin-card reveal" data-mode="probe">
+        <div class="lockin-name">Probe Mode</div>
+        <p class="lockin-use">Can't read the tape yet? Feel it out with small probes before you commit to anything.</p>
       </div>
       <div class="lockin-card reveal" data-mode="red">
         <div class="lockin-name">Red Day Protection</div>
@@ -838,6 +849,10 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
       <div class="lockin-card reveal" data-mode="off">
         <div class="lockin-name">Off Day</div>
         <p class="lockin-use">Not your day. The honest, hardest move is to not trade it at all.</p>
+      </div>
+      <div class="lockin-card reveal" data-mode="rehab">
+        <div class="lockin-name">Trader Rehab</div>
+        <p class="lockin-use">Coming back from a rough stretch. One trade, win or lose, and the day is done. Rebuild trust one clean decision at a time.</p>
       </div>
     </div>
 
@@ -864,7 +879,12 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
       <div class="warmup-card warmup-card--feature reveal">
         <p class="warmup-num">Free &middot; no login</p>
         <div class="warmup-name">The Gauntlet</div>
-        <p class="warmup-use">A daily trivia duel against Captain Green. Today's questions only, no retries. <a href="/gauntlet">Play now &rarr;</a></p>
+        <p class="warmup-use">A daily trivia duel against Captain Green, the same seven questions for everyone today. Endless mode for extra reps. <a href="/gauntlet">Play now &rarr;</a></p>
+      </div>
+      <div class="warmup-card warmup-card--feature reveal">
+        <p class="warmup-num">Free &middot; no login</p>
+        <div class="warmup-name">Kung Fu Trader</div>
+        <p class="warmup-use">A retro arcade fight up five floors of the trading day, one bad habit per floor, from chasing the open to the revenge trade at the close. <a href="/kungfu">Play now &rarr;</a></p>
       </div>
       <div class="warmup-card warmup-card--feature reveal">
         <p class="warmup-num">Free &middot; no login</p>
@@ -1229,7 +1249,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
         <p class="footer-tagline"><strong>Stop the trade you'd regret.</strong>Discipline in every session. Edge in every trade. Accountability when it counts.</p>
       </div>
       <div><div class="footer-col-title">Product</div><ul class="footer-links"><li><a href="system.html">The System</a></li><li><a href="journal.html">Journal</a></li><li><a href="indicators.html">Indicators</a></li><li><a href="focus.html">Focus Room</a></li><li><a href="tools.html">Free Tools</a></li><li><a href="dilution-check.html">Dilution Check</a></li><li><a href="pricing.html" data-cta-source="footer-product" data-cta-target="pricing">Pricing</a></li></ul></div>
-      <div><div class="footer-col-title">Explore</div><ul class="footer-links"><li><a href="trader-type.html" data-cta-source="footer-explore" data-cta-target="trader-type">Can You Trade?</a></li><li><a href="trade-replay.html" data-cta-source="footer-explore" data-cta-target="trade-replay">Trade Replay</a></li><li><a href="trading-os.html" data-cta-source="footer-explore" data-cta-target="trading-os">Trading OS</a></li><li><a href="why.html" data-cta-source="footer-explore" data-cta-target="why">Why MAKETZO</a></li><li><a href="soundtrack.html" data-cta-source="footer-explore" data-cta-target="soundtrack">Soundtrack</a></li><li><a href="contact.html" data-cta-source="footer-explore" data-cta-target="contact">Contact Us</a></li></ul></div>
+      <div><div class="footer-col-title">Explore</div><ul class="footer-links"><li><a href="trader-type.html" data-cta-source="footer-explore" data-cta-target="trader-type">Trader Type</a></li><li><a href="trade-replay.html" data-cta-source="footer-explore" data-cta-target="trade-replay">Trade Replay</a></li><li><a href="trading-os.html" data-cta-source="footer-explore" data-cta-target="trading-os">Trading OS</a></li><li><a href="why.html" data-cta-source="footer-explore" data-cta-target="why">Why MAKETZO</a></li><li><a href="soundtrack.html" data-cta-source="footer-explore" data-cta-target="soundtrack">Soundtrack</a></li><li><a href="contact.html" data-cta-source="footer-explore" data-cta-target="contact">Contact Us</a></li></ul></div>
       <div><div class="footer-col-title">Legal</div><ul class="footer-links"><li><a href="privacy.html">Privacy Policy</a></li><li><a href="terms.html">Terms of Service</a></li><li><a href="disclaimer.html">Risk Disclaimer</a></li></ul></div>
     </div>
     <div class="footer-bottom">

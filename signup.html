@@ -166,7 +166,7 @@ if (tier) {
     document.getElementById('eyebrow').textContent = 'EDGE + PULSE STANDALONE';
     document.getElementById('title').innerHTML = `Get <em>Edge + Pulse.</em>`;
     document.getElementById('sub').textContent = `${tier.amount} · Charged today · TradingView invite within 24 hours · Cancel anytime.`;
-    document.getElementById('signupSubmit').textContent = `Subscribe — ${tier.amount}`;
+    document.getElementById('signupSubmit').textContent = `Subscribe, ${tier.amount}`;
   } else {
     // Referred → 14-day trial (no charge until day 15); everyone else → 7 (day 8).
     const days = isReferred ? 14 : 7;
@@ -255,7 +255,7 @@ function applyMode(next) {
     if (checks) checks.hidden = false;
     turnstileWrap.style.display = '';
     divider.style.display = '';
-    submitBtn.textContent = tier ? (tier.isIndicator ? `Subscribe — ${tier.amount}` : `Start ${isReferred ? 14 : 7}-day free trial`) : 'Create account';
+    submitBtn.textContent = tier ? (tier.isIndicator ? `Subscribe, ${tier.amount}` : `Start ${isReferred ? 14 : 7}-day free trial`) : 'Create account';
     googleLabel.textContent = tier ? (tier.isIndicator ? 'Continue with Google for Edge + Pulse' : `Continue with Google to start ${tier.name} trial`) : 'Continue with Google';
     footLink.innerHTML = 'Already have an account? <a href="login.html' + (planQuery ? '?' + planQuery : '') +'">Sign in</a>';
   } else if (mode === 'login-password') {
@@ -271,7 +271,7 @@ function applyMode(next) {
     if (checksOff) checksOff.hidden = true;
     turnstileWrap.style.display = 'none';
     divider.style.display = '';
-    submitBtn.textContent = tier ? (tier.isIndicator ? `Sign in & subscribe — ${tier.amount}` : 'Sign in & start trial') : 'Sign in';
+    submitBtn.textContent = tier ? (tier.isIndicator ? `Sign in & subscribe, ${tier.amount}` : 'Sign in & start trial') : 'Sign in';
     googleLabel.textContent = 'Continue with Google instead';
     footLink.innerHTML = 'Forgot your password? <a href="forgot-password.html">Reset it</a>';
   } else if (mode === 'login-google') {
