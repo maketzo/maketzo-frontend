@@ -5,9 +5,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The Trading Operating System · MAKETZO</title>
-<meta name="description" content="The whole trading system on one page: what to check before you click, how to manage what you took, and when to call the day. Keep your mistakes small enough to learn from. Free to read, save, and share.">
+<meta name="description" content="The whole trading system on one page: what to check before you click, how to manage what you took, and when to call the day. Free to read, save, and share.">
 <meta name="theme-color" content="#06070A">
-<meta property="og:title" content="The Trading Operating System &mdash; MAKETZO">
+<meta property="og:title" content="The Trading Operating System · MAKETZO">
 <meta property="og:description" content="The whole trading system on one page. What to check before you click, how to manage what you took, and when to call the day. Keep your mistakes small enough to learn from. Free to read and share.">
 <meta property="og:url" content="https://maketzo.co/trading-os">
 <meta property="og:type" content="website">
@@ -15,7 +15,7 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="The Trading Operating System &mdash; MAKETZO">
+<meta name="twitter:title" content="The Trading Operating System · MAKETZO">
 <meta name="twitter:description" content="The whole trading system on one page. What to check before you click, how to manage what you took, and when to call the day. Keep your mistakes small enough to learn from. Free.">
 <meta name="twitter:image" content="https://maketzo.co/assets/trading-os-og.jpg?v=5">
 <link rel="canonical" href="https://maketzo.co/trading-os">
@@ -25,6 +25,7 @@
 <link rel="stylesheet" href="assets/css/components.css">
 <link rel="stylesheet" href="assets/css/audio-player.css?v=11">
 <script src="assets/js/mkt-analytics.js?v=9" defer></script>
+<script src="assets/js/newsletter.js?v=5" defer></script>
 <script src="assets/js/mkt-consent.js?v=1" defer></script>
 <script src="assets/js/checkout.js?v=10" defer></script>
 <script src="assets/js/audio-player.js?v=11" defer></script>
@@ -170,6 +171,55 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 .back-to-tools .btt-arrow { font-size: 1.05em; line-height: 1; transition: transform var(--mk-dur-snap); }
 .back-to-tools:hover .btt-arrow { transform: translateX(-3px); }
 @media (max-width: 560px) { .back-to-tools { top: 72px; left: 14px; padding: 6px 12px; font-size: var(--mk-text-xs); } }
+/* Sticky newsletter bar, the same block as pricing.html (added 2026-10-15; the form is handled by assets/js/newsletter.js) */
+.sticky-bar {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 55;
+  display: flex; align-items: center; justify-content: center; gap: 14px;
+  padding: 10px 64px 10px 24px;
+  background: rgba(13,15,20,.62);
+  backdrop-filter: blur(20px) saturate(140%);
+  border-top: 1px solid rgba(212,175,55,.35);
+  transform: translateY(100%);
+  transition: transform var(--mk-dur-med) var(--mk-ease-out);
+}
+.sticky-bar.visible { transform: translateY(0); }
+body:has(.sticky-bar.visible) { padding-bottom: 80px; }
+.sticky-bar-text { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); }
+.sticky-bar-text strong { color: var(--mk-text-primary); }
+.sticky-bar-form { display: flex; gap: 8px; align-items: center; position: relative; }
+.sticky-bar-input {
+  background: rgba(20,24,33,.85);
+  border: 1px solid rgba(255,255,255,.12);
+  color: var(--mk-text-primary);
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-sm);
+  padding: 8px 12px;
+  border-radius: var(--mk-radius-input);
+  outline: none;
+  width: 220px;
+}
+.sticky-bar-input::placeholder { color: var(--mk-text-tertiary); }
+.sticky-bar-input:focus { border-color: var(--mk-brand); box-shadow: 0 0 0 3px rgba(212,175,55,.18); }
+.sticky-bar-input.invalid { border-color: #ef4444; box-shadow: 0 0 0 3px rgba(239,68,68,.18); }
+.sticky-bar-form .newsletter-error { position: absolute; bottom: calc(100% + 10px); left: 50%; transform: translateX(-50%); background: #ef4444; color: #fff; font-family: var(--mk-font-mono); font-size: 11px; letter-spacing: 0.04em; padding: 6px 12px; border-radius: 4px; white-space: nowrap; box-shadow: 0 6px 16px rgba(0,0,0,0.45); pointer-events: none; animation: stickyErrIn 180ms ease forwards; }
+.sticky-bar-form .newsletter-error::after { content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 5px solid transparent; border-top-color: #ef4444; }
+.sticky-bar-form .newsletter-error[hidden] { display: none; }
+@keyframes stickyErrIn { from { opacity: 0; transform: translateX(-50%) translateY(4px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+.sticky-bar-form .newsletter-inline-success { font-family: var(--mk-font-mono); font-size: var(--mk-mono-sm); color: #4ade80; letter-spacing: 0.04em; padding: 0 12px; white-space: nowrap; }
+.sticky-bar-form .btn-primary { padding: 8px 14px; font-size: var(--mk-text-xs); }
+.sticky-bar-close {
+  position: absolute; right: 16px; top: 50%;
+  transform: translateY(-50%);
+  background: transparent; border: 0; cursor: pointer;
+  color: var(--mk-text-tertiary);
+  font-size: 1.4rem; line-height: 1;
+  padding: 4px;
+}
+.sticky-bar-close:hover { color: var(--mk-text-primary); }
+@media (max-width: 700px) {
+  .sticky-bar { flex-direction: column; padding: 12px 36px 12px 12px; gap: 8px; }
+  .sticky-bar-input { width: 100%; max-width: 280px; }
+}
 </style>
 <script>try{if(document.cookie.indexOf('mkt_csrf=')>-1)document.documentElement.classList.add('mkt-auth');}catch(e){}</script>
 </head>
@@ -459,6 +509,26 @@ window.addEventListener('scroll',()=>{document.getElementById('mainNav').style.b
   document.querySelectorAll('[data-tos-zoom]').forEach(function(b){b.addEventListener('click',function(e){e.preventDefault();open();});});
   document.querySelectorAll('a[download]').forEach(function(a){a.addEventListener('click',function(){track('trading_os_download',{});});});
 })();
+</script>
+<!-- STICKY EMAIL BAR -->
+<div class="sticky-bar" id="stickyBar">
+  <span class="sticky-bar-text"><strong>Stay Sharp.</strong> Bi-weekly trading discipline insights.</span>
+  <form class="sticky-bar-form" onsubmit="return MKTNewsletter.handleForm(event, 'sticky-bar')" novalidate>
+    <input class="sticky-bar-input" id="stickyEmail" name="email" type="email" placeholder="your@email.com" required autocomplete="email" aria-describedby="stickyEmailError">
+    <button class="btn-primary" type="submit">Subscribe</button>
+    <div class="newsletter-error" id="stickyEmailError" hidden></div>
+  </form>
+  <button class="sticky-bar-close" onclick="closeStickyBar()" aria-label="Close">&times;</button>
+</div>
+<script>
+// STICKY BAR: same behavior as the other marketing pages; the form is handled by assets/js/newsletter.js.
+var stickyShown=false,stickyDismissed=false;
+window.addEventListener('scroll',function(){
+  if(!stickyDismissed&&!stickyShown&&window.scrollY/(document.body.scrollHeight-window.innerHeight)>0.45){
+    document.getElementById('stickyBar').classList.add('visible');stickyShown=true;
+  }
+});
+function closeStickyBar(){document.getElementById('stickyBar').classList.remove('visible');stickyDismissed=true;}
 </script>
 </body>
 </html>
