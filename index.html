@@ -463,49 +463,6 @@ html.mkt-auth .nav-login-btn:hover{color:var(--mk-text-on-gold);background:var(-
   background: rgba(255,255,255,.03);
 }
 
-/* ── TOAST ───────────────────────────────────────────────────── */
-.toast {
-  position: fixed; bottom: 24px; left: 24px; z-index: 60;
-  display: flex; flex-direction: column; gap: 12px;
-  padding: 20px 22px;
-  width: 280px;
-  min-height: 128px;
-  background:
-    linear-gradient(135deg, rgba(212,175,55,.06), transparent 60%),
-    var(--mk-surface-raised);
-  border: 1px solid rgba(212,175,55,.28);
-  border-radius: var(--mk-radius-card);
-  box-shadow: var(--mk-shadow-4);
-  transform: translateY(0); opacity: 1;
-  transition: transform var(--mk-dur-med) var(--mk-ease-out),
-              opacity var(--mk-dur-med);
-}
-.toast::before {
-  content: 'Live Activity';
-  font-family: var(--mk-font-mono);
-  font-size: var(--mk-mono-xs);
-  letter-spacing: var(--mk-track-eyebrow);
-  text-transform: uppercase;
-  color: var(--mk-brand);
-}
-.toast.hidden { transform: translateY(20px); opacity: 0; pointer-events: none; }
-.toast-dot {
-  position: absolute; top: 22px; right: 22px;
-  width: 8px; height: 8px; border-radius: 50%;
-  background: var(--mk-profit-500);
-  box-shadow: 0 0 10px var(--mk-profit-500);
-  animation: mk-pulse 1.4s infinite;
-}
-.toast-text {
-  font-size: var(--mk-text-md);
-  line-height: var(--mk-lead-snug);
-  color: var(--mk-text-secondary);
-}
-.toast-text strong { color: var(--mk-text-primary); font-weight: 600; }
-@media (max-width: 600px) {
-  .toast { left: 12px; right: 12px; width: auto; }
-}
-
 /* ── STICKY EMAIL BAR ────────────────────────────────────────── */
 .sticky-bar {
   position: fixed; bottom: 0; left: 0; right: 0; z-index: 55;
@@ -2219,12 +2176,6 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
   </div>
 </section>
 
-<!-- TOAST -->
-<div class="toast hidden" id="toast">
-  <div class="toast-dot"></div>
-  <div class="toast-text"><strong id="toastName">Marcus R.</strong> from <strong id="toastCity">Austin</strong> just started a free trial</div>
-</div>
-
 <!-- STICKY EMAIL BAR -->
 <div class="sticky-bar" id="stickyBar">
   <p class="sticky-bar-text"><strong>Stay Sharp.</strong> Bi-weekly trading discipline insights.</p>
@@ -2529,8 +2480,8 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
       <div class="journal-hp-card reveal">
         <div class="journal-hp-icon">04</div>
         <div class="journal-hp-tag">Session Review</div>
-        <div class="journal-hp-title">A debrief that writes itself</div>
-        <p class="journal-hp-text">A daily debrief that writes itself the moment you close, plus a week read across your calendar. The review you keep meaning to do, already done.</p>
+        <div class="journal-hp-title">A review that fills itself</div>
+        <p class="journal-hp-text">Your journal page fills itself from the day's trades: performance, P&amp;L by hour, equity curve, streak. The calendar reads the week. On Pro, the Debrief reads the day back to you at the close.</p>
       </div>
     </div>
 
@@ -2594,7 +2545,7 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
       <div class="teaser-text">
         <div class="teaser-eyebrow">05 &middot; The Strike System</div>
         <h2 class="teaser-title">Three strikes.<br><em>Then the system steps in.</em></h2>
-        <p class="teaser-body">A loss past your strike line earns a strike; a win past it earns one back. <strong>MAKETZO tracks them automatically.</strong> At Strike 2 you get a warning. At Strike 3 the platform locks you out for 24 hours.</p>
+        <p class="teaser-body">A loss past your strike line earns a strike; a win past it earns one back. <strong>MAKETZO tracks them automatically.</strong> At Strike 2 you get a warning. At Strike 3 the platform closes your day.</p>
         <p class="teaser-body">Getting back in takes a deliberate override, not a click you'll make by accident. You set the rules when you were thinking clearly. <strong>The system holds the line when you're not.</strong></p>
         <div class="teaser-cta-row"><a href="system.html" class="btn-ghost">Learn More About The System &rarr;</a></div>
       </div>
@@ -2876,7 +2827,7 @@ document.addEventListener("DOMContentLoaded", function() {
           <li class="bold">Trade journal &amp; daily session log</li>
           <li class="bold">P&amp;L tracking &amp; &cent;/share metrics</li>
           <li>Streak preservation</li>
-          <li>Discipline score</li>
+          <li>Picard Score, a daily grade on following your rules</li>
           <li>Rule pills (custom rules)</li>
         </ul>
         <button class="cta-outline" id="cta1" data-tier="journal" data-interval="month" onclick="handleCheckout(this.dataset.tier,event)">Start Free Trial</button>
@@ -2891,8 +2842,8 @@ document.addEventListener("DOMContentLoaded", function() {
         <ul class="price-list">
           <li class="bold">Everything in Journal</li>
           <li class="bold">COACH SAYS + State Machine + Strike System</li>
-          <li class="bold">Focus Room (Lock-In, Reset, Zone Tracks)</li>
-          <li>The full toolkit, unlocked day one</li>
+          <li class="bold">Focus Room (Lock-In, Reset, Soundtrack)</li>
+          <li>Give-Back Guard, a floor under a green day</li>
           <li>Maketzo Edge + Pulse on TradingView (invite within 24 hrs)</li>
           <li>Dilution Check, 100 company reads a month</li>
         </ul>
@@ -2907,9 +2858,8 @@ document.addEventListener("DOMContentLoaded", function() {
         <ul class="price-list">
           <li class="bold">Everything in Pro</li>
           <li class="bold">Dilution Check, 200 company reads a month</li>
-          <li class="bold">Concierge onboarding session</li>
-          <li class="bold">Founders' community circle</li>
-          <li>AI Training Engine (coming soon)</li>
+          <li>Twice Pro's reads, for the trader who checks every gapper</li>
+          <li>AI Training Engine, first access when it ships</li>
         </ul>
         <button class="cta-outline" id="cta3" data-tier="elite" data-interval="month" onclick="handleCheckout(this.dataset.tier,event)">Start Free Trial</button>
         <p class="price-note">7 days free &middot; No charge until day 8</p>
@@ -3021,24 +2971,24 @@ No software installation required. MAKETZO runs in your browser alongside your e
   <div class="section-inner">
     <p class="section-eyebrow reveal">14 &middot; Pricing</p>
     <h2 class="section-title reveal">Pick your level of <em>accountability.</em></h2>
-    <p class="section-sub reveal">Journal builds the tracking foundation. Pro adds the real-time discipline OS, Focus Room, the full toolkit, and the Edge and Pulse indicators. Elite adds twice the Dilution Check reads, concierge onboarding, and the founders' circle.</p>
+    <p class="section-sub reveal">Journal records the day and grades it. Pro steps in while the day is still live: COACH SAYS, strikes, Focus Room, Dilution Check, and the Edge and Pulse indicators. Elite doubles the Dilution Check reads to 200 a month and gets the AI Training Engine first.</p>
     <div class="tier-strip">
       <div class="tier-mini reveal">
         <div class="tier-mini-name">Journal</div>
         <div class="tier-mini-price">$29 / month</div>
-        <div class="tier-mini-note">Trade journal &middot; session log &middot; P&amp;L &middot; streak &middot; discipline score</div>
+        <div class="tier-mini-note">Trade journal &middot; session log &middot; P&amp;L &middot; streak &middot; Picard Score</div>
         <button class="cta-outline" data-tier="journal" data-interval="month" onclick="handleCheckout(this.dataset.tier,event)">Start Free Trial</button>
       </div>
       <div class="tier-mini featured reveal">
         <div class="tier-mini-name">Pro</div>
         <div class="tier-mini-price">$49 / month</div>
-        <div class="tier-mini-note">Everything in Journal &middot; COACH SAYS &middot; State Machine &middot; Strike System &middot; Focus Room &middot; Full toolkit &middot; Edge + Pulse &middot; Dilution Check, 100 company reads a month</div>
+        <div class="tier-mini-note">Everything in Journal &middot; COACH SAYS &middot; State Machine &middot; Strike System &middot; Give-Back Guard &middot; Focus Room &middot; Edge + Pulse &middot; Dilution Check, 100 company reads a month</div>
         <button class="cta-gold" data-tier="pro" data-interval="month" onclick="handleCheckout(this.dataset.tier,event)">Start Free Trial &rarr;</button>
       </div>
       <div class="tier-mini reveal">
         <div class="tier-mini-name">Elite</div>
         <div class="tier-mini-price">$79 / month</div>
-        <div class="tier-mini-note">Everything in Pro &middot; Dilution Check, 200 company reads a month &middot; Concierge onboarding &middot; Founders' circle</div>
+        <div class="tier-mini-note">Everything in Pro &middot; Dilution Check, 200 company reads a month &middot; AI Training Engine, first access</div>
         <button class="cta-outline" data-tier="elite" data-interval="month" onclick="handleCheckout(this.dataset.tier,event)">Start Free Trial</button>
       </div>
     </div>
@@ -3062,7 +3012,7 @@ No software installation required. MAKETZO runs in your browser alongside your e
       <button class="btn-primary" onclick="handleCheckout('pro',event)">Start Free Trial &rarr;</button>
       <a href="pricing.html" class="btn-secondary">Compare All Plans</a>
     </div>
-    <p class="final-cta-note reveal">Pro &middot; $49/mo or $399/yr &middot; Discipline OS, Focus Room &amp; the full toolkit &middot; Cancel anytime</p>
+    <p class="final-cta-note reveal">Pro &middot; $49/mo or $399/yr &middot; Discipline OS, Focus Room &amp; Dilution Check &middot; Cancel anytime</p>
   </div>
 </section>
 
@@ -3156,21 +3106,6 @@ function setPricing(annual){
 function togglePricing(){setPricing(!isAnnual);}
 
 // handleCheckout moved to assets/js/checkout.js (cookie-aware, plan-routing).
-
-// TOAST
-const firstNames=['Marcus','Jason','Tyler','David','Sarah','Amanda','Chris','Ryan','Mike','Lisa','Kevin','Dana','James','Priya','Tom','Aisha','Brian','Kelly','Derek','Lauren','Andre','Megan','Carlos','Nicole','Steve','Rachel','Eric','Heather','Nathan','Jessica','Greg','Samantha','Adam','Olivia','Scott','Kyle','Troy','Monica','Luke','Crystal','Zach','Amber','Paul','Danielle'];
-const lastInits=['A','B','C','D','E','F','G','H','J','K','L','M','N','P','R','S','T','W'];
-const cities=['Austin, TX','Dallas, TX','Chicago, IL','Atlanta, GA','Denver, CO','Seattle, WA','Phoenix, AZ','Miami, FL','Charlotte, NC','Boston, MA','Nashville, TN','Portland, OR','San Diego, CA','Las Vegas, NV','Minneapolis, MN','Tampa, FL','Kansas City, MO','Cincinnati, OH','Pittsburgh, PA','Raleigh, NC','Salt Lake City, UT','Richmond, VA','Louisville, KY','Memphis, TN','Columbus, OH','Orlando, FL','Sacramento, CA','Houston, TX','Los Angeles, CA','New York, NY','Philadelphia, PA','Detroit, MI','St. Louis, MO','Indianapolis, IN','Baltimore, MD','Toronto, Canada','London, UK','Sydney, Australia','Dublin, Ireland','Vancouver, Canada'];
-function randItem(a){return a[Math.floor(Math.random()*a.length)];}
-const toast=document.getElementById('toast');
-function showToast(){
-  document.getElementById('toastName').textContent=randItem(firstNames)+' '+randItem(lastInits)+'.';
-  document.getElementById('toastCity').textContent=randItem(cities);
-  toast.classList.remove('hidden');
-  setTimeout(()=>toast.classList.add('hidden'),7000);
-  setTimeout(showToast,90000+Math.floor(Math.random()*60000));
-}
-setTimeout(showToast,30000+Math.floor(Math.random()*20000));
 
 // REVEAL
 const reveals=document.querySelectorAll('.reveal');
