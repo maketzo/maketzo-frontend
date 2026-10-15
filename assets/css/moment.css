@@ -38,3 +38,22 @@
 @media (max-width: 900px) { .moment { grid-template-columns: 1fr; gap: 18px; } .moment-card { padding: 22px 20px 20px; } }
 @media (max-width: 480px) { .moment-bar { flex-direction: column; align-items: flex-start; gap: 6px; } }
 @media (prefers-reduced-motion: reduce) { .moment-live { animation: none; } }
+
+/* /system: the sequence. Two MAKETZO cards 25 minutes apart; the second one is the closed day (strike-lockout tokens). */
+.moment--sequence { grid-template-columns: 1fr auto 1fr; }
+.moment-link { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 0 4px; }
+.moment-link::before, .moment-link::after { content: ""; flex: 1; width: 1px; background: linear-gradient(180deg, transparent, var(--mk-brand), transparent); }
+.moment-link span { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-text-tertiary); white-space: nowrap; }
+.moment-card--closed { background: var(--mk-obsidian-900); border: 1px solid var(--mk-strike-lockout); box-shadow: var(--mk-strike-glow-lockout); }
+.moment-card--closed .moment-bar { color: var(--mk-strike-lockout); border-bottom: 1px solid var(--mk-strike-lockout); }
+.moment-live--closed { background: var(--mk-strike-lockout); animation: none; }
+.moment-strikes span.is-out { background: var(--mk-strike-lockout-bg); border-color: var(--mk-strike-lockout); color: var(--mk-strike-lockout); box-shadow: var(--mk-strike-glow-lockout); }
+.moment-strikes em.is-out { color: var(--mk-strike-lockout); }
+.moment-closed { justify-self: start; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-strike-lockout); background: var(--mk-strike-lockout-bg); border: 1px solid var(--mk-strike-lockout); border-radius: var(--mk-radius-pill); padding: 8px 14px; }
+.moment-card--closed .moment-verdict--us { border-top: 1px solid var(--mk-strike-lockout); }
+.moment-rule { justify-self: start; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-text-secondary); border: var(--mk-border-soft); border-radius: var(--mk-radius-pill); padding: 8px 14px; }
+@media (max-width: 900px) {
+  .moment--sequence { grid-template-columns: 1fr; }
+  .moment-link { flex-direction: row; padding: 2px 0; }
+  .moment-link::before, .moment-link::after { width: auto; height: 1px; background: linear-gradient(90deg, transparent, var(--mk-brand), transparent); }
+}
