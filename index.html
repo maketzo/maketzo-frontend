@@ -55,7 +55,6 @@
 <script src="assets/js/mkt-consent.js?v=1" defer></script>
 <script src="assets/js/checkout.js?v=10" defer></script>
 <script src="assets/js/newsletter.js?v=5" defer></script>
-<script src="assets/js/breath-orb.js?v=3" defer></script>
 <style>
 /* ====================================================================
    MAKETZO landing — page-specific styles.
@@ -1890,296 +1889,66 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
 @media (max-width: 560px) { .journal-hp-grid { grid-template-columns: 1fr; } }
 /* END journal-positioning section styles */
 
-/* ── INTERACTIVE SESSION SIM · "Anatomy of a saved day" ──────────
-   Self-contained centerpiece. Vanilla JS drives the beats; tokens
-   only. Respects prefers-reduced-motion (renders the final beat). */
-.sim {
-  max-width: 680px;
-  margin: 0 auto;
+/* ── 02 · SEE IT WORK: "the floor saves it" (2026-10-15) ──────────────────────────────────
+   One real morning on the dev demo account. The trader types net P&L; every card is the app's own element, cropped
+   by tools/site-preview/capture-floor.js at phone width (3x). No player, no controls: the whole story reads at rest.
+   The chart draws in SVG under preserveAspectRatio none; dots and labels are HTML so text never stretches. */
+.fs { max-width: 1120px; margin: 46px auto 0; }
+.fs-chart { position: relative; border-radius: 22px; padding: 20px 24px 14px; background: linear-gradient(180deg, rgba(212,175,55,.07), transparent 65%), var(--mk-surface-raised); border: 1px solid rgba(212,175,55,.24); box-shadow: var(--mk-glow-gold-sm); }
+.fs-chart-head { display: flex; justify-content: space-between; align-items: center; gap: 16px; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-text-tertiary); }
+.fs-legend { display: inline-flex; align-items: center; gap: 8px; color: var(--mk-gold-400); }
+.fs-legend-floor { width: 22px; border-top: 2px dashed var(--mk-gold-400); }
+.fs-plot { position: relative; height: 230px; margin-top: 10px; }
+.fs-plot svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.fs-zero { stroke: rgba(255,255,255,.10); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.fs-area { fill: url(#fsArea); }
+.fs-area-top { stop-color: var(--mk-gold-500); stop-opacity: .22; }
+.fs-area-bottom { stop-color: var(--mk-gold-500); stop-opacity: 0; }
+.fs-floor { stroke: var(--mk-gold-400); stroke-width: 2; stroke-dasharray: 7 6; vector-effect: non-scaling-stroke; }
+.fs-line { fill: none; stroke: url(#fsLine); stroke-width: 3.5; stroke-linejoin: round; stroke-linecap: round; vector-effect: non-scaling-stroke; filter: drop-shadow(0 0 8px rgba(212,175,55,.45)); }
+.fs-line-gold { stop-color: var(--mk-gold-400); }
+.fs-line-loss { stop-color: var(--mk-danger-500); }
+.fs-after { stroke: var(--mk-danger-500); stroke-width: 2; stroke-dasharray: 2 6; stroke-linecap: round; opacity: .7; vector-effect: non-scaling-stroke; }
+.fs-dot { position: absolute; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; border: 3px solid var(--mk-obsidian-950); }
+.fs-dot--high { left: 37.73%; top: 21.28%; background: var(--mk-gold-400); box-shadow: 0 0 0 4px rgba(212,175,55,.22), 0 0 18px rgba(212,175,55,.6); }
+.fs-dot--called { left: 89.87%; top: 65.13%; background: var(--mk-danger-500); box-shadow: 0 0 0 4px rgba(248,113,113,.2), 0 0 18px rgba(248,113,113,.55); }
+.fs-lab { position: absolute; white-space: nowrap; font-family: var(--mk-font-mono); font-size: var(--mk-mono-sm); letter-spacing: .04em; }
+.fs-lab b { font-weight: 700; }
+.fs-lab--high { left: 37.73%; top: 21.28%; transform: translate(-50%, -175%); color: var(--mk-gold-300); }
+.fs-lab--floor { right: 0; top: 32%; transform: translateY(-150%); color: var(--mk-gold-400); }
+.fs-lab--called { left: 89.87%; top: 65.13%; transform: translate(-88%, 80%); color: var(--mk-danger-500); }
+.fs-axis { position: relative; height: 18px; margin-top: 8px; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: .06em; color: var(--mk-text-tertiary); }
+.fs-axis span { position: absolute; top: 0; transform: translateX(-50%); }
+.fs-axis-0 { left: 4%; }
+.fs-axis-1 { left: 37.73%; }
+.fs-axis-2 { left: 89.87%; }
+.fs-beats { list-style: none; margin: 22px 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; }
+/* Subgrid: the five rows of every beat (time, head, you type, MAKETZO answers, note) line up across the three. */
+.fs-beat { display: grid; grid-row: span 5; grid-template-rows: subgrid; row-gap: 14px; align-content: start; min-width: 0; padding: 22px 22px 24px; border-radius: 20px; background: var(--mk-surface-raised); border: 1px solid rgba(212,175,55,.22); }
+.fs-beat--called { border-color: rgba(248,113,113,.34); background: linear-gradient(160deg, rgba(248,113,113,.06), transparent 50%), var(--mk-surface-raised); }
+.fs-beat--green { border-color: rgba(74,222,128,.30); background: linear-gradient(160deg, rgba(74,222,128,.06), transparent 50%), var(--mk-surface-raised); }
+.fs-time { margin: 0; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-gold-400); }
+.fs-beat--called .fs-time { color: var(--mk-danger-500); }
+.fs-beat--green .fs-time { color: var(--mk-profit-500); }
+.fs-head { margin: -6px 0 2px; font-family: var(--mk-font-display); font-size: clamp(1.55rem, 2.1vw, 1.95rem); line-height: 1; letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); font-weight: 400; text-wrap: balance; }
+.fs-step { display: flex; flex-direction: column; gap: 8px; }
+.fs-k { margin: 0; font-family: var(--mk-font-mono); font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--mk-text-tertiary); }
+.fs-shot { display: block; width: 100%; height: auto; border-radius: 14px; box-shadow: 0 16px 36px rgba(0,0,0,.45); }
+.fs-shot--type { width: min(100%, 280px); border-radius: 12px; }
+.fs-shot--tap { border-radius: 999px; }
+.fs-note { margin: 2px 0 0; font-size: var(--mk-text-sm); line-height: 1.55; color: var(--mk-text-secondary); }
+.fs-end { display: flex; flex-direction: column; align-items: center; gap: 18px; margin-top: 40px; text-align: center; }
+.fs-end-line { margin: 0; font-size: var(--mk-text-lg); color: var(--mk-text-secondary); }
+.fs-end-line strong { color: var(--mk-text-primary); }
+@media (max-width: 980px) {
+  .fs-beats { grid-template-columns: minmax(0, 1fr); max-width: 470px; margin-inline: auto; }
 }
-/* CRITICAL: several sim children set `display` in CSS, which would override the
-   `hidden` attribute (UA `[hidden]{display:none}` is low-priority). Force it. */
-.sim [hidden] { display: none !important; }
-.sim-eyebrow-in {
-  font-family: var(--mk-font-mono);
-  font-size: var(--mk-mono-xs);
-  letter-spacing: var(--mk-track-eyebrow);
-  text-transform: uppercase;
-  color: var(--mk-text-tertiary);
-  text-align: center;
-  margin-bottom: 14px;
-}
-.sim-event {
-  display: flex; align-items: center; gap: 9px;
-  padding: 11px 14px; margin-bottom: 16px;
-  background: var(--mk-surface-base);
-  border: var(--mk-border-hairline);
-  border-radius: var(--mk-radius-card-sm);
-  font-size: var(--mk-text-sm);
-  color: var(--mk-text-primary);
-  min-height: 64px;            /* reserve 2 lines so a longer event line never grows the panel */
-  transition: border-color var(--mk-dur-med);
-}
-.sim-event-tag {
-  font-family: var(--mk-font-mono);
-  font-size: var(--mk-mono-xs);
-  letter-spacing: .04em;
-  color: var(--mk-text-tertiary);
-  flex-shrink: 0;
-}
-.sim-saved {
-  display: inline-block;
-  font-weight: 700;
-  color: var(--mk-profit-500);
-}
-.sim-screen {
-  position: relative;
-  background:
-    radial-gradient(620px 320px at 50% -10%, rgba(212,175,55,.07), transparent 70%),
-    var(--mk-surface-raised);
-  border: var(--mk-border-hairline);
-  border-radius: var(--mk-radius-card-lg);
-  padding: 28px;
-  overflow: hidden;
-  transition: border-color var(--mk-dur-med);
-}
-.sim-screen[data-tone="warn"] { border-color: rgba(251,146,60,.34); }
-.sim-screen[data-tone="bad"]  { border-color: rgba(248,113,113,.34); }
-.sim-top {
-  display: flex; align-items: center; justify-content: space-between;
-  padding-bottom: 18px; margin-bottom: 18px;
-  border-bottom: var(--mk-border-hairline);
-}
-.sim-clock {
-  display: inline-flex; align-items: center; gap: 9px;
-  font-family: var(--mk-font-mono);
-  font-size: var(--mk-mono-sm);
-  letter-spacing: .04em;
-  color: var(--mk-text-tertiary);
-}
-.sim-clock-dot {
-  width: 8px; height: 8px; border-radius: 50%;
-  background: var(--mk-profit-500);
-  box-shadow: 0 0 10px var(--mk-profit-500);
-  animation: mk-pulse 1.4s infinite;
-}
-.sim-state {
-  flex-shrink: 0;
-  min-width: 132px;            /* fixed footprint so the changing state text never resizes the row */
-  text-align: center;
-  font-family: var(--mk-font-mono);
-  font-size: var(--mk-mono-md);
-  font-weight: 500;
-  letter-spacing: var(--mk-track-eyebrow);
-  text-transform: uppercase;
-  padding: 7px 15px;
-  border-radius: var(--mk-radius-pill);
-  border: 1px solid transparent;
-  transition: color var(--mk-dur-med), background var(--mk-dur-med), border-color var(--mk-dur-med);
-}
-.sim-state[data-tone="good"] { color: var(--mk-profit-500); background: var(--mk-profit-700); border-color: rgba(74,222,128,.25); }
-.sim-state[data-tone="warn"] { color: var(--mk-warning-500); background: var(--mk-warning-700); border-color: rgba(251,146,60,.30); }
-.sim-state[data-tone="bad"]  { color: var(--mk-danger-500); background: var(--mk-danger-700); border-color: rgba(248,113,113,.28); }
-.sim-pnl-wrap { text-align: center; margin-bottom: 22px; }
-.sim-pnl-label {
-  font-family: var(--mk-font-mono);
-  font-size: var(--mk-mono-xs);
-  letter-spacing: var(--mk-track-eyebrow);
-  text-transform: uppercase;
-  color: var(--mk-text-tertiary);
-  margin-bottom: 6px;
-}
-.sim-pnl {
-  font-family: var(--mk-font-display);
-  font-size: clamp(2.6rem, 7vw, 3.8rem);
-  letter-spacing: var(--mk-track-display);
-  line-height: 1;
-  color: var(--mk-text-primary);
-  transition: color var(--mk-dur-med);
-}
-.sim-pnl[data-tone="good"] { color: var(--mk-profit-500); }
-.sim-pnl[data-tone="warn"] { color: var(--mk-warning-500); }
-.sim-pnl[data-tone="bad"]  { color: var(--mk-danger-500); }
-.sim-strikes {
-  display: flex; align-items: center; justify-content: center; gap: 12px;
-  margin-bottom: 20px;
-}
-.sim-strike {
-  width: 38px; height: 38px;
-  border-radius: var(--mk-radius-pill);
-  display: inline-flex; align-items: center; justify-content: center;
-  font-family: var(--mk-font-display);
-  font-size: 1.2rem; letter-spacing: var(--mk-track-display);
-  background: var(--mk-surface-elevated);
-  color: var(--mk-text-tertiary);
-  border: 2px solid var(--mk-smoke-700);
-  transition: all var(--mk-dur-med) var(--mk-ease-out);
-}
-.sim-strike.hit  { background: var(--mk-danger-700); color: var(--mk-danger-500); border-color: var(--mk-danger-500); }
-.sim-strike.warn { background: var(--mk-warning-700); color: var(--mk-warning-500); border-color: var(--mk-warning-500); box-shadow: 0 0 22px rgba(251,146,60,.30); }
-.sim-coach {
-  display: flex; flex-direction: column; gap: 8px;
-  padding: 18px 20px;
-  background: var(--mk-surface-elevated);
-  border-left: 3px solid var(--mk-brand);
-  border-radius: var(--mk-radius-card-sm);
-  min-height: 132px;           /* reserve for the longest COACH SAYS message so beat changes don't reflow the page */
-  justify-content: center;
-}
-.sim-coach-label {
-  font-family: var(--mk-font-mono);
-  font-size: var(--mk-mono-sm);
-  letter-spacing: var(--mk-track-eyebrow);
-  text-transform: uppercase;
-  color: var(--mk-brand);
-}
-.sim-coach-msg { font-size: var(--mk-text-lg); color: var(--mk-text-primary); line-height: var(--mk-lead-body); }
-.sim-reset {
-  position: absolute; inset: 0; z-index: 3;
-  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 24px;
-  background: radial-gradient(circle at 50% 45%, rgba(24,19,6,.93), rgba(6,7,10,.96));
-  backdrop-filter: blur(7px);
-}
-/* Breathing visual: NOT a port. It is the app's own reset visual, the same file
-   (assets/js/breath-orb.js, a copy of maketzo-app/lib/breath-orb.js that the app
-   build keeps identical), so the demo can never drift from the product again.
-   It carries its own styles; this page only sets its size. */
-.sim-breath-orb { --mk-borb-size: 220px; }
-.sim-reset-text {
-  font-family: var(--mk-font-mono);
-  font-size: var(--mk-mono-xs);
-  letter-spacing: var(--mk-track-eyebrow);
-  text-transform: uppercase;
-  color: var(--mk-text-tertiary);
-}
-.sim-ghost { margin-top: 18px; }
-.sim-ghost-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-.sim-ghost-col {
-  padding: 18px 16px;
-  border-radius: var(--mk-radius-card);
-  text-align: center;
-}
-.sim-ghost-col.bad  { background: var(--mk-danger-700); border: 1px solid rgba(248,113,113,.22); }
-.sim-ghost-col.good { background: var(--mk-profit-700); border: 1px solid rgba(74,222,128,.22); }
-.sim-ghost-k {
-  font-family: var(--mk-font-mono);
-  font-size: var(--mk-mono-xs);
-  letter-spacing: var(--mk-track-eyebrow);
-  text-transform: uppercase;
-  color: var(--mk-text-tertiary);
-  margin-bottom: 8px;
-}
-.sim-ghost-col.bad .sim-ghost-k  { color: var(--mk-danger-500); }
-.sim-ghost-col.good .sim-ghost-k { color: var(--mk-profit-500); }
-.sim-ghost-v {
-  font-family: var(--mk-font-display);
-  font-size: clamp(1.6rem, 4vw, 2.2rem);
-  letter-spacing: var(--mk-track-display);
-  line-height: 1; margin-bottom: 8px;
-}
-.sim-ghost-col.bad .sim-ghost-v  { color: var(--mk-danger-500); }
-.sim-ghost-col.good .sim-ghost-v { color: var(--mk-profit-500); }
-.sim-ghost-d { font-size: var(--mk-text-xs); color: var(--mk-text-tertiary); line-height: var(--mk-lead-snug); }
-/* spotlight ring — drawn over the active element inside the screen, glides
-   between targets as the story advances */
-/* The narration layer (spotlight ring + annotation card) is TEAL — a distinct
-   "guide" color so the eye reads ring + card as one connected system, separate
-   from the gold/green/red session content. */
-.sim-spot {
-  position: absolute; z-index: 4;
-  border: 2px solid rgb(45,212,191);
-  border-radius: 14px;
-  box-shadow: 0 0 0 3px rgba(45,212,191,.16), 0 0 26px rgba(45,212,191,.42);
-  pointer-events: none;
-  animation: simSpotPulse 1.9s var(--mk-ease-in-out) infinite;
-  transition: left .45s var(--mk-ease-out), top .45s var(--mk-ease-out),
-              width .45s var(--mk-ease-out), height .45s var(--mk-ease-out), opacity .3s ease;
-}
-@keyframes simSpotPulse {
-  0%,100% { box-shadow: 0 0 0 3px rgba(45,212,191,.14), 0 0 22px rgba(45,212,191,.30); }
-  50%     { box-shadow: 0 0 0 4px rgba(45,212,191,.22), 0 0 34px rgba(45,212,191,.52); }
-}
-/* annotation card — teal to match the ring; names what's circled + why it matters */
-.sim-note {
-  margin-top: 16px;
-  padding: 18px 20px;
-  background: linear-gradient(135deg, rgba(45,212,191,.08), transparent 60%), var(--mk-surface-raised);
-  border: 1px solid rgba(45,212,191,.30);
-  border-left: 3px solid rgb(45,212,191);
-  border-radius: var(--mk-radius-card);
-  min-height: 124px;
-}
-.sim-note-eyebrow {
-  display: flex; align-items: center; gap: 8px; margin-bottom: 8px;
-  font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs);
-  letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: rgb(45,212,191);
-}
-.sim-note-dot {
-  width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0;
-  background: rgb(45,212,191); box-shadow: 0 0 10px rgba(45,212,191,.75);
-}
-.sim-note-title {
-  font-family: var(--mk-font-display); font-size: var(--mk-display-md);
-  letter-spacing: var(--mk-track-display); text-transform: uppercase;
-  color: var(--mk-text-primary); line-height: 1.1; margin-bottom: 8px;
-}
-.sim-note-body { font-size: var(--mk-text-md); color: var(--mk-text-secondary); line-height: var(--mk-lead-body); }
-/* transport / scrubber — prev · play/pause · next + clickable beat segments */
-.sim-transport { display: flex; align-items: center; gap: 12px; margin-top: 18px; }
-.sim-tbtn {
-  flex-shrink: 0; width: 38px; height: 38px;
-  display: inline-flex; align-items: center; justify-content: center;
-  border-radius: 50%; background: transparent; color: var(--mk-text-primary);
-  border: var(--mk-border-gold); cursor: pointer; font-size: 13px; line-height: 1;
-  transition: color var(--mk-dur-snap), border-color var(--mk-dur-snap), background var(--mk-dur-snap);
-}
-.sim-tbtn:hover { color: var(--mk-brand); border-color: var(--mk-brand); background: rgba(212,175,55,.08); }
-.sim-tbtn svg { width: 14px; height: 14px; fill: currentColor; display: block; }
-.sim-tbtn--play {
-  width: 46px; height: 46px;
-  background: var(--mk-gold-gradient); color: var(--mk-text-on-gold); border-color: rgba(0,0,0,.18);
-}
-.sim-tbtn--play svg { width: 16px; height: 16px; }
-.sim-tbtn--play:hover {
-  background: var(--mk-gold-gradient);   /* keep the gold — don't let the generic hover tint blacken it */
-  color: var(--mk-text-on-gold);
-  border-color: rgba(0,0,0,.18);
-  box-shadow: var(--mk-glow-gold-sm);
-}
-.sim-scrub { flex: 1; display: flex; gap: 6px; }
-.sim-seg {
-  flex: 1; height: 6px; border-radius: var(--mk-radius-pill);
-  background: rgba(255,255,255,.10); cursor: pointer; position: relative; overflow: hidden;
-  transition: background .3s ease;
-}
-.sim-seg:hover { background: rgba(255,255,255,.20); }
-.sim-seg.done { background: var(--mk-brand); }
-.sim-seg-fill { position: absolute; inset: 0; width: 0; background: var(--mk-gold-gradient); }
-.sim-step {
-  flex-shrink: 0; min-width: 44px; text-align: right;
-  font-family: var(--mk-font-mono); font-size: var(--mk-mono-sm); color: var(--mk-text-tertiary);
-}
-.sim-cta {
-  text-align: center;
-  margin-top: 26px;
-  animation: simFadeUp .6s var(--mk-ease-out);
-}
-@keyframes simFadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-.sim-cta-line { font-size: var(--mk-text-lg); color: var(--mk-text-secondary); margin-bottom: 18px; line-height: var(--mk-lead-snug); }
-.sim-cta-line strong { color: var(--mk-text-primary); }
-.sim-cta .btn-primary { padding: 14px 26px; font-size: var(--mk-text-md); }
 @media (max-width: 600px) {
-  .sim-screen { padding: 22px 18px; }
-  .sim-state { min-width: 104px; font-size: var(--mk-mono-sm); padding: 6px 12px; }
-  .sim-coach { min-height: 150px; }
-  .sim-note { min-height: 150px; }
-  .sim-breath-orb { --mk-borb-size: 180px; }
-  .sim-transport { flex-wrap: wrap; row-gap: 10px; }
-  .sim-step { width: 100%; text-align: center; order: 3; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .sim-clock-dot { animation: none; }
-  .sim-cta { animation: none; }
+  .fs-chart { padding: 16px 14px 12px; }
+  .fs-plot { height: 170px; }
+  .fs-chart-head { flex-direction: column; align-items: flex-start; gap: 6px; }
+  .fs-lab { font-size: var(--mk-mono-xs); }
+  .fs-lab--floor { top: 32%; }
 }
 
 /* ═══ PREVIEW (2026-10-15): the product hero, the problem in three, how it works in three, what you get in eight ═══ */
@@ -2437,226 +2206,84 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
 <section class="section" id="see-it-work">
   <div class="section-inner">
     <p class="section-eyebrow reveal">02 &middot; See It Work</p>
-    <h2 class="section-title reveal">Watch a good day <em>go red.</em><br>Then watch the system pull it back.</h2>
-    <p class="section-sub reveal">One MAKETZO session, sped up. Same trader, same mistakes every trader makes, but this time the rules hold the line. <strong>Press play, or scrub through it yourself.</strong></p>
-    <div class="sim reveal" id="sim">
-      <div class="sim-screen" id="simScreen" data-tone="good">
-        <p class="sim-eyebrow-in">One morning, sped up</p>
-        <div class="sim-top">
-          <div class="sim-clock"><span class="sim-clock-dot"></span><span id="simClock">9:30 AM</span></div>
-          <div class="sim-state" id="simState" data-tone="good">In Rhythm</div>
+    <h2 class="section-title reveal">You type your P&amp;L. <em>MAKETZO holds the line.</em></h2>
+    <p class="section-sub reveal">One real morning in the app. After each trade, the trader types the session's net P&amp;L. Every card below is the app's own response, captured from the screen.</p>
+    <div class="fs reveal">
+      <div class="fs-chart" aria-hidden="true">
+        <div class="fs-chart-head"><span>Net P&amp;L, as typed</span><span class="fs-legend"><i class="fs-legend-floor"></i>Profit floor</span></div>
+        <div class="fs-plot">
+          <svg viewBox="0 0 1000 260" preserveAspectRatio="none" focusable="false">
+            <defs>
+              <linearGradient id="fsLine" gradientUnits="userSpaceOnUse" x1="40" y1="0" x2="899" y2="0">
+                <stop class="fs-line-gold" offset="0"/><stop class="fs-line-gold" offset=".42"/><stop class="fs-line-loss" offset="1"/>
+              </linearGradient>
+              <linearGradient id="fsArea" x1="0" y1="0" x2="0" y2="1">
+                <stop class="fs-area-top" offset="0"/><stop class="fs-area-bottom" offset="1"/>
+              </linearGradient>
+            </defs>
+            <line class="fs-zero" x1="40" y1="194.7" x2="960" y2="194.7"/>
+            <polygon class="fs-area" points="40,194.7 377.3,55.3 898.7,169.3 960,169.3 960,194.7"/>
+            <line class="fs-floor" x1="377.3" y1="83.2" x2="960" y2="83.2"/>
+            <polyline class="fs-line" points="40,194.7 377.3,55.3 898.7,169.3"/>
+            <line class="fs-after" x1="898.7" y1="169.3" x2="960" y2="169.3"/>
+          </svg>
+          <span class="fs-dot fs-dot--high"></span>
+          <span class="fs-dot fs-dot--called"></span>
+          <span class="fs-lab fs-lab--high"><b>+$220</b> high</span>
+          <span class="fs-lab fs-lab--floor">Floor <b>$176</b></span>
+          <span class="fs-lab fs-lab--called"><b>+$40</b> day called</span>
         </div>
-        <div class="sim-pnl-wrap">
-          <div class="sim-pnl-label">Session P&amp;L</div>
-          <div class="sim-pnl" id="simPnl" data-tone="good">+$120</div>
-        </div>
-        <div class="sim-strikes" id="simStrikes">
-          <span class="sim-strike" data-i="1">1</span>
-          <span class="sim-strike" data-i="2">2</span>
-          <span class="sim-strike" data-i="3">3</span>
-        </div>
-        <div class="sim-event" id="simEvent">
-          <span class="sim-event-tag">9:30</span>
-          <span class="sim-event-msg" id="simEventMsg">Clean open. You're up early, trading your plan.</span>
-        </div>
-        <div class="sim-coach">
-          <span class="sim-coach-label">&#128226; COACH SAYS</span>
-          <span class="sim-coach-msg" id="simCoachMsg">You're green out of the gate. Protect it.</span>
-        </div>
-        <div class="sim-reset" id="simReset" hidden>
-          <div class="sim-breath-orb" id="simBreathOrb"></div>
-          <div class="sim-reset-text">Reset Protocol &middot; breathe with the ring</div>
-        </div>
-        <div class="sim-spot" id="simSpot" hidden></div>
+        <div class="fs-axis"><span class="fs-axis-0">9:30</span><span class="fs-axis-1">9:41</span><span class="fs-axis-2">9:58</span></div>
       </div>
-      <div class="sim-transport">
-        <button class="sim-tbtn" id="simPrev" type="button" aria-label="Previous step"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 6h2.2v12H7zM20 6v12l-9-6z"/></svg></button>
-        <button class="sim-tbtn sim-tbtn--play" id="simPlay" type="button" aria-label="Play or pause"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></button>
-        <button class="sim-tbtn" id="simNext" type="button" aria-label="Next step"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.8 6H17v12h-2.2zM4 6l9 6-9 6z"/></svg></button>
-        <div class="sim-scrub" id="simScrub"></div>
-        <div class="sim-step" id="simStep">1 / 5</div>
-      </div>
-      <div class="sim-note" id="simNote">
-        <span class="sim-note-eyebrow"><span class="sim-note-dot"></span><span id="simNoteLabel">Status band</span></span>
-        <div class="sim-note-title" id="simNoteTitle">It reads your state, live</div>
-        <div class="sim-note-body" id="simNoteBody">Every trade re-scores your session in real time. The status band always knows whether you're in control or starting to drift.</div>
-      </div>
-      <div class="sim-ghost" id="simGhost" hidden>
-        <div class="sim-ghost-row">
-          <div class="sim-ghost-col bad">
-            <div class="sim-ghost-k">Without MAKETZO</div>
-            <div class="sim-ghost-v">&minus;$840</div>
-            <div class="sim-ghost-d">held the revenge trade, doubled down, blew the week</div>
+      <ol class="fs-beats">
+        <li class="fs-beat">
+          <p class="fs-time">9:41 AM</p>
+          <h3 class="fs-head">Up $220. A floor goes in.</h3>
+          <div class="fs-step">
+            <p class="fs-k">You type</p>
+            <img class="fs-shot fs-shot--type" src="assets/see-it-work/type-220.png" width="280" height="49" loading="lazy" alt="The Net P&amp;L field with 220 typed in, beside the Update button">
           </div>
-          <div class="sim-ghost-col good">
-            <div class="sim-ghost-k">With MAKETZO</div>
-            <div class="sim-ghost-v">+$89</div>
-            <div class="sim-ghost-d">reset after strike two, came back calm, closed the day <span class="sim-saved">green</span></div>
+          <div class="fs-step">
+            <p class="fs-k">MAKETZO answers</p>
+            <img class="fs-shot" src="assets/see-it-work/floor-176.png" width="316" height="139" loading="lazy" alt="Profit Floor, $176, from the $220 high: Your walk-away line. Hit it and the day is called.">
           </div>
-        </div>
-      </div>
-      <div class="sim-cta" id="simCta" hidden>
-        <p class="sim-cta-line">The blow-up that never happened. <strong>That's the whole product.</strong></p>
-        <button class="btn-primary" data-cta-source="sim" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
-      </div>
+          <p class="fs-note">Your walk-away line sits 20% under the $220 high, and it only moves up.</p>
+        </li>
+        <li class="fs-beat fs-beat--called">
+          <p class="fs-time">9:58 AM</p>
+          <h3 class="fs-head">One chase. Through the floor.</h3>
+          <div class="fs-step">
+            <p class="fs-k">You type</p>
+            <img class="fs-shot fs-shot--type" src="assets/see-it-work/type-40.png" width="280" height="49" loading="lazy" alt="The Net P&amp;L field with 40 typed in, beside the Update button">
+          </div>
+          <div class="fs-step">
+            <p class="fs-k">MAKETZO answers</p>
+            <img class="fs-shot" src="assets/see-it-work/day-called.png" width="316" height="198" loading="lazy" alt="Day Called, $40: You went through your $176 floor. Call the day here and keep the rest. $136 below your floor. Override and keep trading.">
+          </div>
+          <p class="fs-note">The chase cost $180. It counts as strike one and drops the day through the $176 floor, so the app calls the day while you're still green.</p>
+        </li>
+        <li class="fs-beat fs-beat--green">
+          <p class="fs-time">9:59 AM</p>
+          <h3 class="fs-head">You walk away green.</h3>
+          <div class="fs-step">
+            <p class="fs-k">You tap</p>
+            <img class="fs-shot fs-shot--tap" src="assets/see-it-work/walk-away.png" width="302" height="61" loading="lazy" alt="The Walk Away button">
+          </div>
+          <div class="fs-step">
+            <p class="fs-k">MAKETZO answers</p>
+            <img class="fs-shot" src="assets/see-it-work/snapshot-low.png" width="282" height="143" loading="lazy" alt="From the Today's Snapshot debrief: peak $220, drawdown $180, 1 of 3 strikes used, 0 rules fired.">
+          </div>
+          <p class="fs-note">The day closes at +$40 with one strike used. Your debrief opens with every number already filled in.</p>
+        </li>
+      </ol>
     </div>
-    <p class="sec-more reveal">Checkpoints, strikes and the Reset, in full: <a href="system.html#the-moment" data-cta-source="sim" data-cta-target="system-the-moment">The System &rarr;</a></p>
+    <div class="fs-end reveal">
+      <p class="fs-end-line">One bad trade, then done. <strong>The day ends green.</strong></p>
+      <button class="btn-primary" data-cta-source="see-it-work" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
+    </div>
+    <p class="sec-more reveal">How the profit floor calls the day: <a href="system.html#profit-floor" data-cta-source="see-it-work" data-cta-target="system-profit-floor">The System &rarr;</a></p>
   </div>
 </section>
-<script>
-(function(){
-  var sim = document.getElementById('sim');
-  if (!sim) return;
-  var elScreen = document.getElementById('simScreen'),
-      elClock  = document.getElementById('simClock'),
-      elState  = document.getElementById('simState'),
-      elPnl    = document.getElementById('simPnl'),
-      elCoach  = document.getElementById('simCoachMsg'),
-      elEvent  = document.getElementById('simEventMsg'),
-      elEventTag = sim.querySelector('.sim-event-tag'),
-      elReset  = document.getElementById('simReset'),
-      elGhost  = document.getElementById('simGhost'),
-      elCta    = document.getElementById('simCta'),
-      elSpot   = document.getElementById('simSpot'),
-      elNote      = document.getElementById('simNote'),
-      elNoteTitle = document.getElementById('simNoteTitle'),
-      elNoteBody  = document.getElementById('simNoteBody'),
-      elNoteLabel = document.getElementById('simNoteLabel'),
-      elPrev   = document.getElementById('simPrev'),
-      elPlay   = document.getElementById('simPlay'),
-      elNext   = document.getElementById('simNext'),
-      elScrub  = document.getElementById('simScrub'),
-      elStep   = document.getElementById('simStep'),
-      elStrikesWrap = document.getElementById('simStrikes'),
-      elCoachBox    = sim.querySelector('.sim-coach'),
-      elPnlWrap     = sim.querySelector('.sim-pnl-wrap'),
-      breathHost = document.getElementById('simBreathOrb'),
-      strikes  = sim.querySelectorAll('.sim-strike');
-
-  var ICON_PLAY  = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>';
-  var ICON_PAUSE = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg>';
-
-  // ── Breathing: the app's own reset visual (assets/js/breath-orb.js). A quicker
-  // cadence here (3-3) so the breathing is ONE beat of the story, not the headline.
-  var BREATH = [ { k:'inhale', label:'Inhale', sec:3, scale:1.0 }, { k:'exhale', label:'Exhale', sec:3, scale:0.55 } ];
-  var breathOrb = null;
-  function stopBreath(){ if (breathOrb) breathOrb.stop(); }
-  function startBreath(){
-    if (!breathOrb && breathHost && window.MaketzoBreathOrb) breathOrb = window.MaketzoBreathOrb.mount(breathHost);
-    if (breathOrb) breathOrb.start(BREATH);
-  }
-
-  var beats = [
-    { time:'9:30 AM', tag:'9:30', pnl:'+$120', tone:'good', state:'In Rhythm', strikes:0, spot:'status',
-      event:"Clean open. You're trading the setups you planned.",
-      coach:"Green and disciplined out of the gate. Protect it. Don't give it back chasing the next candle.",
-      note:{ label:'Status band', t:'It reads your state, live', b:"Every trade re-scores your session in real time. The status band always knows whether you're in control or starting to drift, before you do." } },
-    { time:'9:52 AM', tag:'9:52', pnl:'+$40', tone:'warn', state:'Caution', strikes:1, spot:'strikes',
-      event:"You chased an extended move that wasn't your setup.",
-      coach:"That wasn't one of your setups. Strike one. One impulsive trade is human; the second is where good days unravel.",
-      note:{ label:'Strike System', t:'The Strike System fires', b:"Break a rule and you earn a strike, tracked automatically. Three locks the day. The count is kept for you, so it never relies on willpower." } },
-    { time:'10:18 AM', tag:'10:18', pnl:'−$160', tone:'bad', state:'Elevated', strikes:2, warn:true, spot:'coach',
-      event:"A revenge trade to win it back fast. Now you're tilted.",
-      coach:"Stop. Down and forcing it is tilt, not a setup. One more rule-break and I lock the session.",
-      note:{ label:'Coach Says', t:'COACH SAYS steps in', b:"The blunt warning you'd never give yourself, delivered the instant your behavior turns, not buried in tomorrow's journal." } },
-    { time:'10:31 AM', tag:'10:31', pnl:'−$160', tone:'warn', state:'Reset', strikes:2, warn:true, reset:true, spot:'reset',
-      event:"You reach for the mouse again. The Reset Protocol steps in.",
-      coach:"Hands off. One slow breath before you do real damage.",
-      note:{ label:'Reset Protocol', t:'It steps in before the damage', b:"The moment tilt or overtrading shows up, MAKETZO interrupts the session and walks you through a guided reset, so you come back composed instead of compounding the loss." } },
-    { time:'10:58 AM', tag:'10:58', pnl:'+$89', tone:'good', state:'In Control', strikes:2, spot:'pnl', ghost:true, cta:true,
-      event:"Calm again, you take one clean setup and close green.",
-      coach:"You were one revenge trade from −$840. The reset held the line.",
-      note:{ label:'Session P&L', t:'The morning, contained', b:"Same trader, same mistakes, but it ends +$89 instead of −$840. That's accountability in real time: it enforces the discipline you set when you were thinking clearly." } }
-  ];
-  var durs = [5500, 5800, 6200, 6000, 6500];
-  var N = beats.length;
-  var cur = 0, playing = false, timer = null;
-  var segs = [];
-
-  function setStrikes(n, warn){
-    strikes.forEach(function(s){ var i = +s.dataset.i; s.classList.toggle('hit', i <= n); s.classList.toggle('warn', !!warn && i === n); });
-  }
-  function spotlight(b){
-    var tgt = null;
-    if (b.spot === 'status') tgt = elState;
-    else if (b.spot === 'strikes') tgt = elStrikesWrap;
-    else if (b.spot === 'coach') tgt = elCoachBox;
-    else if (b.spot === 'pnl') tgt = elPnlWrap;
-    if (!tgt || b.reset){ elSpot.hidden = true; return; }   // reset beat: the breathing ring is the focus
-    var pad = 8;
-    elSpot.hidden = false;
-    elSpot.style.left   = (tgt.offsetLeft - pad) + 'px';
-    elSpot.style.top    = (tgt.offsetTop - pad) + 'px';
-    elSpot.style.width  = (tgt.offsetWidth + pad*2) + 'px';
-    elSpot.style.height = (tgt.offsetHeight + pad*2) + 'px';
-  }
-  function applyBeat(b){
-    elClock.textContent = b.time;
-    elState.textContent = b.state; elState.dataset.tone = b.tone; elScreen.dataset.tone = b.tone;
-    elPnl.textContent = b.pnl; elPnl.dataset.tone = b.tone;
-    elEvent.textContent = b.event; if (elEventTag) elEventTag.textContent = b.tag;
-    elCoach.textContent = b.coach;
-    setStrikes(b.strikes, b.warn);
-    elReset.hidden = !b.reset; elGhost.hidden = !b.ghost; elCta.hidden = !b.cta;
-    // On the final beat the outcome cards + CTA are the conclusion, so the
-    // per-beat narration card would be redundant — hide it there.
-    if (elNote) elNote.hidden = !!b.ghost;
-    if (b.note){
-      if (elNoteLabel) elNoteLabel.textContent = b.note.label || 'Why this matters';
-      elNoteTitle.textContent = b.note.t; elNoteBody.textContent = b.note.b;
-    }
-    if (b.reset) startBreath(); else stopBreath();
-    requestAnimationFrame(function(){ spotlight(b); });
-  }
-  function paintScrub(){
-    for (var i = 0; i < N; i++){
-      segs[i].classList.toggle('done', i < cur);
-      var f = segs[i].firstChild; f.style.transition = 'none'; f.style.width = (i < cur ? '100%' : '0');
-    }
-    elStep.textContent = (cur + 1) + ' / ' + N;
-  }
-  function setPlayIcon(p){ elPlay.innerHTML = p ? ICON_PAUSE : ICON_PLAY; }
-  function clearT(){ if (timer){ clearTimeout(timer); timer = null; } }
-  function goTo(i){ clearT(); playing = false; setPlayIcon(false); stopBreath(); cur = Math.max(0, Math.min(N-1, i)); applyBeat(beats[cur]); paintScrub(); }
-  function pause(){
-    playing = false; clearT(); stopBreath(); setPlayIcon(false);
-    var f = segs[cur].firstChild; var w = getComputedStyle(f).width; f.style.transition = 'none'; f.style.width = w;
-  }
-  function runStep(){
-    applyBeat(beats[cur]);
-    for (var i = 0; i < N; i++){ segs[i].classList.toggle('done', i < cur); var ff = segs[i].firstChild; ff.style.transition = 'none'; ff.style.width = (i < cur ? '100%' : '0'); }
-    elStep.textContent = (cur + 1) + ' / ' + N;
-    var f = segs[cur].firstChild; void f.offsetWidth; f.style.transition = 'width ' + durs[cur] + 'ms linear'; f.style.width = '100%';
-    timer = setTimeout(function(){ if (cur < N-1){ cur++; runStep(); } else { playing = false; setPlayIcon(false); } }, durs[cur]);
-  }
-  function play(){ if (playing) return; if (cur >= N-1) { cur = 0; } playing = true; setPlayIcon(true); runStep(); }
-  function toggle(){ playing ? pause() : play(); }
-
-  for (var i = 0; i < N; i++){
-    var seg = document.createElement('div'); seg.className = 'sim-seg';
-    var fill = document.createElement('div'); fill.className = 'sim-seg-fill'; seg.appendChild(fill);
-    (function(idx){ seg.addEventListener('click', function(){ goTo(idx); }); })(i);
-    elScrub.appendChild(seg); segs.push(seg);
-  }
-
-  elPlay.addEventListener('click', toggle);
-  elPrev.addEventListener('click', function(){ goTo(cur - 1); });
-  elNext.addEventListener('click', function(){ goTo(cur + 1); });
-  window.addEventListener('resize', function(){ spotlight(beats[cur]); });
-
-  goTo(0);
-  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (reduce) {
-    goTo(N - 1); // show the full outcome statically; user can still scrub
-  } else if ('IntersectionObserver' in window) {
-    var once = false;
-    var io = new IntersectionObserver(function(entries){
-      entries.forEach(function(e){ if (e.isIntersecting && !once){ once = true; setTimeout(function(){ if (!playing && cur === 0) play(); }, 1200); io.disconnect(); } });
-    }, { threshold: 0.5 });
-    io.observe(sim);
-  }
-})();
-</script>
 <!-- SOCIAL PROOF -->
 <hr class="mk-rule-gold">
 

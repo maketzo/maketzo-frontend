@@ -526,6 +526,18 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
   .page-hero .page-hero-sub { transition-delay: 950ms; }
   .page-hero .page-hero-sub + .page-hero-sub { transition-delay: 1100ms; }
 }
+/* PROFIT FLOOR (#profit-floor): real app cards from tools/site-preview/capture-floor.js */
+.floorx { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 36px; align-items: center; margin: 56px auto 0; max-width: 1080px; padding: 32px; border-radius: 22px; background: linear-gradient(160deg, rgba(212,175,55,.08), transparent 55%), var(--mk-surface-raised); border: 1px solid rgba(212,175,55,.3); box-shadow: var(--mk-glow-gold-sm); }
+.floorx-copy { min-width: 0; text-align: left; }
+.floorx-copy .section-eyebrow { margin-bottom: 12px; text-align: left; }
+.floorx-title { margin: 0 0 18px; font-family: var(--mk-font-display); font-weight: 400; font-size: clamp(1.8rem, 2.8vw, 2.5rem); line-height: 1.02; letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); text-wrap: balance; }
+.floorx-title em { font-style: normal; color: var(--mk-gold-400); }
+.floorx-list { margin: 0; padding: 0; list-style: none; display: grid; gap: 12px; }
+.floorx-list li { position: relative; padding-left: 22px; font-size: var(--mk-text-md); line-height: 1.5; color: var(--mk-text-secondary); }
+.floorx-list li::before { content: ""; position: absolute; left: 0; top: .62em; width: 10px; border-top: 2px dashed var(--mk-gold-400); }
+.floorx-shots { display: grid; gap: 14px; min-width: 0; }
+.floorx-shots img { display: block; width: 100%; height: auto; border-radius: 14px; box-shadow: 0 16px 36px rgba(0,0,0,.45); }
+@media (max-width: 860px) { .floorx { grid-template-columns: minmax(0, 1fr); padding: 24px 20px; } }
 </style>
 <script>try{if(document.cookie.indexOf('mkt_csrf=')>-1)document.documentElement.classList.add('mkt-auth');}catch(e){}</script>
 </head>
@@ -735,6 +747,26 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
         <span class="state-rule"><strong>Guardrails:</strong> Stop trading now.</span>
         <span class="state-rule">Close all positions.</span>
         <span class="state-rule">Walk away from the screen.</span>
+      </div>
+    </div>
+
+    <!-- THE PROFIT FLOOR, explained where the homepage's "How the profit floor calls the day" lands (Ed, 2026-10-15:
+         a deeper link must land on the section that explains it). Facts from maketzo-app lib/giveback-guard.js: arms
+         once the day's high clears half the daily goal, sits giveBackPct (default 20) under the high and only ratchets
+         up, and calls the day at the floor. The P&L input does NOT lock (removed 2026-06-26); Override is the way on. -->
+    <div class="floorx reveal" id="profit-floor">
+      <div class="floorx-copy">
+        <p class="section-eyebrow">PROFIT FLOOR</p>
+        <h3 class="floorx-title">Green early? <em>A floor goes under the day.</em></h3>
+        <ul class="floorx-list">
+          <li>It goes in once the day's high clears half your daily goal.</li>
+          <li>It sits 20% under that high unless you set a different give-back, and it only moves up.</li>
+          <li>Fall to it and the day is called while you're still green. Trading on means pressing Override and confirming it.</li>
+        </ul>
+      </div>
+      <div class="floorx-shots">
+        <img src="assets/see-it-work/floor-176.png" width="316" height="139" loading="lazy" alt="Profit Floor, $176, from the $220 high: Your walk-away line. Hit it and the day is called.">
+        <img src="assets/see-it-work/day-called.png" width="316" height="198" loading="lazy" alt="Day Called, $40: You went through your $176 floor. Call the day here and keep the rest.">
       </div>
     </div>
 
