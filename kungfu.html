@@ -23,7 +23,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://maketzo.co/assets/css/tokens.css">
 <link rel="stylesheet" href="https://maketzo.co/assets/css/components.css">
+<link rel="stylesheet" href="assets/css/capture.css?v=1">
 <script src="https://maketzo.co/assets/js/mkt-analytics.js?v=9" defer></script>
+<script src="assets/js/newsletter.js?v=5" defer></script>
 <script src="https://maketzo.co/assets/js/mkt-consent.js?v=1" defer></script>
 <script src="https://maketzo.co/assets/js/checkout.js?v=10" defer></script>
 <style>
@@ -201,6 +203,21 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
     <p class="kft-embed-disclaimer">Kung Fu Trader is an arcade game for entertainment and educational purposes only. It is not financial, investment, or trading advice, and nothing in it is a recommendation or solicitation to buy, sell, or hold any security. Trading involves substantial risk of loss. See the full <a href="https://maketzo.co/disclaimer">disclaimer</a>.</p>
   </section>
 
+<section class="cap-section cap--e1" id="capSection" hidden>
+  <div class="cap-card">
+    <p class="cap-eyebrow">AFTER THE DAY</p>
+    <h2 class="cap-title">Five Habits in a Game. One at a Time in Your Inbox.</h2>
+    <p class="cap-sub">Every other week, one email on a habit that costs small-cap day traders money, and how to break it. No spam, unsubscribe in one click.</p>
+    <form class="cap-form" id="emailForm" data-form-id="newsletter" onsubmit="return MKTNewsletter.handleForm(event, 'kft-result')" novalidate>
+          <input type="email" class="cap-input" name="email" placeholder="your@email.com" required autocomplete="email" aria-label="Email" aria-describedby="emailFormError">
+          <button type="submit" class="btn-primary">Subscribe &rarr;</button>
+          <div class="newsletter-error" id="emailFormError" hidden></div>
+        </form>
+        <div class="cap-success newsletter-success" id="emailSuccess" hidden>&#10003;&nbsp; You're in. Check your inbox for a welcome note from MAKETZO.</div>
+    <p class="cap-note">By subscribing you agree to receive email from MAKETZO. We never sell your data.</p>
+  </div>
+</section>
+
   <section class="kft-floors" aria-labelledby="kftFloorsH">
     <div class="kft-floors-inner">
       <h2 class="kft-floors-title" id="kftFloorsH">The Five Floors</h2>
@@ -345,6 +362,7 @@ var _finished = false;
 document.addEventListener('bt:result', function (e) {
   if (_finished) return;
   _finished = true;
+  var cap = document.getElementById('capSection'); if (cap) { cap.hidden = false; var cc = cap.querySelector('.cap-card'); if (cc) cc.classList.add('is-live'); }
   var d = (e && e.detail) || {};
   try { if (window.MKT && MKT.trackEvent) MKT.trackEvent('kft_public_finish', { score: d.score, won: d.won, floor: d.floor }); } catch (err) {}
 });

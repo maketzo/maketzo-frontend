@@ -1,0 +1,22 @@
+/* Email capture on the game pages (2026-10-15, B2): the form is bound by assets/js/newsletter.js. */
+.cap-section { padding: 10px 20px 0; }
+.cap-section[hidden] { display: none; }
+.cap-card { max-width: 600px; margin: 0 auto; padding: 28px 28px 22px; text-align: center; background: var(--mk-surface-raised); border: 1px solid var(--mk-border-gold-soft, rgba(212,175,55,.28)); border-radius: var(--mk-radius-card); box-shadow: var(--mk-glow-gold-sm, 0 0 24px rgba(212,175,55,.10)); }
+.cap-card.is-live { animation: capIn .55s ease-out both; }
+@keyframes capIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .cap-card.is-live { animation: none; } }
+.cap-eyebrow { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); margin: 0 0 12px; }
+.cap-title { font-family: var(--mk-font-display); font-size: clamp(1.45rem, 3vw, 1.9rem); letter-spacing: var(--mk-track-display); line-height: 1.08; text-transform: uppercase; font-weight: 400; color: var(--mk-text-primary); margin: 0 0 12px; }
+.cap-sub { font-size: var(--mk-text-md); line-height: var(--mk-lead-body, 1.6); color: var(--mk-text-secondary); max-width: 480px; margin: 0 auto 20px; }
+.cap-form { position: relative; display: flex; gap: 10px; max-width: 440px; margin: 0 auto; }
+.cap-input { flex: 1; min-width: 0; padding: 12px 14px; font-family: var(--mk-font-mono); font-size: var(--mk-mono-sm); color: var(--mk-text-primary); background: var(--mk-obsidian-950); border: 1px solid rgba(255,255,255,.12); border-radius: var(--mk-radius-input, 8px); }
+.cap-input::placeholder { color: var(--mk-text-tertiary); }
+.cap-input:focus { outline: none; border-color: var(--mk-brand); box-shadow: 0 0 0 3px rgba(212,175,55,.18); }
+.cap-input.invalid { border-color: #ef4444; }
+.cap-form .btn-primary { padding: 12px 18px; white-space: nowrap; }
+.cap-form .newsletter-error { position: absolute; top: calc(100% + 8px); left: 0; right: 0; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: .04em; color: #ef4444; text-align: left; }
+.cap-form .newsletter-error[hidden] { display: none; }
+.cap-success { margin: 6px auto 0; max-width: 440px; padding: 12px 14px; font-size: var(--mk-text-sm); color: var(--mk-profit-500); border: 1px solid rgba(34,197,94,.3); border-radius: var(--mk-radius-input, 8px); background: rgba(34,197,94,.06); }
+.cap-success[hidden] { display: none; }
+.cap-note { margin: 16px 0 0; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: .04em; color: var(--mk-text-tertiary); }
+@media (max-width: 520px) { .cap-card { padding: 24px 18px 18px; } .cap-form { flex-direction: column; } .cap-form .btn-primary { width: 100%; } .cap-form .newsletter-error { position: static; margin-top: 8px; } }

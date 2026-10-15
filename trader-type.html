@@ -26,6 +26,7 @@
 <link rel="stylesheet" href="assets/css/tokens.css">
 <link rel="stylesheet" href="assets/css/components.css">
 <link rel="stylesheet" href="assets/css/audio-player.css?v=9">
+<link rel="stylesheet" href="assets/css/capture.css?v=1">
 <script src="assets/js/mkt-analytics.js?v=9" defer></script>
 <script src="assets/js/newsletter.js?v=5" defer></script>
 <script src="assets/js/mkt-consent.js?v=1" defer></script>
@@ -222,6 +223,21 @@ body:has(.sticky-bar.visible) { padding-bottom: 80px; }
     <p class="tt-embed-disclaimer">Trader Type is a behavioral simulation for entertainment and educational purposes only. Play money on a simulated tape: not a real brokerage, no live market data, and no order ever reaches a market. It is not financial, investment, or trading advice, and nothing in it is a recommendation or solicitation to buy, sell, or hold any security. Your result is not a measure of skill and does not predict future results. Trading involves substantial risk of loss. See the full <a href="disclaimer.html">disclaimer</a>.</p>
   </section>
 
+<section class="cap-section cap--e1" id="capSection" hidden>
+  <div class="cap-card">
+    <p class="cap-eyebrow">AFTER THE RUN</p>
+    <h2 class="cap-title">Fix the Habit the Tape Just Exposed</h2>
+    <p class="cap-sub">Every other week, one email on a habit that costs small-cap day traders money, and how to break it. No spam, unsubscribe in one click.</p>
+    <form class="cap-form" id="emailForm" data-form-id="newsletter" onsubmit="return MKTNewsletter.handleForm(event, 'trader-type-result')" novalidate>
+          <input type="email" class="cap-input" name="email" placeholder="your@email.com" required autocomplete="email" aria-label="Email" aria-describedby="emailFormError">
+          <button type="submit" class="btn-primary">Subscribe &rarr;</button>
+          <div class="newsletter-error" id="emailFormError" hidden></div>
+        </form>
+        <div class="cap-success newsletter-success" id="emailSuccess" hidden>&#10003;&nbsp; You're in. Check your inbox for a welcome note from MAKETZO.</div>
+    <p class="cap-note">By subscribing you agree to receive email from MAKETZO. We never sell your data.</p>
+  </div>
+</section>
+
   <section class="tt-convert">
     <div class="tt-convert-inner">
       <div class="tt-convert-out">
@@ -268,8 +284,9 @@ body:has(.sticky-bar.visible) { padding-bottom: 80px; }
 </footer>
 
 <!-- Newsletter sticky-bar intentionally omitted on /trader-type: it is a fixed bottom
-     bar that collides with the in-game trade cockpit. The funnel here is the in-game
-     CTA + the result-card share, not email capture. (Overrides the §7 default.) -->
+     bar that collides with the in-game trade cockpit. Email capture here is the card that
+     appears under the game when the run ends (#capSection, 2026-10-15), bound by
+     assets/js/newsletter.js. (Overrides the §7 default.) -->
 
 <script>
 const API='https://api.maketzo.co';
@@ -302,6 +319,7 @@ var _ttFinished = false;
 document.addEventListener('bt:result', function (e) {
   if (_ttFinished) return;
   _ttFinished = true;
+  var cap = document.getElementById('capSection'); if (cap) { cap.hidden = false; var cc = cap.querySelector('.cap-card'); if (cc) cc.classList.add('is-live'); }
   var d = (e && e.detail) || {};
   try { if (window.MKT && MKT.trackEvent) MKT.trackEvent('trader_type_public_finish', { score: d.score, won: d.won }); } catch (err) {}
 });
