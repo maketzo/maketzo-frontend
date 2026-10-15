@@ -2210,7 +2210,14 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
 .hp-pills { display: flex; flex-wrap: wrap; gap: 6px; }
 .hp-pills span { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: .08em; padding: 4px 9px; border-radius: var(--mk-radius-pill); border: 1px solid rgba(255,255,255,.1); color: var(--mk-text-tertiary); }
 .hp-pills span.on { color: var(--mk-brand); border-color: rgba(212,175,55,.45); background: rgba(212,175,55,.08); }
-.pain3, .how3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; max-width: 1100px; margin: 36px auto 0; }
+.pain3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; max-width: 1100px; margin: 36px auto 0; }
+/* how it works: the three steps stacked at left, the dashboard at the 10:30 checkpoint at right, the whole shot one link to The System */
+.how-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 32px; align-items: center; max-width: 1100px; margin: 36px auto 0; }
+.how-steps { display: grid; gap: 14px; min-width: 0; }
+.how-shot { display: block; min-width: 0; text-decoration: none; color: inherit; transition: transform var(--mk-dur-snap) var(--mk-ease-out); }
+.how-shot:hover { transform: translateY(-3px); }
+.how-shot-cap { text-align: center; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-text-tertiary); margin: 0 0 12px; }
+.how-shot-more { text-align: center; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: .14em; text-transform: uppercase; color: var(--mk-brand); margin: 14px 0 0; }
 .pain3-card { padding: 24px 22px; background: var(--mk-surface-raised); border: var(--mk-border-hairline); border-radius: var(--mk-radius-card); }
 .pain3-time { font-family: var(--mk-font-mono); font-size: var(--mk-mono-sm); color: var(--mk-state-danger); letter-spacing: .08em; }
 .pain3-card h3, .how3-card h3 { font-family: var(--mk-font-display); font-size: var(--mk-display-sm); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); margin: 8px 0 8px; font-weight: 400; line-height: 1.1; }
@@ -2229,9 +2236,10 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
 .tool-card-text { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); line-height: 1.5; margin: 0; }
 .focus-feature-tag { display: inline-block; margin-left: 8px; vertical-align: middle; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); color: var(--mk-brand); border: 1px solid rgba(212,175,55,.35); border-radius: var(--mk-radius-pill); padding: 2px 8px; }
 .tool-grid--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); max-width: 1100px; margin: 36px auto 0; }
-.wyg-line { text-align: center; max-width: 760px; margin: 28px auto 0; font-size: var(--mk-text-sm); color: var(--mk-text-secondary); line-height: 1.6; }
-.wyg-line a { color: var(--mk-brand); border-bottom: 1px solid rgba(212,175,55,.4); text-decoration: none; }
-@media (max-width: 900px) { .phero { padding: 112px 20px 48px; } .phero-grid { grid-template-columns: 1fr; gap: 32px; } .pain3, .how3 { grid-template-columns: 1fr; } .tool-grid--4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.wyg-line, .sec-more { text-align: center; max-width: 760px; margin: 28px auto 0; font-size: var(--mk-text-sm); color: var(--mk-text-secondary); line-height: 1.6; }
+/* the deeper links: a gold underlined word wherever a feature is named in running copy */
+.wyg-line a, .sec-more a, .faq-a a, .proof-sub a { color: var(--mk-brand); border-bottom: 1px solid rgba(212,175,55,.4); text-decoration: none; }
+@media (max-width: 900px) { .phero { padding: 112px 20px 48px; } .phero-grid { grid-template-columns: 1fr; gap: 32px; } .pain3, .how-grid { grid-template-columns: 1fr; } .tool-grid--4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 420px) { .tool-grid--4 { grid-template-columns: 1fr; } .hp-tiles { grid-template-columns: 1fr 1fr; } }
 
 /* h1: the photo hero with the dashboard over its right half */
@@ -2240,16 +2248,17 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
 .hero-content--split .hero-headline { font-size: clamp(2.4rem, 3.9vw, 3.7rem); max-width: none; }
 .hero-content--split .hero-product { min-width: 0; }
 @media (max-width: 900px) { .hero-content--split { grid-template-columns: 1fr; gap: 28px; } }
-/* h2: the dashboard as a bridge strip under the photo hero */
-.hero-bridge { padding: 0 24px 56px; margin-top: -40px; position: relative; z-index: 2; }
-.hero-bridge-inner { max-width: 760px; margin: 0 auto; }
-.hero-bridge-cap { text-align: center; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-text-tertiary); margin: 0 0 12px; }
-.hero-bridge-proof { text-align: center; margin: 18px 0 0; font-size: var(--mk-text-sm); color: var(--mk-text-secondary); }
-.hero-bridge-proof b { color: var(--mk-text-primary); font-weight: 600; }
-.hero-bridge-proof a { color: var(--mk-brand); text-decoration: none; border-bottom: 1px solid rgba(212,175,55,.4); }
 /* the trial button stays visible on phones, outside the hamburger */
 .nav-cta--phone { display: none; }
-@media (max-width: 900px) { .nav-cta--phone { display: inline-flex; align-items: center; padding: 8px 12px; font-size: var(--mk-text-xs); margin-right: 10px; } }
+@media (max-width: 900px) {
+  .nav-cta--phone { display: inline-flex; align-items: center; padding: 8px 12px; font-size: var(--mk-text-xs); margin-left: auto; white-space: nowrap; }
+  #mainNav .nav-logo { flex: 0 1 auto; min-width: 0; }
+}
+@media (max-width: 480px) {
+  #mainNav .mk-brand-lockup__wordmark { height: 14px; width: auto; }
+  #mainNav .mk-brand-lockup__mark { height: 30px; width: auto; }
+  .nav-cta--phone { padding: 7px 10px; }
+}
 </style>
 </head>
 <body>
@@ -2310,6 +2319,7 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
       <a href="#see-it-work" class="btn-secondary">&#9654; See How It Works</a>
     </div>
     <div class="hero-proof">
+      <div class="proof-row"><div class="proof-icon-wrap">&#9733;</div><div class="proof-text-wrap"><div class="proof-title">Rated 4.9 of 5 by 34 traders</div><div class="proof-sub"><a href="#reviews">Read their words &darr;</a></div></div></div>
       <div class="proof-row">
         <div class="proof-icon-wrap">&#9889;</div>
         <div class="proof-text-wrap"><div class="proof-title">7 days free, full access</div><div class="proof-sub">Test everything, risk-free</div></div>
@@ -2325,29 +2335,6 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
     </div>
   </div>
 </section>
-<!-- the dashboard, under the hero (h2) -->
-<section class="hero-bridge" aria-label="The MAKETZO dashboard at the 10:30 checkpoint">
-  <div class="hero-bridge-inner">
-    <p class="hero-bridge-cap">The dashboard at the 10:30 checkpoint</p>
-    <div class="hero-product hero-product--bridge">
-      <div class="hp-window">
-        <div class="hp-bar"><span class="hp-dot"></span><span class="hp-dot"></span><span class="hp-dot"></span><span class="hp-bar-title">MAKETZO &middot; Dashboard</span><span class="hp-bar-time">10:30 AM ET</span></div>
-        <div class="hp-band"><span class="hp-band-eyebrow">Status</span><span class="hp-band-headline">Slow Day</span><span class="hp-band-sub">Flat at the 10:30 read. Protect capital, wind down.</span></div>
-        <div class="hp-tiles">
-          <div class="hp-tile hp-tile--profit"><span class="hp-tile-label">Session P&amp;L</span><span class="hp-tile-val">+$120.00</span></div>
-          <div class="hp-tile"><span class="hp-tile-label">Picard Score</span><span class="hp-tile-val">8<small>/10</small></span></div>
-          <div class="hp-tile"><span class="hp-tile-label">Strikes</span><span class="hp-tile-val">1<small> of 3</small></span></div>
-        </div>
-        <div class="hp-coach">
-          <div class="hp-coach-head"><span>&#128226; COACH SAYS</span><span>10:30 Checkpoint</span></div>
-          <p class="hp-coach-msg">Slow day. Protect capital: best setups only, or call it and keep the morning.</p>
-          <div class="hp-pills"><span class="on">SLOW DAY</span><span class="on">A+ SETUPS ONLY</span><span>NO EXPLORATORY</span><span class="on">STEP AWAY IF OFF</span><span>PROTECT CAPITAL</span></div>
-        </div>
-      </div>
-    <p class="hero-bridge-proof">Rated <b>4.9 of 5</b> by <b>34 traders</b>. <a href="#reviews">Read their words &darr;</a></p>
-  </div>
-</section>
-
 <!-- STICKY EMAIL BAR -->
 <div class="sticky-bar" id="stickyBar">
   <p class="sticky-bar-text"><strong>Stay Sharp.</strong> Bi-weekly trading discipline insights.</p>
@@ -2444,6 +2431,7 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
         <button class="btn-primary" data-cta-source="sim" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
       </div>
     </div>
+    <p class="sec-more reveal">Checkpoints, strikes and the Reset, in full: <a href="system.html" data-cta-source="sim" data-cta-target="system">The System &rarr;</a></p>
   </div>
 </section>
 <script>
@@ -2668,7 +2656,7 @@ document.addEventListener("DOMContentLoaded", function() {
     </div>
 </section>
 
-<!-- 03 HOW IT WORKS -->
+<!-- 04 HOW IT WORKS -->
 <hr class="mk-rule-gold">
 
 <section class="section section-dark" id="how">
@@ -2676,31 +2664,53 @@ document.addEventListener("DOMContentLoaded", function() {
     <p class="section-eyebrow reveal">04 &middot; How It Works</p>
     <h2 class="section-title reveal">Before the open. During the session. <em>After the close.</em></h2>
     <p class="section-sub reveal">Everything runs off one number you type, your net P&amp;L. Connect DAS later for trade-level detail.</p>
-    <div class="how3 reveal">
-      <div class="how3-card">
-        <span class="how3-step">Before the open</span>
-        <h3>The Lock-In</h3>
-        <p>A contract you sign while you're calm: your rules, your max loss, today's focus. It holds all day.</p>
-        <a href="focus.html" data-cta-source="how" data-cta-target="focus">Focus Room &rarr;</a>
+    <div class="how-grid reveal">
+      <div class="how-steps">
+        <div class="how3-card">
+          <span class="how3-step">Before the open</span>
+          <h3>The Lock-In</h3>
+          <p>A contract you sign while you're calm: your rules, your max loss, today's focus. It holds all day.</p>
+          <a href="focus.html" data-cta-source="how" data-cta-target="focus">Focus Room &rarr;</a>
+        </div>
+        <div class="how3-card how3-card--live">
+          <span class="how3-step">During the session</span>
+          <h3>COACH SAYS, the strikes, the Reset</h3>
+          <p>At your checkpoints it calls the day from your real P&amp;L. Three strikes and MAKETZO closes your day inside the app, never at your broker. Tilt gets a Reset. A green run gets a floor.</p>
+          <a href="system.html" data-cta-source="how" data-cta-target="system">The System &rarr;</a>
+        </div>
+        <div class="how3-card">
+          <span class="how3-step">After the close</span>
+          <h3>The Debrief and the Picard Score</h3>
+          <p>The day reads itself back, graded on the rules you kept, not the money you made. Tomorrow's focus waits at the open.</p>
+          <a href="journal.html" data-cta-source="how" data-cta-target="journal">The Journal &rarr;</a>
+        </div>
       </div>
-      <div class="how3-card how3-card--live">
-        <span class="how3-step">During the session</span>
-        <h3>COACH SAYS, the strikes, the Reset</h3>
-        <p>At your checkpoints it calls the day from your real P&amp;L. Three strikes and MAKETZO closes your day inside the app, never at your broker. Tilt gets a Reset. A green run gets a floor.</p>
-        <a href="system.html" data-cta-source="how" data-cta-target="system">The System &rarr;</a>
+      <a class="how-shot" href="system.html" data-cta-source="how" data-cta-target="system-dashboard" aria-label="The dashboard at the 10:30 checkpoint. How the call is made, on The System page">
+        <p class="how-shot-cap">The dashboard at the 10:30 checkpoint</p>
+        <div class="hero-product" aria-hidden="true">
+      <div class="hp-window">
+        <div class="hp-bar"><span class="hp-dot"></span><span class="hp-dot"></span><span class="hp-dot"></span><span class="hp-bar-title">MAKETZO &middot; Dashboard</span><span class="hp-bar-time">10:30 AM ET</span></div>
+        <div class="hp-band"><span class="hp-band-eyebrow">Status</span><span class="hp-band-headline">Slow Day</span><span class="hp-band-sub">Flat at the 10:30 read. Protect capital, wind down.</span></div>
+        <div class="hp-tiles">
+          <div class="hp-tile hp-tile--profit"><span class="hp-tile-label">Session P&amp;L</span><span class="hp-tile-val">+$120.00</span></div>
+          <div class="hp-tile"><span class="hp-tile-label">Picard Score</span><span class="hp-tile-val">8<small>/10</small></span></div>
+          <div class="hp-tile"><span class="hp-tile-label">Strikes</span><span class="hp-tile-val">1<small> of 3</small></span></div>
+        </div>
+        <div class="hp-coach">
+          <div class="hp-coach-head"><span>&#128226; COACH SAYS</span><span>10:30 Checkpoint</span></div>
+          <p class="hp-coach-msg">Slow day. Protect capital: best setups only, or call it and keep the morning.</p>
+          <div class="hp-pills"><span class="on">SLOW DAY</span><span class="on">A+ SETUPS ONLY</span><span>NO EXPLORATORY</span><span class="on">STEP AWAY IF OFF</span><span>PROTECT CAPITAL</span></div>
+        </div>
       </div>
-      <div class="how3-card">
-        <span class="how3-step">After the close</span>
-        <h3>The Debrief and the Picard Score</h3>
-        <p>The day reads itself back, graded on the rules you kept, not the money you made. Tomorrow's focus waits at the open.</p>
-        <a href="journal.html" data-cta-source="how" data-cta-target="journal">The Journal &rarr;</a>
-      </div>
+    </div>
+        <p class="how-shot-more">How the 10:30 call is made &rarr;</p>
+      </a>
     </div>
     <p class="how-note reveal">Checkpoints, COACH SAYS, strikes and the Focus Room are Pro. The journal and the daily grade come with every plan.</p>
   </div>
 </section>
 
-<!-- 04 WHAT YOU GET -->
+<!-- 05 WHAT YOU GET -->
 <hr class="mk-rule-gold">
 
 <section class="section" id="toolkit">
@@ -2710,12 +2720,12 @@ document.addEventListener("DOMContentLoaded", function() {
     <p class="section-sub reveal">Broker import, P&amp;L by hour, calendar, reports, tags: the journal job, covered. Then the things no journal has.</p>
     <div class="tool-grid tool-grid--4 reveal">
       <a class="tool-card" href="../dilution-check.html" data-cta-source="what-you-get" data-cta-target="dilution-check"><div class="tool-card-title">Dilution Check <span class="focus-feature-tag">PRO</span></div><p class="tool-card-text">Read a ticker's SEC filings: can they sell stock today, have they already, how long does the cash last.</p></a>
-      <a class="tool-card" href="../tools.html" data-cta-source="what-you-get" data-cta-target="halt-clock"><div class="tool-card-title">Halt Clock</div><p class="tool-card-text">When a halted small cap reopens, estimated, so an LULD halt never catches you flat-footed.</p></a>
+      <a class="tool-card" href="tools.html" data-cta-source="what-you-get" data-cta-target="halt-clock"><div class="tool-card-title">Halt Clock</div><p class="tool-card-text">When a halted small cap reopens, estimated, so an LULD halt never catches you flat-footed.</p></a>
       <a class="tool-card" href="../trade-replay.html" data-cta-source="what-you-get" data-cta-target="trade-replay"><div class="tool-card-title">Trade Replay</div><p class="tool-card-text">Any past chart. Prove whether your adds made money. Ten replays free, no signup.</p></a>
-      <a class="tool-card" href="../tools.html#learn" data-cta-source="what-you-get" data-cta-target="knowledge-center"><div class="tool-card-title">Knowledge Center</div><p class="tool-card-text">Learn it, write it, drill it: the library, My Playbook, Flash Cards from what you wrote.</p></a>
-      <a class="tool-card" href="../pricing.html" data-cta-source="what-you-get" data-cta-target="sticky-notes"><div class="tool-card-title">Sticky Notes</div><p class="tool-card-text">A scratchpad over your platform. One click sends a note to the journal.</p></a>
-      <a class="tool-card" href="../journal.html" data-cta-source="what-you-get" data-cta-target="setups-mistakes"><div class="tool-card-title">Setups &amp; Mistakes</div><p class="tool-card-text">Mark the decision candle on the chart, tag the mistake, write the takeaway.</p></a>
-      <a class="tool-card" href="../journal.html" data-cta-source="what-you-get" data-cta-target="picard-score"><div class="tool-card-title">Picard Score</div><p class="tool-card-text">A daily grade on the rules you kept, not the money you made.</p></a>
+      <a class="tool-card" href="tools.html#learn" data-cta-source="what-you-get" data-cta-target="knowledge-center"><div class="tool-card-title">Knowledge Center</div><p class="tool-card-text">Learn it, write it, drill it: the library, My Playbook, Flash Cards from what you wrote.</p></a>
+      <a class="tool-card" href="tools.html" data-cta-source="what-you-get" data-cta-target="sticky-notes"><div class="tool-card-title">Sticky Notes</div><p class="tool-card-text">A scratchpad over your platform. One click sends a note to the journal.</p></a>
+      <a class="tool-card" href="journal.html" data-cta-source="what-you-get" data-cta-target="setups-mistakes"><div class="tool-card-title">Setups &amp; Mistakes</div><p class="tool-card-text">Mark the decision candle on the chart, tag the mistake, write the takeaway.</p></a>
+      <a class="tool-card" href="journal.html" data-cta-source="what-you-get" data-cta-target="picard-score"><div class="tool-card-title">Picard Score</div><p class="tool-card-text">A daily grade on the rules you kept, not the money you made.</p></a>
       <a class="tool-card" href="../soundtrack.html" data-cta-source="what-you-get" data-cta-target="soundtrack"><div class="tool-card-title">The Soundtrack</div><p class="tool-card-text">Trading mistakes, turned into music. Conditioning, disguised as an album.</p></a>
     </div>
     <p class="wyg-line reveal">Dilution Check comes with Pro. Everything else is on every plan. <a href="tools.html">Every free tool and game &rarr;</a> &nbsp;&middot;&nbsp; <a href="journal.html">MAKETZO against TradeZella and TraderVue &rarr;</a></p>
@@ -2749,7 +2759,7 @@ document.addEventListener("DOMContentLoaded", function() {
           <li>Picard Score, a daily grade on following your rules</li>
           <li>Rule pills (custom rules)</li>
         </ul>
-        <button class="cta-outline" id="cta1" data-tier="journal" data-interval="month" onclick="handleCheckout(this.dataset.tier,event)">Start 7-Day Free Trial &rarr;</button>
+        <button class="cta-outline" id="cta1" data-tier="journal" data-interval="month" onclick="handleCheckout(this.dataset.tier,event)">Start Free Trial</button>
         <p class="price-note">7 days free &middot; No charge until day 8</p>
       </div>
       <div class="price-card featured reveal">
@@ -2766,7 +2776,7 @@ document.addEventListener("DOMContentLoaded", function() {
           <li>Maketzo Edge + Pulse on TradingView (invite within 24 hrs)</li>
           <li>Dilution Check, 100 company reads a month</li>
         </ul>
-        <button class="cta-gold" id="cta2" data-tier="pro" data-interval="month" onclick="handleCheckout(this.dataset.tier,event)">Start 7-Day Free Trial &rarr;</button>
+        <button class="cta-gold" id="cta2" data-tier="pro" data-interval="month" onclick="handleCheckout(this.dataset.tier,event)">Start Free Trial &rarr;</button>
         <p class="price-note">7 days free &middot; No charge until day 8</p>
       </div>
       <div class="price-card reveal">
@@ -2780,7 +2790,7 @@ document.addEventListener("DOMContentLoaded", function() {
           <li>Twice Pro's reads, for the trader who checks every gapper</li>
           <li>AI Training Engine, first access when it ships</li>
         </ul>
-        <button class="cta-outline" id="cta3" data-tier="elite" data-interval="month" onclick="handleCheckout(this.dataset.tier,event)">Start 7-Day Free Trial &rarr;</button>
+        <button class="cta-outline" id="cta3" data-tier="elite" data-interval="month" onclick="handleCheckout(this.dataset.tier,event)">Start Free Trial</button>
         <p class="price-note">7 days free &middot; No charge until day 8</p>
       </div>
     </div>
@@ -2802,9 +2812,9 @@ document.addEventListener("DOMContentLoaded", function() {
     <div class="faq-list">
       <div class="faq-item reveal"><button class="faq-q" onclick="toggleFaq(this)">Do I need to connect my broker?</button><div class="faq-a"><strong>No.</strong> Type your net P&amp;L and the accountability engine runs from day one. DAS Trader Pro import is optional, for trade-level detail, &cent;/share tracking and session analysis from your fills.</div></div>
       <div class="faq-item reveal"><button class="faq-q" onclick="toggleFaq(this)">Can MAKETZO stop my broker from taking a trade?</button><div class="faq-a"><strong>No, and we say so plainly.</strong> At three strikes MAKETZO closes your day inside the app: the P&amp;L log locks, COACH SAYS tells you to walk, and getting back in is a deliberate override with the strikes still standing. Your broker never hears from it. It works because you set it up when you were calm, and the version of you that is tilting has to stop and choose.</div></div>
-      <div class="faq-item reveal"><button class="faq-q" onclick="toggleFaq(this)">How is this different from TradeZella or TraderVue?</button><div class="faq-a">They record and analyze trades well, and <strong>MAKETZO does that too</strong>: DAS import, &cent;/share, win rate, equity curve, streaks. The difference is what happens before the mistake: checkpoints, strikes, a coach that speaks while the day is live, and a daily grade on the rules you kept.</div></div>
+      <div class="faq-item reveal"><button class="faq-q" onclick="toggleFaq(this)">How is this different from TradeZella or TraderVue?</button><div class="faq-a">They record and analyze trades well, and <strong>MAKETZO does that too</strong>: DAS import, &cent;/share, win rate, equity curve, streaks. The difference is what happens before the mistake: <a href="system.html">checkpoints, strikes, a coach that speaks while the day is live</a>, and <a href="journal.html">a daily grade on the rules you kept</a>.</div></div>
       <div class="faq-item reveal"><button class="faq-q" onclick="toggleFaq(this)">How does the 7-day free trial work?</button><div class="faq-a">Card required at signup, <strong>no charge until day 8</strong>. Cancel any time before then and you pay nothing. Pro and Elite get their TradingView indicator invite within 24 hours.</div></div>
-      <div class="faq-item reveal"><button class="faq-q" onclick="toggleFaq(this)">Is MAKETZO built for small-cap traders?</button><div class="faq-a"><strong>Yes, on purpose.</strong> Dilution Check, Halt Clock and the coaching cadence are built for the speed of small-cap momentum. If you trade large caps or swing, the accountability engine still applies; the indicators were tuned for small caps.</div></div>
+      <div class="faq-item reveal"><button class="faq-q" onclick="toggleFaq(this)">Is MAKETZO built for small-cap traders?</button><div class="faq-a"><strong>Yes, on purpose.</strong> <a href="../dilution-check.html">Dilution Check</a>, <a href="tools.html">Halt Clock</a> and the coaching cadence are built for the speed of small-cap momentum. If you trade large caps or swing, the accountability engine still applies; the indicators were tuned for small caps.</div></div>
       <div class="faq-item reveal"><button class="faq-q" onclick="toggleFaq(this)">Is my trading data private?</button><div class="faq-a">Yours alone. <strong>MAKETZO does not share, sell or expose your trading data</strong>, and nothing you log goes to an AI model unless you turn a feature on. Export or delete your data any time.</div></div>
     </div>
   </div>
@@ -2820,7 +2830,7 @@ document.addEventListener("DOMContentLoaded", function() {
     <h2 class="final-cta-headline reveal">Stop losing to <em>yourself.</em></h2>
     <p class="final-cta-sub reveal">7 days free. Full access from day one. No charge until day 8. Cancel in one click.</p>
     <div class="final-cta-btns reveal">
-      <button class="btn-primary" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
+      <button class="btn-primary" onclick="handleCheckout('pro',event)">Start Free Trial &rarr;</button>
       <a href="pricing.html" class="btn-secondary">Compare All Plans</a>
     </div>
     <p class="final-cta-note reveal">Pro &middot; $49/mo or $399/yr &middot; Discipline OS, Focus Room &amp; Dilution Check &middot; Cancel anytime</p>
