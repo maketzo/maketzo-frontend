@@ -48,7 +48,7 @@
 </script>
 <link rel="preload" as="image" href="assets/hero-trader.avif" type="image/avif" fetchpriority="high">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&family=Architects+Daughter&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/tokens.css">
 <link rel="stylesheet" href="assets/css/components.css">
 <link rel="stylesheet" href="assets/css/audio-player.css?v=11">
@@ -1148,7 +1148,9 @@ a.focus-feature-card { text-decoration: none; color: inherit; }
 .kc-card p { margin: 6px 0 0; font-size: var(--mk-text-md); color: var(--mk-text-primary); line-height: 1.45; }
 .kc-card-eyebrow { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: .14em; text-transform: uppercase; color: var(--mk-text-tertiary); }
 .kc-card--front { position: relative; z-index: 1; border-color: rgba(212,175,55,.35); box-shadow: var(--mk-glow-gold-sm, 0 0 24px rgba(212,175,55,.10)); }
-.kc-card--back { margin: -12px 0 0 22px; transform: rotate(-1.5deg); background: var(--mk-surface-raised); }
+.kc-card--back { margin: -12px 0 0 22px; background: var(--mk-surface-raised); }
+/* The answer is the trader's own rule, so it is set in a hand; the question above it is the app's and stays in the UI face. */
+.kc-card--back p { font-family: 'Architects Daughter', var(--mk-font-sans); font-size: 1.12rem; line-height: 1.35; }
 .kc-card--back .kc-card-eyebrow { color: var(--mk-brand); }
 .kc-card-meta { display: block; margin-top: 12px; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: .1em; text-transform: uppercase; color: var(--mk-text-tertiary); }
 
