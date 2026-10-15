@@ -135,6 +135,13 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
    stays free for the link. */
 .tool-card-nameline { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .tool-card-tag--pro { color: var(--mk-brand); border-color: rgba(212,175,55,.35); }
+/* Station 02: the Knowledge Center's three steps inside its featured card */
+.kc-loop { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 6px; }
+.kc-step { display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 10px; align-items: start; padding: 14px; border-radius: var(--mk-radius-card); background: var(--mk-obsidian-900); border: var(--mk-border-hairline); }
+.kc-step-num { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; background: rgba(212,175,55,.10); border: 1px solid rgba(212,175,55,.42); color: var(--mk-brand); font-family: var(--mk-font-mono); font-size: var(--mk-mono-sm); }
+.kc-step-name { font-family: var(--mk-font-display); font-size: 1.1rem; letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); margin-bottom: 4px; }
+.kc-step-text { font-size: var(--mk-text-sm); color: var(--mk-text-tertiary); line-height: 1.5; }
+@media (max-width: 760px) { .kc-loop { grid-template-columns: 1fr; } }
 /* single-tool stations fill the width: content left, action (or in-app tag) right */
 .tool-card--row { flex-direction: row; align-items: center; gap: 28px; }
 .tool-card--row .tool-card-main { flex: 1 1 auto; display: flex; flex-direction: column; gap: 8px; }
@@ -289,31 +296,28 @@ body:has(.sticky-bar.visible) { padding-bottom: 80px; }
   </div>
 
   <!-- 02 -->
-  <div class="station reveal">
+  <div class="station reveal" id="learn">
     <div class="station-rail"><span class="station-num">02</span><span class="station-line"></span></div>
     <div class="station-body">
       <h2 class="station-title">Learn the game</h2>
       <div class="station-cards">
+        <!-- The Knowledge Center as the learn-write-drill loop (Ed, 2026-10-15): the library, My Playbook and Flash Cards are one tool, not three rows. -->
+        <div class="tool-card tool-card--featured">
+          <div class="tool-card-name">Knowledge Center</div>
+          <p class="tool-card-desc">Learn it, write it, drill it. The library, your own playbook and your flash cards live in one place, and the loop runs on every plan.</p>
+          <div class="kc-loop">
+            <div class="kc-step"><span class="kc-step-num">1</span><div><div class="kc-step-name">Learn</div><p class="kc-step-text">A searchable library of the small-cap game: the glossary, feature guides, how-tos and lessons, from what an ATM offering is to why the third loss costs the most. Share any article with a trader friend.</p></div></div>
+            <div class="kc-step"><span class="kc-step-num">2</span><div><div class="kc-step-name">Write &middot; My Playbook</div><p class="kc-step-text">Your own rules and handling notes as living documents you keep rewriting, instead of notes welded to a Tuesday. Capture a line from any article straight into the right document.</p></div></div>
+            <div class="kc-step"><span class="kc-step-num">3</span><div><div class="kc-step-name">Drill &middot; Flash Cards</div><p class="kc-step-text">Your playbook becomes a deck. Cards are suggested from what you wrote, and the review comes back on a schedule, so the rule is in your head on the day that tests it.</p></div></div>
+          </div>
+          <div class="tool-card-tag">IN THE APP &middot; FREE</div>
+        </div>
         <div class="tool-card tool-card--row">
           <div class="tool-card-main">
             <div class="tool-card-name">Trading OS</div>
             <p class="tool-card-desc">The whole trading system on one page: what to check before you click, how to manage what you took, and when to call the day. Save it, print it, live by it.</p>
           </div>
           <a class="tool-card-cta" href="trading-os.html" data-cta-source="tools" data-cta-target="trading-os">Read the Trading OS <span aria-hidden="true">&rarr;</span></a>
-        </div>
-        <div class="tool-card tool-card--row">
-          <div class="tool-card-main">
-            <div class="tool-card-name">Knowledge Center</div>
-            <p class="tool-card-desc">A searchable library of terms, how-tos, and setups, from what an ATM offering is to why the third loss costs the most.</p>
-          </div>
-          <div class="tool-card-tag">IN THE APP &middot; FREE</div>
-        </div>
-        <div class="tool-card tool-card--row">
-          <div class="tool-card-main">
-            <div class="tool-card-name">Flash Cards</div>
-            <p class="tool-card-desc">Your long-form notes on setups, turned into a deck and reviewed on a schedule, so the rule you wrote is in your head on the day that tests it.</p>
-          </div>
-          <div class="tool-card-tag">IN THE APP &middot; FREE</div>
         </div>
       </div>
     </div>

@@ -1124,23 +1124,34 @@ a.focus-feature-card { text-decoration: none; color: inherit; }
 @media (prefers-reduced-motion: reduce) { .game-tile { transition: none; } }
 
 /* ── Trade Replay, featured card ── */
-.replay-feature { display: grid; grid-template-columns: 1.15fr .85fr; gap: 32px; align-items: center; margin-top: 56px; padding: 30px 32px; border-radius: 14px; text-decoration: none; color: inherit; background: radial-gradient(560px 280px at 0% 0%, rgba(212,175,55,.14), transparent 60%), var(--mk-surface-raised); border: 1px solid rgba(212,175,55,.28); transition: transform .25s, border-color .25s; }
-.replay-feature:hover { transform: translateY(-3px); border-color: rgba(212,175,55,.5); }
-.replay-feature:focus-visible { outline: 2px solid var(--mk-brand); outline-offset: 3px; }
-.replay-text { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
-.replay-eyebrow { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: .16em; text-transform: uppercase; color: var(--mk-brand); }
-.replay-hook { font-family: var(--mk-font-display); font-size: clamp(1.8rem, 2.8vw, 2.5rem); line-height: .98; text-transform: uppercase; letter-spacing: .01em; color: var(--mk-text-primary); margin: 0; font-weight: 400; }
-.replay-hook em { color: var(--mk-brand); font-style: normal; }
-.replay-body { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); line-height: 1.55; margin: 0; max-width: 56ch; }
-.replay-cta { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: .16em; text-transform: uppercase; color: var(--mk-brand); }
+.replay-feature, .kc-feature { display: grid; grid-template-columns: 1.15fr .85fr; gap: 32px; align-items: center; margin-top: 56px; padding: 30px 32px; border-radius: 14px; text-decoration: none; color: inherit; background: radial-gradient(560px 280px at 0% 0%, rgba(212,175,55,.14), transparent 60%), var(--mk-surface-raised); border: 1px solid rgba(212,175,55,.28); transition: transform .25s, border-color .25s; }
+.replay-feature:hover, .kc-feature:hover { transform: translateY(-3px); border-color: rgba(212,175,55,.5); }
+.replay-feature:focus-visible, .kc-feature:focus-visible { outline: 2px solid var(--mk-brand); outline-offset: 3px; }
+.replay-text, .kc-text { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.replay-eyebrow, .kc-eyebrow { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: .16em; text-transform: uppercase; color: var(--mk-brand); }
+.replay-hook, .kc-hook { font-family: var(--mk-font-display); font-size: clamp(1.8rem, 2.8vw, 2.5rem); line-height: .98; text-transform: uppercase; letter-spacing: .01em; color: var(--mk-text-primary); margin: 0; font-weight: 400; }
+.replay-hook em, .kc-hook em { color: var(--mk-brand); font-style: normal; }
+.replay-body, .kc-body { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); line-height: 1.55; margin: 0; max-width: 56ch; }
+.replay-cta, .kc-cta { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: .16em; text-transform: uppercase; color: var(--mk-brand); }
 .replay-ledger { font-family: var(--mk-font-mono); display: grid; gap: 10px; padding: 18px 20px; border-radius: var(--mk-radius-card); background: var(--mk-obsidian-900); border: var(--mk-border-hairline); min-width: 0; }
 .replay-ledger-head { display: flex; justify-content: space-between; font-size: var(--mk-mono-xs); letter-spacing: .14em; text-transform: uppercase; color: var(--mk-text-tertiary); padding-bottom: 8px; border-bottom: var(--mk-border-hairline); }
 .replay-ledger-row { display: grid; grid-template-columns: 44px 1fr auto; gap: 12px; font-size: var(--mk-mono-sm); color: var(--mk-text-tertiary); }
 .replay-ledger-row b { font-weight: 400; color: var(--mk-text-primary); }
 .replay-ledger-total { display: flex; justify-content: space-between; padding-top: 8px; border-top: var(--mk-border-hairline); font-size: var(--mk-mono-sm); color: var(--mk-text-tertiary); }
 .replay-ledger-total b { font-weight: 400; color: var(--mk-state-profit); font-size: var(--mk-mono-md); }
-@media (max-width: 760px) { .replay-feature { grid-template-columns: 1fr; gap: 20px; padding: 22px 20px; margin-top: 40px; } }
-@media (prefers-reduced-motion: reduce) { .replay-feature { transition: none; } }
+@media (max-width: 760px) { .replay-feature, .kc-feature { grid-template-columns: 1fr; gap: 20px; padding: 22px 20px; margin-top: 40px; } }
+@media (prefers-reduced-motion: reduce) { .replay-feature, .kc-feature { transition: none; } }
+/* ── Knowledge Center, featured card: shares the Trade Replay card's frame; the visual is a flash card over its answer ── */
+.kc-feature { margin-top: 24px; }
+.kc-visual { display: flex; flex-direction: column; min-width: 0; }
+.kc-card { padding: 18px 20px; border-radius: var(--mk-radius-card); background: var(--mk-obsidian-900); border: var(--mk-border-hairline); }
+.kc-card p { margin: 6px 0 0; font-size: var(--mk-text-md); color: var(--mk-text-primary); line-height: 1.45; }
+.kc-card-eyebrow { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: .14em; text-transform: uppercase; color: var(--mk-text-tertiary); }
+.kc-card--front { position: relative; z-index: 1; border-color: rgba(212,175,55,.35); box-shadow: var(--mk-glow-gold-sm, 0 0 24px rgba(212,175,55,.10)); }
+.kc-card--back { margin: -12px 0 0 22px; transform: rotate(-1.5deg); background: var(--mk-surface-raised); }
+.kc-card--back .kc-card-eyebrow { color: var(--mk-brand); }
+.kc-card-meta { display: block; margin-top: 12px; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: .1em; text-transform: uppercase; color: var(--mk-text-tertiary); }
+
 .focus-closing-line {
   margin-top: 22px;
   padding: 18px 22px;
@@ -2598,6 +2609,26 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
         <div class="replay-ledger-row"><span>9:41</span><b>Add 500 @ 4.30</b><span>avg 4.21</span></div>
         <div class="replay-ledger-row"><span>9:58</span><b>Sell 1,000 @ 4.62</b><span>flat</span></div>
         <div class="replay-ledger-total"><span>Net</span><b>+$404.00</b></div>
+      </div>
+    </a>
+    <!-- Knowledge Center, featured (Ed, 2026-10-15: the library plus My Playbook plus Flash Cards is the learn-write-drill loop no journal has). -->
+    <a class="kc-feature reveal" href="tools.html#learn" data-cta-source="toolkit" data-cta-target="knowledge-center">
+      <div class="kc-text">
+        <div class="kc-eyebrow">Knowledge Center &middot; in the app &middot; free on every plan</div>
+        <h3 class="kc-hook">Learn it. Write it. <em>Drill it.</em></h3>
+        <p class="kc-body">A library of the small-cap game in one search box: the glossary, the setups, the how-tos, why the third loss costs the most. <strong>My Playbook</strong> is where your own rules and handling notes live as documents you keep rewriting, not notes welded to a Tuesday. <strong>Flash Cards</strong> turn that playbook into a deck, reviewed on a schedule, so the rule you wrote is in your head on the day that tests it.</p>
+        <span class="kc-cta">See how the loop works &rarr;</span>
+      </div>
+      <div class="kc-visual" aria-hidden="true">
+        <div class="kc-card kc-card--front">
+          <span class="kc-card-eyebrow">Flash card &middot; from your playbook</span>
+          <p>Two losers in a row before 10:00. What is the rule?</p>
+          <span class="kc-card-meta">Next review &middot; in 3 days</span>
+        </div>
+        <div class="kc-card kc-card--back">
+          <span class="kc-card-eyebrow">Your rule</span>
+          <p>Reset first. No third trade until the breathing is done and the next setup is A+.</p>
+        </div>
       </div>
     </a>
     <!-- Free games: the three kiosk games as hook tiles (Ed picked G1 of three rendered directions, 2026-10-15).
