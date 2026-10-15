@@ -2244,6 +2244,12 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
 .hero-bridge { padding: 0 24px 56px; margin-top: -40px; position: relative; z-index: 2; }
 .hero-bridge-inner { max-width: 760px; margin: 0 auto; }
 .hero-bridge-cap { text-align: center; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-text-tertiary); margin: 0 0 12px; }
+.hero-bridge-proof { text-align: center; margin: 18px 0 0; font-size: var(--mk-text-sm); color: var(--mk-text-secondary); }
+.hero-bridge-proof b { color: var(--mk-text-primary); font-weight: 600; }
+.hero-bridge-proof a { color: var(--mk-brand); text-decoration: none; border-bottom: 1px solid rgba(212,175,55,.4); }
+/* the trial button stays visible on phones, outside the hamburger */
+.nav-cta--phone { display: none; }
+@media (max-width: 900px) { .nav-cta--phone { display: inline-flex; align-items: center; padding: 8px 12px; font-size: var(--mk-text-xs); margin-right: 10px; } }
 </style>
 </head>
 <body>
@@ -2281,6 +2287,7 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
     <li><a href="/app" class="nav-login-btn"><span class="nav-auth-out">Log In</span><span class="nav-auth-in">LAUNCH</span></a></li>
     <li><button class="nav-cta" onclick="handleCheckout('pro',event)">Start Free Trial</button></li>
   </ul>
+  <button class="nav-cta nav-cta--phone" onclick="handleCheckout('pro',event)">Free Trial</button>
   <button class="hamburger" id="hamburger" onclick="toggleDrawer()" aria-label="Menu"><span></span><span></span><span></span></button>
 </nav>
 
@@ -2337,6 +2344,7 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
           <div class="hp-pills"><span class="on">SLOW DAY</span><span class="on">A+ SETUPS ONLY</span><span>NO EXPLORATORY</span><span class="on">STEP AWAY IF OFF</span><span>PROTECT CAPITAL</span></div>
         </div>
       </div>
+    <p class="hero-bridge-proof">Rated <b>4.9 of 5</b> by <b>34 traders</b>. <a href="#reviews">Read their words &darr;</a></p>
   </div>
 </section>
 
@@ -2592,66 +2600,12 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
   }
 })();
 </script>
-<!-- 03 HOW IT WORKS -->
-<hr class="mk-rule-gold">
-
-<section class="section section-dark" id="how">
-  <div class="section-inner">
-    <p class="section-eyebrow reveal">03 &middot; How It Works</p>
-    <h2 class="section-title reveal">Before the open. During the session. <em>After the close.</em></h2>
-    <p class="section-sub reveal">Everything runs off one number you type, your net P&amp;L. Connect DAS later for trade-level detail.</p>
-    <div class="how3 reveal">
-      <div class="how3-card">
-        <span class="how3-step">Before the open</span>
-        <h3>The Lock-In</h3>
-        <p>A contract you sign while you're calm: your rules, your max loss, today's focus. It holds all day.</p>
-        <a href="focus.html" data-cta-source="how" data-cta-target="focus">Focus Room &rarr;</a>
-      </div>
-      <div class="how3-card how3-card--live">
-        <span class="how3-step">During the session</span>
-        <h3>COACH SAYS, the strikes, the Reset</h3>
-        <p>At your checkpoints it calls the day from your real P&amp;L. Three strikes and MAKETZO closes your day inside the app, never at your broker. Tilt gets a Reset. A green run gets a floor.</p>
-        <a href="system.html" data-cta-source="how" data-cta-target="system">The System &rarr;</a>
-      </div>
-      <div class="how3-card">
-        <span class="how3-step">After the close</span>
-        <h3>The Debrief and the Picard Score</h3>
-        <p>The day reads itself back, graded on the rules you kept, not the money you made. Tomorrow's focus waits at the open.</p>
-        <a href="journal.html" data-cta-source="how" data-cta-target="journal">The Journal &rarr;</a>
-      </div>
-    </div>
-    <p class="how-note reveal">Checkpoints, COACH SAYS, strikes and the Focus Room are Pro. The journal and the daily grade come with every plan.</p>
-  </div>
-</section>
-
-<!-- 04 WHAT YOU GET -->
-<hr class="mk-rule-gold">
-
-<section class="section" id="toolkit">
-  <div class="section-inner">
-    <p class="section-eyebrow reveal">04 &middot; What You Get</p>
-    <h2 class="section-title reveal">A serious journal, and the tools <em>for the small-cap tape.</em></h2>
-    <p class="section-sub reveal">Broker import, P&amp;L by hour, calendar, reports, tags: the journal job, covered. Then the things no journal has.</p>
-    <div class="tool-grid tool-grid--4 reveal">
-      <a class="tool-card" href="../dilution-check.html" data-cta-source="what-you-get" data-cta-target="dilution-check"><div class="tool-card-title">Dilution Check <span class="focus-feature-tag">PRO</span></div><p class="tool-card-text">Read a ticker's SEC filings: can they sell stock today, have they already, how long does the cash last.</p></a>
-      <a class="tool-card" href="../tools.html" data-cta-source="what-you-get" data-cta-target="halt-clock"><div class="tool-card-title">Halt Clock</div><p class="tool-card-text">When a halted small cap reopens, estimated, so an LULD halt never catches you flat-footed.</p></a>
-      <a class="tool-card" href="../trade-replay.html" data-cta-source="what-you-get" data-cta-target="trade-replay"><div class="tool-card-title">Trade Replay</div><p class="tool-card-text">Any past chart. Prove whether your adds made money. Ten replays free, no signup.</p></a>
-      <a class="tool-card" href="../tools.html#learn" data-cta-source="what-you-get" data-cta-target="knowledge-center"><div class="tool-card-title">Knowledge Center</div><p class="tool-card-text">Learn it, write it, drill it: the library, My Playbook, Flash Cards from what you wrote.</p></a>
-      <a class="tool-card" href="../pricing.html" data-cta-source="what-you-get" data-cta-target="sticky-notes"><div class="tool-card-title">Sticky Notes</div><p class="tool-card-text">A scratchpad over your platform. One click sends a note to the journal.</p></a>
-      <a class="tool-card" href="../journal.html" data-cta-source="what-you-get" data-cta-target="setups-mistakes"><div class="tool-card-title">Setups &amp; Mistakes</div><p class="tool-card-text">Mark the decision candle on the chart, tag the mistake, write the takeaway.</p></a>
-      <a class="tool-card" href="../journal.html" data-cta-source="what-you-get" data-cta-target="picard-score"><div class="tool-card-title">Picard Score</div><p class="tool-card-text">A daily grade on the rules you kept, not the money you made.</p></a>
-      <a class="tool-card" href="../soundtrack.html" data-cta-source="what-you-get" data-cta-target="soundtrack"><div class="tool-card-title">The Soundtrack</div><p class="tool-card-text">Trading mistakes, turned into music. Conditioning, disguised as an album.</p></a>
-    </div>
-    <p class="wyg-line reveal">Dilution Check comes with Pro. Everything else is on every plan. <a href="tools.html">Every free tool and game &rarr;</a> &nbsp;&middot;&nbsp; <a href="journal.html">MAKETZO against TradeZella and TraderVue &rarr;</a></p>
-  </div>
-</section>
-
 <!-- SOCIAL PROOF -->
 <hr class="mk-rule-gold">
 
 <section class="section section-dark" id="reviews">
   <div class="section-inner">
-    <p class="section-eyebrow reveal">05 &middot; Trader Reviews</p>
+    <p class="section-eyebrow reveal">03 &middot; Trader Reviews</p>
     <h2 class="section-title reveal">Traders who stopped losing to themselves.</h2>
     <p class="section-sub reveal">What changed, in their own words.</p>
     <div class="reviews-grid" id="reviewsGrid">
@@ -2714,6 +2668,60 @@ document.addEventListener("DOMContentLoaded", function() {
     </div>
 </section>
 
+<!-- 03 HOW IT WORKS -->
+<hr class="mk-rule-gold">
+
+<section class="section section-dark" id="how">
+  <div class="section-inner">
+    <p class="section-eyebrow reveal">04 &middot; How It Works</p>
+    <h2 class="section-title reveal">Before the open. During the session. <em>After the close.</em></h2>
+    <p class="section-sub reveal">Everything runs off one number you type, your net P&amp;L. Connect DAS later for trade-level detail.</p>
+    <div class="how3 reveal">
+      <div class="how3-card">
+        <span class="how3-step">Before the open</span>
+        <h3>The Lock-In</h3>
+        <p>A contract you sign while you're calm: your rules, your max loss, today's focus. It holds all day.</p>
+        <a href="focus.html" data-cta-source="how" data-cta-target="focus">Focus Room &rarr;</a>
+      </div>
+      <div class="how3-card how3-card--live">
+        <span class="how3-step">During the session</span>
+        <h3>COACH SAYS, the strikes, the Reset</h3>
+        <p>At your checkpoints it calls the day from your real P&amp;L. Three strikes and MAKETZO closes your day inside the app, never at your broker. Tilt gets a Reset. A green run gets a floor.</p>
+        <a href="system.html" data-cta-source="how" data-cta-target="system">The System &rarr;</a>
+      </div>
+      <div class="how3-card">
+        <span class="how3-step">After the close</span>
+        <h3>The Debrief and the Picard Score</h3>
+        <p>The day reads itself back, graded on the rules you kept, not the money you made. Tomorrow's focus waits at the open.</p>
+        <a href="journal.html" data-cta-source="how" data-cta-target="journal">The Journal &rarr;</a>
+      </div>
+    </div>
+    <p class="how-note reveal">Checkpoints, COACH SAYS, strikes and the Focus Room are Pro. The journal and the daily grade come with every plan.</p>
+  </div>
+</section>
+
+<!-- 04 WHAT YOU GET -->
+<hr class="mk-rule-gold">
+
+<section class="section" id="toolkit">
+  <div class="section-inner">
+    <p class="section-eyebrow reveal">05 &middot; What You Get</p>
+    <h2 class="section-title reveal">A serious journal, and the tools <em>for the small-cap tape.</em></h2>
+    <p class="section-sub reveal">Broker import, P&amp;L by hour, calendar, reports, tags: the journal job, covered. Then the things no journal has.</p>
+    <div class="tool-grid tool-grid--4 reveal">
+      <a class="tool-card" href="../dilution-check.html" data-cta-source="what-you-get" data-cta-target="dilution-check"><div class="tool-card-title">Dilution Check <span class="focus-feature-tag">PRO</span></div><p class="tool-card-text">Read a ticker's SEC filings: can they sell stock today, have they already, how long does the cash last.</p></a>
+      <a class="tool-card" href="../tools.html" data-cta-source="what-you-get" data-cta-target="halt-clock"><div class="tool-card-title">Halt Clock</div><p class="tool-card-text">When a halted small cap reopens, estimated, so an LULD halt never catches you flat-footed.</p></a>
+      <a class="tool-card" href="../trade-replay.html" data-cta-source="what-you-get" data-cta-target="trade-replay"><div class="tool-card-title">Trade Replay</div><p class="tool-card-text">Any past chart. Prove whether your adds made money. Ten replays free, no signup.</p></a>
+      <a class="tool-card" href="../tools.html#learn" data-cta-source="what-you-get" data-cta-target="knowledge-center"><div class="tool-card-title">Knowledge Center</div><p class="tool-card-text">Learn it, write it, drill it: the library, My Playbook, Flash Cards from what you wrote.</p></a>
+      <a class="tool-card" href="../pricing.html" data-cta-source="what-you-get" data-cta-target="sticky-notes"><div class="tool-card-title">Sticky Notes</div><p class="tool-card-text">A scratchpad over your platform. One click sends a note to the journal.</p></a>
+      <a class="tool-card" href="../journal.html" data-cta-source="what-you-get" data-cta-target="setups-mistakes"><div class="tool-card-title">Setups &amp; Mistakes</div><p class="tool-card-text">Mark the decision candle on the chart, tag the mistake, write the takeaway.</p></a>
+      <a class="tool-card" href="../journal.html" data-cta-source="what-you-get" data-cta-target="picard-score"><div class="tool-card-title">Picard Score</div><p class="tool-card-text">A daily grade on the rules you kept, not the money you made.</p></a>
+      <a class="tool-card" href="../soundtrack.html" data-cta-source="what-you-get" data-cta-target="soundtrack"><div class="tool-card-title">The Soundtrack</div><p class="tool-card-text">Trading mistakes, turned into music. Conditioning, disguised as an album.</p></a>
+    </div>
+    <p class="wyg-line reveal">Dilution Check comes with Pro. Everything else is on every plan. <a href="tools.html">Every free tool and game &rarr;</a> &nbsp;&middot;&nbsp; <a href="journal.html">MAKETZO against TradeZella and TraderVue &rarr;</a></p>
+  </div>
+</section>
+
 <!-- PRICING -->
 <hr class="mk-rule-gold">
 
@@ -2741,7 +2749,7 @@ document.addEventListener("DOMContentLoaded", function() {
           <li>Picard Score, a daily grade on following your rules</li>
           <li>Rule pills (custom rules)</li>
         </ul>
-        <button class="cta-outline" id="cta1" data-tier="journal" data-interval="month" onclick="handleCheckout(this.dataset.tier,event)">Start Free Trial</button>
+        <button class="cta-outline" id="cta1" data-tier="journal" data-interval="month" onclick="handleCheckout(this.dataset.tier,event)">Start 7-Day Free Trial &rarr;</button>
         <p class="price-note">7 days free &middot; No charge until day 8</p>
       </div>
       <div class="price-card featured reveal">
@@ -2758,7 +2766,7 @@ document.addEventListener("DOMContentLoaded", function() {
           <li>Maketzo Edge + Pulse on TradingView (invite within 24 hrs)</li>
           <li>Dilution Check, 100 company reads a month</li>
         </ul>
-        <button class="cta-gold" id="cta2" data-tier="pro" data-interval="month" onclick="handleCheckout(this.dataset.tier,event)">Start Free Trial &rarr;</button>
+        <button class="cta-gold" id="cta2" data-tier="pro" data-interval="month" onclick="handleCheckout(this.dataset.tier,event)">Start 7-Day Free Trial &rarr;</button>
         <p class="price-note">7 days free &middot; No charge until day 8</p>
       </div>
       <div class="price-card reveal">
@@ -2772,7 +2780,7 @@ document.addEventListener("DOMContentLoaded", function() {
           <li>Twice Pro's reads, for the trader who checks every gapper</li>
           <li>AI Training Engine, first access when it ships</li>
         </ul>
-        <button class="cta-outline" id="cta3" data-tier="elite" data-interval="month" onclick="handleCheckout(this.dataset.tier,event)">Start Free Trial</button>
+        <button class="cta-outline" id="cta3" data-tier="elite" data-interval="month" onclick="handleCheckout(this.dataset.tier,event)">Start 7-Day Free Trial &rarr;</button>
         <p class="price-note">7 days free &middot; No charge until day 8</p>
       </div>
     </div>
@@ -2812,7 +2820,7 @@ document.addEventListener("DOMContentLoaded", function() {
     <h2 class="final-cta-headline reveal">Stop losing to <em>yourself.</em></h2>
     <p class="final-cta-sub reveal">7 days free. Full access from day one. No charge until day 8. Cancel in one click.</p>
     <div class="final-cta-btns reveal">
-      <button class="btn-primary" onclick="handleCheckout('pro',event)">Start Free Trial &rarr;</button>
+      <button class="btn-primary" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
       <a href="pricing.html" class="btn-secondary">Compare All Plans</a>
     </div>
     <p class="final-cta-note reveal">Pro &middot; $49/mo or $399/yr &middot; Discipline OS, Focus Room &amp; Dilution Check &middot; Cancel anytime</p>
