@@ -23,6 +23,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/tokens.css">
 <link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/css/moment.css?v=1">
 <script src="assets/js/mkt-analytics.js?v=9" defer></script>
 <script src="assets/js/newsletter.js?v=5" defer></script>
 <script src="assets/js/mkt-consent.js?v=1" defer></script>
@@ -366,6 +367,42 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 
 <hr class="mk-rule-gold">
 
+<!-- THE MOMENT: the slot under the hero. Any other journal the next morning vs MAKETZO at 10:42.
+     Replaced the day-one band on 2026-10-15 (Ed: table-stakes features, no differentiation, "F-"). Every line here was
+     checked against the app module that renders the mechanism; the COACH SAYS line is the app's own at the second strike.
+     Shared with system.html through assets/css/moment.css. -->
+<section class="section section-dark only only--moment" id="the-moment">
+  <div class="section-inner">
+    <div class="only-head">
+      <p class="section-eyebrow reveal">The difference, at 10:42</p>
+      <h2 class="section-title reveal">Every journal shows you the damage tomorrow. <em>MAKETZO steps in at 10:42.</em></h2>
+    </div>
+    <div class="moment reveal">
+      <article class="moment-card moment-card--them" aria-label="Any other journal, the next morning">
+        <header class="moment-bar"><span>Any other journal</span><span>Wednesday &middot; 7:10 AM</span></header>
+        <div class="moment-entry">
+          <div class="moment-row"><span class="moment-k">Tuesday</span><span class="moment-v moment-v--loss">&minus;$1,140.00</span></div>
+          <div class="moment-row"><span class="moment-k">Tags</span><span class="moment-v"><i class="moment-tag">revenge</i><i class="moment-tag">oversized</i><i class="moment-tag">past max loss</i></span></div>
+          <div class="moment-row"><span class="moment-k">Note</span><span class="moment-v">Two stops by 10:40. Sized up on the third to get it back. I knew better.</span></div>
+          <div class="moment-row"><span class="moment-k">Lesson</span><span class="moment-v">Stop after two. Same lesson as last month.</span></div>
+        </div>
+        <p class="moment-verdict">Accurate. Searchable. A day late.</p>
+      </article>
+      <article class="moment-card moment-card--us" aria-label="MAKETZO, live at 10:42">
+        <header class="moment-bar"><span>MAKETZO</span><span><i class="moment-live" aria-hidden="true"></i>Tuesday &middot; 10:42 AM</span></header>
+        <div class="moment-app">
+          <div class="moment-pnl"><span class="moment-pnl-label">Session P&amp;L</span><span class="moment-pnl-val">&minus;$380.00</span></div>
+          <div class="moment-strikes" aria-label="Two of three strikes"><span class="is-hit">1</span><span class="is-hit">2</span><span>3</span><em>2 of 3 strikes</em></div>
+          <div class="moment-coach"><span class="moment-coach-label">Coach Says</span><p>Second strike. The next loss ends the day. Take a breath, take the cleanest setup, or wait it out.</p></div>
+        </div>
+        <p class="moment-verdict moment-verdict--us">Same trader, same morning. The warning lands before the third trade.</p>
+      </article>
+    </div>
+    <p class="only-foot reveal">Live enforcement is Pro. The daily grade on your rules comes with every plan.</p>
+    <div class="mk-cta-repeat"><button class="btn-primary" data-cta-source="moment" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial</button></div>
+  </div>
+</section>
+<hr class="mk-rule-gold">
 <!-- FOUR FEATURE PILLARS -->
 <section class="section">
   <div class="section-inner">
