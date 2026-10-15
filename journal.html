@@ -50,6 +50,7 @@ strong { color: var(--mk-text-primary); font-weight: 600; }
 .mobile-drawer-links a[aria-current="page"] { color: var(--mk-brand); }
 .mobile-drawer-cta { display: inline-flex; align-items: center; justify-content: center; background: var(--mk-gold-gradient); color: var(--mk-text-on-gold); font-family: var(--mk-font-sans); font-weight: 600; font-size: var(--mk-text-sm); letter-spacing: var(--mk-track-cap); text-transform: uppercase; padding: 14px 22px; border: 1px solid rgba(0,0,0,.18); border-radius: var(--mk-radius-button); cursor: pointer; margin-top: auto; }
 
+html { scroll-padding-top: 88px; } /* an anchored section lands below the fixed nav */
 #mainNav { position: fixed; top: 0; left: 0; right: 0; z-index: 50; background: rgba(6,7,10,.6); backdrop-filter: blur(20px) saturate(140%); border-bottom: 1px solid rgba(212,175,55,.12); transition: border-color var(--mk-dur-snap); display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 14px 32px 14px 64px; }
 .nav-logo.mk-brand-lockup { --mk-brand-lockup-mark-h: 44px; --mk-brand-lockup-wordmark-h: 22px; --mk-brand-lockup-gap: 10px; }
 .nav-links { display: flex; align-items: center; gap: 28px; margin: 0; padding: 0; }
@@ -435,7 +436,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 </section>
 <hr class="mk-rule-gold">
 <!-- THE JOURNAL, IN FULL: the nineteen journal-plan capabilities, grouped (2026-10-15; the four-card block that duplicated the homepage is gone) -->
-<section class="section">
+<section class="section" id="in-full">
   <div class="section-inner">
     <p class="section-eyebrow reveal">THE JOURNAL, IN FULL</p>
     <h2 class="section-title reveal">Everything you'd expect. <em>Nothing you'd settle for.</em></h2>
@@ -516,7 +517,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 
 <!-- COMPARISON TABLE -->
 <hr class="mk-rule-gold">
-<section class="section">
+<section class="section" id="compare">
   <div class="section-inner">
     <p class="section-eyebrow reveal">HOW WE COMPARE</p>
     <h2 class="section-title reveal">Five trading journals. <em>One that also enforces discipline.</em></h2>

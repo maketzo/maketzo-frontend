@@ -135,6 +135,7 @@ strong { color: var(--mk-text-primary); font-weight: 600; }
 }
 
 /* ── NAV ─────────────────────────────────────────────────────── */
+html { scroll-padding-top: 88px; } /* an anchored section lands below the fixed nav */
 #mainNav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 50;
   background: rgba(6,7,10,.6);
@@ -2225,11 +2226,16 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
 .vs-icon { flex: 0 0 auto; width: 34px; height: 34px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; }
 .vs-card--without .vs-icon { color: var(--mk-danger-500); border: 2px solid rgba(248,113,113,.7); box-shadow: 0 0 14px rgba(248,113,113,.35); background: rgba(248,113,113,.08); }
 .vs-card--with .vs-icon { color: var(--mk-brand); border: 2px solid rgba(212,175,55,.7); box-shadow: 0 0 14px rgba(212,175,55,.35); background: rgba(212,175,55,.08); }
-.vs-chart { position: absolute; top: 22px; right: 22px; width: 230px; height: auto; color: var(--mk-brand); opacity: .55; pointer-events: none; }
-.vs-chart-bars { fill: rgba(212,175,55,.22); }
-.vs-chart-line { fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.vs-chart { position: absolute; top: 22px; right: 22px; width: 240px; height: auto; pointer-events: none; }
+/* cascading candlesticks under a thick glowing arrow (Ed, 2026-10-15: "glowing and thicker", candlesticks not bars) */
+.vs-wick { fill: none; stroke: var(--mk-gold-500); stroke-width: 2; stroke-opacity: .5; }
+.vs-body { fill: url(#vsCandle); }
+.vs-candles--far { opacity: .42; }
+.vs-candles--near { opacity: .8; }
+.vs-arrow-line { fill: none; stroke: url(#vsArrow); stroke-width: 5; stroke-linecap: round; }
+.vs-arrow-head { fill: var(--mk-gold-300); }
 .vs-more { position: relative; z-index: 1; display: inline-block; margin-top: 18px; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: .14em; text-transform: uppercase; color: var(--mk-brand); text-decoration: none; }
-@media (max-width: 900px) { .vs { grid-template-columns: 1fr; gap: 18px; } .vs-card { padding: 24px 20px 22px; } .vs-chart { width: 150px; top: 16px; right: 16px; opacity: .4; } }
+@media (max-width: 900px) { .vs { grid-template-columns: 1fr; gap: 18px; } .vs-card { padding: 24px 20px 22px; } .vs-chart { width: 160px; top: 16px; right: 16px; } }
 /* how it works: the three steps stacked at left, the dashboard at the 10:30 checkpoint at right, the whole shot one link to The System */
 .how-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 32px; align-items: center; max-width: 1100px; margin: 36px auto 0; }
 .how-steps { display: grid; gap: 14px; min-width: 0; }
@@ -2386,17 +2392,26 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
       </div>
       <div class="vs-card vs-card--with">
         <svg class="vs-chart" viewBox="0 0 230 170" aria-hidden="true" focusable="false">
-          <g class="vs-chart-bars">
-            <rect x="8" y="128" width="22" height="34" rx="3"/>
-            <rect x="40" y="112" width="22" height="50" rx="3"/>
-            <rect x="72" y="118" width="22" height="44" rx="3"/>
-            <rect x="104" y="92" width="22" height="70" rx="3"/>
-            <rect x="136" y="98" width="22" height="64" rx="3"/>
-            <rect x="168" y="60" width="22" height="102" rx="3"/>
-            <rect x="200" y="36" width="22" height="126" rx="3"/>
+          <defs>
+            <linearGradient id="vsCandle" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E5C572" stop-opacity=".9"/><stop offset="1" stop-color="#D4AF37" stop-opacity=".12"/></linearGradient>
+            <linearGradient id="vsArrow" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#B8941F" stop-opacity=".35"/><stop offset=".55" stop-color="#D4AF37"/><stop offset="1" stop-color="#F3D77A"/></linearGradient>
+            <filter id="vsGlow" x="-25%" y="-25%" width="150%" height="150%"><feGaussianBlur stdDeviation="3.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          </defs>
+          <g class="vs-candles vs-candles--far">
+            <path class="vs-wick" d="M20 122 V160"/><rect class="vs-body" x="11" y="130" width="18" height="26" rx="2"/>
+            <path class="vs-wick" d="M52 104 V150"/><rect class="vs-body" x="43" y="112" width="18" height="30" rx="2"/>
+            <path class="vs-wick" d="M84 108 V144"/><rect class="vs-body" x="75" y="116" width="18" height="22" rx="2"/>
           </g>
-          <path class="vs-chart-line" d="M6 140 C 70 134, 120 112, 160 74 S 206 28, 224 12"/>
-          <path class="vs-chart-line" d="M206 10 L224 12 L220 30"/>
+          <g class="vs-candles vs-candles--near">
+            <path class="vs-wick" d="M116 78 V128"/><rect class="vs-body" x="107" y="86" width="18" height="34" rx="2"/>
+            <path class="vs-wick" d="M148 84 V120"/><rect class="vs-body" x="139" y="92" width="18" height="22" rx="2"/>
+            <path class="vs-wick" d="M180 46 V104"/><rect class="vs-body" x="171" y="54" width="18" height="40" rx="2"/>
+            <path class="vs-wick" d="M212 16 V76"/><rect class="vs-body" x="203" y="24" width="18" height="42" rx="2"/>
+          </g>
+          <g class="vs-arrow" filter="url(#vsGlow)">
+            <path class="vs-arrow-line" d="M8 148 C 72 142, 126 118, 162 80 S 198 36, 211 23"/>
+            <path class="vs-arrow-head" d="M225.8 8.2 L217.4 29.4 L204.6 16.6 Z"/>
+          </g>
         </svg>
         <span class="mk-pill mk-pill--brand vs-pill">WITH MAKETZO</span>
         <h3 class="vs-title">Discipline. <em>Real results.</em></h3>
@@ -2407,7 +2422,7 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
           <li><span class="vs-icon" aria-hidden="true">&#10003;</span>Checkpoints protect your week on autopilot</li>
           <li><span class="vs-icon" aria-hidden="true">&#10003;</span>Your journal shows exactly why you win and lose</li>
         </ul>
-        <a class="vs-more" href="system.html" data-cta-source="why" data-cta-target="system">How strikes and checkpoints work &rarr;</a>
+        <a class="vs-more" href="system.html#checkpoints" data-cta-source="why" data-cta-target="system-checkpoints">How checkpoints and strikes work &rarr;</a>
       </div>
     </div>
   </div>
@@ -2482,7 +2497,7 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
         <button class="btn-primary" data-cta-source="sim" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
       </div>
     </div>
-    <p class="sec-more reveal">Checkpoints, strikes and the Reset, in full: <a href="system.html" data-cta-source="sim" data-cta-target="system">The System &rarr;</a></p>
+    <p class="sec-more reveal">Checkpoints, strikes and the Reset, in full: <a href="system.html#checkpoints" data-cta-source="sim" data-cta-target="system-checkpoints">The System &rarr;</a></p>
   </div>
 </section>
 <script>
@@ -2721,22 +2736,22 @@ document.addEventListener("DOMContentLoaded", function() {
           <span class="how3-step">Before the open</span>
           <h3>The Lock-In</h3>
           <p>A contract you sign while you're calm: your rules, your max loss, today's focus. It holds all day.</p>
-          <a href="focus.html" data-cta-source="how" data-cta-target="focus">Focus Room &rarr;</a>
+          <a href="focus.html#lock-in" data-cta-source="how" data-cta-target="focus-lock-in">Focus Room &rarr;</a>
         </div>
         <div class="how3-card how3-card--live">
           <span class="how3-step">During the session</span>
           <h3>COACH SAYS, the strikes, the Reset</h3>
           <p>At your checkpoints it calls the day from your real P&amp;L. Three strikes and MAKETZO closes your day inside the app, never at your broker. Tilt gets a Reset. A green run gets a floor.</p>
-          <a href="system.html" data-cta-source="how" data-cta-target="system">The System &rarr;</a>
+          <a href="system.html#coach-says" data-cta-source="how" data-cta-target="system-coach-says">The System &rarr;</a>
         </div>
         <div class="how3-card">
           <span class="how3-step">After the close</span>
           <h3>The Debrief and the Picard Score</h3>
           <p>The day reads itself back, graded on the rules you kept, not the money you made. Tomorrow's focus waits at the open.</p>
-          <a href="journal.html" data-cta-source="how" data-cta-target="journal">The Journal &rarr;</a>
+          <a href="journal.html#in-full" data-cta-source="how" data-cta-target="journal-in-full">The Journal &rarr;</a>
         </div>
       </div>
-      <a class="how-shot" href="system.html" data-cta-source="how" data-cta-target="system-dashboard" aria-label="The dashboard at the 10:30 checkpoint. How the call is made, on The System page">
+      <a class="how-shot" href="system.html#checkpoints" data-cta-source="how" data-cta-target="system-dashboard" aria-label="The dashboard at the 10:30 checkpoint. How the call is made, on The System page">
         <p class="how-shot-cap">The dashboard at the 10:30 checkpoint</p>
         <div class="hero-product" aria-hidden="true">
       <div class="hp-window">
@@ -2771,15 +2786,15 @@ document.addEventListener("DOMContentLoaded", function() {
     <p class="section-sub reveal">Broker import, P&amp;L by hour, calendar, reports, tags: the journal job, covered. Then the things no journal has.</p>
     <div class="tool-grid tool-grid--4 reveal">
       <a class="tool-card" href="dilution-check.html" data-cta-source="what-you-get" data-cta-target="dilution-check"><div class="tool-card-title">Dilution Check <span class="focus-feature-tag">PRO</span></div><p class="tool-card-text">Read a ticker's SEC filings: can they sell stock today, have they already, how long does the cash last.</p></a>
-      <a class="tool-card" href="tools.html" data-cta-source="what-you-get" data-cta-target="halt-clock"><div class="tool-card-title">Halt Clock</div><p class="tool-card-text">When a halted small cap reopens, estimated, so an LULD halt never catches you flat-footed.</p></a>
+      <a class="tool-card" href="tools.html#tape" data-cta-source="what-you-get" data-cta-target="halt-clock"><div class="tool-card-title">Halt Clock</div><p class="tool-card-text">When a halted small cap reopens, estimated, so an LULD halt never catches you flat-footed.</p></a>
       <a class="tool-card" href="trade-replay.html" data-cta-source="what-you-get" data-cta-target="trade-replay"><div class="tool-card-title">Trade Replay</div><p class="tool-card-text">Any past chart. Prove whether your adds made money. Ten replays free, no signup.</p></a>
       <a class="tool-card" href="tools.html#learn" data-cta-source="what-you-get" data-cta-target="knowledge-center"><div class="tool-card-title">Knowledge Center</div><p class="tool-card-text">Learn it, write it, drill it: the library, My Playbook, Flash Cards from what you wrote.</p></a>
-      <a class="tool-card" href="tools.html" data-cta-source="what-you-get" data-cta-target="sticky-notes"><div class="tool-card-title">Sticky Notes</div><p class="tool-card-text">A scratchpad over your platform. One click sends a note to the journal.</p></a>
-      <a class="tool-card" href="journal.html" data-cta-source="what-you-get" data-cta-target="setups-mistakes"><div class="tool-card-title">Setups &amp; Mistakes</div><p class="tool-card-text">Mark the decision candle on the chart, tag the mistake, write the takeaway.</p></a>
-      <a class="tool-card" href="journal.html" data-cta-source="what-you-get" data-cta-target="picard-score"><div class="tool-card-title">Picard Score</div><p class="tool-card-text">A daily grade on the rules you kept, not the money you made.</p></a>
+      <a class="tool-card" href="tools.html#tape" data-cta-source="what-you-get" data-cta-target="sticky-notes"><div class="tool-card-title">Sticky Notes</div><p class="tool-card-text">A scratchpad over your platform. One click sends a note to the journal.</p></a>
+      <a class="tool-card" href="journal.html#in-full" data-cta-source="what-you-get" data-cta-target="setups-mistakes"><div class="tool-card-title">Setups &amp; Mistakes</div><p class="tool-card-text">Mark the decision candle on the chart, tag the mistake, write the takeaway.</p></a>
+      <a class="tool-card" href="journal.html#in-full" data-cta-source="what-you-get" data-cta-target="picard-score"><div class="tool-card-title">Picard Score</div><p class="tool-card-text">A daily grade on the rules you kept, not the money you made.</p></a>
       <a class="tool-card" href="soundtrack.html" data-cta-source="what-you-get" data-cta-target="soundtrack"><div class="tool-card-title">The Soundtrack</div><p class="tool-card-text">Trading mistakes, turned into music. Conditioning, disguised as an album.</p></a>
     </div>
-    <p class="wyg-line reveal">Dilution Check comes with Pro. Everything else is on every plan. <a href="tools.html">Every free tool and game &rarr;</a> &nbsp;&middot;&nbsp; <a href="journal.html">MAKETZO against TradeZella and TraderVue &rarr;</a></p>
+    <p class="wyg-line reveal">Dilution Check comes with Pro. Everything else is on every plan. <a href="tools.html">Every free tool and game &rarr;</a> &nbsp;&middot;&nbsp; <a href="journal.html#compare">MAKETZO against TradeZella and TraderVue &rarr;</a></p>
   </div>
 </section>
 
@@ -2863,7 +2878,7 @@ document.addEventListener("DOMContentLoaded", function() {
     <div class="faq-list">
       <div class="faq-item reveal"><button class="faq-q" onclick="toggleFaq(this)">Do I need to connect my broker?</button><div class="faq-a"><strong>No.</strong> Type your net P&amp;L and the accountability engine runs from day one. DAS Trader Pro import is optional, for trade-level detail, &cent;/share tracking and session analysis from your fills.</div></div>
       <div class="faq-item reveal"><button class="faq-q" onclick="toggleFaq(this)">Can MAKETZO stop my broker from taking a trade?</button><div class="faq-a"><strong>No, and we say so plainly.</strong> At three strikes MAKETZO closes your day inside the app: the P&amp;L log locks, COACH SAYS tells you to walk, and getting back in is a deliberate override with the strikes still standing. Your broker never hears from it. It works because you set it up when you were calm, and the version of you that is tilting has to stop and choose.</div></div>
-      <div class="faq-item reveal"><button class="faq-q" onclick="toggleFaq(this)">How is this different from TradeZella or TraderVue?</button><div class="faq-a">They record and analyze trades well, and <strong>MAKETZO does that too</strong>: DAS import, &cent;/share, win rate, equity curve, streaks. The difference is what happens before the mistake: <a href="system.html">checkpoints, strikes, a coach that speaks while the day is live</a>, and <a href="journal.html">a daily grade on the rules you kept</a>.</div></div>
+      <div class="faq-item reveal"><button class="faq-q" onclick="toggleFaq(this)">How is this different from TradeZella or TraderVue?</button><div class="faq-a">They record and analyze trades well, and <strong>MAKETZO does that too</strong>: DAS import, &cent;/share, win rate, equity curve, streaks. The difference is what happens before the mistake: <a href="system.html#checkpoints">checkpoints, strikes, a coach that speaks while the day is live</a>, and <a href="journal.html#in-full">a daily grade on the rules you kept</a>.</div></div>
       <div class="faq-item reveal"><button class="faq-q" onclick="toggleFaq(this)">How does the 7-day free trial work?</button><div class="faq-a">Card required at signup, <strong>no charge until day 8</strong>. Cancel any time before then and you pay nothing. Pro and Elite get their TradingView indicator invite within 24 hours.</div></div>
       <div class="faq-item reveal"><button class="faq-q" onclick="toggleFaq(this)">Is MAKETZO built for small-cap traders?</button><div class="faq-a"><strong>Yes, on purpose.</strong> <a href="dilution-check.html">Dilution Check</a>, <a href="tools.html">Halt Clock</a> and the coaching cadence are built for the speed of small-cap momentum. If you trade large caps or swing, the accountability engine still applies; the indicators were tuned for small caps.</div></div>
       <div class="faq-item reveal"><button class="faq-q" onclick="toggleFaq(this)">Is my trading data private?</button><div class="faq-a">Yours alone. <strong>MAKETZO does not share, sell or expose your trading data</strong>, and nothing you log goes to an AI model unless you turn a feature on. Export or delete your data any time.</div></div>
