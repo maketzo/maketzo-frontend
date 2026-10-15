@@ -899,6 +899,33 @@ a.toolkit-card { display: block; text-decoration: none; color: inherit; }
 .standalone-card--compact .standalone-card-title { font-size: clamp(1.15rem, 2.2vw, 1.45rem); margin-bottom: 8px; }
 .standalone-card--compact .standalone-card-body { font-size: var(--mk-text-sm); margin-bottom: 16px; }
 @media (max-width: 600px) { .standalone-card { padding: 28px 24px; } }
+
+/* ── Phone layout for the two comparison tables (2026-10-15): the matrix and the competitor table were 720px
+   and 880px wide in a 324px wrapper, so a phone showed feature names and no checkmarks. ── */
+.compare-note { display: inline; }
+@media (max-width: 700px) {
+   .compare-table { min-width: 0; width: 100%; table-layout: fixed; }
+   .compare-table thead th { padding: 14px 4px 12px; }
+   .compare-table thead th.col-tier { width: 54px; font-size: var(--mk-text-sm); letter-spacing: 0.02em; }
+   .compare-table thead th .compare-tier-price { font-size: var(--mk-mono-xs); letter-spacing: 0; margin-top: 3px; }
+   .compare-table tbody td { padding: 11px 4px; font-size: var(--mk-text-sm); line-height: 1.35; }
+   .compare-table tbody td:first-child { padding-left: 14px; padding-right: 8px; overflow-wrap: anywhere; }
+   .compare-table tbody tr.group-header td { padding: 18px 14px 8px; }
+   .compare-check,  .compare-dash { font-size: 1rem; }
+   .compare-soon { display: inline-block; max-width: 100%; box-sizing: border-box; white-space: normal; line-height: 1.25; padding: 2px 3px; font-size: .55rem; }
+   .compare-amount { font-size: var(--mk-mono-xs); }
+
+   .compare-note { display: block; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: 0.02em; color: var(--mk-text-tertiary); margin-top: 3px; }
+
+   .compare-table--vs { min-width: 0; width: 100%; table-layout: fixed; }
+   .compare-table--vs thead th { width: 40px; padding: 12px 2px 10px; height: 118px; vertical-align: bottom; text-align: center; }
+   .compare-table--vs thead th:not(.col-feature) { writing-mode: vertical-rl; transform: rotate(180deg); text-align: left; padding: 10px 0 6px; font-size: var(--mk-text-sm); letter-spacing: 0.02em; line-height: 1.15; }
+   .compare-table--vs thead th:not(.col-feature) .compare-tier-price { display: block; margin: 0 0 0 2px; letter-spacing: 0; line-height: 1.15; }
+   .compare-table--vs thead th.col-feature { width: auto; writing-mode: horizontal-tb; transform: none; text-align: left; padding: 0 0 10px 14px; height: auto; }
+   .compare-table--vs tbody td { padding: 11px 2px; }
+   .compare-table--vs tbody td:first-child { padding-left: 14px; padding-right: 6px; }
+   .compare-partial { display: inline-block; max-width: 100%; font-size: 0.5rem; letter-spacing: 0; line-height: 1.1; overflow-wrap: anywhere; }
+}
 </style>
 <script>try{if(document.cookie.indexOf('mkt_csrf=')>-1)document.documentElement.classList.add('mkt-auth');}catch(e){}</script>
 </head>
@@ -958,7 +985,7 @@ a.toolkit-card { display: block; text-decoration: none; color: inherit; }
   <div class="page-hero-inner">
     <p class="page-hero-eyebrow reveal">06 · PRICING · THREE TIERS · NO SURPRISES</p>
     <h1 class="page-hero-title reveal">Pick the discipline you need. <em>Upgrade when you outgrow it.</em></h1>
-    <p class="page-hero-sub reveal">Three tiers, one 7-day free trial on each. Journal records the day and grades it. Pro steps in while the day is still live. Elite doubles the Dilution Check reads. The resource toolkit is on every plan from day one. No charge until day 8, cancel in one click.</p>
+    <p class="page-hero-sub reveal">Journal records the day and grades it. Pro steps in while the day is still live. Elite doubles the Dilution Check reads. Every tier starts with a 7-day free trial, no charge until day 8.</p>
   </div>
 </section>
 
@@ -974,7 +1001,7 @@ a.toolkit-card { display: block; text-decoration: none; color: inherit; }
       <span class="save-badge" id="saveBadge" style="display:none">Save ~32%</span>
     </div>
 
-    <p class="tier-allplans-note reveal">Every plan includes the full toolkit and a 7-day free trial.</p>
+    <p class="tier-allplans-note reveal">Every plan starts with a 7-day free trial and the toolkit. Dilution Check needs Pro.</p>
 
     <div class="tier-grid">
       <!-- JOURNAL -->
@@ -1033,7 +1060,7 @@ a.toolkit-card { display: block; text-decoration: none; color: inherit; }
         </div>
         <div class="tier-sub" id="p3sub">or $649/yr, save 32%</div>
         <ul class="tier-features">
-          <li><span class="feat"><span class="feat-name">Everything in Pro</span><span class="feat-desc">The full discipline OS, dialed all the way in.</span></span></li>
+          <li><span class="feat"><span class="feat-name">Everything in Pro</span><span class="feat-desc">COACH SAYS, Strike System, Give-Back Guard, Focus Room, Edge + Pulse.</span></span></li>
           <li><span class="feat"><span class="feat-name">Dilution Check, 200 company reads a month</span><span class="feat-desc">Twice Pro's 100. Checking a company again is free, and more reads come in blocks if you need them.</span></span></li>
           <li><span class="feat"><span class="feat-name">AI Training Engine <span class="compare-soon">Coming soon</span></span><span class="feat-desc">Adaptive drills built from your own mistakes, and Elite gets first access the day it ships.</span></span></li>
         </ul>
@@ -1109,48 +1136,47 @@ a.toolkit-card { display: block; text-decoration: none; color: inherit; }
         </thead>
         <tbody>
           <tr class="group-header"><td colspan="4">RESOURCE TOOLKIT</td></tr>
-          <tr><td>Trade Replay (scaling practice, no capital at risk)</td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
-          <tr><td>Halt Clock (LULD reopen-time estimator)</td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
-          <tr><td>Focus Timer (drift-proof break timer)</td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
-          <tr><td>Trading OS (one-page playbook)</td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
-          <tr><td>Knowledge Center (searchable in-app library)</td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
-          <tr><td>Flash Cards (a spaced-review deck built from your own playbook)</td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
-          <tr><td>Dilution Check (read any ticker's SEC filings)</td><td><span class="compare-dash">—</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
-          <tr><td>Dilution Check company reads a month (free trial: 15; more in blocks of 25 for $15 or 60 for $30)</td><td><span class="compare-dash">—</span></td><td class="featured-col"><span class="compare-amount">100</span></td><td><span class="compare-amount">200</span></td></tr>
+          <tr><td>Trade Replay <span class="compare-note">(scaling practice, no capital at risk)</span></td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
+          <tr><td>Halt Clock <span class="compare-note">(LULD reopen-time estimator)</span></td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
+          <tr><td>Focus Timer <span class="compare-note">(drift-proof break timer)</span></td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
+          <tr><td>Trading OS <span class="compare-note">(one-page playbook)</span></td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
+          <tr><td>Knowledge Center <span class="compare-note">(searchable in-app library)</span></td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
+          <tr><td>Flash Cards <span class="compare-note">(a spaced-review deck built from your own playbook)</span></td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
+          <tr><td>Dilution Check <span class="compare-note">(read any ticker's SEC filings)</span></td><td><span class="compare-dash">—</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
+          <tr><td>Dilution Check company reads a month <span class="compare-note">(free trial: 15; more in blocks of 25 for $15 or 60 for $30)</span></td><td><span class="compare-dash">—</span></td><td class="featured-col"><span class="compare-amount">100</span></td><td><span class="compare-amount">200</span></td></tr>
 
           <tr class="group-header"><td colspan="4">JOURNALING &amp; ANALYTICS</td></tr>
           <tr><td>Trade journal &amp; daily session log</td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
           <tr><td>P&amp;L &amp; ¢/share metrics</td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
-          <tr><td>Calendar (daily P&amp;L + streak grid)</td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
-          <tr><td>Reports (equity, by-price, by-symbol, risk metrics)</td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
-          <tr><td>Trades blotter (commission/fees split)</td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
+          <tr><td>Calendar <span class="compare-note">(daily P&amp;L + streak grid)</span></td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
+          <tr><td>Reports <span class="compare-note">(equity, by-price, by-symbol, risk metrics)</span></td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
+          <tr><td>Trades blotter <span class="compare-note">(commission/fees split)</span></td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
           <tr><td>Broker CSV import</td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
           <tr><td>Custom tags &amp; multi-filter views</td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
-          <tr><td>Sticky Notes (a desktop scratchpad with Send to Journal)</td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
-          <tr><td>Picard Score (a daily grade on following your rules)</td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
-          <tr><td>Streak preservation</td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
+          <tr><td>Sticky Notes <span class="compare-note">(a desktop scratchpad with Send to Journal)</span></td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
+          <tr><td>Picard Score <span class="compare-note">(a daily grade on following your rules)</span></td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
           <tr><td>Custom rule pills</td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
-          <tr><td>Rule Check (grade your own rules: Followed, Broke, N/A)</td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
-          <tr><td>Market Context (your morning read: Cold, Mixed, Active)</td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
-          <tr><td>Daily Watchlist (company card, Market Context and Dilution Check tabs)</td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
+          <tr><td>Rule Check <span class="compare-note">(grade your own rules: Followed, Broke, N/A)</span></td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
+          <tr><td>Market Context <span class="compare-note">(your morning read: Cold, Mixed, Active)</span></td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
+          <tr><td>Daily Watchlist <span class="compare-note">(company card, Market Context and Dilution Check tabs)</span></td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
 
           <tr class="group-header"><td colspan="4">REAL-TIME DISCIPLINE</td></tr>
-          <tr><td>COACH SAYS (real-time coaching)</td><td><span class="compare-dash">—</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
-          <tr><td>State Machine (live session-state engine + timed checkpoints)</td><td><span class="compare-dash">—</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
+          <tr><td>COACH SAYS <span class="compare-note">(real-time coaching)</span></td><td><span class="compare-dash">—</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
+          <tr><td>State Machine <span class="compare-note">(live session-state engine + timed checkpoints)</span></td><td><span class="compare-dash">—</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
           <tr><td>Strike System &amp; end-of-day lockout</td><td><span class="compare-dash">—</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
           <tr><td>Give-Back / Profit-Floor Guard</td><td><span class="compare-dash">—</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
 
           <tr class="group-header"><td colspan="4">FOCUS ROOM &amp; TRAINING</td></tr>
-          <tr><td>The Lock-In (one daily trading contract)</td><td><span class="compare-dash">—</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
+          <tr><td>The Lock-In <span class="compare-note">(one daily trading contract)</span></td><td><span class="compare-dash">—</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
           <tr><td>Warm-Up conditioning games</td><td><span class="compare-dash">—</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
-          <tr><td>The Reset (6 state-mapped protocols)</td><td><span class="compare-dash">—</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
-          <tr><td>The Soundtrack (two libraries: Between Trades, During Trades)</td><td><span class="compare-dash">—</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
-          <tr><td>Anchors (your why, surfaced when it matters)</td><td><span class="compare-dash">—</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
-          <tr><td>The Debrief (tomorrow-focus loop)</td><td><span class="compare-dash">—</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
-          <tr><td>AI Training Engine (adaptive drills from your mistakes)</td><td><span class="compare-dash">—</span></td><td class="featured-col"><span class="compare-dash">—</span></td><td><span class="compare-soon">Coming soon</span></td></tr>
+          <tr><td>The Reset <span class="compare-note">(6 state-mapped protocols)</span></td><td><span class="compare-dash">—</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
+          <tr><td>The Soundtrack <span class="compare-note">(two libraries: Between Trades, During Trades)</span></td><td><span class="compare-dash">—</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
+          <tr><td>Anchors <span class="compare-note">(your why, surfaced when it matters)</span></td><td><span class="compare-dash">—</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
+          <tr><td>The Debrief <span class="compare-note">(tomorrow-focus loop)</span></td><td><span class="compare-dash">—</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
+          <tr><td>AI Training Engine <span class="compare-note">(adaptive drills from your mistakes)</span></td><td><span class="compare-dash">—</span></td><td class="featured-col"><span class="compare-dash">—</span></td><td><span class="compare-soon">Coming soon</span></td></tr>
 
           <tr class="group-header"><td colspan="4">INDICATORS</td></tr>
-          <tr><td>Maketzo Edge + Pulse on TradingView (invite within 24 hrs)</td><td><span class="compare-dash">—</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
+          <tr><td>Maketzo Edge + Pulse on TradingView <span class="compare-note">(invite within 24 hrs)</span></td><td><span class="compare-dash">—</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
 
           <tr class="group-header"><td colspan="4">SUPPORT</td></tr>
           <tr><td>Email support</td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
@@ -1187,7 +1213,7 @@ a.toolkit-card { display: block; text-decoration: none; color: inherit; }
   <div class="section-inner">
     <p class="section-eyebrow reveal">HOW WE COMPARE</p>
     <h2 class="section-title reveal">Five trading journals. <em>One that also enforces discipline.</em></h2>
-    <p class="section-sub reveal">Most trading journals help you analyze the past. Maketzo helps you follow your rules in real time. Core journaling features are largely comparable. <strong>The discipline layer is uniquely ours.</strong></p>
+    <p class="section-sub reveal">Most trading journals help you analyze the past. MAKETZO helps you follow your rules in real time. Core journaling features are largely comparable. <strong>The discipline layer is uniquely ours.</strong></p>
 
     <div class="compare-wrap reveal">
       <table class="compare-table compare-table--vs">
@@ -1203,8 +1229,8 @@ a.toolkit-card { display: block; text-decoration: none; color: inherit; }
         </thead>
         <tbody>
           <tr class="group-header"><td colspan="6">Tools &amp; practice</td></tr>
-          <tr><td>Trade Replay (scaling practice, no capital at risk)</td><td class="us-col"><span class="compare-check">&#10003;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td></tr>
-          <tr><td>Halt Clock (LULD reopen-time estimator)</td><td class="us-col"><span class="compare-check">&#10003;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td></tr>
+          <tr><td>Trade Replay <span class="compare-note">(scaling practice, no capital at risk)</span></td><td class="us-col"><span class="compare-check">&#10003;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td></tr>
+          <tr><td>Halt Clock <span class="compare-note">(LULD reopen-time estimator)</span></td><td class="us-col"><span class="compare-check">&#10003;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td></tr>
           <tr><td>Give-Back / Profit-Floor Guard</td><td class="us-col"><span class="compare-check">&#10003;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td></tr>
           <tr><td>Knowledge Center + Trading OS playbook</td><td class="us-col"><span class="compare-check">&#10003;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td></tr>
 
@@ -1216,19 +1242,19 @@ a.toolkit-card { display: block; text-decoration: none; color: inherit; }
           <tr><td>Auto-generated session review</td><td class="us-col"><span class="compare-check">&#10003;</span></td><td><span class="compare-check">&#10003;</span></td><td><span class="compare-partial">manual</span></td><td><span class="compare-check">&#10003;</span></td><td><span class="compare-partial">manual</span></td></tr>
 
           <tr class="group-header"><td colspan="6">Behavioral accountability</td></tr>
-          <tr><td>Pre-market rule pills (custom rules)</td><td class="us-col"><span class="compare-check">&#10003;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-partial">passive</span></td></tr>
-          <tr><td>State Machine (live session-state engine)</td><td class="us-col"><span class="compare-check">&#10003;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td></tr>
-          <tr><td>Picard Score &amp; streak preservation</td><td class="us-col"><span class="compare-check">&#10003;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td></tr>
+          <tr><td>Pre-market rule pills <span class="compare-note">(custom rules)</span></td><td class="us-col"><span class="compare-check">&#10003;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-partial">passive</span></td></tr>
+          <tr><td>State Machine <span class="compare-note">(live session-state engine)</span></td><td class="us-col"><span class="compare-check">&#10003;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td></tr>
+          <tr><td>Picard Score <span class="compare-note">(a daily grade on following your rules)</span></td><td class="us-col"><span class="compare-check">&#10003;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td></tr>
 
           <tr class="group-header"><td colspan="6">Real-time enforcement</td></tr>
-          <tr><td>COACH SAYS (real-time coaching)</td><td class="us-col"><span class="compare-check">&#10003;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td></tr>
+          <tr><td>COACH SAYS <span class="compare-note">(real-time coaching)</span></td><td class="us-col"><span class="compare-check">&#10003;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td></tr>
           <tr><td>Strike System &amp; end-of-day lockout</td><td class="us-col"><span class="compare-check">&#10003;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td></tr>
 
           <tr class="group-header"><td colspan="6">Indicators</td></tr>
           <tr><td>Maketzo Edge + Pulse on TradingView</td><td class="us-col"><span class="compare-check">&#10003;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td></tr>
 
           <tr class="group-header"><td colspan="6">Focus</td></tr>
-          <tr><td>Focus Room (daily contract, guided resets, warm-up drills)</td><td class="us-col"><span class="compare-check">&#10003;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td></tr>
+          <tr><td>Focus Room <span class="compare-note">(daily contract, guided resets, warm-up drills)</span></td><td class="us-col"><span class="compare-check">&#10003;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td></tr>
         </tbody>
       </table>
     </div>
@@ -1337,7 +1363,7 @@ a.toolkit-card { display: block; text-decoration: none; color: inherit; }
       </details>
       <details class="faq-item reveal">
         <summary>Is my trading data private?</summary>
-        <div class="faq-body"><p>Yes. Your journal entries, rule-break data, P&amp;L, and behavioral signals are yours alone. We <strong>never</strong> sell your data, never hand your trades to advertisers or data brokers, and never feed your trading data to any AI model. Export it or delete it whenever you want. Full detail in our <a href="privacy.html" style="color:var(--mk-brand);">privacy policy</a>.</p></div>
+        <div class="faq-body"><p>Yes. Your journal entries, rule-break data, P&amp;L, and behavioral signals are yours alone. We <strong>never</strong> sell your data, never hand your trades to advertisers or data brokers, and never feed your trading data to any AI model. If we ever build a feature that needs it, it stays off until you turn it on. Export it or delete it whenever you want. Full detail in our <a href="privacy.html" style="color:var(--mk-brand);">privacy policy</a>.</p></div>
       </details>
     </div>
 

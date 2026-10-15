@@ -312,6 +312,23 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
   .page-hero .page-hero-sub { transition-delay: 950ms; }
   .page-hero .page-hero-sub + .page-hero-sub { transition-delay: 1100ms; }
 }
+
+/* ── Phone layout for the competitor table (2026-10-15): it was 880px wide in a 324px wrapper, so a phone showed
+   feature names and no MAKETZO column. Same treatment as the two tables on /pricing. ── */
+.compare-note { display: inline; }
+@media (max-width: 700px) {
+  .compare-table { min-width: 0; width: 100%; table-layout: fixed; }
+  .compare-table thead th { width: 40px; padding: 12px 2px 10px; height: 118px; vertical-align: bottom; }
+  .compare-table thead th:not(.col-feature) { writing-mode: vertical-rl; transform: rotate(180deg); text-align: left; padding: 10px 0 6px; font-size: var(--mk-text-sm); letter-spacing: 0.02em; line-height: 1.15; }
+  .compare-table thead th:not(.col-feature) .compare-tier-price { display: block; margin: 0 0 0 2px; letter-spacing: 0; line-height: 1.15; }
+  .compare-table thead th.col-feature { width: auto; writing-mode: horizontal-tb; transform: none; text-align: left; padding: 0 0 10px 14px; height: auto; }
+  .compare-table tbody td { padding: 11px 2px; line-height: 1.35; }
+  .compare-table tbody td:first-child { padding-left: 14px; padding-right: 6px; overflow-wrap: anywhere; }
+  .compare-table tbody tr.group-header td { padding: 18px 14px 8px; }
+  .compare-check, .compare-dash { font-size: 1rem; }
+  .compare-partial { display: inline-block; max-width: 100%; font-size: 0.5rem; letter-spacing: 0; line-height: 1.1; overflow-wrap: anywhere; }
+  .compare-note { display: block; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: 0.02em; color: var(--mk-text-tertiary); margin-top: 3px; }
+}
 </style>
 <script>try{if(document.cookie.indexOf('mkt_csrf=')>-1)document.documentElement.classList.add('mkt-auth');}catch(e){}</script>
 </head>
@@ -526,20 +543,20 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
           <tr><td>Auto-generated session review</td><td class="us-col"><span class="compare-check">&#10003;</span></td><td><span class="compare-check">&#10003;</span></td><td><span class="compare-partial">manual</span></td><td><span class="compare-check">&#10003;</span></td><td><span class="compare-partial">manual</span></td></tr>
 
           <tr class="group-header"><td colspan="6">Behavioral accountability</td></tr>
-          <tr><td>Pre-market rule pills (custom rules)</td><td class="us-col"><span class="compare-check">&#10003;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-partial">passive</span></td></tr>
-          <tr><td>State Machine (live session-state engine)</td><td class="us-col"><span class="compare-check">&#10003;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td></tr>
-          <tr><td>Picard Score &amp; streak preservation</td><td class="us-col"><span class="compare-check">&#10003;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td></tr>
+          <tr><td>Pre-market rule pills <span class="compare-note">(custom rules)</span></td><td class="us-col"><span class="compare-check">&#10003;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-partial">passive</span></td></tr>
+          <tr><td>State Machine <span class="compare-note">(live session-state engine)</span></td><td class="us-col"><span class="compare-check">&#10003;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td></tr>
+          <tr><td>Picard Score <span class="compare-note">(a daily grade on following your rules)</span></td><td class="us-col"><span class="compare-check">&#10003;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td></tr>
 
           <tr class="group-header"><td colspan="6">Real-time enforcement</td></tr>
-          <tr><td>COACH SAYS (real-time coaching)</td><td class="us-col"><span class="compare-check">&#10003;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td></tr>
+          <tr><td>COACH SAYS <span class="compare-note">(real-time coaching)</span></td><td class="us-col"><span class="compare-check">&#10003;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td></tr>
           <tr><td>Strike System &amp; end-of-day lockout</td><td class="us-col"><span class="compare-check">&#10003;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td></tr>
 
           <tr class="group-header"><td colspan="6">Trade intelligence</td></tr>
-          <tr><td>Maketzo Edge (opportunity windows)</td><td class="us-col"><span class="compare-check">&#10003;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td></tr>
-          <tr><td>Maketzo Pulse (momentum confirmation)</td><td class="us-col"><span class="compare-check">&#10003;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td></tr>
+          <tr><td>Maketzo Edge <span class="compare-note">(opportunity windows)</span></td><td class="us-col"><span class="compare-check">&#10003;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td></tr>
+          <tr><td>Maketzo Pulse <span class="compare-note">(momentum confirmation)</span></td><td class="us-col"><span class="compare-check">&#10003;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td></tr>
 
           <tr class="group-header"><td colspan="6">Focus</td></tr>
-          <tr><td>Focus Room (daily contract, guided resets, soundtrack)</td><td class="us-col"><span class="compare-check">&#10003;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td></tr>
+          <tr><td>Focus Room <span class="compare-note">(daily contract, guided resets, soundtrack)</span></td><td class="us-col"><span class="compare-check">&#10003;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td></tr>
         </tbody>
       </table>
     </div>
