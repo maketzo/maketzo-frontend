@@ -206,7 +206,6 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
   border-top: 3px solid var(--mk-smoke-700);
   transition: transform var(--mk-dur-med) var(--mk-ease-out);
 }
-.why-card:hover { transform: translateY(-3px); }
 .why-card[data-threat="overtrading"] { border-top-color: var(--mk-warning-500); }
 .why-card[data-threat="revenge"] { border-top-color: var(--mk-danger-500); }
 .why-card[data-threat="fatigue"] { border-top-color: var(--mk-caution-500); }
@@ -525,7 +524,6 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
   border-top: 3px solid var(--mk-brand);
   transition: transform var(--mk-dur-med) var(--mk-ease-out);
 }
-.lockin-card:hover { transform: translateY(-3px); }
 .lockin-card[data-mode="aplus"] { border-top-color: var(--mk-brand); }
 .lockin-card[data-mode="recovery"] { border-top-color: var(--mk-lockin-500); }
 .lockin-card[data-mode="red"] { border-top-color: var(--mk-danger-500); }
@@ -565,7 +563,9 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
   border-radius: var(--mk-radius-card);
   transition: transform var(--mk-dur-med) var(--mk-ease-out);
 }
-.warmup-card:hover { transform: translateY(-3px); }
+.warmup-card { position: relative; }
+.warmup-card:has(a:hover) { transform: translateY(-3px); }
+.warmup-use a::after { content: ""; position: absolute; inset: 0; } /* the game link stretches over its card: the whole card opens the game */
 .warmup-card--feature { border-color: rgba(212,175,55,.34); background: linear-gradient(135deg, rgba(212,175,55,.08), transparent 60%), var(--mk-surface-raised); }
 .warmup-num { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-text-tertiary); margin-bottom: 8px; }
 .warmup-card--feature .warmup-num { color: var(--mk-brand); }

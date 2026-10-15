@@ -417,7 +417,6 @@ hr.mk-rule-gold, hr.mk-rule-gold--bold { margin: 0 auto; max-width: 1180px; }
   transition: transform var(--mk-dur-med) var(--mk-ease-out),
               border-color var(--mk-dur-med);
 }
-.tier-card:hover { transform: translateY(-4px); }
 .tier-card--featured {
   border: 1px solid rgba(212,175,55,.45);
   background:
@@ -863,6 +862,7 @@ footer {
               border-color var(--mk-dur-med);
 }
 .toolkit-card:hover { transform: translateY(-4px); border-color: rgba(212,175,55,.30); }
+a.toolkit-card { display: block; text-decoration: none; color: inherit; }
 /* Dilution Check is the one toolkit entry that needs Pro. The tag is the only
    thing that marks it, so it sits above the name where an eyebrow would: the
    plan is the first thing you read, not a footnote under the description. */
@@ -1057,31 +1057,31 @@ footer {
     <p class="section-sub reveal">Five of these open on every plan, day one. Dilution Check is the one that needs Pro.</p>
 
     <div class="toolkit-grid reveal">
-      <div class="toolkit-card">
+      <a class="toolkit-card" href="trade-replay.html" data-cta-source="pricing-toolkit" data-cta-target="trade-replay">
         <div class="toolkit-card-name">Trade Replay</div>
         <p class="toolkit-card-desc">Replay any past chart and practice scaling in and out, the hardest skill in trading, with zero capital at risk.</p>
-      </div>
-      <div class="toolkit-card">
+      </a>
+      <a class="toolkit-card" href="tools.html" data-cta-source="pricing-toolkit" data-cta-target="halt-clock">
         <div class="toolkit-card-name">Halt Clock</div>
         <p class="toolkit-card-desc">Estimate when a halted small-cap reopens, so a LULD halt never catches you flat-footed.</p>
-      </div>
-      <div class="toolkit-card">
+      </a>
+      <a class="toolkit-card" href="tools.html" data-cta-source="pricing-toolkit" data-cta-target="focus-timer">
         <div class="toolkit-card-name">Focus Timer</div>
         <p class="toolkit-card-desc">A drift-proof break timer that gets you off the screen before boredom turns into a bad click.</p>
-      </div>
-      <div class="toolkit-card">
+      </a>
+      <a class="toolkit-card" href="trading-os.html" data-cta-source="pricing-toolkit" data-cta-target="trading-os">
         <div class="toolkit-card-name">Trading OS</div>
         <p class="toolkit-card-desc">Your whole trading system on one page, from what to check before you click to how you close the day.</p>
-      </div>
-      <div class="toolkit-card">
+      </a>
+      <a class="toolkit-card" href="tools.html" data-cta-source="pricing-toolkit" data-cta-target="knowledge-center">
         <div class="toolkit-card-name">Knowledge Center</div>
         <p class="toolkit-card-desc">A searchable library of terms, how-tos, and setups, built right into the app.</p>
-      </div>
-      <div class="toolkit-card toolkit-card--pro">
+      </a>
+      <a class="toolkit-card toolkit-card--pro" href="dilution-check.html" data-cta-source="pricing-toolkit" data-cta-target="dilution-check">
         <div class="toolkit-card-tag">PRO</div>
         <div class="toolkit-card-name">Dilution Check</div>
         <p class="toolkit-card-desc">Enter a ticker and read their SEC filings: whether they can sell stock today, whether they already have, and how long their cash lasts. Pro includes 100 company reads a month, Elite 200.</p>
-      </div>
+      </a>
     </div>
 
     <p class="toolkit-freeline reveal">Run two right now, no signup: the <a href="trading-os.html">Trading OS</a>, and <a href="trade-replay.html">Trade Replay</a> for 10 free replays. Dilution Check needs Pro, and you can <a href="dilution-check.html">see how it reads a filing</a> first.</p>

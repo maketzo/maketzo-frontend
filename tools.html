@@ -118,7 +118,9 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 .station-cards--multi { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 
 .tool-card { display: flex; flex-direction: column; gap: 10px; padding: 22px 22px; background: var(--mk-surface-raised); border: 1px solid rgba(255,255,255,.06); border-radius: var(--mk-radius-card); transition: transform var(--mk-dur-med) var(--mk-ease-out), border-color var(--mk-dur-med); }
-.tool-card:hover { transform: translateY(-4px); border-color: rgba(212,175,55,.30); }
+.tool-card { position: relative; }
+.tool-card:has(a.tool-card-cta:hover) { transform: translateY(-4px); border-color: rgba(212,175,55,.30); }
+.tool-card-cta::after { content: ""; position: absolute; inset: 0; } /* the CTA stretches over its card: the whole card opens the tool; cards with no link do not lift */
 .tool-card--featured { padding: 30px 28px; background: linear-gradient(135deg, rgba(212,175,55,.10), transparent 62%), var(--mk-surface-raised); border-color: rgba(212,175,55,.28); }
 .tool-card-tag { align-self: flex-start; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: 0.08em; text-transform: uppercase; color: var(--mk-text-tertiary); border: 1px solid rgba(255,255,255,.1); border-radius: var(--mk-radius-pill); padding: 4px 10px; }
 .tool-card-name { font-family: var(--mk-font-display); font-size: var(--mk-display-sm); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); font-weight: 400; line-height: 1.1; }
@@ -126,7 +128,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 .tool-card-desc { font-size: var(--mk-text-sm); color: var(--mk-text-tertiary); line-height: 1.55; flex: 1; }
 .tool-card--featured .tool-card-desc { font-size: var(--mk-text-md); color: var(--mk-text-secondary); }
 .tool-card-cta { display: inline-flex; align-items: center; gap: 6px; align-self: flex-start; margin-top: 4px; font-family: var(--mk-font-sans); font-size: var(--mk-text-sm); font-weight: 600; letter-spacing: 0.02em; color: var(--mk-brand); transition: gap var(--mk-dur-snap); }
-.tool-card:hover .tool-card-cta { gap: 10px; }
+.tool-card:has(a.tool-card-cta:hover) .tool-card-cta { gap: 10px; }
 /* A row card normally carries EITHER a link or a plan tag on the right. Dilution
    Check needs both, so its tag moves inline with the name and the right slot
    stays free for the link. */

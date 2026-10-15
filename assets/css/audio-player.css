@@ -188,6 +188,7 @@
   transition: background var(--mk-dur-snap);
   color: var(--mk-text-secondary);
 }
+/* hover-ok: the whole row plays the track on click (audio-player.js, li click listener) */
 .mk-audio-player__item:hover { background: rgba(212, 175, 55, 0.08); color: var(--mk-text-primary); }
 .mk-audio-player__item.is-active {
   background: rgba(212, 175, 55, 0.14);
@@ -220,6 +221,7 @@
   height: 14px;
   fill: currentColor;
 }
+/* hover-ok: same row, same click target */
 .mk-audio-player__item:hover .mk-audio-player__share-trigger,
 .mk-audio-player__item:focus-within .mk-audio-player__share-trigger {
   opacity: 1;
