@@ -399,9 +399,18 @@ html.mkt-auth .nav-login-btn:hover{color:var(--mk-text-on-gold);background:var(-
   .hero-sub { max-width: 520px; }
 }
 @media (max-width: 600px) {
-  .hero-bg    { height: 50vh; }
-  .hero-scrim { height: 58vh; }
-  .hero-content { padding: 44vh 22px 44px; }
+  /* Phone fold rule (Ed, 2026-10-15): the trial button sits inside the first screen.
+     Shorter photo, then headline, the stop line, both buttons, THEN the paragraph.
+     Desktop keeps the reading order; only the phone reorders. */
+  .hero-bg    { height: 38vh; }
+  .hero-scrim { height: 46vh; }
+  .hero-content { padding: 32vh 22px 44px; }
+  .hero-badge    { order: 0; }
+  .hero-headline { order: 1; }
+  .hero-stop     { order: 2; margin-bottom: 18px; }
+  .hero-ctas     { order: 3; margin-bottom: 26px; }
+  .hero-sub      { order: 4; }
+  .hero-proof    { order: 5; }
   .hero-headline { font-size: clamp(2.15rem, 9vw, 3rem); }
   .hero-badge { max-width: 100%; align-items: flex-start; line-height: 1.5; }
   .hero-badge .badge-dot { margin-top: 5px; flex-shrink: 0; }
@@ -1063,6 +1072,55 @@ hr.mk-rule-gold--bold {
   border-radius: var(--mk-radius-pill);
   padding: 2px 8px;
 }
+
+/* ── FREE GAMES tiles (homepage Toolkit section) ─────────────────── */
+.games-block { margin-top: 64px; }
+.games-kicker {
+  font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs);
+  letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase;
+  color: var(--mk-brand); margin-bottom: 12px;
+}
+.games-title {
+  font-family: var(--mk-font-display); font-size: clamp(1.5rem, 2.6vw, 2rem);
+  text-transform: uppercase; font-weight: 400; letter-spacing: var(--mk-track-display);
+  line-height: 1.06; margin: 0 0 24px; max-width: 30ch;
+}
+.games-title em { color: var(--mk-brand); font-style: normal; }
+.games-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+.game-tile {
+  display: flex; flex-direction: column; gap: 12px;
+  padding: 26px 24px 22px; border-radius: 14px;
+  text-decoration: none; color: inherit;
+  background: radial-gradient(420px 220px at 0% 0%, rgba(212,175,55,.14), transparent 60%), var(--mk-surface-raised);
+  border: 1px solid rgba(212,175,55,.18);
+  transition: transform .25s, border-color .25s;
+}
+.game-tile:hover { transform: translateY(-3px); border-color: rgba(212,175,55,.45); }
+.game-tile:focus-visible { outline: 2px solid var(--mk-brand); outline-offset: 3px; }
+.game-eyebrow {
+  font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs);
+  letter-spacing: .16em; text-transform: uppercase; color: var(--mk-text-tertiary);
+}
+.game-hook {
+  font-family: var(--mk-font-display); font-size: clamp(1.6rem, 2.4vw, 2.1rem);
+  line-height: .98; text-transform: uppercase; letter-spacing: .01em; color: var(--mk-text-primary);
+}
+.game-hook em { color: var(--mk-brand); font-style: normal; }
+.game-body { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); line-height: 1.5; flex: 1; }
+.game-cta {
+  font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs);
+  letter-spacing: .16em; text-transform: uppercase; color: var(--mk-brand);
+}
+@media (max-width: 760px) {
+  /* one swipe row on phones, edge to edge, so the section does not grow by three cards */
+  .games-grid {
+    display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 14px;
+    margin: 0 -22px; padding: 0 22px 8px; scrollbar-width: none;
+  }
+  .games-grid::-webkit-scrollbar { display: none; }
+  .game-tile { flex: 0 0 82%; scroll-snap-align: start; }
+}
+@media (prefers-reduced-motion: reduce) { .game-tile { transition: none; } }
 .focus-closing-line {
   margin-top: 22px;
   padding: 18px 22px;
@@ -1776,6 +1834,11 @@ body.hero-loaded .hero-stop     { opacity: 1; transform: translateY(0); transiti
 body.hero-loaded .hero-sub      { opacity: 1; transform: translateY(0); transition-delay:  900ms; }
 body.hero-loaded .hero-ctas     { opacity: 1; transform: translateY(0); transition-delay: 1200ms; }
 body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transition-delay: 1500ms; }
+/* On phones the buttons sit above the paragraph, so they enter first. */
+@media (max-width: 600px) {
+  body.hero-loaded .hero-ctas { transition-delay:  900ms; }
+  body.hero-loaded .hero-sub  { transition-delay: 1200ms; }
+}
 
 @media (scripting: none) {
   .hero-badge, .hero-headline, .hero-stop,
@@ -2455,11 +2518,90 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
 </script>
 
 <!-- BEGIN journal-positioning -->
+<!-- THE TOOLKIT + FREE GAMES (third since 2026-10-15: free value before the paid argument) -->
+<hr class="mk-rule-gold">
+
+<section class="section section-dark" id="toolkit">
+  <div class="section-inner">
+    <div class="teaser-block reveal">
+      <div class="teaser-text">
+        <div class="teaser-eyebrow">03 &middot; The Toolkit</div>
+        <h2 class="teaser-title">A full desk of tools.<br><em>Most of it free.</em></h2>
+        <p class="teaser-body">Beyond the journal and the coach, MAKETZO ships a working toolkit. <strong>Trade Replay</strong> to practice scaling with zero risk, a <strong>Halt Clock</strong> for LULD reopens, a drift-proof <strong>Focus Timer</strong>, the <strong>Trading OS</strong> playbook, and a searchable <strong>Knowledge Center</strong>.</p>
+        <p class="teaser-body">That toolkit is free on every plan, from Journal on up, and a couple you can run right now with no signup.</p>
+        <p class="teaser-body">Pro and Elite add the Maketzo Edge and Pulse indicators on TradingView, plus <strong><a href="dilution-check.html">Dilution Check</a></strong>, which reads a company's SEC filings and shows how close they are to selling stock.</p>
+        <div class="teaser-cta-row"><a href="tools.html" class="btn-ghost">Explore the Toolkit &rarr;</a></div>
+      </div>
+      <div class="teaser-visual">
+        <div class="focus-feature-stack">
+          <div class="focus-feature-card">
+            <span class="focus-feature-num">1</span>
+            <div>
+              <div class="focus-feature-title">Trade Replay</div>
+              <p class="focus-feature-text">Replay any past chart and practice scaling in and out, the hardest skill in trading, with zero capital at risk.</p>
+            </div>
+          </div>
+          <div class="focus-feature-card">
+            <span class="focus-feature-num">2</span>
+            <div>
+              <div class="focus-feature-title">Halt Clock</div>
+              <p class="focus-feature-text">Estimate when a halted small-cap reopens, so an LULD halt never catches you flat-footed.</p>
+            </div>
+          </div>
+          <div class="focus-feature-card">
+            <span class="focus-feature-num">3</span>
+            <div>
+              <div class="focus-feature-title">Trading OS</div>
+              <p class="focus-feature-text">The whole trading system on one page: what to check before you click, how to manage what you took, and when to call the day.</p>
+            </div>
+          </div>
+          <div class="focus-feature-card">
+            <span class="focus-feature-num">4</span>
+            <div>
+              <div class="focus-feature-title">Dilution Check <span class="focus-feature-tag">PRO</span></div>
+              <p class="focus-feature-text">Enter a ticker and read their SEC filings: whether they can sell stock today, whether they already have, and how long their cash lasts.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Free games: the three kiosk games as hook tiles (Ed picked G1 of three rendered directions, 2026-10-15).
+         Each tile is a marketing CTA: data-cta-source/target feed the delegated click listener in mkt-analytics.js. -->
+    <div class="games-block reveal">
+      <div class="games-kicker">Warm up before the open</div>
+      <h3 class="games-title">Three free games. <em>Each one trains a habit that costs money.</em></h3>
+      <div class="games-grid">
+        <a class="game-tile" href="trader-type.html" data-cta-source="games" data-cta-target="trader-type">
+          <span class="game-eyebrow">Trader Type &middot; 2-minute sim</span>
+          <span class="game-hook">Can you trade,<br><em>or do you just think so?</em></span>
+          <span class="game-body">A simulated small-cap tape that fights back. Most people lose the fake money.</span>
+          <span class="game-cta">Play free &rarr;</span>
+        </a>
+        <a class="game-tile" href="gauntlet.html" data-cta-source="games" data-cta-target="gauntlet">
+          <span class="game-eyebrow">The Gauntlet &middot; Daily duel</span>
+          <span class="game-hook">Can you beat<br><em>Captain Green?</em></span>
+          <span class="game-body">Seven fast questions on how traders win and lose, with the clock draining on each one.</span>
+          <span class="game-cta">Play free &rarr;</span>
+        </a>
+        <a class="game-tile" href="kungfu.html" data-cta-source="games" data-cta-target="kungfu">
+          <span class="game-eyebrow">Kung Fu Trader &middot; Arcade</span>
+          <span class="game-hook">Five floors.<br><em>Five bad habits.</em></span>
+          <span class="game-body">A retro arcade fight up the trading day. Beat each boss and learn its fix.</span>
+          <span class="game-cta">Play free &rarr;</span>
+        </a>
+      </div>
+    </div>
+    <div class="mk-cta-repeat">
+      <button class="btn-primary" data-cta-source="toolkit" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
+    </div>
+  </div>
+</section>
+
 <hr class="mk-rule-gold">
 
 <section class="section" id="journal-positioning">
   <div class="section-inner">
-    <p class="section-eyebrow reveal">03 &middot; More Than Discipline</p>
+    <p class="section-eyebrow reveal">04 &middot; More Than Discipline</p>
     <h2 class="section-title reveal">A serious trading journal. <em>Plus everything they can't do.</em></h2>
     <p class="section-sub reveal">If you're comparing MAKETZO to <strong>TradeZella</strong> or <strong>TraderVue</strong>: yes, we cover the journal job. Broker import. P&amp;L analytics. Tagging. Session review. We just <strong>don't stop there.</strong></p>
 
@@ -2508,7 +2650,7 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
   <div class="section-inner">
     <div class="teaser-block reveal">
       <div class="teaser-text">
-        <div class="teaser-eyebrow">04 &middot; The System</div>
+        <div class="teaser-eyebrow">05 &middot; The System</div>
         <h2 class="teaser-title">Not a dashboard.<br><em>A coach that talks back.</em></h2>
         <p class="teaser-body">Log your P&amp;L and MAKETZO reads your session state in real time. <strong>&#128226; COACH SAYS</strong> speaks up the moment your behavior turns, and at your two daily checkpoints it calls how the day is going, in direct, no-excuse language built on your actual data.</p>
         <p class="teaser-body">Works <strong>before you connect your broker</strong>. Enter your net P&amp;L manually and the accountability engine does the rest immediately.</p>
@@ -2548,7 +2690,7 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
   <div class="section-inner">
     <div class="teaser-block reverse reveal">
       <div class="teaser-text">
-        <div class="teaser-eyebrow">05 &middot; The Strike System</div>
+        <div class="teaser-eyebrow">06 &middot; The Strike System</div>
         <h2 class="teaser-title">Three strikes.<br><em>Then the system steps in.</em></h2>
         <p class="teaser-body">A loss past your strike line earns a strike; a win past it earns one back. <strong>MAKETZO tracks them automatically.</strong> At Strike 2 you get a warning. At Strike 3 the platform closes your day.</p>
         <p class="teaser-body">Getting back in takes a deliberate override, not a click you'll make by accident. You set the rules when you were thinking clearly. <strong>The system holds the line when you're not.</strong></p>
@@ -2594,57 +2736,6 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
 </section>
 
 <!-- THE EDGE TEASER -->
-<hr class="mk-rule-gold">
-
-<section class="section section-dark">
-  <div class="section-inner">
-    <div class="teaser-block reveal">
-      <div class="teaser-text">
-        <div class="teaser-eyebrow">06 &middot; The Toolkit</div>
-        <h2 class="teaser-title">A full desk of tools.<br><em>Most of it free.</em></h2>
-        <p class="teaser-body">Beyond the journal and the coach, MAKETZO ships a working toolkit. <strong>Trade Replay</strong> to practice scaling with zero risk, a <strong>Halt Clock</strong> for LULD reopens, a drift-proof <strong>Focus Timer</strong>, the <strong>Trading OS</strong> playbook, and a searchable <strong>Knowledge Center</strong>.</p>
-        <p class="teaser-body">That toolkit is free on every plan, from Journal on up, and a couple you can run right now with no signup.</p>
-        <p class="teaser-body">Pro and Elite add the Maketzo Edge and Pulse indicators on TradingView, plus <strong><a href="dilution-check.html">Dilution Check</a></strong>, which reads a company's SEC filings and shows how close they are to selling stock.</p>
-        <div class="teaser-cta-row"><a href="tools.html" class="btn-ghost">Explore the Toolkit &rarr;</a></div>
-      </div>
-      <div class="teaser-visual">
-        <div class="focus-feature-stack">
-          <div class="focus-feature-card">
-            <span class="focus-feature-num">1</span>
-            <div>
-              <div class="focus-feature-title">Trade Replay</div>
-              <p class="focus-feature-text">Replay any past chart and practice scaling in and out, the hardest skill in trading, with zero capital at risk.</p>
-            </div>
-          </div>
-          <div class="focus-feature-card">
-            <span class="focus-feature-num">2</span>
-            <div>
-              <div class="focus-feature-title">Halt Clock</div>
-              <p class="focus-feature-text">Estimate when a halted small-cap reopens, so an LULD halt never catches you flat-footed.</p>
-            </div>
-          </div>
-          <div class="focus-feature-card">
-            <span class="focus-feature-num">3</span>
-            <div>
-              <div class="focus-feature-title">Trading OS</div>
-              <p class="focus-feature-text">The whole trading system on one page: what to check before you click, how to manage what you took, and when to call the day.</p>
-            </div>
-          </div>
-          <div class="focus-feature-card">
-            <span class="focus-feature-num">4</span>
-            <div>
-              <div class="focus-feature-title">Dilution Check <span class="focus-feature-tag">PRO</span></div>
-              <p class="focus-feature-text">Enter a ticker and read their SEC filings: whether they can sell stock today, whether they already have, and how long their cash lasts.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="mk-cta-repeat">
-      <button class="btn-primary" data-cta-source="toolkit" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
-    </div>
-  </div>
-</section>
 
 <!-- FOCUS ROOM TEASER -->
 <hr class="mk-rule-gold">
@@ -2757,8 +2848,10 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
   </div>
 <script>
 document.addEventListener("DOMContentLoaded", function() {
-  var reviews = [{"stars": 5, "quote": "The EXIT NOW banner fired while I was in a position going against me. I listened and saved myself $1,400 that I would have held through out of ego. That moment alone changed how I think about trading. I used to believe I could willpower my way through bad setups, but MAKETZO proved that the system has to hold the line when emotion takes over.", "initials": "MR", "name": "Michael R.", "meta": "Small cap momentum trader \u00b7 4 years"}, {"stars": 5, "quote": "My cent-per-share average went from negative two cents to positive fourteen cents in three weeks. I did not change my strategy or setups at all. What changed was when I pulled the trigger. MAKETZO made my discipline visible in a way nothing else ever has. I have tried journals, coaches, accountability partners. None of them worked like this does.", "initials": "TK", "name": "Tracy K.", "meta": "Small cap trader \u00b7 DAS user"}, {"stars": 5, "quote": "I have tried TraderVue and TradeZella. Neither one told me when not to trade. MAKETZO does, and that single distinction is everything when you are a momentum trader who overtrades on slow days. I used to average fourteen trades on a choppy open. Now I average four, my results improved immediately, and I am less stressed at the end of every session.", "initials": "RP", "name": "Ryan P.", "meta": "Momentum trader \u00b7 full time"}, {"stars": 5, "quote": "I blew two accounts before this. One month in and I have not blown my third. I was starting to think I just was not built for trading. Turns out I was breaking my own rules so consistently that no edge could survive it. The guardrails here finally gave me a fighting chance and I am more profitable now than I have ever been.", "initials": "JS", "name": "Justin S.", "meta": "New trader \u00b7 8 months"}, {"stars": 5, "quote": "The behavioral lockout feature felt annoying the first few times it triggered. Then it stopped me from taking a revenge trade after a rough open and I ended the day flat instead of down eight hundred dollars. Now I consider it the smartest feature in the app. You do not truly appreciate it until it saves you from yourself.", "initials": "EJ", "name": "Emma J.", "meta": "Small cap trader \u00b7 DAS user"}, {"stars": 5, "quote": "By week three my losses had dropped by around forty percent and I was actually profitable for the first time in eight months of live trading. MAKETZO did not give me a new strategy. It created the discipline structure that let everything I already knew finally click into place.", "initials": "KD", "name": "Kevin D.", "meta": "Retail trader \u00b7 Texas"}, {"stars": 5, "quote": "I used to check my P&L every five minutes while in a trade and it was destroying my decision-making. MAKETZO redirected my focus toward the setup and process instead of the dollar amount. That shift alone improved my hold time on winners and completely changed my relationship with the screen during live sessions.", "initials": "MH", "name": "Michelle H.", "meta": "Retail trader \u00b7 New Jersey"}, {"stars": 5, "quote": "Three weeks in and my consistency is at a level I have never hit before. Not just P&L consistency but process consistency. Same approach every day, same discipline, same decision framework. MAKETZO did not give me the strategy. It gave me the structure to actually execute the strategy I already had. That is the missing piece for most traders.", "initials": "BM", "name": "Brian M.", "meta": "Momentum trader \u00b7 DAS user"}, {"stars": 5, "quote": "A few weeks of using this and my drawdown days are almost unrecognizable compared to before. The system genuinely changes how you show up to the screen. I am calmer, more selective, and more consistent than I have ever been. The results followed naturally once the behavior changed. That is exactly the order it needed to happen in.", "initials": "JL", "name": "Jamie L.", "meta": "Retail trader \u00b7 Ohio"}, {"stars": 5, "quote": "Been trading for six years and I still learned something from the guardrail system here. That was humbling to admit but it is true. There were patterns in my behavior I did not even know existed until MAKETZO made them visible. The data does not lie and now I finally have data that is actually actionable for improving day by day.", "initials": "VL", "name": "Vanessa L.", "meta": "Veteran retail trader \u00b7 6 years"}, {"stars": 5, "quote": "The daily loss limit enforcement is the feature I underestimated most going in. I thought I did not need it because I already knew my limits. Turns out knowing them and honoring them in the heat of the moment are two completely different disciplines. MAKETZO handles the honoring part automatically. That is exactly the separation I needed.", "initials": "NR", "name": "Nicole R.", "meta": "Small cap trader \u00b7 full time"}, {"stars": 5, "quote": "My coach told me to try this and I ignored the advice at first because I thought I had enough tools. Finally gave it a shot and within three weeks I understood exactly why he recommended it. The external accountability structure is something I genuinely could not replicate on my own no matter how much I wanted to.", "initials": "SR", "name": "Stephanie R.", "meta": "Small cap trader \u00b7 18 months"}, {"stars": 5, "quote": "Cut my average daily loss in half within three weeks without changing a single setup or strategy. I just changed when I pulled the trigger based on what the system was telling me. That timing discipline is the hardest thing to build on your own, and having an external system enforce it makes all the difference in the world.", "initials": "CT", "name": "Chris T.", "meta": "Small cap momentum trader \u00b7 3 years"}, {"stars": 5, "quote": "What I like most is that it does not judge you. It just shows you the data and creates the structure to do something about it. I have worked with coaches who made me feel terrible about mistakes. MAKETZO just holds the line and lets you make better decisions going forward. It is fair, effective, and actually keeps me motivated.", "initials": "OC", "name": "Olivia C.", "meta": "Small cap trader \u00b7 TradingView user"}, {"stars": 5, "quote": "Stopped sizing up when frustrated and that single change improved my results more than any setup tweak I have made in four years. The system caught the pattern before I consciously recognized it myself. That kind of insight used to require paying a coach thousands of dollars. The value here is genuinely extraordinary.", "initials": "ZP", "name": "Zoe P.", "meta": "Small cap trader \u00b7 full time"}, {"stars": 5, "quote": "I have recommended this to every trader I know who is struggling with discipline. Because that is exactly what it solves. Not strategy, not setups, but discipline. If you have a profitable approach and keep sabotaging it with emotional decisions, this is the exact tool that closes that gap. Nothing else I have found even comes close.", "initials": "DT", "name": "Derek T.", "meta": "Day trader \u00b7 5 years"}, {"stars": 5, "quote": "I over-trade when the market is slow and I knew it for two years without being able to fix it. Knowing a problem and fixing it are completely different things without external structure. MAKETZO provides that structure automatically, without requiring me to rely on willpower at exactly the moment when willpower is at its lowest.", "initials": "CW", "name": "Chloe W.", "meta": "Swing trader \u00b7 3 years"}, {"stars": 5, "quote": "MAKETZO stopped me from blowing up my account three times in one month. It is the only reason I am still trading.", "initials": "GK", "name": "Gary K.", "meta": "Part-time trader \u00b7 weekends"}, {"stars": 5, "quote": "Best trading tool I have ever used, and I have tried everything. The guardrails paid for a full year of subscription in the first two weeks.", "initials": "SC", "name": "Sandra C.", "meta": "Swing trader \u00b7 DAS user"}, {"stars": 5, "quote": "My worst day this month was still green. That has never happened before in three years of live trading.", "initials": "DP", "name": "David P.", "meta": "Small cap momentum trader \u00b7 3 years"}, {"stars": 5, "quote": "Stopped revenge trading in week two. That alone made this the most valuable purchase I have made as a trader.", "initials": "AL", "name": "Ashley L.", "meta": "Small cap trader \u00b7 TradingView user"}, {"stars": 5, "quote": "The free trial got me in the door. The results on day five kept me subscribed for good.", "initials": "JW", "name": "Jake W.", "meta": "Retail trader \u00b7 Pennsylvania"}, {"stars": 5, "quote": "Set it up in ten minutes, used it the same session, and never traded without it again. Exactly how a tool like this should work.", "initials": "LN", "name": "Luis N.", "meta": "Day trader \u00b7 California"}, {"stars": 5, "quote": "Saved me from a revenge trade that would have wiped out my whole week. It paid for twelve months of subscription in one moment.", "initials": "WS", "name": "Will S.", "meta": "Day trader \u00b7 2 years"}, {"stars": 5, "quote": "I did not believe the reviews when I signed up. Now I am writing one that says exactly the same thing. That tells you everything.", "initials": "KA", "name": "Karen A.", "meta": "Retail trader \u00b7 2 years"}, {"stars": 5, "quote": "The exit alerts are fast, accurate, and they fire when it matters. I will not trade without this running on my screen.", "initials": "TM", "name": "Tony M.", "meta": "Day trader \u00b7 Chicago"}, {"stars": 5, "quote": "A few weeks in, my consistency is the best it has ever been. This is the missing piece I was looking for from day one.", "initials": "MM", "name": "Marcus M.", "meta": "Retail trader \u00b7 Michigan"}, {"stars": 5, "quote": "I wish I had found this when I started trading. Would have saved me a lot of money and a lot of frustration.", "initials": "HM", "name": "Henry M.", "meta": "Part-time trader \u00b7 3 years"}, {"stars": 5, "quote": "The indicators are elite. The accountability layer on top of them is what makes the whole thing genuinely different.", "initials": "PH", "name": "Patricia H.", "meta": "Retail trader \u00b7 Florida"}, {"stars": 5, "quote": "My trading buddy and I both use it now. Having the same system running for both of us changed our whole weekly conversation.", "initials": "FD", "name": "Felicia D.", "meta": "Retail trader \u00b7 Georgia"}, {"stars": 4, "quote": "The core system is excellent and works exactly as advertised. Would love a few more customization options but the results are real.", "initials": "IN", "name": "Isaac N.", "meta": "New trader \u00b7 6 months"}, {"stars": 5, "quote": "Week three was my best week in six months. Stuck with it through a rough start and it paid off in a big way.", "initials": "RB", "name": "Rob B.", "meta": "Momentum trader \u00b7 4 years"}, {"stars": 4, "quote": "Still learning all the features but what I have used has already paid for itself several times over. Really impressed so far.", "initials": "AP", "name": "Amy P.", "meta": "Retail trader \u00b7 1 year"}, {"stars": 5, "quote": "Sat on my hands during a choppy open because MAKETZO said to. Saved myself from four bad trades and closed the day green.", "initials": "SM", "name": "Sarah M.", "meta": "Retail trader \u00b7 Washington"}];
+  var reviews = [{"stars": 5, "indicators": true, "quote": "The EXIT NOW banner fired while I was in a position going against me. I listened and saved myself $1,400 that I would have held through out of ego. That moment alone changed how I think about trading. I used to believe I could willpower my way through bad setups, but MAKETZO proved that the system has to hold the line when emotion takes over.", "initials": "MR", "name": "Michael R.", "meta": "Small cap momentum trader \u00b7 4 years"}, {"stars": 5, "quote": "My cent-per-share average went from negative two cents to positive fourteen cents in three weeks. I did not change my strategy or setups at all. What changed was when I pulled the trigger. MAKETZO made my discipline visible in a way nothing else ever has. I have tried journals, coaches, accountability partners. None of them worked like this does.", "initials": "TK", "name": "Tracy K.", "meta": "Small cap trader \u00b7 DAS user"}, {"stars": 5, "quote": "I have tried TraderVue and TradeZella. Neither one told me when not to trade. MAKETZO does, and that single distinction is everything when you are a momentum trader who overtrades on slow days. I used to average fourteen trades on a choppy open. Now I average four, my results improved immediately, and I am less stressed at the end of every session.", "initials": "RP", "name": "Ryan P.", "meta": "Momentum trader \u00b7 full time"}, {"stars": 5, "quote": "I blew two accounts before this. One month in and I have not blown my third. I was starting to think I just was not built for trading. Turns out I was breaking my own rules so consistently that no edge could survive it. The guardrails here finally gave me a fighting chance and I am more profitable now than I have ever been.", "initials": "JS", "name": "Justin S.", "meta": "New trader \u00b7 8 months"}, {"stars": 5, "quote": "The behavioral lockout feature felt annoying the first few times it triggered. Then it stopped me from taking a revenge trade after a rough open and I ended the day flat instead of down eight hundred dollars. Now I consider it the smartest feature in the app. You do not truly appreciate it until it saves you from yourself.", "initials": "EJ", "name": "Emma J.", "meta": "Small cap trader \u00b7 DAS user"}, {"stars": 5, "quote": "By week three my losses had dropped by around forty percent and I was actually profitable for the first time in eight months of live trading. MAKETZO did not give me a new strategy. It created the discipline structure that let everything I already knew finally click into place.", "initials": "KD", "name": "Kevin D.", "meta": "Retail trader \u00b7 Texas"}, {"stars": 5, "quote": "I used to check my P&L every five minutes while in a trade and it was destroying my decision-making. MAKETZO redirected my focus toward the setup and process instead of the dollar amount. That shift alone improved my hold time on winners and completely changed my relationship with the screen during live sessions.", "initials": "MH", "name": "Michelle H.", "meta": "Retail trader \u00b7 New Jersey"}, {"stars": 5, "quote": "Three weeks in and my consistency is at a level I have never hit before. Not just P&L consistency but process consistency. Same approach every day, same discipline, same decision framework. MAKETZO did not give me the strategy. It gave me the structure to actually execute the strategy I already had. That is the missing piece for most traders.", "initials": "BM", "name": "Brian M.", "meta": "Momentum trader \u00b7 DAS user"}, {"stars": 5, "quote": "A few weeks of using this and my drawdown days are almost unrecognizable compared to before. The system genuinely changes how you show up to the screen. I am calmer, more selective, and more consistent than I have ever been. The results followed naturally once the behavior changed. That is exactly the order it needed to happen in.", "initials": "JL", "name": "Jamie L.", "meta": "Retail trader \u00b7 Ohio"}, {"stars": 5, "quote": "Been trading for six years and I still learned something from the guardrail system here. That was humbling to admit but it is true. There were patterns in my behavior I did not even know existed until MAKETZO made them visible. The data does not lie and now I finally have data that is actually actionable for improving day by day.", "initials": "VL", "name": "Vanessa L.", "meta": "Veteran retail trader \u00b7 6 years"}, {"stars": 5, "quote": "The daily loss limit enforcement is the feature I underestimated most going in. I thought I did not need it because I already knew my limits. Turns out knowing them and honoring them in the heat of the moment are two completely different disciplines. MAKETZO handles the honoring part automatically. That is exactly the separation I needed.", "initials": "NR", "name": "Nicole R.", "meta": "Small cap trader \u00b7 full time"}, {"stars": 5, "quote": "My coach told me to try this and I ignored the advice at first because I thought I had enough tools. Finally gave it a shot and within three weeks I understood exactly why he recommended it. The external accountability structure is something I genuinely could not replicate on my own no matter how much I wanted to.", "initials": "SR", "name": "Stephanie R.", "meta": "Small cap trader \u00b7 18 months"}, {"stars": 5, "quote": "Cut my average daily loss in half within three weeks without changing a single setup or strategy. I just changed when I pulled the trigger based on what the system was telling me. That timing discipline is the hardest thing to build on your own, and having an external system enforce it makes all the difference in the world.", "initials": "CT", "name": "Chris T.", "meta": "Small cap momentum trader \u00b7 3 years"}, {"stars": 5, "quote": "What I like most is that it does not judge you. It just shows you the data and creates the structure to do something about it. I have worked with coaches who made me feel terrible about mistakes. MAKETZO just holds the line and lets you make better decisions going forward. It is fair, effective, and actually keeps me motivated.", "initials": "OC", "name": "Olivia C.", "meta": "Small cap trader \u00b7 TradingView user"}, {"stars": 5, "quote": "Stopped sizing up when frustrated and that single change improved my results more than any setup tweak I have made in four years. The system caught the pattern before I consciously recognized it myself. That kind of insight used to require paying a coach thousands of dollars. The value here is genuinely extraordinary.", "initials": "ZP", "name": "Zoe P.", "meta": "Small cap trader \u00b7 full time"}, {"stars": 5, "quote": "I have recommended this to every trader I know who is struggling with discipline. Because that is exactly what it solves. Not strategy, not setups, but discipline. If you have a profitable approach and keep sabotaging it with emotional decisions, this is the exact tool that closes that gap. Nothing else I have found even comes close.", "initials": "DT", "name": "Derek T.", "meta": "Day trader \u00b7 5 years"}, {"stars": 5, "quote": "I over-trade when the market is slow and I knew it for two years without being able to fix it. Knowing a problem and fixing it are completely different things without external structure. MAKETZO provides that structure automatically, without requiring me to rely on willpower at exactly the moment when willpower is at its lowest.", "initials": "CW", "name": "Chloe W.", "meta": "Swing trader \u00b7 3 years"}, {"stars": 5, "quote": "MAKETZO stopped me from blowing up my account three times in one month. It is the only reason I am still trading.", "initials": "GK", "name": "Gary K.", "meta": "Part-time trader \u00b7 weekends"}, {"stars": 5, "quote": "Best trading tool I have ever used, and I have tried everything. The guardrails paid for a full year of subscription in the first two weeks.", "initials": "SC", "name": "Sandra C.", "meta": "Swing trader \u00b7 DAS user"}, {"stars": 5, "quote": "My worst day this month was still green. That has never happened before in three years of live trading.", "initials": "DP", "name": "David P.", "meta": "Small cap momentum trader \u00b7 3 years"}, {"stars": 5, "quote": "Stopped revenge trading in week two. That alone made this the most valuable purchase I have made as a trader.", "initials": "AL", "name": "Ashley L.", "meta": "Small cap trader \u00b7 TradingView user"}, {"stars": 5, "quote": "The free trial got me in the door. The results on day five kept me subscribed for good.", "initials": "JW", "name": "Jake W.", "meta": "Retail trader \u00b7 Pennsylvania"}, {"stars": 5, "quote": "Set it up in ten minutes, used it the same session, and never traded without it again. Exactly how a tool like this should work.", "initials": "LN", "name": "Luis N.", "meta": "Day trader \u00b7 California"}, {"stars": 5, "quote": "Saved me from a revenge trade that would have wiped out my whole week. It paid for twelve months of subscription in one moment.", "initials": "WS", "name": "Will S.", "meta": "Day trader \u00b7 2 years"}, {"stars": 5, "quote": "I did not believe the reviews when I signed up. Now I am writing one that says exactly the same thing. That tells you everything.", "initials": "KA", "name": "Karen A.", "meta": "Retail trader \u00b7 2 years"}, {"stars": 5, "indicators": true, "quote": "The exit alerts are fast, accurate, and they fire when it matters. I will not trade without this running on my screen.", "initials": "TM", "name": "Tony M.", "meta": "Day trader \u00b7 Chicago"}, {"stars": 5, "quote": "A few weeks in, my consistency is the best it has ever been. This is the missing piece I was looking for from day one.", "initials": "MM", "name": "Marcus M.", "meta": "Retail trader \u00b7 Michigan"}, {"stars": 5, "quote": "I wish I had found this when I started trading. Would have saved me a lot of money and a lot of frustration.", "initials": "HM", "name": "Henry M.", "meta": "Part-time trader \u00b7 3 years"}, {"stars": 5, "indicators": true, "quote": "The indicators are elite. The accountability layer on top of them is what makes the whole thing genuinely different.", "initials": "PH", "name": "Patricia H.", "meta": "Retail trader \u00b7 Florida"}, {"stars": 5, "quote": "My trading buddy and I both use it now. Having the same system running for both of us changed our whole weekly conversation.", "initials": "FD", "name": "Felicia D.", "meta": "Retail trader \u00b7 Georgia"}, {"stars": 4, "quote": "The core system is excellent and works exactly as advertised. Would love a few more customization options but the results are real.", "initials": "IN", "name": "Isaac N.", "meta": "New trader \u00b7 6 months"}, {"stars": 5, "quote": "Week three was my best week in six months. Stuck with it through a rough start and it paid off in a big way.", "initials": "RB", "name": "Rob B.", "meta": "Momentum trader \u00b7 4 years"}, {"stars": 4, "quote": "Still learning all the features but what I have used has already paid for itself several times over. Really impressed so far.", "initials": "AP", "name": "Amy P.", "meta": "Retail trader \u00b7 1 year"}, {"stars": 5, "quote": "Sat on my hands during a choppy open because MAKETZO said to. Saved myself from four bad trades and closed the day green.", "initials": "SM", "name": "Sarah M.", "meta": "Retail trader \u00b7 Washington"}];
   var shown = [];
+  // Discipline quotes lead (Ed, 2026-10-14): the three indicator quotes join the pool from the third rotation.
+  var rotation = 0;
   var grid = document.getElementById('reviewsGrid');
 
   function starHtml(n) {
@@ -2769,7 +2862,8 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 
   function pickFour() {
-    var pool = reviews.filter(function(r, i) { return shown.indexOf(i) === -1; });
+    rotation++;
+    var pool = reviews.filter(function(r, i) { return shown.indexOf(i) === -1 && (rotation > 2 || !r.indicators); });
     if (pool.length < 4) { shown = []; pool = reviews.slice(); }
     for (var i = pool.length - 1; i > 0; i--) {
       var j = Math.floor(Math.random() * (i + 1));
