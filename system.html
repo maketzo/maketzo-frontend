@@ -23,7 +23,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/tokens.css">
 <link rel="stylesheet" href="assets/css/components.css">
-<link rel="stylesheet" href="assets/css/moment.css?v=2">
+<link rel="stylesheet" href="assets/css/moment.css?v=3">
 <script src="assets/js/mkt-analytics.js?v=9" defer></script>
 <script src="assets/js/newsletter.js?v=5" defer></script>
 <script src="assets/js/mkt-consent.js?v=1" defer></script>
@@ -582,23 +582,36 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 
 <hr class="mk-rule-gold">
 
-<!-- THE MOMENT, SYSTEM VERSION: one morning as a sequence, 10:42 second strike to 11:07 day closed.
-     /journal carries the contrast version (any other journal vs MAKETZO). Ed, 2026-10-15: two consecutive pages must not
-     carry the identical block; vary by page job. Both COACH SAYS lines are the app's own at the second and third strike
-     (app.js), with "universal floor" and "DAS" made plain for a visitor. Shared stylesheet assets/css/moment.css. -->
+<!-- THE MOMENT, SYSTEM VERSION: one morning in three beats, the 10:30 checkpoint read, the 10:42 second strike, the
+     11:07 close. /journal carries the contrast version (any other journal vs MAKETZO). Ed, 2026-10-15: consecutive pages
+     must not carry the identical block, vary by page job; and the timed checkpoints are a top feature, so the read leads.
+     All three COACH SAYS lines are the app's own (checkpoint1030 red read, second strike, third strike), with "universal
+     floor", "DAS" and the contract name made plain for a visitor. Shared stylesheet assets/css/moment.css. -->
 <section class="section section-dark only only--moment" id="the-moment">
   <div class="section-inner">
     <div class="only-head">
-      <p class="section-eyebrow reveal">One morning, 10:42 to 11:07</p>
-      <h2 class="section-title reveal">Second strike at 10:42. Day closed at 11:07. <em>Your rules, enforced, not suggested.</em></h2>
+      <p class="section-eyebrow reveal">One morning, 10:30 to 11:07</p>
+      <h2 class="section-title reveal">Read at 10:30. Warned at 10:42. Closed at 11:07. <em>Your rules, enforced, not suggested.</em></h2>
     </div>
-    <div class="moment moment--sequence reveal">
+    <div class="moment moment--sequence moment--three reveal">
+      <article class="moment-card moment-card--read" aria-label="MAKETZO at 10:30, the checkpoint read">
+        <header class="moment-bar"><span>MAKETZO</span><span><i class="moment-live" aria-hidden="true"></i>Tuesday &middot; 10:30 AM</span></header>
+        <div class="moment-app">
+          <div class="moment-pnl"><span class="moment-pnl-label">10:30 checkpoint</span><span class="moment-pnl-val">&minus;$180.00</span></div>
+          <div class="moment-strikes" aria-label="One of three strikes"><span class="is-hit">1</span><span>2</span><span>3</span><em>1 of 3 strikes</em></div>
+          <dl class="moment-facts"><div><dt>Trades</dt><dd>3</dd></div><div><dt>Wins</dt><dd>1</dd></div><div><dt>Losses</dt><dd class="is-loss">2</dd></div></dl>
+          <div class="moment-read"><span class="moment-read-label">The read</span><strong>Walk Away</strong><span class="moment-read-alarm">Alarm rang at 10:30, the time you set</span></div>
+          <div class="moment-coach"><span class="moment-coach-label">Coach Says</span><p>&minus;$180 right now, net red well into the session. The math is honest: revenge trading from here usually adds zeros to the loss. Step away.</p></div>
+        </div>
+        <p class="moment-verdict moment-verdict--us">The read came before the damage. It was ignored.</p>
+      </article>
+      <div class="moment-link" aria-hidden="true"><span>12 min</span></div>
       <article class="moment-card moment-card--us" aria-label="MAKETZO at 10:42, second strike">
         <header class="moment-bar"><span>MAKETZO</span><span><i class="moment-live" aria-hidden="true"></i>Tuesday &middot; 10:42 AM</span></header>
         <div class="moment-app">
           <div class="moment-pnl"><span class="moment-pnl-label">Session P&amp;L</span><span class="moment-pnl-val">&minus;$380.00</span></div>
           <div class="moment-strikes" aria-label="Two of three strikes"><span class="is-hit">1</span><span class="is-hit">2</span><span>3</span><em>2 of 3 strikes</em></div>
-          <div class="moment-rule">Your rule &middot; 3 strikes or &minus;$600, whichever comes first</div>
+          <dl class="moment-facts"><div><dt>Trade 4</dt><dd class="is-loss">&minus;$200</dd></div><div><dt>Strike line</dt><dd>&minus;$150</dd></div><div><dt>Max loss</dt><dd>&minus;$600</dd></div></dl>
           <div class="moment-coach"><span class="moment-coach-label">Coach Says</span><p>Second strike. The next loss ends the day. Take a breath, take the cleanest setup, or wait it out.</p></div>
         </div>
         <p class="moment-verdict moment-verdict--us">The warning lands with one strike left.</p>
@@ -610,12 +623,13 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
           <div class="moment-pnl"><span class="moment-pnl-label">Session P&amp;L</span><span class="moment-pnl-val">&minus;$590.00</span></div>
           <div class="moment-strikes" aria-label="Three of three strikes"><span class="is-out">1</span><span class="is-out">2</span><span class="is-out">3</span><em class="is-out">3 of 3 strikes</em></div>
           <div class="moment-closed">Day closed &middot; see you tomorrow</div>
+          <dl class="moment-facts"><div><dt>Count</dt><dd>Frozen at 3</dd></div><div><dt>Debrief</dt><dd>At the close</dd></div><div><dt>Tomorrow</dt><dd>0 strikes</dd></div></dl>
           <div class="moment-coach"><span class="moment-coach-label">Coach Says</span><p>Three strikes. That&rsquo;s your rule doing exactly what you built it for. Close the platform and step away from the screen.</p></div>
         </div>
         <p class="moment-verdict moment-verdict--us">Closed at &minus;$590. The count freezes until tomorrow.</p>
       </article>
     </div>
-    <p class="only-foot reveal">The Strike System and COACH SAYS are Pro. The daily grade on your rules comes with every plan.</p>
+    <p class="only-foot reveal">Checkpoints, the Strike System and COACH SAYS are Pro. The daily grade on your rules comes with every plan.</p>
     <div class="mk-cta-repeat"><button class="btn-primary" data-cta-source="moment" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial</button></div>
   </div>
 </section>

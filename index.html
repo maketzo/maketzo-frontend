@@ -1121,6 +1121,25 @@ hr.mk-rule-gold--bold {
   .game-tile { flex: 0 0 82%; scroll-snap-align: start; }
 }
 @media (prefers-reduced-motion: reduce) { .game-tile { transition: none; } }
+
+/* ── Trade Replay, featured card ── */
+.replay-feature { display: grid; grid-template-columns: 1.15fr .85fr; gap: 32px; align-items: center; margin-top: 56px; padding: 30px 32px; border-radius: 14px; text-decoration: none; color: inherit; background: radial-gradient(560px 280px at 0% 0%, rgba(212,175,55,.14), transparent 60%), var(--mk-surface-raised); border: 1px solid rgba(212,175,55,.28); transition: transform .25s, border-color .25s; }
+.replay-feature:hover { transform: translateY(-3px); border-color: rgba(212,175,55,.5); }
+.replay-feature:focus-visible { outline: 2px solid var(--mk-brand); outline-offset: 3px; }
+.replay-text { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.replay-eyebrow { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: .16em; text-transform: uppercase; color: var(--mk-brand); }
+.replay-hook { font-family: var(--mk-font-display); font-size: clamp(1.8rem, 2.8vw, 2.5rem); line-height: .98; text-transform: uppercase; letter-spacing: .01em; color: var(--mk-text-primary); margin: 0; font-weight: 400; }
+.replay-hook em { color: var(--mk-brand); font-style: normal; }
+.replay-body { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); line-height: 1.55; margin: 0; max-width: 56ch; }
+.replay-cta { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: .16em; text-transform: uppercase; color: var(--mk-brand); }
+.replay-ledger { font-family: var(--mk-font-mono); display: grid; gap: 10px; padding: 18px 20px; border-radius: var(--mk-radius-card); background: var(--mk-obsidian-900); border: var(--mk-border-hairline); min-width: 0; }
+.replay-ledger-head { display: flex; justify-content: space-between; font-size: var(--mk-mono-xs); letter-spacing: .14em; text-transform: uppercase; color: var(--mk-text-tertiary); padding-bottom: 8px; border-bottom: var(--mk-border-hairline); }
+.replay-ledger-row { display: grid; grid-template-columns: 44px 1fr auto; gap: 12px; font-size: var(--mk-mono-sm); color: var(--mk-text-tertiary); }
+.replay-ledger-row b { font-weight: 400; color: var(--mk-text-primary); }
+.replay-ledger-total { display: flex; justify-content: space-between; padding-top: 8px; border-top: var(--mk-border-hairline); font-size: var(--mk-mono-sm); color: var(--mk-text-tertiary); }
+.replay-ledger-total b { font-weight: 400; color: var(--mk-state-profit); font-size: var(--mk-mono-md); }
+@media (max-width: 760px) { .replay-feature { grid-template-columns: 1fr; gap: 20px; padding: 22px 20px; margin-top: 40px; } }
+@media (prefers-reduced-motion: reduce) { .replay-feature { transition: none; } }
 .focus-closing-line {
   margin-top: 22px;
   padding: 18px 22px;
@@ -2537,8 +2556,8 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
           <div class="focus-feature-card">
             <span class="focus-feature-num">1</span>
             <div>
-              <div class="focus-feature-title">Trade Replay</div>
-              <p class="focus-feature-text">Replay any past chart and practice scaling in and out, the hardest skill in trading, with zero capital at risk.</p>
+              <div class="focus-feature-title">Focus Timer</div>
+              <p class="focus-feature-text">Set it and step away. It counts from the clock, not the tab, so a twenty-minute walk is still twenty minutes when you sit back down.</p>
             </div>
           </div>
           <div class="focus-feature-card">
@@ -2565,6 +2584,22 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
         </div>
       </div>
     </div>
+    <!-- Trade Replay, featured (Ed, 2026-10-15: the free tool beginners need most, elevated from list row to its own card). -->
+    <a class="replay-feature reveal" href="trade-replay.html" data-cta-source="toolkit" data-cta-target="trade-replay">
+      <div class="replay-text">
+        <div class="replay-eyebrow">Trade Replay &middot; free tool &middot; no signup</div>
+        <h3 class="replay-hook">Did your scaling <em>actually make money?</em></h3>
+        <p class="replay-body">Pull up any past chart, enter the buys and sells you would have made, and Trade Replay proves whether scaling in and out paid. Long or short, average cost and fees included. The hardest skill in trading, practiced with zero capital at risk.</p>
+        <span class="replay-cta">Open Trade Replay &rarr;</span>
+      </div>
+      <div class="replay-ledger" aria-hidden="true">
+        <div class="replay-ledger-head"><span>What if</span><span>XYZ &middot; Tuesday</span></div>
+        <div class="replay-ledger-row"><span>9:34</span><b>Buy 500 @ 4.12</b><span>long 500</span></div>
+        <div class="replay-ledger-row"><span>9:41</span><b>Add 500 @ 4.30</b><span>avg 4.21</span></div>
+        <div class="replay-ledger-row"><span>9:58</span><b>Sell 1,000 @ 4.62</b><span>flat</span></div>
+        <div class="replay-ledger-total"><span>Net</span><b>+$404.00</b></div>
+      </div>
+    </a>
     <!-- Free games: the three kiosk games as hook tiles (Ed picked G1 of three rendered directions, 2026-10-15).
          Each tile is a marketing CTA: data-cta-source/target feed the delegated click listener in mkt-analytics.js. -->
     <div class="games-block reveal">

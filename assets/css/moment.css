@@ -57,3 +57,28 @@
   .moment-link { flex-direction: row; padding: 2px 0; }
   .moment-link::before, .moment-link::after { width: auto; height: 1px; background: linear-gradient(90deg, transparent, var(--mk-brand), transparent); }
 }
+
+/* /system, three beats: the 10:30 read joins the sequence. Narrower cards, so the inner type steps down one notch. */
+.moment--three { grid-template-columns: 1fr auto 1fr auto 1fr; gap: 18px; }
+.moment--three .moment-card { padding: 22px 22px 20px; gap: 16px; }
+.moment--three .moment-pnl-val { font-size: var(--mk-mono-lg); }
+.moment--three .moment-coach p { font-size: var(--mk-text-sm); }
+.moment--three .moment-verdict { font-size: 1.15rem; }
+.moment--three .moment-bar { flex-wrap: wrap; }
+.moment-card--read { background: var(--mk-obsidian-900); border: 1px solid var(--mk-state-warning); box-shadow: var(--mk-strike-glow-warning); }
+.moment-card--read .moment-bar { color: var(--mk-state-warning); border-bottom: 1px solid var(--mk-state-warning); }
+.moment-card--read .moment-verdict--us { border-top: 1px solid var(--mk-state-warning); }
+.moment-read { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; align-items: baseline; padding: 12px 14px; border-radius: var(--mk-radius-card); background: var(--mk-strike-warning-bg); border: 1px solid var(--mk-state-warning); }
+.moment-read-label { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-text-tertiary); }
+.moment-read strong { font-family: var(--mk-font-display); font-size: 1.35rem; letter-spacing: .02em; text-transform: uppercase; font-weight: 400; color: var(--mk-state-warning); line-height: 1; }
+.moment-facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 0; padding: 12px 0 0; border-top: var(--mk-border-hairline); }
+.moment-facts div { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.moment-facts dt { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: .08em; text-transform: uppercase; color: var(--mk-text-tertiary); }
+.moment-facts dd { margin: 0; font-family: var(--mk-font-mono); font-size: var(--mk-mono-sm); color: var(--mk-text-primary); white-space: nowrap; }
+.moment-facts dd.is-loss { color: var(--mk-state-danger); }
+.moment-read-alarm { grid-column: 1 / -1; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: .06em; text-transform: uppercase; color: var(--mk-text-secondary); }
+@media (max-width: 1100px) {
+  .moment--three { grid-template-columns: 1fr; }
+  .moment--three .moment-link { flex-direction: row; padding: 2px 0; }
+  .moment--three .moment-link::before, .moment--three .moment-link::after { width: auto; height: 1px; background: linear-gradient(90deg, transparent, var(--mk-brand), transparent); }
+}
