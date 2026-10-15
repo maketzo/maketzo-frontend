@@ -77,6 +77,26 @@ RewriteRule ^kung-fu-trader(\.html)?/?$ /kungfu [R=301,L]
 # 302, not 301, so a code can be retired without browsers caching the hop.
 RewriteRule ^go/([A-Za-z0-9]{3,32})/?$ /?ref=$1 [R=302,L,QSA]
 
+# BLOG-RETIRED:START
+# Retired duplicate headlines, 301 to the original. Written by the admin action
+# "Retire duplicate headlines"; the rows stay in blog_posts as status retired so
+# a slug is never reused. Do not hand-edit between the markers.
+RewriteRule ^blog/meditation-as-risk-management(\.html)?/?$ /blog/meditation-is-risk-management [R=301,L]
+RewriteRule ^blog/meditation-is-risk-management-casv(\.html)?/?$ /blog/meditation-is-risk-management [R=301,L]
+RewriteRule ^blog/meditation-is-risk-management-v8f9(\.html)?/?$ /blog/meditation-is-risk-management [R=301,L]
+RewriteRule ^blog/meditation-isnt-wellness-risk-management(\.html)?/?$ /blog/meditation-is-risk-management [R=301,L]
+RewriteRule ^blog/overtrading-is-income-strategy(\.html)?/?$ /blog/overtrading-is-an-income-strategy [R=301,L]
+RewriteRule ^blog/rules-dont-fail-discipline-does-ijh3(\.html)?/?$ /blog/rules-dont-fail-discipline-does [R=301,L]
+RewriteRule ^blog/size-up-trap-winning-dangerous(\.html)?/?$ /blog/winning-makes-you-bigger [R=301,L]
+RewriteRule ^blog/small-account-discipline-harder-h2h6(\.html)?/?$ /blog/small-account-discipline-harder [R=301,L]
+RewriteRule ^blog/winning-makes-you-bigger-9stl(\.html)?/?$ /blog/winning-makes-you-bigger [R=301,L]
+RewriteRule ^blog/winning-makes-you-bigger-a4in(\.html)?/?$ /blog/winning-makes-you-bigger [R=301,L]
+RewriteRule ^blog/winning-makes-you-bigger-n9vg(\.html)?/?$ /blog/winning-makes-you-bigger [R=301,L]
+RewriteRule ^blog/winning-makes-you-bigger-v48c(\.html)?/?$ /blog/winning-makes-you-bigger [R=301,L]
+RewriteRule ^blog/winning-traders-skip-more-than-take(\.html)?/?$ /blog/why-winning-traders-skip-trades [R=301,L]
+RewriteRule ^blog/winning-traders-skip-more-than-they-take(\.html)?/?$ /blog/why-winning-traders-skip-trades [R=301,L]
+# BLOG-RETIRED:END
+
 # Tier-aware /app redirect. Every marketing page's "Log In" nav link points to
 # /app (relative). Same-domain link works for SEO + survives port changes, but
 # users must be routed to the matching app subdomain per tier so the auth flow
