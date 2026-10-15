@@ -318,10 +318,10 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 .compare-note { display: inline; }
 @media (max-width: 700px) {
   .compare-table { min-width: 0; width: 100%; table-layout: fixed; }
-  .compare-table thead th { width: 40px; padding: 12px 2px 10px; height: 118px; vertical-align: bottom; }
-  .compare-table thead th:not(.col-feature) { writing-mode: vertical-rl; transform: rotate(180deg); text-align: left; padding: 10px 0 6px; font-size: var(--mk-text-sm); letter-spacing: 0.02em; line-height: 1.15; }
-  .compare-table thead th:not(.col-feature) .compare-tier-price { display: block; margin: 0 0 0 2px; letter-spacing: 0; line-height: 1.15; }
-  .compare-table thead th.col-feature { width: auto; writing-mode: horizontal-tb; transform: none; text-align: left; padding: 0 0 10px 14px; height: auto; }
+  .compare-table thead th { width: 40px; padding: 10px 0 6px; height: 118px; vertical-align: bottom; text-align: center; font-size: var(--mk-text-sm); letter-spacing: 0.02em; line-height: 1.15; }
+  .compare-table thead th:not(.col-feature) .compare-tier-name, .compare-table thead th:not(.col-feature) .compare-tier-price { display: inline-block; writing-mode: vertical-lr; transform: rotate(180deg); vertical-align: bottom; margin: 0; }
+  .compare-table thead th:not(.col-feature) .compare-tier-price { margin-left: 2px; letter-spacing: 0; line-height: 1.15; }
+  .compare-table thead th.col-feature { width: auto; text-align: left; padding: 0 0 10px 14px; height: auto; }
   .compare-table tbody td { padding: 11px 2px; line-height: 1.35; }
   .compare-table tbody td:first-child { padding-left: 14px; padding-right: 6px; overflow-wrap: anywhere; }
   .compare-table tbody tr.group-header td { padding: 18px 14px 8px; }
@@ -527,11 +527,11 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
         <thead>
           <tr>
             <th class="col-feature">Feature</th>
-            <th class="col-us">MAKETZO<span class="compare-tier-price">from $29/mo</span></th>
-            <th>TradeZella<span class="compare-tier-price">from ~$29/mo</span></th>
-            <th>TraderVue<span class="compare-tier-price">from $0 / $29</span></th>
-            <th>TraderSync<span class="compare-tier-price">from ~$30/mo</span></th>
-            <th>Edgewonk<span class="compare-tier-price">~$169/yr</span></th>
+            <th class="col-us"><span class="compare-tier-name">MAKETZO</span><span class="compare-tier-price">from $29/mo</span></th>
+            <th><span class="compare-tier-name">TradeZella</span><span class="compare-tier-price">from ~$29/mo</span></th>
+            <th><span class="compare-tier-name">TraderVue</span><span class="compare-tier-price">from $0 / $29</span></th>
+            <th><span class="compare-tier-name">TraderSync</span><span class="compare-tier-price">from ~$30/mo</span></th>
+            <th><span class="compare-tier-name">Edgewonk</span><span class="compare-tier-price">~$169/yr</span></th>
           </tr>
         </thead>
         <tbody>

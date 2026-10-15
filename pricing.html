@@ -918,10 +918,10 @@ a.toolkit-card { display: block; text-decoration: none; color: inherit; }
    .compare-note { display: block; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: 0.02em; color: var(--mk-text-tertiary); margin-top: 3px; }
 
    .compare-table--vs { min-width: 0; width: 100%; table-layout: fixed; }
-   .compare-table--vs thead th { width: 40px; padding: 12px 2px 10px; height: 118px; vertical-align: bottom; text-align: center; }
-   .compare-table--vs thead th:not(.col-feature) { writing-mode: vertical-rl; transform: rotate(180deg); text-align: left; padding: 10px 0 6px; font-size: var(--mk-text-sm); letter-spacing: 0.02em; line-height: 1.15; }
-   .compare-table--vs thead th:not(.col-feature) .compare-tier-price { display: block; margin: 0 0 0 2px; letter-spacing: 0; line-height: 1.15; }
-   .compare-table--vs thead th.col-feature { width: auto; writing-mode: horizontal-tb; transform: none; text-align: left; padding: 0 0 10px 14px; height: auto; }
+   .compare-table--vs thead th { width: 40px; padding: 10px 0 6px; height: 118px; vertical-align: bottom; text-align: center; font-size: var(--mk-text-sm); letter-spacing: 0.02em; line-height: 1.15; }
+   .compare-table--vs thead th:not(.col-feature) .compare-tier-name, .compare-table--vs thead th:not(.col-feature) .compare-tier-price { display: inline-block; writing-mode: vertical-lr; transform: rotate(180deg); vertical-align: bottom; margin: 0; }
+   .compare-table--vs thead th:not(.col-feature) .compare-tier-price { margin-left: 2px; letter-spacing: 0; line-height: 1.15; }
+   .compare-table--vs thead th.col-feature { width: auto; text-align: left; padding: 0 0 10px 14px; height: auto; }
    .compare-table--vs tbody td { padding: 11px 2px; }
    .compare-table--vs tbody td:first-child { padding-left: 14px; padding-right: 6px; }
    .compare-partial { display: inline-block; max-width: 100%; font-size: 0.5rem; letter-spacing: 0; line-height: 1.1; overflow-wrap: anywhere; }
@@ -1129,9 +1129,9 @@ a.toolkit-card { display: block; text-decoration: none; color: inherit; }
         <thead>
           <tr>
             <th></th>
-            <th class="col-tier">Journal<span class="compare-tier-price">$29/mo</span></th>
-            <th class="col-tier featured">Pro<span class="compare-tier-price">$49/mo</span></th>
-            <th class="col-tier">Elite<span class="compare-tier-price">$79/mo</span></th>
+            <th class="col-tier"><span class="compare-tier-name">Journal</span><span class="compare-tier-price">$29/mo</span></th>
+            <th class="col-tier featured"><span class="compare-tier-name">Pro</span><span class="compare-tier-price">$49/mo</span></th>
+            <th class="col-tier"><span class="compare-tier-name">Elite</span><span class="compare-tier-price">$79/mo</span></th>
           </tr>
         </thead>
         <tbody>
@@ -1220,11 +1220,11 @@ a.toolkit-card { display: block; text-decoration: none; color: inherit; }
         <thead>
           <tr>
             <th class="col-feature">Feature</th>
-            <th class="col-us">MAKETZO<span class="compare-tier-price">from $29/mo</span></th>
-            <th>TradeZella<span class="compare-tier-price">from ~$29/mo</span></th>
-            <th>TraderVue<span class="compare-tier-price">from $0 / $29</span></th>
-            <th>TraderSync<span class="compare-tier-price">from ~$30/mo</span></th>
-            <th>Edgewonk<span class="compare-tier-price">~$169/yr</span></th>
+            <th class="col-us"><span class="compare-tier-name">MAKETZO</span><span class="compare-tier-price">from $29/mo</span></th>
+            <th><span class="compare-tier-name">TradeZella</span><span class="compare-tier-price">from ~$29/mo</span></th>
+            <th><span class="compare-tier-name">TraderVue</span><span class="compare-tier-price">from $0 / $29</span></th>
+            <th><span class="compare-tier-name">TraderSync</span><span class="compare-tier-price">from ~$30/mo</span></th>
+            <th><span class="compare-tier-name">Edgewonk</span><span class="compare-tier-price">~$169/yr</span></th>
           </tr>
         </thead>
         <tbody>
