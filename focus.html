@@ -778,36 +778,34 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
 .warmup-card--feature .warmup-num { color: var(--mk-brand); }
 .warmup-name { font-family: var(--mk-font-display); font-size: var(--mk-display-md); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); margin-bottom: 8px; line-height: 1.1; }
 .warmup-use { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); line-height: 1.5; margin: 0; }
-.warmup-use a { color: var(--mk-brand); border-bottom: 1px solid rgba(212,175,55,.4); }
+.warmup-use a { color: var(--mk-brand); border-bottom: 1px solid rgba(212,175,55,.4); white-space: nowrap; }   /* "Play now ->" is one unit and never breaks across lines (Ed, 2026-10-16) */
 .warmup-note { text-align: center; font-size: var(--mk-text-base); color: var(--mk-text-secondary); max-width: 640px; margin: 0 auto; line-height: 1.6; }
 .warmup-note strong { color: var(--mk-text-primary); }
-/* The Warm-Up plays once (Ed, 2026-10-16: "Create a beautiful elegant animation for this section"). It is an arcade,
-   so the product move is the game-select screen: gold corner brackets glide across the nine games in reading order,
-   each card catching the light as they pass, then come back to The Gauntlet (today's seven questions) and select it,
-   and its Play now lights; the closing line takes a glow last. Stacked, the brackets land on The Gauntlet as it comes
-   into view. The brackets then fade, so the end state is the static section; no card is dimmed or hidden, and nothing
-   applies without .wu-live. Reduce motion keeps the light and the timing, and the brackets jump instead of gliding. */
-.wu-cursor { position: absolute; left: 0; top: 0; z-index: 2; pointer-events: none; opacity: 0; width: var(--w, 0); height: var(--h, 0); transform: translate(var(--x, 0), var(--y, 0)); transition: transform var(--wu-t, .24s) cubic-bezier(.4, 0, .2, 1), width var(--wu-t, .24s) cubic-bezier(.4, 0, .2, 1), height var(--wu-t, .24s) cubic-bezier(.4, 0, .2, 1), opacity .45s ease; }
+/* The Warm-Up plays once (Ed, 2026-10-16: "Create a beautiful elegant animation for this section"). Gold corner
+   brackets, an arcade's select frame, fade in slowly on The Gauntlet and rest there while its Play now warms, then
+   glide to Kung Fu Trader and Trader Type the same way: only the three free games, the ones a visitor can play right
+   now. The closing line takes a soft glow last and the brackets fade, so the end state is the static section.
+   The first take swept all nine at a quarter second a card with a pop on the pick. Ed: "It's too abrupt and fast.
+   Becomes an eye sore and distracting." So: three slow stops, two seconds of rest on each, long eased glides, every
+   light fading in and out over a second, no pops. Stacked, the brackets rest on The Gauntlet as it comes into view.
+   No card is dimmed or hidden; nothing applies without .wu-live. Reduce motion fades the brackets between stops. */
+.wu-cursor { position: absolute; left: 0; top: 0; z-index: 2; pointer-events: none; opacity: 0; width: var(--w, 0); height: var(--h, 0); transform: translate(var(--x, 0), var(--y, 0)); transition: transform 1.4s cubic-bezier(.45, 0, .25, 1), width 1.4s cubic-bezier(.45, 0, .25, 1), height 1.4s cubic-bezier(.45, 0, .25, 1), opacity 1.1s ease; }
 .wu-cursor.is-on { opacity: 1; }
-.wu-cursor.is-snap { transition: opacity .45s ease; }
+.wu-cursor.is-snap { transition: opacity 1.1s ease; }
 .wu-frame { position: absolute; inset: -7px; --c: var(--mk-gold-300);
   background: linear-gradient(var(--c), var(--c)) top left / 20px 2px, linear-gradient(var(--c), var(--c)) top left / 2px 20px,
     linear-gradient(var(--c), var(--c)) top right / 20px 2px, linear-gradient(var(--c), var(--c)) top right / 2px 20px,
     linear-gradient(var(--c), var(--c)) bottom left / 20px 2px, linear-gradient(var(--c), var(--c)) bottom left / 2px 20px,
     linear-gradient(var(--c), var(--c)) bottom right / 20px 2px, linear-gradient(var(--c), var(--c)) bottom right / 2px 20px;
-  background-repeat: no-repeat; filter: drop-shadow(0 0 6px rgba(240,200,80,.75)); }
-.wu-cursor.is-select .wu-frame { animation: wuSelect .6s cubic-bezier(.34, 1.56, .64, 1) both; }
-.wu-live .warmup-card { transition: opacity var(--mk-dur-slow) var(--mk-ease-out), transform var(--mk-dur-med) var(--mk-ease-out), border-color .35s ease, box-shadow .5s ease; }
-.wu-live .warmup-card.is-hot { border-color: rgba(240,200,80,.45); box-shadow: 0 0 28px rgba(240,200,80,.12); }
-.wu-live .warmup-card.is-picked { border-color: rgba(240,200,80,.7); box-shadow: 0 0 0 1px rgba(240,200,80,.18), 0 0 44px rgba(240,200,80,.22); }
-.wu-live .warmup-card.is-picked .warmup-use a { animation: wuPlay 1.6s ease-out both; }
-.wu-live .warmup-note.is-lit strong { animation: wuLine 2s ease-out both; }
-@keyframes wuSelect { 0% { transform: scale(1.12); opacity: .4; } 100% { transform: scale(1); opacity: 1; } }
-@keyframes wuPlay { 0%, 100% { text-shadow: none; border-bottom-color: rgba(212,175,55,.4); } 30% { text-shadow: 0 0 14px rgba(240,200,80,.9); border-bottom-color: var(--mk-gold-300); } }
-@keyframes wuLine { 0%, 100% { text-shadow: none; } 35% { text-shadow: 0 0 18px rgba(240,200,80,.55); } }
+  background-repeat: no-repeat; filter: drop-shadow(0 0 5px rgba(240,200,80,.5)); }
+.wu-live .warmup-card { transition: opacity var(--mk-dur-slow) var(--mk-ease-out), transform var(--mk-dur-med) var(--mk-ease-out), border-color 1.1s ease, box-shadow 1.3s ease; }
+.wu-live .warmup-card.is-rest { border-color: rgba(240,200,80,.55); box-shadow: 0 0 36px rgba(240,200,80,.12); }
+.wu-live .warmup-use a { transition: text-shadow 1.1s ease, border-bottom-color 1.1s ease; }
+.wu-live .warmup-card.is-rest .warmup-use a { text-shadow: 0 0 12px rgba(240,200,80,.45); border-bottom-color: var(--mk-gold-300); }
+.wu-live .warmup-note strong { transition: text-shadow 1.6s ease; }
+.wu-live .warmup-note.is-lit strong { text-shadow: 0 0 16px rgba(240,200,80,.4); }
 @media (prefers-reduced-motion: reduce) {
-  .wu-cursor { transition: opacity .3s ease; }
-  .wu-cursor.is-select .wu-frame { animation: none; }
+  .wu-cursor { transition: opacity 1.1s ease; }
 }
 
 /* ── THE RESET — triage cards ────────────────────────────────────────── */
@@ -1220,17 +1218,17 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
       <div class="warmup-card warmup-card--feature reveal">
         <p class="warmup-num">Free &middot; no login</p>
         <div class="warmup-name">The Gauntlet</div>
-        <p class="warmup-use">A daily trivia duel against Captain Green, the same seven questions for everyone today. Endless mode for extra reps. <a href="/gauntlet">Play now &rarr;</a></p>
+        <p class="warmup-use">A daily trivia duel against Captain Green, the same seven questions for everyone today. Endless mode for extra reps. <a href="/gauntlet">Play now&nbsp;&rarr;</a></p>
       </div>
       <div class="warmup-card warmup-card--feature reveal">
         <p class="warmup-num">Free &middot; no login</p>
         <div class="warmup-name">Kung Fu Trader</div>
-        <p class="warmup-use">A retro arcade fight up five floors of the trading day, one bad habit per floor, from chasing the open to the revenge trade at the close. <a href="/kungfu">Play now &rarr;</a></p>
+        <p class="warmup-use">A retro arcade fight up five floors of the trading day, one bad habit per floor, from chasing the open to the revenge trade at the close. <a href="/kungfu">Play now&nbsp;&rarr;</a></p>
       </div>
       <div class="warmup-card warmup-card--feature reveal">
         <p class="warmup-num">Free &middot; no login</p>
         <div class="warmup-name">Trader Type</div>
-        <p class="warmup-use">Two minutes on a simulated tape that fights back. Go long or short, then watch it try to take it back, and find out what kind of trader you really are. <a href="/trader-type">Play now &rarr;</a></p>
+        <p class="warmup-use">Two minutes on a simulated tape that fights back. Go long or short, then watch it try to take it back, and find out what kind of trader you really are. <a href="/trader-type">Play now&nbsp;&rarr;</a></p>
       </div>
       <div class="warmup-card reveal">
         <p class="warmup-num">In the app</p>
@@ -1286,38 +1284,42 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
   grid.appendChild(cursor);
   sec.classList.add('wu-live');
 
-  function at(card, glide) {
-    cursor.style.setProperty('--wu-t', glide || '.24s');
+  var gentle = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function place(card) {
     cursor.style.setProperty('--x', card.offsetLeft + 'px'); cursor.style.setProperty('--y', card.offsetTop + 'px');
     cursor.style.setProperty('--w', card.offsetWidth + 'px'); cursor.style.setProperty('--h', card.offsetHeight + 'px');
-    cards.forEach(function (c) { c.classList.toggle('is-hot', c === card); });
   }
-  function select(card) {
-    cursor.classList.remove('is-select'); void cursor.offsetWidth; cursor.classList.add('is-select');
-    card.classList.remove('is-hot'); card.classList.add('is-picked');
-    setTimeout(function () { cursor.classList.remove('is-on'); card.classList.remove('is-picked'); }, 1900);
+  function rest(card) { cards.forEach(function (c) { c.classList.toggle('is-rest', c === card); }); }
+  function start() { place(cards[0]); void cursor.offsetWidth; cursor.classList.add('is-on'); rest(cards[0]); }
+  // The glide: the light leaves one card as the brackets set off and reaches the next as they arrive. Under reduce
+  // motion the brackets fade out, move unseen and fade back in instead.
+  function go(card) {
+    rest(null);
+    if (gentle) { cursor.classList.remove('is-on'); setTimeout(function () { place(card); cursor.classList.add('is-on'); rest(card); }, 1100); return; }
+    cursor.classList.remove('is-snap'); place(card);
+    setTimeout(function () { rest(card); }, 900);
   }
-  function start() { at(cards[0]); void cursor.offsetWidth; cursor.classList.add('is-on'); setTimeout(function () { cursor.classList.remove('is-snap'); }, 60); }
-  function lightNote() { note.classList.add('is-lit'); }
+  function finish() { cursor.classList.remove('is-on'); rest(null); }
+  function lightNote() { note.classList.add('is-lit'); setTimeout(function () { note.classList.remove('is-lit'); }, 3200); }
 
   var wide = cards[2].offsetTop === cards[0].offsetTop;
   if (wide) {
     var o = new IntersectionObserver(function (es) {
       if (!es[0].isIntersecting) return;
       o.disconnect();
-      setTimeout(start, 500);
-      for (var i = 1; i < 9; i++) (function (i) { setTimeout(function () { at(cards[i]); }, 500 + i * 260); })(i);
-      setTimeout(function () { at(cards[0], '.55s'); }, 500 + 9 * 260 + 200);
-      setTimeout(function () { select(cards[0]); }, 500 + 9 * 260 + 850);
-      setTimeout(lightNote, 500 + 9 * 260 + 1500);
+      setTimeout(start, 600);
+      setTimeout(function () { go(cards[1]); }, 3100);
+      setTimeout(function () { go(cards[2]); }, 6500);
+      setTimeout(finish, 9900);
+      setTimeout(lightNote, 10300);
     }, { threshold: 0.45 });
     o.observe(grid);
   } else {
     var oc = new IntersectionObserver(function (es) {
       if (!es[0].isIntersecting) return;
       oc.disconnect();
-      setTimeout(start, 300);
-      setTimeout(function () { select(cards[0]); }, 650);
+      setTimeout(start, 400);
+      setTimeout(finish, 3600);
     }, { threshold: 0.8 });
     oc.observe(cards[0]);
     var on = new IntersectionObserver(function (es) {
