@@ -265,17 +265,21 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
    library cards. Hear it for yourself: a standard section header on the mock's own backdrop, the player in a glowing
    gold frame, two equal outline buttons. The cards and the backdrop are the mock's pixels, cut by
    tools/site-preview/make-focus-soundtrack.js; the mock's ink, gold and teal are named once here. */
-.st { --st-ink: 7,10,13; --st-gold: 212,175,55; --st-teal: 45,212,191; --st-row: 46px; overflow: hidden; background: rgb(var(--st-ink)); }
+/* Tighter than the page's 88px sections (Ed: "too much dead space between all elements of this section"): the two
+   halves sit together with no rule between them. */
+.st { --st-ink: 7,10,13; --st-gold: 212,175,55; --st-teal: 45,212,191; --st-row: 46px; overflow: hidden; background: rgb(var(--st-ink)); padding: 52px 0 36px; }
+.st.st-listen { padding: 28px 0 48px; }
 
-.st-head { display: grid; align-items: center; max-width: 1080px; margin: 0 auto 48px; }
-.st-head > * { grid-area: 1 / 1; }
+.st-head { position: relative; max-width: 1080px; margin: 0 auto 32px; }
 .st-head-copy { position: relative; z-index: 1; max-width: 620px; }
 .st .st-head .section-title,
 .st .st-head .section-sub { text-align: left; }
 .st .st-head .section-sub { max-width: 520px; margin: 0; }
-/* The art sits right of the copy, smaller and dimmer than the mock draws it (Ed), fading out on every side. */
+/* The art sits right of the copy, smaller and dimmer than the mock draws it (Ed), fading out on every side. It is
+   out of the flow, so the header is only as tall as its words. */
 .st-art {
-  justify-self: end; width: 36%; max-width: 400px; aspect-ratio: 826 / 672; margin: -24px 0; pointer-events: none; filter: brightness(.72);
+  position: absolute; right: 0; top: 50%; transform: translateY(-50%);
+  width: 36%; max-width: 400px; aspect-ratio: 826 / 672; pointer-events: none; filter: brightness(.72);
   -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 30%, #000 86%, transparent 100%), linear-gradient(180deg, transparent 0, #000 14%, #000 78%, transparent 100%);
   -webkit-mask-composite: source-in;
   mask-image: linear-gradient(90deg, transparent 0, #000 30%, #000 86%, transparent 100%), linear-gradient(180deg, transparent 0, #000 14%, #000 78%, transparent 100%);
@@ -304,22 +308,24 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
 .lib-use { font-size: .97rem; color: var(--mk-text-secondary); line-height: 1.5; margin: 0; }
 
 /* Hear it for yourself: the mock's gold light at each side, held to the screen's edges. Its strips start 35px above
-   the eyebrow in the mock, so 35px above ours. */
+   the eyebrow in the mock, so 35px above ours (the eyebrow sits at the section's 28px top padding). */
 .st-listen {
   background:
-    url("assets/soundtrack/listen-left.jpg") left 53px / auto no-repeat,
-    url("assets/soundtrack/listen-right.jpg") right 53px / auto no-repeat,
+    url("assets/soundtrack/listen-left.jpg") left -7px / auto no-repeat,
+    url("assets/soundtrack/listen-right.jpg") right -7px / auto no-repeat,
     rgb(var(--st-ink));
 }
 .zone-samples { max-width: 960px; margin: 0 auto; text-align: center; }
 .zone-samples-body { font-size: 1rem; color: var(--mk-text-secondary); line-height: 1.55; max-width: 700px; margin: 0 auto 10px; }
 .zone-samples-body em { color: var(--mk-text-primary); font-style: normal; font-weight: 600; }
-.zone-samples-tagline { font-family: var(--mk-font-display); font-size: clamp(1.5rem, 2.6vw, 1.9rem); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-brand); line-height: 1.2; margin: 6px auto 34px; text-shadow: 0 0 18px rgba(var(--st-gold), .35); }
+.zone-samples-tagline { font-family: var(--mk-font-display); font-size: clamp(1.5rem, 2.6vw, 1.9rem); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-brand); line-height: 1.2; margin: 6px auto 26px; text-shadow: 0 0 18px rgba(var(--st-gold), .35); }
 
 /* The player, re-skinned for this section only (assets/css/audio-player.css stays the base for every other page).
-   One size whatever plays (Ed: "why is it moving all over the place"): the list holds seven rows of fixed height
-   while it loads (the focus-page list is seven today), the title stays on one line, the style line keeps its space
-   when a track has none, and the time has a fixed width so the bar never shifts. */
+   One size whatever plays (Ed: "why is it moving all over the place"): rows have a fixed height and the list keeps
+   room for the three the page ships with while it loads, growing only when the admin list holds more (Ed: "only
+   expand when there are more tracks"); the title stays on one line, the style line keeps its space when a track has
+   none, and the time has a fixed width so the bar never shifts. The title is weight 400: Bebas Neue has no bold, and
+   an h3's default bold made the browser smear a fake one (Ed saw it as halation). */
 .zone-samples-player { max-width: 880px; margin: 0 auto; text-align: left; }
 .st .zone-samples-player.mk-audio-player {
   border-radius: 22px;
@@ -333,7 +339,7 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
 .st .zone-samples-player .mk-audio-player__art { width: 285px; height: 285px; border-radius: 6px; border: 1px solid rgba(255,255,255,.12); box-shadow: 0 12px 30px rgba(0,0,0,.5); }
 .st .zone-samples-player .mk-audio-player__meta { margin: -4px 0 4px; padding-left: 90px; min-width: 0; }
 .st .zone-samples-player .mk-audio-player__eyebrow { font-size: var(--mk-mono-sm); letter-spacing: .22em; color: var(--mk-text-primary); margin: 0 0 8px; }
-.st .zone-samples-player .mk-audio-player__title { font-size: clamp(1.7rem, 3vw, 2.2rem); line-height: 1.05; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.st .zone-samples-player .mk-audio-player__title { font-weight: 400; font-size: clamp(1.7rem, 3vw, 2.2rem); line-height: 1.05; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .mk-audio-player__style { height: 1.4em; line-height: 1.4; font-family: var(--mk-font-mono); font-size: .8125rem; letter-spacing: .22em; text-transform: uppercase; color: var(--mk-text-secondary); margin: 6px 0 0; }
 .st .zone-samples-player .mk-audio-player__controls { grid-template-columns: 56px 1fr auto; gap: 34px; }
 .st .zone-samples-player .mk-audio-player__play { background: radial-gradient(circle at 40% 35%, #f3d77a, var(--mk-gold-500) 60%, #b8941f); box-shadow: 0 0 18px rgba(var(--st-gold), .45); }
@@ -341,7 +347,7 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
 .st .zone-samples-player .mk-audio-player__progress { min-width: 14px; }
 .st .zone-samples-player .mk-audio-player__time { width: 104px; min-width: 104px; font-family: var(--mk-font-sans); font-variant-numeric: tabular-nums; font-size: .875rem; letter-spacing: .06em; color: var(--mk-text-secondary); }
 .st .zone-samples-player .mk-audio-player__time-cur { color: var(--mk-text-primary); }
-.st .zone-samples-player .mk-audio-player__list { min-height: calc(7 * var(--st-row)); margin: 20px 0 0; padding: 0; border-top: 0; gap: 0; }
+.st .zone-samples-player .mk-audio-player__list { min-height: calc(3 * var(--st-row)); margin: 20px 0 0; padding: 0; border-top: 0; gap: 0; }
 .st .zone-samples-player .mk-audio-player__item { position: relative; box-sizing: border-box; height: var(--st-row); grid-template-columns: 26px 1fr auto 28px; gap: 18px; padding: 0 10px 0 16px; border-radius: 8px; color: var(--mk-text-secondary); }
 .st .zone-samples-player .mk-audio-player__item + .mk-audio-player__item::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 1px; background: rgba(255,255,255,.07); }
 .st .zone-samples-player .mk-audio-player__item.is-active::before,
@@ -355,26 +361,26 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
 .st .zone-samples-player .mk-audio-player__share-trigger { opacity: .8; color: var(--mk-text-secondary); }
 
 /* Two equal outline buttons under the player. */
-.mk-zone-share-row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 850px; margin: 30px auto 0; }
+.mk-zone-share-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; max-width: 640px; margin: 24px auto 0; }
 .mk-zone-share-row .mk-share { display: block; }
 .mk-zone-share-row .mk-share__trigger,
 .mk-zone-share-row .mk-zone-album-cta {
-  width: 100%; min-height: 60px; gap: 14px; padding: 14px 20px; border: 1.5px solid rgba(255,255,255,.3); border-radius: 6px;
-  background: rgba(13,15,20,.6); color: var(--mk-text-primary); font-family: var(--mk-font-sans); font-size: .9375rem; font-weight: 600; letter-spacing: .14em;
+  width: 100%; min-height: 46px; gap: 10px; padding: 10px 16px; border: 1px solid rgba(255,255,255,.3); border-radius: 6px;
+  background: rgba(13,15,20,.6); color: var(--mk-text-primary); font-family: var(--mk-font-sans); font-size: .75rem; font-weight: 600; letter-spacing: .12em;
 }
 .mk-zone-share-row .mk-share__trigger:hover,
 .mk-zone-share-row .mk-zone-album-cta:hover { border-color: rgba(var(--st-gold), .6); color: var(--mk-text-primary); box-shadow: var(--mk-glow-gold-sm); }
-.mk-zone-share-row .mk-share__icon { width: 22px; height: 22px; }
+.mk-zone-share-row .mk-share__icon { width: 17px; height: 17px; }
 .mk-zone-album-cta em { font-style: italic; }
-.mk-zone-spotify { width: 26px; height: 26px; flex-shrink: 0; fill: #1DB954; }
+.mk-zone-spotify { width: 20px; height: 20px; flex-shrink: 0; fill: #1DB954; }
 
 /* Under the mock's own 981px width the side light scales with the screen, as the mock would. */
 @media (max-width: 981px) {
-  .st-listen { background-size: 30.58vw auto, 30.58vw auto, auto; background-position: left calc(88px - 3.57vw), right calc(88px - 3.57vw), 0 0; }
+  .st-listen { background-size: 30.58vw auto, 30.58vw auto, auto; background-position: left calc(28px - 3.57vw), right calc(28px - 3.57vw), 0 0; }
 }
 @media (max-width: 760px) {
-  .st-head > * { grid-area: auto; }
-  .st-art { order: -1; justify-self: center; width: 78%; max-width: 380px; margin: -12px auto -16px; }
+  .st-head { display: flex; flex-direction: column; }
+  .st-art { order: -1; position: static; transform: none; align-self: center; width: 78%; max-width: 380px; margin: -8px auto -16px; }
   .st-head-copy { max-width: none; }
   .st .st-head .section-title,
   .st .st-head .section-sub { text-align: center; }
@@ -390,11 +396,10 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
   .st .zone-samples-player .mk-audio-player__item { grid-template-columns: 24px 1fr auto 28px; gap: 12px; padding: 0 6px 0 10px; }
 }
 @media (max-width: 600px) {
-  .mk-zone-share-row { grid-template-columns: minmax(0, 1fr); gap: 12px; max-width: 420px; }
+  .mk-zone-share-row { grid-template-columns: minmax(0, 1fr); gap: 10px; max-width: 360px; }
   .mk-zone-share-row .mk-share__trigger,
-  .mk-zone-share-row .mk-zone-album-cta { min-height: 54px; font-size: .8125rem; letter-spacing: .1em; white-space: normal; }
-  .mk-zone-share-row .mk-zone-album-cta { gap: 10px; padding: 12px 14px; font-size: .75rem; letter-spacing: .08em; }
-  .mk-zone-spotify { width: 22px; height: 22px; }
+  .mk-zone-share-row .mk-zone-album-cta { white-space: normal; }
+  .mk-zone-share-row .mk-zone-album-cta { letter-spacing: .08em; }
 }
 @media (max-width: 420px) {
   .lib-card { grid-template-columns: 64px 1fr; gap: 16px; padding: 20px 20px 24px 18px; }
@@ -1014,9 +1019,8 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
   </div>
 </section>
 
-<hr class="mk-rule-gold">
-
-<!-- ─── HEAR IT FOR YOURSELF · the sampler on the mock's own backdrop (Ed, 2026-10-16: its own section) ─── -->
+<!-- ─── HEAR IT FOR YOURSELF · the sampler on the mock's own backdrop (Ed, 2026-10-16: its own section, no rule
+     between it and the cards, so it reads as the second half of The Soundtrack) ─── -->
 <section class="section st st-listen" id="hear-it">
   <div class="section-inner">
     <p class="section-eyebrow reveal">HEAR IT FOR YOURSELF</p>
