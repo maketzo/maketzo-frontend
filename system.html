@@ -600,7 +600,9 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 .fd-amt { margin: 6px 0 4px; font-family: var(--mk-font-sans); font-size: 2rem; font-weight: 400; line-height: 1.1; color: var(--mk-gold-400); font-variant-numeric: tabular-nums; }
 .fd-cap { margin: 0 0 12px; min-height: 2.9em; font-size: var(--mk-text-sm); line-height: 1.45; color: var(--mk-text-primary); }
 .fd-bar { height: 6px; border-radius: 3px; background: rgba(255,255,255,.08); overflow: hidden; }
-.fd-bar i { display: block; height: 100%; border-radius: 3px; background: var(--mk-gold-500); transform-origin: left; transform: scaleX(var(--fd-gone)); }
+.fd-bar i { display: block; height: 100%; border-radius: 3px; background: var(--mk-gold-500); transform-origin: left; transform: scaleX(var(--fd-gone)); transition: transform .9s cubic-bezier(.2,.8,.2,1), background .5s ease; }
+.fdx-armed .fd-card.is-tick .fd-amt, .fdx-armed .fd-card.is-tick .fd-from, .fdx-armed .fd-card.is-tick .fd-cush { animation: fdTick 1s ease-out 1; }
+@keyframes fdTick { 0% { filter: none; } 25% { filter: brightness(1.6) drop-shadow(0 0 6px rgba(212,175,55,.6)); } 100% { filter: none; } }
 .fd-cush { margin: 8px 0 0; font-family: var(--mk-font-mono); font-size: var(--mk-mono-sm); color: var(--mk-text-tertiary); }
 .fd-override { display: inline-block; visibility: hidden; margin-top: 12px; padding: 8px 14px; border: 1px solid rgba(255,255,255,.16); border-radius: 8px; font-size: var(--mk-text-sm); color: var(--mk-text-primary); }
 .fd-card.is-called { border-color: rgba(220,76,76,.55); background: linear-gradient(180deg, rgba(220,76,76,.08), transparent 60%), #14161c; }
@@ -1005,22 +1007,29 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
   head.textContent = '+$0';
   if (gentle) svg.classList.add('is-pre'); else wipe.setAttribute('width', 0);
 
-  var best = 0, armed = false, ratcheted = false;
-  function show(x) {
-    var pnl = pnlAt(x); best = Math.max(best, pnl);
-    head.textContent = (pnl < 0 ? '−$' : '+$') + Math.abs(Math.round(pnl));
-    if (!armed && best >= ARM) {
+  // The header follows the line; the card moves only when the line reaches a P&L update (Ed, 2026-10-16: the card
+  // was "too fast"), as the app's card does on each entry, and each change glows so the eye can follow it.
+  var armed = false, seen = 0, cardBest = 0, tickT = null;
+  function cardAt(pnl) {
+    cardBest = Math.max(cardBest, pnl);
+    if (!armed && cardBest >= ARM) {
       armed = true; card.classList.remove('is-pre'); floorT.classList.remove('is-pre');
       arm.classList.add('is-crossed'); lit(0);
     }
-    if (armed) {
-      var floor = Math.round(best * KEEP), given = best - pnl, span = best - floor;
-      eb.textContent = 'PROFIT FLOOR'; from.textContent = 'from ' + money(best) + ' high'; amt.textContent = money(floor);
-      cap.textContent = 'Your walk-away line. Hit it and the day is called.';
-      cush.textContent = money(pnl - floor) + ' cushion · ' + (given >= 0.5 ? money(given) + ' given back' : 'nothing given back');
-      demo.style.setProperty('--fd-gone', span > 0 ? Math.max(0, Math.min(1, given / span)) : 0);
-      if (!ratcheted && best > 205.5) { ratcheted = true; lit(1); }
-    }
+    if (!armed) return;
+    var floor = Math.round(cardBest * KEEP), given = cardBest - pnl, span = cardBest - floor;
+    eb.textContent = 'PROFIT FLOOR'; from.textContent = 'from ' + money(cardBest) + ' high'; amt.textContent = money(floor);
+    cap.textContent = 'Your walk-away line. Hit it and the day is called.';
+    cush.textContent = money(pnl - floor) + ' cushion · ' + (given >= 0.5 ? money(given) + ' given back' : 'nothing given back');
+    demo.style.setProperty('--fd-gone', span > 0 ? Math.max(0, Math.min(1, given / span)) : 0);
+    if (cardBest > 205.5) lit(1);
+    card.classList.remove('is-tick'); void card.offsetWidth; card.classList.add('is-tick');
+    clearTimeout(tickT); tickT = setTimeout(function () { card.classList.remove('is-tick'); }, 1000);
+  }
+  function show(x) {
+    var pnl = pnlAt(x);
+    head.textContent = (pnl < 0 ? '−$' : '+$') + Math.abs(Math.round(pnl));
+    while (seen < P.length - 1 && x >= P[seen + 1][0] - 0.01) { seen++; if (seen < P.length - 1) cardAt(P[seen][1]); }
     if (x >= 305) high.classList.remove('is-pre');
   }
   function finish() {
@@ -1045,14 +1054,15 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
   }
   function play() {
     if (gentle) svg.classList.remove('is-pre');
-    leg(20, 210, 2000, function () {
+    // slower than the first cut so each card state can be read: about 11s in all, holding 2s on each moment
+    leg(20, 210, 2600, function () {
       setTimeout(function () {
-        leg(210, 305, 1400, function () {
+        leg(210, 305, 2600, function () {
           setTimeout(function () {
-            leg(305, 400, 1400, function () { wipe.setAttribute('width', 460); finish(); });
-          }, 900);
+            leg(305, 400, 2600, function () { wipe.setAttribute('width', 460); finish(); });
+          }, 2000);
         });
-      }, 1000);
+      }, 2200);
     });
   }
   var o = new IntersectionObserver(function (es) { if (es[0].isIntersecting) { o.disconnect(); play(); } }, { threshold: 0.6 });
