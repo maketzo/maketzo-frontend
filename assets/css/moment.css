@@ -171,46 +171,48 @@
 @keyframes moTravel { 0% { opacity: 0; translate: 0 0; } 15% { opacity: 1; } 85% { opacity: 1; } 100% { opacity: 0; translate: 58px 0; } }
 .mo-armed .moment-link.is-on span { color: var(--mk-gold-300); transition: color .3s ease; }
 @media (max-width: 1100px) { @keyframes moTravel { 0% { opacity: 0; translate: 0 0; } 15% { opacity: 1; } 85% { opacity: 1; } 100% { opacity: 0; translate: 0 56px; } } }
-/* /journal, the difference plays once (Ed, 2026-10-16: "Create a beautiful animation sequence in The Journal for this
-   section. Okay to adjust design if you deem appropriate"). Left to right like the headline: the other journal's clock
-   runs from Tuesday 10:42 to Wednesday 7:10 while the day's loss tallies to -$1,140.00 (it stops at the close; the
-   clock runs on overnight), then the entry writes itself (tags stamp in, note and lesson type out) and "A day late."
-   lands. Then the eye moves right: that card steps back, MAKETZO lights at Tuesday 10:42, the P&L stops at -$380.00,
-   the second strike lands, COACH SAYS speaks, and both cards settle. The script in journal.html adds .mj-armed and
-   the states; every rule is under .mj-armed, so /system's cards (which share this file) are untouched. */
-.mj-armed .moment-card { position: relative; transition: opacity .6s ease, translate .7s cubic-bezier(.22, 1, .36, 1); }
-.mj-armed .moment-card:not(.is-on) { opacity: .25; translate: 0 18px; }
-.mj-armed .moment-card--them.is-past { opacity: .5; }
-.mj-armed .moment-tag { transition: opacity .35s ease, scale .45s cubic-bezier(.34, 1.56, .64, 1); }
-.mj-armed .moment-card--them:not(.is-on) .moment-tag { opacity: 0; scale: .7; }
-.mj-armed .moment-card--them.is-on .moment-tag:nth-child(1) { transition-delay: 2.3s; }
-.mj-armed .moment-card--them.is-on .moment-tag:nth-child(2) { transition-delay: 2.45s; }
-.mj-armed .moment-card--them.is-on .moment-tag:nth-child(3) { transition-delay: 2.6s; }
-.mj-armed .moment-v.is-typing::after { content: ""; display: inline-block; width: 2px; height: 1em; margin-left: 2px; vertical-align: -.15em; background: var(--mk-text-secondary); animation: mjCaret .5s steps(1) infinite; }
-@keyframes mjCaret { 50% { opacity: 0; } }
-.mj-armed .moment-verdict { transition: opacity .6s ease, translate .6s cubic-bezier(.22, 1, .36, 1); }
-.mj-armed .moment-card--them:not(.is-done) .moment-verdict { opacity: 0; translate: 0 8px; }
-.mj-armed .moment-card--us::after { content: ""; position: absolute; inset: -1px; border-radius: inherit; border: 2px solid var(--mk-brand); opacity: 0; pointer-events: none; }
-.mj-armed .moment-card--us.is-on::after { animation: moCardRing 1.3s ease-out .1s both; }
-.mj-armed .moment-card--us .moment-app > * { transition: opacity .5s ease, translate .6s cubic-bezier(.22, 1, .36, 1); }
-.mj-armed .moment-card--us:not(.is-on) :is(.moment-app > *, .moment-verdict) { opacity: 0; translate: 0 10px; }
-.mj-armed .moment-card--us.is-on .moment-pnl { transition-delay: .3s; }
-.mj-armed .moment-card--us.is-on .moment-strikes { transition-delay: .55s; }
-.mj-armed .moment-card--us.is-on .moment-coach { transition-delay: 1.4s; }
-.mj-armed .moment-card--us.is-on .moment-verdict { transition-delay: 1.9s; }
+/* /journal, the difference (Ed, 2026-10-16). The first version animated both cards; Ed: "ANY OTHER JOURNAL should be
+   boring, bland, no animations. Maketzo should be more beautiful with animations. The compare and contrast should be
+   easily understood." So the other journal never moves: a still record, read the next morning. Only MAKETZO plays,
+   once, as its card comes into view: a gold bloom and a sheen cross it, its 10:42 glows (against the other card's
+   Wednesday 7:10), the P&L counts to -$380.00, the second strike lands, the COACH SAYS bar draws and the warning
+   types out live, then the verdict. .mj-armed sits on the MAKETZO card only, so the other card and /system (which
+   shares this file) are untouched. */
+.moment-card.mj-armed { position: relative; overflow: hidden; transition: opacity .6s ease, translate .7s cubic-bezier(.22, 1, .36, 1); }
+.mj-armed:not(.is-on) { opacity: .35; translate: 0 14px; }
+.mj-armed.is-on { animation: mjBloom 2.2s ease-out both; }
+@keyframes mjBloom { 35% { box-shadow: 0 0 0 1px rgba(212,175,55,.6), 0 0 70px rgba(212,175,55,.35); } 100% { box-shadow: var(--mk-glow-gold-sm); } }
+.mj-armed::before { content: ""; position: absolute; inset: 0; background: linear-gradient(105deg, transparent 35%, rgba(255,236,170,.12) 50%, transparent 65%); translate: -100% 0; pointer-events: none; }
+.mj-armed.is-on::before { animation: mjSheen 1.6s ease-in-out .25s both; }
+@keyframes mjSheen { from { translate: -100% 0; } to { translate: 100% 0; } }
+.mj-armed.is-on .moment-bar span:last-child { animation: mjTime 2s ease-out .3s both; }
+@keyframes mjTime { 35% { color: var(--mk-gold-300); text-shadow: 0 0 14px rgba(240,200,80,.85); } 100% { text-shadow: 0 0 0 transparent; } }
+.mj-armed :is(.moment-app > *, .moment-verdict) { transition: opacity .5s ease, translate .6s cubic-bezier(.22, 1, .36, 1); }
+.mj-armed:not(.is-on) .moment-app > *, .mj-armed:not(.is-done) .moment-verdict { opacity: 0; translate: 0 10px; }
+.mj-armed.is-on .moment-pnl { transition-delay: .35s; }
+.mj-armed.is-on .moment-strikes { transition-delay: .6s; }
+.mj-armed.is-on .moment-coach { transition-delay: 1.5s; }
 .mj-armed .moment-strikes span { position: relative; transition: background-color .35s ease, border-color .35s ease, color .35s ease, box-shadow .35s ease; }
-.mj-armed .moment-card--us:not(.is-on) .moment-strikes span:nth-child(2) { background: transparent; border: var(--mk-border-default); color: var(--mk-text-tertiary); box-shadow: none; }
-.mj-armed .moment-card--us.is-on .moment-strikes span:nth-child(2) { transition-delay: .9s; animation: moStrike .55s cubic-bezier(.34, 1.56, .64, 1) .9s both; }
+.mj-armed:not(.is-on) .moment-strikes span:nth-child(2) { background: transparent; border: var(--mk-border-default); color: var(--mk-text-tertiary); box-shadow: none; }
+.mj-armed.is-on .moment-strikes span:nth-child(2) { transition-delay: .95s; animation: moStrike .55s cubic-bezier(.34, 1.56, .64, 1) .95s both; }
 .mj-armed .moment-strikes span::after { content: ""; position: absolute; inset: -2px; border-radius: 50%; border: 2px solid var(--mk-strike-warning); opacity: 0; pointer-events: none; }
-.mj-armed .moment-card--us.is-on .moment-strikes span:nth-child(2)::after { animation: moRing 1s ease-out 1s both; }
+.mj-armed.is-on .moment-strikes span:nth-child(2)::after { animation: moRing 1s ease-out 1.05s both; }
 .mj-armed .moment-strikes em { transition: opacity .4s ease; }
-.mj-armed .moment-card--us:not(.is-on) .moment-strikes em { opacity: 0; }
-.mj-armed .moment-card--us.is-on .moment-strikes em { transition-delay: 1.1s; }
+.mj-armed:not(.is-on) .moment-strikes em { opacity: 0; }
+.mj-armed.is-on .moment-strikes em { transition-delay: 1.15s; }
+/* COACH SAYS: its gold bar draws, then the warning types out; the untyped rest holds its place so nothing reflows */
+.mj-armed .moment-coach::before { transform-origin: center top; transition: transform .5s cubic-bezier(.22, 1, .36, 1); }
+.mj-armed:not(.is-on) .moment-coach::before { transform: scaleY(0); }
+.mj-armed.is-on .moment-coach::before { transition-delay: 1.7s; }
+.mj-rest { color: transparent; }
+.mj-typed.is-typing::after { content: ""; display: inline-block; width: 2px; height: 1em; margin: 0 -2px 0 1px; vertical-align: -.15em; background: var(--mk-gold-300); animation: mjCaret .5s steps(1) infinite; }
+@keyframes mjCaret { 50% { opacity: 0; } }
 @media (prefers-reduced-motion: reduce) {
-  .mj-armed .moment-card:not(.is-on), .mj-armed .moment-card--them:not(.is-on) .moment-tag, .mj-armed .moment-card--them:not(.is-done) .moment-verdict,
-  .mj-armed .moment-card--us:not(.is-on) :is(.moment-app > *, .moment-verdict) { translate: none; scale: none; }
-  .mj-armed .moment-card--us::after, .mj-armed .moment-strikes span::after { display: none; }
-  .mj-armed .moment-card--us.is-on .moment-strikes span, .mj-armed .moment-v.is-typing::after { animation: none; }
+  .mj-armed:not(.is-on), .mj-armed:not(.is-on) .moment-app > *, .mj-armed:not(.is-done) .moment-verdict { translate: none; }
+  .mj-armed::before, .mj-armed .moment-strikes span::after { display: none; }
+  .mj-armed.is-on .moment-strikes span, .mj-typed.is-typing::after { animation: none; }
+  .mj-armed:not(.is-on) .moment-coach::before { transform: none; opacity: 0; }
+  .mj-armed .moment-coach::before { transition: opacity .5s ease; }
 }
 
 /* reduce motion: the gentle version (Ed, 2026-10-16). Light, fades, strikes and numbers stay; nothing slides, scales,
