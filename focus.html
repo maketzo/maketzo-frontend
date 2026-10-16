@@ -838,84 +838,6 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
 .final-cta-title em { font-style: normal; background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .final-cta-btn-wrap { display: flex; flex-direction: column; align-items: center; gap: 14px; }
 .final-cta-note { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: 0.04em; color: var(--mk-text-tertiary); }
-/* ── FINAL CTA built to Ed's mock (2026-10-16), in our fonts and colours: a pill, the two-line headline, a lit rule,
-   four features, the big button, the plan line, on a deep field with gold light streaks and dot grids at the corners.
-   Two lines changed from the mock for product truth: "LIVE FOCUS ROOM" with a two-people icon read as a live room
-   with other traders (the Focus Room is your own; "live" on /pricing is the Live State Machine), so FOCUS ROOM with a
-   door ("Walk into the room"); "TRADING JOURNAL" is TRADE JOURNAL, the /pricing name.
-   The animation: once the headline is in view the room's lights come up. The corner streaks draw in, the gold line
-   takes a run of light, the rule ignites from its centre, the four features switch on one after another, and the
-   button takes a sheen. Everything is on screen from the first frame; the animation only adds light, so reduce
-   motion keeps it whole on the same clock. */
-.fcr { position: relative; overflow: hidden; padding: 104px 24px 96px; border-top: 1px solid rgba(212,175,55,.12);
-  background: radial-gradient(60% 55% at 50% 40%, rgba(212,175,55,.08), transparent 70%), var(--mk-obsidian-950); }
-.fcr-bg { position: absolute; inset: 0; pointer-events: none; }
-.fcr-inner { position: relative; z-index: 1; max-width: 980px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; }
-.fcr-streak { position: absolute; display: block; height: 1px; width: 36%;
-  background: linear-gradient(90deg, transparent, rgba(212,175,55,.55) 35%, rgba(255,236,170,.95) 70%, transparent);
-  box-shadow: 0 0 14px rgba(212,175,55,.5); }
-.fcr-streak--a  { left: -4%; top: 60%; transform-origin: 0 50%; transform: rotate(-42deg); }
-.fcr-streak--a2 { left: -6%; top: 74%; width: 28%; opacity: .35; transform-origin: 0 50%; transform: rotate(-42deg); }
-.fcr-streak--b  { right: -4%; top: 40%; transform-origin: 100% 50%; transform: rotate(-42deg); background: linear-gradient(270deg, transparent, rgba(212,175,55,.55) 35%, rgba(255,236,170,.95) 70%, transparent); }
-.fcr-streak--b2 { right: -6%; top: 26%; width: 28%; opacity: .35; transform-origin: 100% 50%; transform: rotate(-42deg); background: linear-gradient(270deg, transparent, rgba(212,175,55,.55) 35%, rgba(255,236,170,.95) 70%, transparent); }
-.fcr-dots { position: absolute; display: block; width: 190px; height: 96px; opacity: .55;
-  background-image: radial-gradient(rgba(212,175,55,.6) 1px, transparent 1.6px); background-size: 19px 19px;
-  -webkit-mask-image: radial-gradient(closest-side, #000, transparent); mask-image: radial-gradient(closest-side, #000, transparent); }
-.fcr-dots--tr { top: 36px; right: 70px; }
-.fcr-dots--bl { left: 30px; top: 56%; }
-.fcr-dots--br { right: 50px; bottom: 40px; }
-.fcr-pill { display: inline-flex; align-items: center; gap: 16px; margin: 0 0 34px; padding: 12px 28px; border: 1px solid rgba(212,175,55,.6);
-  border-radius: var(--mk-radius-pill); font-family: var(--mk-font-mono); font-size: var(--mk-mono-sm); letter-spacing: .24em;
-  text-transform: uppercase; color: var(--mk-text-primary); background: rgba(212,175,55,.04); }
-.fcr-pill svg { width: 20px; height: 20px; color: var(--mk-brand); flex: none; }
-.fcr-pill-sep { width: 1px; height: 22px; background: rgba(212,175,55,.45); flex: none; }
-.fcr-title { font-size: clamp(2.8rem, 7vw, 5.4rem); line-height: .98; max-width: 900px; margin: 0 auto 28px; text-wrap: balance; }
-.fcr-title em { display: block; }
-.fcr-rule { display: block; width: min(440px, 60%); height: 2px; margin: 0 auto 42px; border-radius: 2px;
-  background: radial-gradient(closest-side, rgba(255,240,190,1), rgba(212,175,55,.65) 45%, transparent); box-shadow: 0 0 18px rgba(212,175,55,.5); }
-.fcr-feats { list-style: none; display: grid; grid-template-columns: repeat(4, 1fr); width: 100%; max-width: 920px; margin: 0 0 46px; padding: 0; }
-.fcr-feats li { display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 4px 12px; }
-.fcr-feats li + li { border-left: 1px solid rgba(255,255,255,.14); }
-.fcr-feats svg { width: 40px; height: 40px; color: var(--mk-brand); }
-.fcr-feats span { font-family: var(--mk-font-mono); font-size: var(--mk-mono-sm); letter-spacing: .22em; text-transform: uppercase; color: var(--mk-text-primary); text-align: center; }
-.fcr .final-cta-btn-wrap { width: 100%; }   /* so the button's min-width reads the column, not its own shrink-wrapped box */
-.fcr-btn { position: relative; overflow: hidden; min-width: min(560px, 100%); padding: 22px 44px; font-size: var(--mk-text-lg);
-  box-shadow: 0 0 44px rgba(212,175,55,.26); }
-.fcr-note { display: flex; align-items: center; justify-content: center; gap: 14px; margin: 14px 0 0; font-family: var(--mk-font-mono);
-  font-size: var(--mk-mono-sm); letter-spacing: .16em; color: var(--mk-text-secondary); }
-.fcr-note i { width: 5px; height: 5px; border-radius: 50%; background: var(--mk-brand); }
-/* the lights coming up (only with .fcr-armed) */
-.fcr-armed .fcr-streak { transform: rotate(-42deg) scaleX(0); transition: transform 1.6s cubic-bezier(.2,.7,.2,1); }
-.fcr-armed.is-streaks .fcr-streak { transform: rotate(-42deg) scaleX(1); }
-.fcr-armed.is-streaks .fcr-streak--a2, .fcr-armed.is-streaks .fcr-streak--b2 { transition-delay: .25s; }
-.fcr-armed .fcr-title em { background-image: linear-gradient(100deg, transparent 38%, rgba(255,248,214,.95) 50%, transparent 62%), var(--mk-gold-gradient);
-  background-size: 260% 100%, 100% 100%; background-position: 130% 0, 0 0; background-repeat: no-repeat; }
-.fcr-armed .fcr-title.is-lit em { animation: fcr-shine 1.8s ease-in-out 1 both; }
-@keyframes fcr-shine { from { background-position: 130% 0, 0 0; } to { background-position: -30% 0, 0 0; } }
-.fcr-armed .fcr-rule { transform: scaleX(.12); opacity: .4; transition: transform 1s cubic-bezier(.2,.7,.2,1), opacity 1s ease, box-shadow 1s ease; }
-.fcr-armed.is-rule .fcr-rule { transform: scaleX(1); opacity: 1; box-shadow: 0 0 26px rgba(243,215,122,.75); }
-.fcr-armed .fcr-feats svg, .fcr-armed .fcr-feats span { transition: color .8s ease, filter .8s ease, text-shadow .8s ease; }
-.fcr-armed .fcr-feats li.is-on svg { color: var(--mk-gold-300); filter: drop-shadow(0 0 10px rgba(243,215,122,.85)); }
-.fcr-armed .fcr-feats li.is-on span { text-shadow: 0 0 14px rgba(212,175,55,.6); }
-.fcr-armed .fcr-feats li.is-done svg { color: var(--mk-brand); filter: none; transition-duration: 1.4s; }
-.fcr-armed .fcr-feats li.is-done span { text-shadow: none; transition-duration: 1.4s; }
-.fcr-btn::after { content: ""; position: absolute; top: 0; bottom: 0; left: -60%; width: 40%; pointer-events: none;
-  background: linear-gradient(100deg, transparent, rgba(255,255,255,.55), transparent); transform: skewX(-20deg); opacity: 0; }
-.fcr-armed.is-cta .fcr-btn::after { animation: fcr-sheen 1.2s ease-in-out 1 both; }
-.fcr-armed.is-cta .fcr-btn { animation: fcr-halo 2.4s ease-in-out 1; }
-@keyframes fcr-sheen { 0% { left: -60%; opacity: 1; } 100% { left: 130%; opacity: 1; } }
-@keyframes fcr-halo { 0%, 100% { box-shadow: 0 0 44px rgba(212,175,55,.26); } 45% { box-shadow: 0 0 70px rgba(243,215,122,.5); } }
-@media (max-width: 760px) {
-  .fcr { padding: 80px 16px 72px; }
-  .fcr-pill { gap: 10px; padding: 10px 16px; letter-spacing: .14em; font-size: var(--mk-mono-xs); }
-  .fcr-feats { grid-template-columns: repeat(2, 1fr); row-gap: 28px; }
-  .fcr-feats li:nth-child(3) { border-left: 0; }
-  .fcr-feats span { letter-spacing: .16em; font-size: var(--mk-mono-xs); }
-  .fcr-btn { padding: 18px 20px; font-size: var(--mk-text-md); }
-  .fcr-streak { width: 60%; } .fcr-streak--a2, .fcr-streak--b2 { width: 48%; }
-  .fcr-dots { width: 120px; height: 70px; }
-  .fcr-note { gap: 10px; letter-spacing: .1em; }
-}
 
 .sticky-bar { position: fixed; bottom: 0; left: 0; right: 0; z-index: 55; display: flex; align-items: center; justify-content: center; gap: 14px; padding: 10px 64px 10px 24px; background: rgba(13,15,20,.62); backdrop-filter: blur(20px) saturate(140%); border-top: 1px solid rgba(212,175,55,.35); transform: translateY(100%); transition: transform var(--mk-dur-med) var(--mk-ease-out); }
 .sticky-bar.visible { transform: translateY(0); }
@@ -1628,53 +1550,14 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 <hr class="mk-rule-gold">
 
 <!-- ─── FINAL CTA ─────────────────────────────────────────────────── -->
-<section class="final-cta-section fcr">
-  <div class="fcr-bg" aria-hidden="true">
-    <i class="fcr-streak fcr-streak--a"></i><i class="fcr-streak fcr-streak--a2"></i>
-    <i class="fcr-streak fcr-streak--b"></i><i class="fcr-streak fcr-streak--b2"></i>
-    <i class="fcr-dots fcr-dots--tr"></i><i class="fcr-dots fcr-dots--bl"></i><i class="fcr-dots fcr-dots--br"></i>
-  </div>
-  <div class="fcr-inner">
-    <p class="fcr-pill reveal"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="3.5" y="13" width="3.6" height="7.5" rx="1"/><rect x="10.2" y="8.5" width="3.6" height="12" rx="1"/><rect x="16.9" y="4" width="3.6" height="16.5" rx="1"/></svg><span class="fcr-pill-sep" aria-hidden="true"></span>FOCUS ROOM INCLUDED ON PRO</p>
-    <h2 class="final-cta-title fcr-title reveal">Walk into the room. <em>Walk out a different trader.</em></h2>
-    <span class="fcr-rule" aria-hidden="true"></span>
-    <ul class="fcr-feats reveal">
-      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 4h3a2 2 0 0 1 2 2v14"/><path d="M2 20h3"/><path d="M13 20h9"/><path d="M10 12v.01"/><path d="M13 4.56v16.16a1 1 0 0 1-1.24.97L5 20V5.56a2 2 0 0 1 1.52-1.94l4-1A2 2 0 0 1 13 4.56Z"/></svg><span>FOCUS ROOM</span></li>
-      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z"/></svg><span>DISCIPLINE SYSTEM</span></li>
-      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8"/><path d="M8 17h8"/><path d="M8 9h2"/></svg><span>TRADE JOURNAL</span></li>
-      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><circle cx="12" cy="12" r="5.5"/><circle cx="12" cy="12" r="1.6"/><path d="M15.5 8.5 20 4"/><path d="M17.5 4H20v2.5"/></svg><span>CANCEL ANYTIME</span></li>
-    </ul>
-    <div class="final-cta-btn-wrap reveal">
-      <button class="btn-primary btn-primary--lg fcr-btn" data-cta-source="final" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial <span aria-hidden="true">&rarr;</span></button>
-      <p class="fcr-note">Pro<i aria-hidden="true"></i>$49/mo<i aria-hidden="true"></i>Cancel anytime</p>
-    </div>
+<section class="final-cta-section">
+  <p class="final-cta-eyebrow reveal">7-DAY FREE TRIAL &middot; FOCUS ROOM INCLUDED ON PRO</p>
+  <h2 class="final-cta-title reveal">Walk into the room. <em>Walk out a different trader.</em></h2>
+  <div class="final-cta-btn-wrap reveal">
+    <button class="btn-primary btn-primary--lg" data-cta-source="final" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial</button>
+    <p class="final-cta-note">Pro &middot; $49/mo &middot; Focus Room, the discipline system, and your journal &middot; Cancel in one click</p>
   </div>
 </section>
-<script>
-/* The room's lights come up (see the CSS note above .fcr). Once the headline is in view: the corner streaks draw in,
-   the gold line takes a run of light, the rule ignites, the four features switch on one after another, and the button
-   takes a sheen. Everything is on screen from the first frame; nothing is armed without IntersectionObserver. */
-(function () {
-  var sec = document.querySelector('.fcr'), title = sec && sec.querySelector('.fcr-title');
-  if (!title || !('IntersectionObserver' in window)) return;
-  sec.classList.add('fcr-armed');
-  var feats = Array.prototype.slice.call(sec.querySelectorAll('.fcr-feats li'));
-  function at(ms, fn) { setTimeout(fn, ms); }
-  var o = new IntersectionObserver(function (es) {
-    if (!es[0].isIntersecting) return;
-    o.disconnect();
-    sec.classList.add('is-streaks');
-    at(300, function () { title.classList.add('is-lit'); });
-    at(900, function () { sec.classList.add('is-rule'); });
-    feats.forEach(function (li, i) {
-      at(1500 + i * 380, function () { li.classList.add('is-on'); });
-      at(1500 + i * 380 + 1300, function () { li.classList.add('is-done'); });
-    });
-    at(1500 + feats.length * 380 + 500, function () { sec.classList.add('is-cta'); });
-  }, { threshold: 0.4 });
-  o.observe(title);
-})();
-</script>
 
 <hr class="mk-rule-gold">
 <footer>
