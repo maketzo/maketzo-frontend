@@ -359,6 +359,40 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
 }
 .strikes-note strong { color: var(--mk-brand); }
 @media (max-width: 700px) { .strikes-row { grid-template-columns: 1fr; gap: 12px; } }
+/* The strikes land one at a time (Ed, 2026-10-16: "Create an elegant animation for this section"). Each card waits
+   with a neutral badge; when its strike lands the badge takes its colour (caution, warning, danger) with a ring, the
+   card blooms in that colour and settles back, and its words come up. The third lands hardest, then the "Why three?"
+   note glows once. The script after the section adds .sk-armed and .is-on; nothing here applies without .sk-armed,
+   and reduce motion keeps the colour and the light but drops the pop and the rings. */
+.strike-card:nth-child(1) { --sk-c: var(--mk-caution-500); }
+.strike-card:nth-child(2) { --sk-c: var(--mk-warning-500); }
+.strike-card:nth-child(3) { --sk-c: var(--mk-danger-500); }
+.strike-num { position: relative; }
+.sk-armed .strike-num { transition: border-color .4s ease, color .4s ease, background-color .4s ease; }
+.sk-armed .strike-card:not(.is-on) .strike-num { border-color: var(--mk-smoke-700); color: var(--mk-text-tertiary); background: rgba(0,0,0,.35); }
+.sk-armed .strike-card.is-on .strike-num { animation: skPop .6s cubic-bezier(.34, 1.56, .64, 1) both; }
+@keyframes skPop { 0% { scale: 1; } 40% { scale: 1.2; } 100% { scale: 1; } }
+.strike-num::before, .strike-num::after { content: ""; position: absolute; inset: -2px; border-radius: 50%; border: 2px solid var(--sk-c); opacity: 0; pointer-events: none; }
+.sk-armed .strike-card.is-on .strike-num::after { animation: skRing 1.1s ease-out .1s both; }
+.sk-armed .strike-card:nth-child(3).is-on .strike-num::before { animation: skRing 1.3s ease-out .45s both; }
+@keyframes skRing { from { opacity: .9; transform: scale(1); } to { opacity: 0; transform: scale(2.2); } }
+.sk-armed .strike-card.is-on { animation: skBloom 1.6s ease-out both; }
+.sk-armed .strike-card:nth-child(3).is-on { animation-duration: 2.3s; }
+@keyframes skBloom {
+  0% { border-color: rgba(255,255,255,.06); box-shadow: 0 0 0 0 transparent, 0 0 0 transparent; }
+  30% { border-color: var(--sk-c); box-shadow: 0 0 0 1px color-mix(in srgb, var(--sk-c) 40%, transparent), 0 18px 56px color-mix(in srgb, var(--sk-c) 28%, transparent); }
+  100% { border-color: rgba(255,255,255,.06); box-shadow: 0 0 0 0 transparent, 0 0 0 transparent; }
+}
+.sk-armed :is(.strike-title, .strike-text) { transition: opacity .5s ease; }
+.sk-armed .strike-card:not(.is-on) :is(.strike-title, .strike-text) { opacity: .3; }
+.sk-armed .strike-card.is-on .strike-title { transition-delay: .2s; }
+.sk-armed .strike-card.is-on .strike-text { transition-delay: .35s; }
+.sk-armed .strikes-note.is-on { animation: skNote 1.8s ease-out both; }
+@keyframes skNote { 35% { border-color: rgba(212,175,55,.6); box-shadow: 0 0 34px rgba(212,175,55,.22); } 100% { border-color: rgba(212,175,55,.18); box-shadow: 0 0 0 transparent; } }
+@media (prefers-reduced-motion: reduce) {
+  .sk-armed .strike-card.is-on .strike-num { animation: none; }
+  .strike-num::before, .strike-num::after { display: none; }
+}
 
 /* ── RESET PROTOCOL ─────────────────────────────────────────── */
 .waiting-wrap {
@@ -909,6 +943,34 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
     <div class="mk-cta-repeat">
       <button class="btn-primary" data-cta-source="strikes" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
     </div>
+    <script>
+    /* The three strikes land once (Ed, 2026-10-16: "Create an elegant animation for this section"): wide, one after
+       another once the row is well on screen, the third a beat later, then the "Why three?" note glows; stacked
+       (700px and under), each strike lands as its card comes into view. Classes only; the CSS is under .sk-armed. */
+    (function () {
+      var row = document.querySelector('#strikes .strikes-row'), note = document.querySelector('#strikes .strikes-note');
+      if (!row || !('IntersectionObserver' in window) || !window.matchMedia) return;
+      var cards = Array.prototype.slice.call(row.querySelectorAll('.strike-card'));
+      if (cards.length !== 3) return;
+      row.parentNode.classList.add('sk-armed');
+      function on(el) { el.classList.add('is-on'); }
+      function once(el, opts, fn) {
+        var o = new IntersectionObserver(function (es) { if (es[0].isIntersecting) { o.disconnect(); fn(); } }, opts);
+        o.observe(el);
+      }
+      if (matchMedia('(max-width: 700px)').matches) {
+        cards.forEach(function (c) { once(c, { threshold: 0.6 }, function () { on(c); }); });
+        if (note) once(note, { threshold: 0.8 }, function () { setTimeout(function () { on(note); }, 300); });
+      } else {
+        once(row, { threshold: 0.6 }, function () {
+          setTimeout(function () { on(cards[0]); }, 200);
+          setTimeout(function () { on(cards[1]); }, 1200);
+          setTimeout(function () { on(cards[2]); }, 2350);
+          if (note) setTimeout(function () { on(note); }, 3400);
+        });
+      }
+    })();
+    </script>
   </div>
 </section>
 
