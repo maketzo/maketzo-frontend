@@ -213,6 +213,38 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
 .profit-stat-value { font-family: var(--mk-font-display); font-size: var(--mk-display-sm); color: var(--mk-text-primary); }
 .profit-takeaway { max-width: 820px; margin: 28px auto 0; font-size: var(--mk-text-sm); color: var(--mk-text-secondary); line-height: 1.55; text-align: center; }
 .profit-takeaway strong { color: var(--mk-text-primary); }
+/* The month, replayed (Ed, 2026-10-16: "a beautiful, elegant animation"). Both cards draw one running P&L over the
+   same 30 sessions on one scale and one zero line: the green line climbs on the days the rules held, the red one
+   drops on the days they broke, each figure counts with its own line; then the stats arrive row by row and the cost
+   of breaking the rules lands on the average loser. With no script the cards show the finished month. */
+.profit-curve { display: block; width: 100%; height: auto; margin: -6px 0 16px; overflow: visible; }
+.profit-card--followed .profit-curve { color: var(--mk-profit-500); }
+.profit-card--broken .profit-curve { color: var(--mk-danger-500); }
+.profit-curve-zero { stroke: rgba(255,255,255,.16); stroke-width: 1; stroke-dasharray: 3 4; }
+.profit-curve-line { fill: none; stroke: currentColor; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.profit-curve-dots circle { fill: currentColor; }
+.profit-curve-dots .is-last { filter: drop-shadow(0 0 4px currentColor); }
+.ps-armed .profit-curve-dots circle { opacity: 0; transform: scale(0); transform-box: fill-box; transform-origin: center; transition: opacity .25s ease, transform .4s cubic-bezier(.3,1.7,.5,1); }
+.ps-armed .profit-curve-dots circle.is-on { opacity: 1; transform: none; }
+.ps-armed .profit-stat-row { opacity: 0; transform: translateY(6px); transition: opacity .45s ease, transform .45s ease; }
+.ps-armed .profit-card.is-stats .profit-stat-row { opacity: 1; transform: none; }
+.ps-armed .profit-card.is-stats .profit-stat-row:nth-child(2) { transition-delay: .14s; }
+.ps-armed .profit-card.is-stats .profit-stat-row:nth-child(3) { transition-delay: .28s; }
+.ps-armed .profit-card--followed.is-done .profit-card-figure { animation: psBloom 1.8s ease-out 1; }
+.ps-armed .profit-card--followed.is-done .profit-curve-dots .is-last { animation: psRing 1.4s ease-out 1; }
+.ps-armed .profit-card--broken.is-done .profit-stat-row:last-child { animation: psStingRow 1.9s ease-out 1; }
+.ps-armed .profit-card--broken.is-done .profit-stat-row:last-child .profit-stat-value { animation: psSting 1.9s ease-out 1; }
+.profit-card--broken .profit-stat-row:last-child { margin: 0 -10px; padding: 0 10px; border-radius: 6px; }
+@keyframes psBloom { 0% { text-shadow: 0 0 0 rgba(52,191,154,0); } 35% { text-shadow: 0 0 24px rgba(52,191,154,.55); } 100% { text-shadow: 0 0 0 rgba(52,191,154,0); } }
+@keyframes psRing { 0% { filter: drop-shadow(0 0 4px currentColor); } 40% { filter: drop-shadow(0 0 10px currentColor) drop-shadow(0 0 3px currentColor); } 100% { filter: drop-shadow(0 0 4px currentColor); } }
+@keyframes psStingRow { 0% { background: rgba(220,76,76,0); } 30% { background: rgba(220,76,76,.14); } 100% { background: rgba(220,76,76,0); } }
+@keyframes psSting { 0% { color: var(--mk-text-primary); } 30% { color: var(--mk-danger-500); text-shadow: 0 0 16px rgba(220,76,76,.5); } 100% { color: var(--mk-text-primary); text-shadow: none; } }
+/* Reduce motion (Ed's PC runs with Windows animations off): the gentle version. The month fades in instead of
+   sweeping, the figures still count, the rows fade without rising, the glows stay. */
+.ps-gentle .profit-curve-dots circle { transform: none; transition: opacity .4s ease; }
+.ps-gentle .profit-curve > g { opacity: 0; transition: opacity 1.2s ease; }
+.ps-gentle .profit-card.is-on .profit-curve > g { opacity: 1; }
+.ps-gentle .profit-stat-row { transform: none; }
 @media (max-width: 720px) { .profit-source { grid-template-columns: 1fr; } }
 
 /* ── COMPARISON TABLE ───────────────────────────────────────── */
@@ -544,8 +576,13 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
     <div class="profit-source reveal">
       <div class="profit-card profit-card--followed">
         <p class="profit-card-eyebrow">On Days You Followed Your Rules</p>
-        <p class="profit-card-figure profit" data-count="8413.45" data-prefix="+$">+$8,413.45</p>
+        <p class="profit-card-figure profit">+$8,413.45</p>
         <p class="profit-card-sessions">21 sessions in a 30-day month</p>
+        <svg class="profit-curve" viewBox="0 0 400 80" data-run="0,457.3,787.4,691,691,1256.75,1669.95,1669.95,2170.55,2028.4,2683.8,2683.8,2683.8,3059.65,3403.15,3923.35,3923.35,4481,4392.7,4392.7,4839.8,5445.15,5835.05,5835.05,6378.3,6800.7,6800.7,7271.5,7832.1,7832.1,8413.45" aria-hidden="true">
+          <defs><linearGradient id="pcFillF" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="currentColor" stop-opacity=".26"/><stop offset="1" stop-color="currentColor" stop-opacity="0"/></linearGradient><clipPath id="pcWipeF"><rect class="profit-curve-wipe" x="0" y="0" width="400" height="80"/></clipPath></defs>
+          <line class="profit-curve-zero" x1="6" y1="60" x2="394" y2="60"/>
+          <g clip-path="url(#pcWipeF)"><path class="profit-curve-fill" fill="url(#pcFillF)" d="M6 60L18.93 57.23L31.87 55.24L44.8 55.82L57.73 55.82L70.67 52.4L83.6 49.9L96.53 49.9L109.47 46.88L122.4 47.74L135.33 43.77L148.27 43.77L161.2 43.77L174.13 41.5L187.07 39.42L200 36.28L212.93 36.28L225.87 32.91L238.8 33.44L251.73 33.44L264.67 30.74L277.6 27.08L290.53 24.72L303.47 24.72L316.4 21.43L329.33 18.88L342.27 18.88L355.2 16.03L368.13 12.64L381.07 12.64L394 9.13L394 60L6 60Z"/><path class="profit-curve-line" d="M6 60L18.93 57.23L31.87 55.24L44.8 55.82L57.73 55.82L70.67 52.4L83.6 49.9L96.53 49.9L109.47 46.88L122.4 47.74L135.33 43.77L148.27 43.77L161.2 43.77L174.13 41.5L187.07 39.42L200 36.28L212.93 36.28L225.87 32.91L238.8 33.44L251.73 33.44L264.67 30.74L277.6 27.08L290.53 24.72L303.47 24.72L316.4 21.43L329.33 18.88L342.27 18.88L355.2 16.03L368.13 12.64L381.07 12.64L394 9.13"/><g class="profit-curve-dots"><circle cx="18.93" cy="57.23" r="2.4"/><circle cx="31.87" cy="55.24" r="2.4"/><circle cx="44.8" cy="55.82" r="2.4"/><circle cx="70.67" cy="52.4" r="2.4"/><circle cx="83.6" cy="49.9" r="2.4"/><circle cx="109.47" cy="46.88" r="2.4"/><circle cx="122.4" cy="47.74" r="2.4"/><circle cx="135.33" cy="43.77" r="2.4"/><circle cx="174.13" cy="41.5" r="2.4"/><circle cx="187.07" cy="39.42" r="2.4"/><circle cx="200" cy="36.28" r="2.4"/><circle cx="225.87" cy="32.91" r="2.4"/><circle cx="238.8" cy="33.44" r="2.4"/><circle cx="264.67" cy="30.74" r="2.4"/><circle cx="277.6" cy="27.08" r="2.4"/><circle cx="290.53" cy="24.72" r="2.4"/><circle cx="316.4" cy="21.43" r="2.4"/><circle cx="329.33" cy="18.88" r="2.4"/><circle cx="355.2" cy="16.03" r="2.4"/><circle cx="368.13" cy="12.64" r="2.4"/><circle cx="394" cy="9.13" r="3.6" class="is-last"/></g></g>
+        </svg>
         <div class="profit-card-stats">
           <div class="profit-stat-row"><span class="profit-stat-label">Win Rate</span><span class="profit-stat-value">61.9%</span></div>
           <div class="profit-stat-row"><span class="profit-stat-label">Avg Winner</span><span class="profit-stat-value">+$243.20</span></div>
@@ -554,8 +591,13 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
       </div>
       <div class="profit-card profit-card--broken">
         <p class="profit-card-eyebrow">On Days You Broke Your Rules</p>
-        <p class="profit-card-figure danger" data-count="2148.30" data-prefix="&minus;$">&minus;$2,148.30</p>
+        <p class="profit-card-figure danger">&minus;$2,148.30</p>
         <p class="profit-card-sessions">9 sessions in the same month</p>
+        <svg class="profit-curve" viewBox="0 0 400 80" data-run="0,0,0,0,120,120,120,-490,-490,-490,-490,-405,-445,-445,-445,-445,-1335,-1335,-1335,-1275,-1275,-1275,-1275,-1585,-1585,-1585,-1540,-1540,-1540,-2148.3,-2148.3" aria-hidden="true">
+          <defs><linearGradient id="pcFillB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="currentColor" stop-opacity=".04"/><stop offset="1" stop-color="currentColor" stop-opacity=".34"/></linearGradient><clipPath id="pcWipeB"><rect class="profit-curve-wipe" x="0" y="0" width="400" height="80"/></clipPath></defs>
+          <line class="profit-curve-zero" x1="6" y1="60" x2="394" y2="60"/>
+          <g clip-path="url(#pcWipeB)"><path class="profit-curve-fill" fill="url(#pcFillB)" d="M6 60L18.93 60L31.87 60L44.8 60L57.73 59.27L70.67 59.27L83.6 59.27L96.53 62.96L109.47 62.96L122.4 62.96L135.33 62.96L148.27 62.45L161.2 62.69L174.13 62.69L187.07 62.69L200 62.69L212.93 68.07L225.87 68.07L238.8 68.07L251.73 67.71L264.67 67.71L277.6 67.71L290.53 67.71L303.47 69.58L316.4 69.58L329.33 69.58L342.27 69.31L355.2 69.31L368.13 69.31L381.07 72.99L394 72.99L394 60L6 60Z"/><path class="profit-curve-line" d="M6 60L18.93 60L31.87 60L44.8 60L57.73 59.27L70.67 59.27L83.6 59.27L96.53 62.96L109.47 62.96L122.4 62.96L135.33 62.96L148.27 62.45L161.2 62.69L174.13 62.69L187.07 62.69L200 62.69L212.93 68.07L225.87 68.07L238.8 68.07L251.73 67.71L264.67 67.71L277.6 67.71L290.53 67.71L303.47 69.58L316.4 69.58L329.33 69.58L342.27 69.31L355.2 69.31L368.13 69.31L381.07 72.99L394 72.99"/><g class="profit-curve-dots"><circle cx="57.73" cy="59.27" r="2.4"/><circle cx="96.53" cy="62.96" r="2.4"/><circle cx="148.27" cy="62.45" r="2.4"/><circle cx="161.2" cy="62.69" r="2.4"/><circle cx="212.93" cy="68.07" r="2.4"/><circle cx="251.73" cy="67.71" r="2.4"/><circle cx="303.47" cy="69.58" r="2.4"/><circle cx="342.27" cy="69.31" r="2.4"/><circle cx="381.07" cy="72.99" r="3.6" class="is-last"/></g></g>
+        </svg>
         <div class="profit-card-stats">
           <div class="profit-stat-row"><span class="profit-stat-label">Win Rate</span><span class="profit-stat-value">42.6%</span></div>
           <div class="profit-stat-row"><span class="profit-stat-label">Avg Winner</span><span class="profit-stat-value">+$112.40</span></div>
@@ -571,6 +613,67 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
     </div>
   </div>
 </section>
+<script>
+/* The month, replayed. Each card's line is revealed left to right through the same 30 sessions while its figure
+   reads the running P&L at the line's leading edge (data-run holds it per session), so the number rises, dips and
+   falls exactly as the line does; each session's dot pops as the line reaches it. Then the stats arrive and the
+   average loser on the broken days takes the sting. Side by side both cards play together once the pair is in view;
+   stacked, each plays as it scrolls in. Every value ends exactly as written. Reduce motion gets the gentle version
+   (CSS); without IntersectionObserver nothing is armed. */
+(function () {
+  var src = document.querySelector('.profit-source');
+  if (!src || !('IntersectionObserver' in window)) return;
+  var gentle = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var STEP = 388 / 30, X0 = 6, W = 400;
+  function money(v) { return (v < 0 ? '−$' : '+$') + Math.abs(v).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+  var cards = Array.prototype.slice.call(src.querySelectorAll('.profit-card')).map(function (card) {
+    var fig = card.querySelector('.profit-card-figure'), svg = card.querySelector('.profit-curve');
+    if (!fig || !svg) return null;
+    var c = { el: card, fig: fig, end: fig.textContent, wipe: svg.querySelector('.profit-curve-wipe'),
+      dots: Array.prototype.slice.call(svg.querySelectorAll('.profit-curve-dots circle')),
+      run: svg.getAttribute('data-run').split(',').map(Number) };
+    fig.textContent = money(0);
+    if (!gentle) c.wipe.setAttribute('width', 0);
+    return c;
+  }).filter(Boolean);
+  if (!cards.length) return;
+  src.classList.add('ps-armed');
+  if (gentle) src.classList.add('ps-gentle');
+
+  function valueAt(c, x) {
+    var i = Math.max(0, Math.min(30, (x - X0) / STEP)), a = Math.floor(i), b = Math.min(30, a + 1);
+    return c.run[a] + (c.run[b] - c.run[a]) * (i - a);
+  }
+  function play(c) {
+    c.el.classList.add('is-on');
+    var ms = gentle ? 1400 : 2600, t0 = null;
+    function step(now) {
+      if (t0 === null) t0 = now;
+      var u = Math.min(1, (now - t0) / ms), e = u < .5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2;
+      var x = X0 + e * (W - 2 * X0);
+      if (!gentle) c.wipe.setAttribute('width', x + 6);
+      c.fig.textContent = money(valueAt(c, x));
+      c.dots.forEach(function (d) { if (+d.getAttribute('cx') <= x + .5) d.classList.add('is-on'); });
+      if (u < 1) { requestAnimationFrame(step); return; }
+      c.wipe.setAttribute('width', W);
+      c.fig.textContent = c.end;
+      setTimeout(function () { c.el.classList.add('is-stats'); }, 150);
+      setTimeout(function () { c.el.classList.add('is-done'); }, 900);
+    }
+    requestAnimationFrame(step);
+  }
+  var stacked = window.matchMedia && matchMedia('(max-width: 720px)').matches;
+  var o = new IntersectionObserver(function (es) {
+    es.forEach(function (en) {
+      if (!en.isIntersecting) return;
+      o.unobserve(en.target);
+      if (en.target === src) cards.forEach(play);
+      else cards.forEach(function (c) { if (c.el === en.target) play(c); });
+    });
+  }, { threshold: 0.45 });
+  if (stacked) cards.forEach(function (c) { o.observe(c.el); }); else o.observe(src);
+})();
+</script>
 
 <!-- COMPARISON TABLE -->
 <hr class="mk-rule-gold">
@@ -745,21 +848,6 @@ requestAnimationFrame(()=>document.body.classList.add('hero-loaded'));
 (function(){
   const obs=new IntersectionObserver((entries)=>{entries.forEach(en=>{if(en.isIntersecting){en.target.classList.add('visible');obs.unobserve(en.target);}});},{threshold:0.12});
   document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
-  // delight: discipline pays — count the profit figures up when the section scrolls in
-  const reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const fmt=(v)=>v.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
-  const fObs=new IntersectionObserver((ents)=>{ents.forEach(en=>{
-    if(!en.isIntersecting) return;
-    en.target.querySelectorAll('.profit-card-figure[data-count]').forEach(el=>{
-      const target=parseFloat(el.getAttribute('data-count'))||0, prefix=el.getAttribute('data-prefix')||'';
-      if(reduce){el.textContent=prefix+fmt(target);return;}
-      const dur=1300,start=performance.now();
-      const tick=(now)=>{const p=Math.min((now-start)/dur,1);el.textContent=prefix+fmt(target*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(tick);};
-      requestAnimationFrame(tick);
-    });
-    fObs.unobserve(en.target);
-  });},{threshold:0.4});
-  document.querySelectorAll('.profit-source').forEach(el=>fObs.observe(el));
   let dismissed=false;try{dismissed=localStorage.getItem('mk_sticky_dismissed')==='1';}catch(e){}
   if(!dismissed){setTimeout(()=>{document.getElementById('stickyBar').classList.add('visible');},6000);}
 })();
