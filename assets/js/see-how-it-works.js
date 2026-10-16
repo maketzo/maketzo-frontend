@@ -1,0 +1,105 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   SEE HOW IT WORKS PLAYER  ·  assets/js/see-how-it-works.js
+   Any link or button with data-shiw opens the product video full screen. The
+   video carries Ed's own soundtrack ("Rising Pulse"), and the click that opens
+   it is the user gesture browsers require, so it starts WITH sound. A Mute
+   control sits on the frame the whole time (Ed, 2026-10-16: "Make sure there's
+   an easy way to mute it"), and the choice is remembered for the next visit.
+
+   The trigger stays a plain link to #see-it-work, so with no script the button
+   still does what it did before: scroll to the section.
+
+   Closes on the X, Escape, or a click outside the frame; closing pauses and
+   rewinds. When the video ends, its last card gets real buttons: the trial and
+   Watch Again. Pairs with assets/css/see-how-it-works.css.
+   ═══════════════════════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+
+  var SRC = 'assets/see-it-work/maketzo-see-how-it-works.mp4?v=1';
+  var POSTER = 'assets/see-it-work/maketzo-see-how-it-works-poster.jpg?v=1';
+  var MUTE_KEY = 'mk_shiw_muted';
+  var ICON_ON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a10 10 0 0 1 0 14"/></svg>';
+  var ICON_OFF = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="m23 9-6 6"/><path d="m17 9 6 6"/></svg>';
+  var ICON_X = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>';
+
+  var root = null, video = null, muteBtn = null, endBox = null, bar = null, opener = null;
+
+  function track(name, props) { try { if (window.MKT && window.MKT.trackEvent) window.MKT.trackEvent(name, props || {}); } catch (e) {} }
+  function savedMuted() { try { return localStorage.getItem(MUTE_KEY) === '1'; } catch (e) { return false; } }
+  function saveMuted(v) { try { localStorage.setItem(MUTE_KEY, v ? '1' : '0'); } catch (e) {} }
+
+  function paintMute() {
+    var m = video.muted;
+    muteBtn.innerHTML = (m ? ICON_OFF : ICON_ON) + '<span>' + (m ? 'Unmute' : 'Mute') + '</span>';
+    muteBtn.setAttribute('aria-pressed', String(m));
+    muteBtn.setAttribute('aria-label', m ? 'Unmute the video' : 'Mute the video');
+  }
+
+  function build() {
+    root = document.createElement('div');
+    root.className = 'shiw'; root.hidden = true;
+    root.setAttribute('role', 'dialog'); root.setAttribute('aria-modal', 'true'); root.setAttribute('aria-label', 'See How It Works video');
+    root.innerHTML =
+      '<div class="shiw-frame">' +
+        '<video class="shiw-video" playsinline preload="none" poster="' + POSTER + '"></video>' +
+        '<button type="button" class="shiw-btn shiw-mute"></button>' +
+        '<button type="button" class="shiw-btn shiw-close" aria-label="Close the video">' + ICON_X + '</button>' +
+        '<div class="shiw-end" hidden>' +
+          '<button type="button" class="btn-primary" data-shiw-trial>Start 7-Day Free Trial &rarr;</button>' +
+          '<button type="button" class="btn-secondary" data-shiw-again>Watch Again</button>' +
+        '</div>' +
+        '<div class="shiw-bar"><i></i></div>' +
+      '</div>';
+    document.body.appendChild(root);
+    video = root.querySelector('.shiw-video'); muteBtn = root.querySelector('.shiw-mute');
+    endBox = root.querySelector('.shiw-end'); bar = root.querySelector('.shiw-bar i');
+
+    muteBtn.addEventListener('click', function () {
+      video.muted = !video.muted; saveMuted(video.muted); paintMute();
+      track('see_how_it_works_mute', { muted: video.muted, at_s: Math.round(video.currentTime) });
+    });
+    root.querySelector('.shiw-close').addEventListener('click', close);
+    root.addEventListener('click', function (e) { if (e.target === root) close(); });
+    video.addEventListener('click', function () { if (video.paused) video.play().catch(function () {}); else video.pause(); });
+    video.addEventListener('timeupdate', function () { if (video.duration) bar.style.width = (100 * video.currentTime / video.duration) + '%'; });
+    video.addEventListener('ended', function () { endBox.hidden = false; track('see_how_it_works_complete', {}); });
+    root.querySelector('[data-shiw-again]').addEventListener('click', function () {
+      endBox.hidden = true; video.currentTime = 0; video.play().catch(function () {}); track('see_how_it_works_replay', {});
+    });
+    root.querySelector('[data-shiw-trial]').addEventListener('click', function (e) {
+      track('see_how_it_works_trial_click', {});
+      close();
+      if (typeof window.handleCheckout === 'function') window.handleCheckout('pro', e);
+    });
+    document.addEventListener('keydown', function (e) { if (!root.hidden && e.key === 'Escape') close(); });
+  }
+
+  function open(e) {
+    if (e) e.preventDefault();
+    if (!root) build();
+    opener = document.activeElement;
+    if (!video.getAttribute('src')) video.setAttribute('src', SRC);
+    video.muted = savedMuted(); paintMute();
+    endBox.hidden = true; video.currentTime = 0; bar.style.width = '0';
+    root.hidden = false; document.documentElement.style.overflow = 'hidden';
+    requestAnimationFrame(function () { root.classList.add('is-open'); });
+    // Opened by a click, so sound is allowed; if the browser still refuses, start muted rather than not at all.
+    video.play().catch(function () { video.muted = true; paintMute(); video.play().catch(function () {}); });
+    muteBtn.focus();
+    track('see_how_it_works_open', { muted: video.muted });
+  }
+
+  function close() {
+    if (!root || root.hidden) return;
+    track('see_how_it_works_close', { at_s: Math.round(video.currentTime), ended: !endBox.hidden });
+    video.pause(); video.currentTime = 0;
+    root.classList.remove('is-open'); root.hidden = true; document.documentElement.style.overflow = '';
+    if (opener && opener.focus) opener.focus();
+  }
+
+  document.addEventListener('click', function (e) {
+    var t = e.target.closest && e.target.closest('[data-shiw]');
+    if (t) open(e);
+  });
+})();
