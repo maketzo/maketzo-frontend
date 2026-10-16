@@ -1404,7 +1404,7 @@ function closeDrawer(){document.getElementById('mobileDrawer').classList.remove(
 // handleCheckout moved to assets/js/checkout.js.
 requestAnimationFrame(()=>document.body.classList.add('hero-loaded'));
 const reveals=document.querySelectorAll('.reveal');
-const obs=new IntersectionObserver((entries)=>{entries.forEach((e,i)=>{if(e.isIntersecting){setTimeout(()=>e.target.classList.add('visible'),i*50);obs.unobserve(e.target);}});},{threshold:0.06});
+const obs=new IntersectionObserver((entries)=>{let n=0;entries.forEach((e)=>{if(e.isIntersecting){const d=Math.min(n++,6)*50;setTimeout(()=>e.target.classList.add('visible'),d);obs.unobserve(e.target);}});},{threshold:0.06});
 reveals.forEach(el=>obs.observe(el));
 // delight: walk the disciplined day through all seven states when the grid scrolls in
 document.querySelectorAll('.state-grid').forEach(function(grid){
