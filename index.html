@@ -1867,7 +1867,9 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
 .fs-area { fill: url(#fsArea); }
 .fs-area-top { stop-color: var(--mk-gold-400); stop-opacity: .20; }
 .fs-area-bot { stop-color: var(--mk-gold-400); stop-opacity: 0; }
-.fs-floor { stroke: var(--mk-gold-400); stroke-width: 2; stroke-dasharray: 9 7; vector-effect: non-scaling-stroke; opacity: .9; }
+/* The $176 floor: HTML, not SVG, so it can draw across on its own after point 1 (the 9 7 dash of the old SVG line) */
+.fs-floorline { position: absolute; left: 37.66%; right: 0; top: 42.2%; height: 2px; margin-top: -1px; opacity: .9;
+  background: repeating-linear-gradient(90deg, var(--mk-gold-400) 0 9px, transparent 9px 16px); }
 .fs-drop { stroke-width: 1.5; stroke-dasharray: 4 5; vector-effect: non-scaling-stroke; opacity: .7; }
 .fs-drop--1 { stroke: var(--mk-gold-400); } .fs-drop--2 { stroke: var(--mk-danger-500); } .fs-drop--3 { stroke: var(--mk-profit-500); }
 .fs-line { fill: none; stroke: url(#fsLine); stroke-width: 3.5; stroke-linejoin: round; stroke-linecap: round; vector-effect: non-scaling-stroke; }
@@ -1970,6 +1972,85 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
   .fs-end-line::before, .fs-end-line::after { display: none; }
 }
 @media (prefers-reduced-motion: reduce) { .fs-dust { display: none; } }
+
+/* The morning plays once when the section comes into view (Ed, 2026-10-16: draw the eye to the boxes, "elegant and
+   appropriate to the section"). The script after the section adds .fs-armed, then .fs-s1/2/3 on the chart as the
+   line reaches each moment and .is-on on each box as it plays. Nothing here applies without .fs-armed, so with no
+   script the section stands finished; with reduce motion set, the block at the end keeps the fades, glows, typing
+   and counts and takes out every slide, bounce, ripple and press. */
+.fs-armed .fs-story { clip-path: inset(-24px 100% -24px -24px); transition: clip-path .9s cubic-bezier(.45, 0, .25, 1); }
+.fs-armed .fs-s1 .fs-story { clip-path: inset(-24px 61.6% -24px -24px); }
+.fs-armed .fs-s2 .fs-story { clip-path: inset(-24px 26% -24px -24px); }
+.fs-armed .fs-s3 .fs-story { clip-path: inset(-24px -24px -24px -24px); transition-duration: .6s; }
+.fs-armed :is(.fs-pt, .fs-mark, .fs-tag) { opacity: 0; transition: opacity .45s ease, scale .6s cubic-bezier(.34, 1.56, .64, 1), translate .6s cubic-bezier(.22, 1, .36, 1); }
+.fs-armed .fs-pt { scale: 0; }
+.fs-armed :is(.fs-mark, .fs-tag) { translate: 0 10px; }
+.fs-armed .fs-s1 :is(.fs-pt--1, .fs-mark--1, .fs-tag--1, .fs-tag--floor),
+.fs-armed .fs-s2 :is(.fs-pt--2, .fs-mark--2, .fs-tag--2),
+.fs-armed .fs-s3 :is(.fs-pt--3, .fs-mark--3, .fs-tag--3) { opacity: 1; scale: 1; translate: 0 0; }
+.fs-armed .fs-s1 .fs-pt--1, .fs-armed .fs-s2 .fs-pt--2 { transition-delay: .8s; }
+.fs-armed .fs-s1 .fs-mark--1, .fs-armed .fs-s2 .fs-mark--2 { transition-delay: .92s; }
+.fs-armed .fs-s1 .fs-tag--1, .fs-armed .fs-s2 .fs-tag--2 { transition-delay: 1.04s; }
+.fs-armed .fs-s3 .fs-pt--3 { transition-delay: .5s; }
+.fs-armed .fs-s3 .fs-mark--3 { transition-delay: .62s; }
+.fs-armed .fs-s3 .fs-tag--3 { transition-delay: .74s; }
+.fs-armed .fs-s1 .fs-tag--floor { transition-delay: 1.9s; }
+.fs-armed .fs-floorline { clip-path: inset(0 100% 0 0); transition: clip-path 1s cubic-bezier(.45, 0, .25, 1) 1.2s; }
+.fs-armed .fs-s1 .fs-floorline { clip-path: inset(0 0 0 0); }
+/* a ring leaves each point, and each badge, as it arrives */
+.fs-pt--1 { color: var(--mk-gold-400); } .fs-pt--2 { color: var(--mk-danger-500); } .fs-pt--3 { color: var(--mk-profit-500); }
+.fs-pt::after, .fs-badge::after { content: ""; position: absolute; border-radius: 50%; border: 2px solid currentColor; opacity: 0; pointer-events: none; }
+.fs-pt::after { inset: -2px; --fs-ring: 3.4; }
+.fs-badge::after { inset: -3px; color: var(--fs-c); --fs-ring: 1.8; }
+.fs-armed .fs-s1 .fs-pt--1::after, .fs-armed .fs-s2 .fs-pt--2::after { animation: fsRing 1.1s ease-out .85s both; }
+.fs-armed .fs-s3 .fs-pt--3::after { animation: fsRing 1.1s ease-out .55s both; }
+.fs-armed .fs-beat.is-on .fs-badge::after { animation: fsRing 1.2s ease-out .2s both; }
+@keyframes fsRing { from { opacity: .9; transform: scale(1); } to { opacity: 0; transform: scale(var(--fs-ring)); } }
+/* the boxes wait, dimmed, and light up in their own colour when their moment plays */
+.fs-armed .fs-beat { transition: opacity .6s ease, translate .7s cubic-bezier(.22, 1, .36, 1); }
+.fs-armed .fs-beat:not(.is-on) { opacity: .28; translate: 0 18px; box-shadow: 0 0 0 transparent, inset 0 0 0 transparent; }
+.fs-armed .fs-beat.is-on { animation: fsBeatGlow 1.6s ease-out both; }
+@keyframes fsBeatGlow {
+  0% { box-shadow: 0 0 0 transparent, inset 0 0 0 transparent; }
+  40% { box-shadow: 0 0 56px var(--fs-glow), inset 0 0 44px color-mix(in srgb, var(--fs-c) 12%, transparent); }
+  100% { box-shadow: 0 0 26px var(--fs-glow), inset 0 0 30px color-mix(in srgb, var(--fs-c) 5%, transparent); }
+}
+.fs-armed .fs-badge { transition: scale .6s cubic-bezier(.34, 1.56, .64, 1), opacity .4s ease; }
+.fs-armed .fs-beat:not(.is-on) .fs-badge { scale: .6; opacity: .5; }
+/* inside a box: the P&L is typed, Update is pressed, MAKETZO answers (the script types and counts) */
+.fs-input-v.is-typing::after { content: ""; display: inline-block; width: 2px; height: 1em; margin-left: 2px; vertical-align: -.12em; background: var(--fs-c); animation: fsCaret .5s steps(1) infinite; }
+@keyframes fsCaret { 50% { opacity: 0; } }
+.fs-input-btn.is-press { animation: fsPress .5s ease; }
+@keyframes fsPress { 30% { scale: .93; box-shadow: 0 0 26px rgba(240,200,80,.75); } }
+.fs-armed .fs-beat :is(.fs-card, .fs-note, .fs-pill, .fs-walk, .fs-tile) { transition: opacity .5s ease, translate .6s cubic-bezier(.22, 1, .36, 1); }
+.fs-armed .fs-beat:not(.is-on) :is(.fs-card, .fs-note, .fs-pill, .fs-walk, .fs-tile) { opacity: 0; translate: 0 10px; }
+.fs-armed .fs-beat.is-on .fs-card { transition-delay: .9s; }
+.fs-armed .fs-beat.is-on :is(.fs-note, .fs-pill) { transition-delay: 1.45s; }
+.fs-armed .fs-beat.is-on .fs-walk { transition-delay: .3s; animation: fsWalk 1.3s ease-out .75s both; }
+@keyframes fsWalk {
+  from { box-shadow: 0 0 24px rgba(74,222,128,.45), 0 0 0 0 rgba(74,222,128,.55), inset 0 1px 0 rgba(255,255,255,.35); }
+  to { box-shadow: 0 0 24px rgba(74,222,128,.45), 0 0 0 18px rgba(74,222,128,0), inset 0 1px 0 rgba(255,255,255,.35); }
+}
+.fs-armed .fs-beat.is-on .fs-tile:nth-child(1) { transition-delay: .75s; }
+.fs-armed .fs-beat.is-on .fs-tile:nth-child(2) { transition-delay: .85s; }
+.fs-armed .fs-beat.is-on .fs-tile:nth-child(3) { transition-delay: .95s; }
+.fs-armed .fs-beat.is-on .fs-tile:nth-child(4) { transition-delay: 1.05s; }
+/* then the arrow draws on to the next box */
+.fs-armed .fs-beat::before { transform-origin: left center; transition: transform .7s cubic-bezier(.45, 0, .25, 1); }
+.fs-armed .fs-beat:not(.is-on)::before { transform: scaleX(0); }
+.fs-armed .fs-beat.is-on::before { transition-delay: 1.3s; }
+.fs-armed .fs-beat::after { transition: opacity .3s ease; }
+.fs-armed .fs-beat:not(.is-on)::after { opacity: 0; }
+.fs-armed .fs-beat.is-on::after { transition-delay: 1.95s; }
+/* reduce motion: the gentle version (Ed, 2026-10-16). Light, fades and numbers stay; nothing slides, scales or ripples. */
+@media (prefers-reduced-motion: reduce) {
+  .fs-armed .fs-pt, .fs-armed :is(.fs-mark, .fs-tag), .fs-armed .fs-beat:not(.is-on), .fs-armed .fs-beat:not(.is-on) .fs-badge,
+  .fs-armed .fs-beat:not(.is-on) :is(.fs-card, .fs-note, .fs-pill, .fs-walk, .fs-tile) { translate: none; scale: none; }
+  .fs-pt::after, .fs-badge::after { display: none; }
+  .fs-armed .fs-beat.is-on .fs-walk, .fs-input-btn.is-press, .fs-input-v.is-typing::after { animation: none; }
+  .fs-armed .fs-beat::before { transition: opacity .6s ease; }
+  .fs-armed .fs-beat:not(.is-on)::before { transform: none; opacity: 0; }
+}
 
 /* ═══ PREVIEW (2026-10-15): the product hero, the problem in three, how it works in three, what you get in eight ═══ */
 .phero { position: relative; padding: 136px 24px 64px; overflow: hidden; }
@@ -2330,8 +2411,10 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
               <line class="fs-grid" x1="0" y1="50" x2="1000" y2="50"/><line class="fs-grid" x1="0" y1="350" x2="1000" y2="350"/><line class="fs-grid" x1="0" y1="650" x2="1000" y2="650"/>
               <line class="fs-grid" x1="125" y1="0" x2="125" y2="950"/><line class="fs-grid" x1="250" y1="0" x2="250" y2="950"/><line class="fs-grid" x1="500" y1="0" x2="500" y2="950"/><line class="fs-grid" x1="625" y1="0" x2="625" y2="950"/><line class="fs-grid" x1="875" y1="0" x2="875" y2="950"/>
               <line class="fs-axis0" x1="0" y1="950" x2="1000" y2="950"/>
+            </svg>
+            <span class="fs-floorline"></span>
+            <svg class="fs-story" viewBox="0 0 1000 1000" preserveAspectRatio="none" focusable="false">
               <polygon class="fs-area" points="20,950 376.6,290 733.1,830 960,830 960,950"/>
-              <line class="fs-floor" x1="376.6" y1="422" x2="1000" y2="422"/>
               <line class="fs-drop fs-drop--1" x1="376.6" y1="290" x2="376.6" y2="1000"/>
               <line class="fs-drop fs-drop--2" x1="733.1" y1="830" x2="733.1" y2="1000"/>
               <line class="fs-drop fs-drop--3" x1="960" y1="830" x2="960" y2="1000"/>
@@ -2439,6 +2522,84 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
   window.addEventListener('resize', function () { size(); draw(); });
   document.addEventListener('visibilitychange', go);
   if ('IntersectionObserver' in window) new IntersectionObserver(function (e) { visible = e[0].isIntersecting; go(); }).observe(c);
+})();
+</script>
+<script>
+/* Section 02 plays its morning once, when it comes into view (Ed, 2026-10-16). The line draws through the session
+   and stops at each moment while its box plays it: the P&L is typed, Update is pressed, MAKETZO's answer arrives and
+   its number counts (the $40 counts DOWN from the $220 high, the drop that box is about). On a wide screen it runs as
+   one story once the boxes reach the screen; where the boxes stack (980px and under) the chart plays by itself and
+   each box plays as it scrolls in. With reduce motion set (Ed's own Windows has animations off) it still plays, and
+   the CSS takes out everything that moves (Ed's pick, 2026-10-16: "a gentle version"). Without IntersectionObserver
+   nothing is armed and the section stands finished. Classes only; the CSS is under .fs-armed. */
+(function () {
+  var fs = document.querySelector('.fs');
+  if (!fs || !('IntersectionObserver' in window) || !window.matchMedia) return;
+  var chart = fs.querySelector('.fs-chart'), row = fs.querySelector('.fs-beats');
+  var beats = Array.prototype.slice.call(fs.querySelectorAll('.fs-beat'));
+  if (!chart || !row || beats.length !== 3) return;
+  // [selector inside the box, from, to, start (ms after the box lights)]
+  var COUNTS = [
+    [['.fs-card--floor .fs-card-v', 0, 176, 950]],
+    [['.fs-card--called .fs-card-v', 220, 40, 950]],
+    [['.fs-tile--up .fs-tile-v', 0, 220, 800], ['.fs-tile--down .fs-tile-v', 0, 180, 900]]
+  ];
+  var typed = beats.map(function (b) {
+    var v = b.querySelector('.fs-input-v'), t = v && v.lastChild;
+    if (!t || t.nodeType !== 3) return null;
+    var full = t.nodeValue; t.nodeValue = '';
+    return { v: v, t: t, full: full, btn: b.querySelector('.fs-input-btn') };
+  });
+  beats.forEach(function (b, i) { COUNTS[i].forEach(function (c) { var el = b.querySelector(c[0]); if (el) el.textContent = '$' + c[1]; }); });
+  fs.classList.add('fs-armed');
+
+  function count(el, a, z, ms) {
+    var t0 = null;
+    function step(now) {
+      if (t0 === null) t0 = now;
+      var u = Math.min(1, (now - t0) / ms), e = 1 - Math.pow(1 - u, 3);
+      el.textContent = '$' + Math.round(a + (z - a) * e);
+      if (u < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+  function play(i) {
+    var b = beats[i]; if (b.classList.contains('is-on')) return;
+    b.classList.add('is-on');
+    var ty = typed[i];
+    if (ty) {
+      setTimeout(function () {
+        ty.v.classList.add('is-typing');
+        var n = 0;
+        (function next() {
+          n++; ty.t.nodeValue = ty.full.slice(0, n);
+          if (n < ty.full.length) { setTimeout(next, 120); return; }
+          setTimeout(function () { ty.v.classList.remove('is-typing'); if (ty.btn) ty.btn.classList.add('is-press'); }, 220);
+        })();
+      }, 350);
+    }
+    COUNTS[i].forEach(function (c) { var el = b.querySelector(c[0]); if (el) setTimeout(function () { count(el, c[1], c[2], 700); }, c[3]); });
+  }
+  function stage(n) { chart.classList.add('fs-s' + n); }
+  function once(el, opts, fn) {
+    var o = new IntersectionObserver(function (es) { if (es[0].isIntersecting) { o.disconnect(); fn(); } }, opts);
+    o.observe(el);
+  }
+
+  if (matchMedia('(max-width: 980px)').matches) {
+    once(chart, { threshold: 0.5 }, function () { stage(1); setTimeout(function () { stage(2); }, 1100); setTimeout(function () { stage(3); }, 2200); });
+    beats.forEach(function (b, i) { once(b, { threshold: 0.35 }, function () { play(i); }); });
+  } else {
+    // Starts when the top of the boxes is well on screen, so the chart above and the boxes are both in view.
+    once(row, { rootMargin: '0px 0px -15% 0px' }, function () {
+      stage(1);
+      setTimeout(function () { play(0); }, 1000);
+      setTimeout(function () { stage(2); }, 2600);
+      setTimeout(function () { play(1); }, 3500);
+      setTimeout(function () { stage(3); }, 5000);
+      setTimeout(function () { play(2); }, 5600);
+    });
+  }
 })();
 </script>
 <!-- SOCIAL PROOF -->
