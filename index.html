@@ -1889,67 +1889,140 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
 @media (max-width: 560px) { .journal-hp-grid { grid-template-columns: 1fr; } }
 /* END journal-positioning section styles */
 
-/* ── 02 · SEE IT WORK: "the floor saves it" (2026-10-15) ──────────────────────────────────
-   One real morning on the dev demo account. The trader types net P&L; every card is the app's own element, cropped
-   by tools/site-preview/capture-floor.js at phone width (3x). No player, no controls: the whole story reads at rest.
-   The chart draws in SVG under preserveAspectRatio none; dots and labels are HTML so text never stretches. */
-.fs { max-width: 1120px; margin: 46px auto 0; }
-.fs-chart { position: relative; border-radius: 22px; padding: 20px 24px 14px; background: linear-gradient(180deg, rgba(212,175,55,.07), transparent 65%), var(--mk-surface-raised); border: 1px solid rgba(212,175,55,.24); box-shadow: var(--mk-glow-gold-sm); }
-.fs-chart-head { display: flex; justify-content: space-between; align-items: center; gap: 16px; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-text-tertiary); }
-.fs-legend { display: inline-flex; align-items: center; gap: 8px; color: var(--mk-gold-400); }
-.fs-legend-floor { width: 22px; border-top: 2px dashed var(--mk-gold-400); }
-.fs-plot { position: relative; height: 230px; margin-top: 10px; }
+/* ── 02 · SEE IT WORK: "the floor saves it", built to Ed's mock (2026-10-15) ──────────────────────
+   Mock: C:/dev/tools/site-preview/mock-section-02.png. Values and times are the real dev morning
+   (tools/site-preview/capture-floor.js): +$220 at 9:41, floor $176, a $180 chase to +$40 at 9:52, Walk Away at 9:59.
+   The app cards are rebuilt in HTML with the app's own words. The chart lines draw in SVG under
+   preserveAspectRatio none; markers and labels are HTML on the same percentages so text never stretches.
+   Plot mapping: x = 2% + minutes after 9:30 / 29 x 94%; y = 95% - P&L / $300 x 90%. */
+.fs-section { position: relative; overflow: hidden; isolation: isolate; }
+.fs-section::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background-image: linear-gradient(rgba(212,175,55,.05) 1px, transparent 1px), linear-gradient(90deg, rgba(212,175,55,.05) 1px, transparent 1px);
+  background-size: 56px 56px; -webkit-mask-image: radial-gradient(70% 45% at 50% 30%, #000, transparent); mask-image: radial-gradient(70% 45% at 50% 30%, #000, transparent); }
+.fs-dust { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: 420px; z-index: -1; pointer-events: none;
+  -webkit-mask-image: linear-gradient(180deg, transparent, #000 45%); mask-image: linear-gradient(180deg, transparent, #000 45%); }
+.fs { max-width: 1120px; margin: 44px auto 0; }
+/* the chart */
+.fs-chart { position: relative; padding: 24px 30px 18px; border-radius: 24px; background: linear-gradient(180deg, rgba(212,175,55,.06), rgba(212,175,55,0) 60%), var(--mk-obsidian-900);
+  border: 1.5px solid rgba(240,200,80,.65); box-shadow: 0 0 0 1px rgba(212,175,55,.12), 0 0 34px rgba(212,175,55,.28), inset 0 0 40px rgba(212,175,55,.05); }
+.fs-chart-head { display: flex; justify-content: space-between; align-items: center; gap: 16px; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-text-secondary); }
+.fs-legend { display: inline-flex; align-items: center; gap: 10px; color: var(--mk-gold-400); }
+.fs-legend i { width: 30px; height: 2px; border-radius: 2px; background: var(--mk-gold-400); box-shadow: 0 0 8px rgba(212,175,55,.7); }
+.fs-graph { position: relative; display: grid; grid-template-columns: 52px minmax(0, 1fr); margin-top: 34px; }
+.fs-y { position: relative; }
+.fs-y span, .fs-x span { position: absolute; font-family: var(--mk-font-mono); font-size: 13px; color: var(--mk-text-tertiary); white-space: nowrap; }
+.fs-y span { left: 0; transform: translateY(-50%); }
+.fs-y-300 { top: 5%; } .fs-y-200 { top: 35%; } .fs-y-100 { top: 65%; } .fs-y-0 { top: 95%; }
+.fs-plot { position: relative; height: 280px; }
 .fs-plot svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
-.fs-zero { stroke: rgba(255,255,255,.10); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.fs-grid { stroke: rgba(255,255,255,.055); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.fs-axis0 { stroke: rgba(255,255,255,.16); stroke-width: 1; vector-effect: non-scaling-stroke; }
 .fs-area { fill: url(#fsArea); }
-.fs-area-top { stop-color: var(--mk-gold-500); stop-opacity: .22; }
-.fs-area-bottom { stop-color: var(--mk-gold-500); stop-opacity: 0; }
-.fs-floor { stroke: var(--mk-gold-400); stroke-width: 2; stroke-dasharray: 7 6; vector-effect: non-scaling-stroke; }
-.fs-line { fill: none; stroke: url(#fsLine); stroke-width: 3.5; stroke-linejoin: round; stroke-linecap: round; vector-effect: non-scaling-stroke; filter: drop-shadow(0 0 8px rgba(212,175,55,.45)); }
-.fs-line-gold { stop-color: var(--mk-gold-400); }
-.fs-line-loss { stop-color: var(--mk-danger-500); }
-.fs-after { stroke: var(--mk-danger-500); stroke-width: 2; stroke-dasharray: 2 6; stroke-linecap: round; opacity: .7; vector-effect: non-scaling-stroke; }
-.fs-dot { position: absolute; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; border: 3px solid var(--mk-obsidian-950); }
-.fs-dot--high { left: 37.73%; top: 21.28%; background: var(--mk-gold-400); box-shadow: 0 0 0 4px rgba(212,175,55,.22), 0 0 18px rgba(212,175,55,.6); }
-.fs-dot--called { left: 89.87%; top: 65.13%; background: var(--mk-danger-500); box-shadow: 0 0 0 4px rgba(248,113,113,.2), 0 0 18px rgba(248,113,113,.55); }
-.fs-lab { position: absolute; white-space: nowrap; font-family: var(--mk-font-mono); font-size: var(--mk-mono-sm); letter-spacing: .04em; }
-.fs-lab b { font-weight: 700; }
-.fs-lab--high { left: 37.73%; top: 21.28%; transform: translate(-50%, -175%); color: var(--mk-gold-300); }
-.fs-lab--floor { right: 0; top: 32%; transform: translateY(-150%); color: var(--mk-gold-400); }
-.fs-lab--called { left: 89.87%; top: 65.13%; transform: translate(-88%, 80%); color: var(--mk-danger-500); }
-.fs-axis { position: relative; height: 18px; margin-top: 8px; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: .06em; color: var(--mk-text-tertiary); }
-.fs-axis span { position: absolute; top: 0; transform: translateX(-50%); }
-.fs-axis-0 { left: 4%; }
-.fs-axis-1 { left: 37.73%; }
-.fs-axis-2 { left: 89.87%; }
-.fs-beats { list-style: none; margin: 22px 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; }
-/* Subgrid: the five rows of every beat (time, head, you type, MAKETZO answers, note) line up across the three. */
-.fs-beat { display: grid; grid-row: span 5; grid-template-rows: subgrid; row-gap: 14px; align-content: start; min-width: 0; padding: 22px 22px 24px; border-radius: 20px; background: var(--mk-surface-raised); border: 1px solid rgba(212,175,55,.22); }
-.fs-beat--called { border-color: rgba(248,113,113,.34); background: linear-gradient(160deg, rgba(248,113,113,.06), transparent 50%), var(--mk-surface-raised); }
-.fs-beat--green { border-color: rgba(74,222,128,.30); background: linear-gradient(160deg, rgba(74,222,128,.06), transparent 50%), var(--mk-surface-raised); }
-.fs-time { margin: 0; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-gold-400); }
-.fs-beat--called .fs-time { color: var(--mk-danger-500); }
-.fs-beat--green .fs-time { color: var(--mk-profit-500); }
-.fs-head { margin: -6px 0 2px; font-family: var(--mk-font-display); font-size: clamp(1.55rem, 2.1vw, 1.95rem); line-height: 1; letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); font-weight: 400; text-wrap: balance; }
-.fs-step { display: flex; flex-direction: column; gap: 8px; }
-.fs-k { margin: 0; font-family: var(--mk-font-mono); font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--mk-text-tertiary); }
-.fs-shot { display: block; width: 100%; height: auto; border-radius: 14px; box-shadow: 0 16px 36px rgba(0,0,0,.45); }
-.fs-shot--type { width: min(100%, 280px); border-radius: 12px; }
-.fs-shot--tap { border-radius: 999px; }
-.fs-note { margin: 2px 0 0; font-size: var(--mk-text-sm); line-height: 1.55; color: var(--mk-text-secondary); }
-.fs-end { display: flex; flex-direction: column; align-items: center; gap: 18px; margin-top: 40px; text-align: center; }
-.fs-end-line { margin: 0; font-size: var(--mk-text-lg); color: var(--mk-text-secondary); }
-.fs-end-line strong { color: var(--mk-text-primary); }
+.fs-area-top { stop-color: var(--mk-gold-400); stop-opacity: .20; }
+.fs-area-bot { stop-color: var(--mk-gold-400); stop-opacity: 0; }
+.fs-floor { stroke: var(--mk-gold-400); stroke-width: 2; stroke-dasharray: 9 7; vector-effect: non-scaling-stroke; opacity: .9; }
+.fs-drop { stroke-width: 1.5; stroke-dasharray: 4 5; vector-effect: non-scaling-stroke; opacity: .7; }
+.fs-drop--1 { stroke: var(--mk-gold-400); } .fs-drop--2 { stroke: var(--mk-danger-500); } .fs-drop--3 { stroke: var(--mk-profit-500); }
+.fs-line { fill: none; stroke: url(#fsLine); stroke-width: 3.5; stroke-linejoin: round; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+.fs-line--glow { stroke-width: 10; opacity: .28; filter: blur(5px); }
+.fs-stop-gold { stop-color: var(--mk-gold-300); } .fs-stop-red { stop-color: var(--mk-danger-500); } .fs-stop-green { stop-color: var(--mk-profit-500); }
+.fs-pt { position: absolute; width: 12px; height: 12px; margin: -6px 0 0 -6px; border-radius: 50%; background: #fff; }
+.fs-pt--1 { left: 37.66%; top: 29%; box-shadow: 0 0 0 3px var(--mk-gold-400), 0 0 18px 4px rgba(240,200,80,.85); }
+.fs-pt--2 { left: 73.31%; top: 83%; box-shadow: 0 0 0 3px var(--mk-danger-500), 0 0 18px 4px rgba(248,113,113,.8); }
+.fs-pt--3 { left: 96%; top: 83%; box-shadow: 0 0 0 3px var(--mk-profit-500), 0 0 18px 4px rgba(74,222,128,.8); }
+.fs-mark { position: absolute; width: 42px; height: 42px; display: grid; place-items: center; border-radius: 50%; transform: translate(-50%, calc(-100% - 12px));
+  background: var(--mk-obsidian-950); font-family: var(--mk-font-display); font-size: 24px; line-height: 1; color: var(--mk-text-primary); border: 2.5px solid; }
+.fs-mark--1 { left: 37.66%; top: 29%; border-color: var(--mk-gold-300); box-shadow: 0 0 16px rgba(240,200,80,.6); }
+.fs-mark--2 { left: 73.31%; top: 83%; border-color: var(--mk-danger-500); box-shadow: 0 0 16px rgba(248,113,113,.55); }
+.fs-mark--3 { left: 96%; top: 83%; border-color: var(--mk-profit-500); box-shadow: 0 0 16px rgba(74,222,128,.55); }
+.fs-tag { position: absolute; transform: translate(-50%, calc(-100% - 64px)); font-family: var(--mk-font-sans); font-weight: 700; font-size: 17px; line-height: 1.15; text-align: center; white-space: nowrap; }
+.fs-tag--1 { left: 37.66%; top: 29%; color: var(--mk-gold-300); text-shadow: 0 0 14px rgba(240,200,80,.45); }
+.fs-tag--2 { left: 73.31%; top: 83%; color: var(--mk-danger-500); }
+.fs-tag--3 { left: 96%; top: 83%; transform: translate(-72%, calc(-100% - 58px)); color: var(--mk-profit-500); }
+.fs-tag--floor { right: 0; top: 42.2%; transform: translateY(calc(-100% - 8px)); color: var(--mk-gold-300); font-size: 15px; text-align: right; }
+.fs-x { position: relative; height: 22px; margin: 12px 0 0 52px; }
+.fs-x span { top: 0; transform: translateX(-50%); }
+.fs-am { font-style: normal; }
+.fs-x-0 { left: 2%; } .fs-x-1 { left: 37.66%; } .fs-x-2 { left: 73.31%; } .fs-x-3 { left: 96%; }
+/* the three beats */
+.fs-beats { list-style: none; margin: 52px 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; }
+.fs-beat { --fs-c: var(--mk-gold-300); --fs-glow: rgba(240,200,80,.30); position: relative; display: flex; flex-direction: column; gap: 14px; min-width: 0; padding: 44px 24px 26px;
+  border-radius: 22px; border: 1.5px solid color-mix(in srgb, var(--fs-c) 70%, transparent); background: linear-gradient(180deg, color-mix(in srgb, var(--fs-c) 7%, transparent), transparent 45%), var(--mk-obsidian-900);
+  box-shadow: 0 0 26px var(--fs-glow), inset 0 0 30px color-mix(in srgb, var(--fs-c) 5%, transparent); }
+.fs-beat--2 { --fs-c: var(--mk-danger-500); --fs-glow: rgba(248,113,113,.26); }
+.fs-beat--3 { --fs-c: var(--mk-profit-500); --fs-glow: rgba(74,222,128,.24); }
+.fs-badge { position: absolute; top: -30px; left: 22px; width: 60px; height: 60px; display: grid; place-items: center; border-radius: 50%; border: 3px solid var(--fs-c); background: var(--mk-obsidian-950);
+  font-family: var(--mk-font-display); font-size: 34px; line-height: 1; color: var(--mk-text-primary); box-shadow: 0 0 18px var(--fs-glow), 0 0 0 6px var(--mk-obsidian-950); }
+.fs-beat::before { content: ""; position: absolute; top: -1px; left: 94px; right: -18px; height: 1.5px; background: linear-gradient(90deg, var(--fs-c), color-mix(in srgb, var(--fs-c) 60%, transparent)); }
+.fs-beat::after { content: ""; position: absolute; top: -5px; right: -19px; width: 8px; height: 8px; border-top: 1.5px solid var(--fs-c); border-right: 1.5px solid var(--fs-c); transform: rotate(45deg); }
+.fs-beat--3::before { right: 24px; background: linear-gradient(90deg, var(--fs-c), transparent); }
+.fs-beat--3::after { display: none; }
+.fs-time { margin: 0; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--fs-c); }
+.fs-head { margin: -8px 0 4px; font-family: var(--mk-font-display); font-weight: 400; font-size: clamp(1.75rem, 2.5vw, 2.25rem); line-height: 1.02; letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); }
+.fs-step { display: flex; flex-direction: column; gap: 10px; }
+.fs-k { margin: 0; font-family: var(--mk-font-mono); font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--mk-text-tertiary); }
+/* "You type": the app's Net P&L field and Update button, rebuilt */
+.fs-input { display: flex; align-items: center; gap: 10px; padding: 8px; border-radius: 12px; background: rgba(255,255,255,.025); border: 1px solid rgba(255,255,255,.08); }
+.fs-input-k { padding: 0 6px 0 8px; font-family: var(--mk-font-mono); font-size: 11px; letter-spacing: .18em; color: var(--mk-text-secondary); white-space: nowrap; }
+.fs-input-v { flex: 1; min-width: 0; padding: 7px 12px; border-radius: 9px; background: var(--mk-obsidian-950); border: 1px solid rgba(255,255,255,.1); font-family: var(--mk-font-sans); font-weight: 600; font-size: 20px; color: var(--mk-text-primary); }
+.fs-input-v i { font-style: normal; font-weight: 400; margin-right: 6px; color: var(--mk-text-tertiary); }
+.fs-input-btn { padding: 9px 16px; border-radius: 9px; background: var(--mk-gold-gradient); color: var(--mk-text-on-gold); font-family: var(--mk-font-sans); font-weight: 700; font-size: 15px; box-shadow: 0 0 14px rgba(240,200,80,.3); }
+/* "MAKETZO answers": the app's own cards, rebuilt */
+.fs-card { position: relative; padding: 16px 20px 18px; border-radius: 14px; }
+.fs-card-k { margin: 0 0 4px; font-family: var(--mk-font-mono); font-size: 12px; letter-spacing: .18em; text-transform: uppercase; }
+.fs-card-v { margin: 0; font-family: var(--mk-font-sans); font-weight: 800; font-size: 40px; line-height: 1.1; letter-spacing: -.01em; }
+.fs-card-t { margin: 8px 0 0; font-size: var(--mk-text-sm); line-height: 1.45; color: var(--mk-text-secondary); }
+.fs-card svg { position: absolute; top: 16px; right: 16px; width: 30px; height: 30px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.fs-card--floor { color: var(--mk-gold-300); border: 1px solid rgba(240,200,80,.45); border-left: 4px solid var(--mk-gold-300); background: linear-gradient(135deg, rgba(212,175,55,.14), rgba(212,175,55,.03)); box-shadow: 0 0 22px rgba(240,200,80,.18); }
+.fs-card--floor .fs-card-v { color: var(--mk-gold-300); text-shadow: 0 0 18px rgba(240,200,80,.35); }
+.fs-card--called { color: var(--mk-danger-500); border: 1px solid rgba(248,113,113,.55); background: linear-gradient(135deg, rgba(248,113,113,.13), rgba(248,113,113,.03)); box-shadow: 0 0 22px rgba(248,113,113,.16); }
+.fs-card--called .fs-card-v { color: var(--mk-text-primary); }
+.fs-pill { display: flex; align-items: center; gap: 10px; margin: 0; padding: 10px 14px; border-radius: 12px; border: 1px solid rgba(248,113,113,.35); background: rgba(248,113,113,.08); color: var(--mk-danger-500); font-family: var(--mk-font-sans); font-weight: 600; font-size: 16px; }
+.fs-pill svg, .fs-tile svg, .fs-walk svg { flex: 0 0 auto; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.fs-pill svg { width: 18px; height: 18px; }
+/* "You tap": the Walk Away button, rebuilt */
+.fs-walk { display: flex; align-items: center; justify-content: center; position: relative; padding: 14px 44px; border-radius: 14px; background: linear-gradient(180deg, #4ff0a6, #22c97e); color: #04210f;
+  font-family: var(--mk-font-sans); font-weight: 700; font-size: 19px; box-shadow: 0 0 24px rgba(74,222,128,.45), inset 0 1px 0 rgba(255,255,255,.35); }
+.fs-walk svg { position: absolute; right: 18px; width: 18px; height: 18px; stroke-width: 2.5; }
+/* the debrief tiles */
+.fs-tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.fs-tile { display: flex; align-items: center; gap: 10px; min-width: 0; padding: 14px 10px; border-radius: 12px; background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.08); }
+.fs-tile svg { width: 32px; height: 32px; padding: 7px; border-radius: 50%; background: rgba(255,255,255,.05); color: var(--mk-text-secondary); stroke-width: 1.8; }
+.fs-tile--down svg { color: var(--mk-danger-500); background: rgba(248,113,113,.1); }
+.fs-tile--up svg { color: var(--mk-profit-500); background: rgba(74,222,128,.1); }
+.fs-tile p { margin: 0; min-width: 0; }
+.fs-tile-k { display: block; font-family: var(--mk-font-mono); font-size: 10px; letter-spacing: .08em; white-space: nowrap; text-transform: uppercase; color: var(--mk-text-tertiary); }
+.fs-tile-v { display: block; margin-top: 2px; font-family: var(--mk-font-sans); font-weight: 700; font-size: 22px; color: var(--mk-text-primary); }
+.fs-note { margin: 0; font-size: var(--mk-text-md); line-height: 1.55; color: var(--mk-text-secondary); }
+/* the close */
+.fs-end { display: flex; flex-direction: column; align-items: center; gap: 22px; margin-top: 56px; text-align: center; }
+.fs-cta { padding: 20px 56px; border-radius: 14px; font-size: 1.15rem; box-shadow: 0 0 34px rgba(240,200,80,.45), 0 0 0 1px rgba(255,236,170,.4) inset; }
+.fs-end-line { display: flex; align-items: center; gap: 18px; margin: 0; font-size: var(--mk-text-lg); color: var(--mk-text-secondary); }
+.fs-end-line strong { color: var(--mk-gold-300); font-weight: 600; }
+.fs-end-line::before, .fs-end-line::after { content: ""; width: 30px; height: 1.5px; background: var(--mk-gold-400); opacity: .7; }
 @media (max-width: 980px) {
-  .fs-beats { grid-template-columns: minmax(0, 1fr); max-width: 470px; margin-inline: auto; }
+  .fs-beats { grid-template-columns: minmax(0, 1fr); max-width: 470px; margin-inline: auto; gap: 48px; }
+  .fs-beat::before { right: 24px; background: linear-gradient(90deg, var(--fs-c), transparent); }
+  .fs-beat::after { display: none; }
 }
 @media (max-width: 600px) {
-  .fs-chart { padding: 16px 14px 12px; }
-  .fs-plot { height: 170px; }
-  .fs-chart-head { flex-direction: column; align-items: flex-start; gap: 6px; }
-  .fs-lab { font-size: var(--mk-mono-xs); }
-  .fs-lab--floor { top: 32%; }
+  .fs-chart { padding: 18px 14px 14px; }
+  .fs-graph { grid-template-columns: 40px minmax(0, 1fr); margin-top: 30px; }
+  .fs-x { margin-left: 40px; }
+  .fs-plot { height: 200px; }
+  .fs-mark { width: 28px; height: 28px; font-size: 17px; border-width: 2px; transform: translate(-50%, calc(-100% - 10px)); }
+  .fs-tag { font-size: 13px; transform: translate(-50%, calc(-100% - 44px)); }
+  .fs-tag--2, .fs-tag--3 { display: none; }
+  .fs-tag--floor { font-size: 12px; transform: translateY(8px); }
+  .fs-am { display: none; }
+  .fs-x span, .fs-y span { font-size: 10px; }
+  .fs-x-0 { left: 6%; }
+  .fs-x-3 { left: 92%; }
+  .fs-cta { padding: 18px 28px; }
+  .fs-end-line { display: block; font-size: var(--mk-text-md); }
+  .fs-end-line::before, .fs-end-line::after { display: none; }
 }
+@media (prefers-reduced-motion: reduce) { .fs-dust { display: none; } }
 
 /* ═══ PREVIEW (2026-10-15): the product hero, the problem in three, how it works in three, what you get in eight ═══ */
 .phero { position: relative; padding: 136px 24px 64px; overflow: hidden; }
@@ -2203,87 +2276,139 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
 <!-- INTERACTIVE SESSION SIM -->
 <hr class="mk-rule-gold">
 
-<section class="section" id="see-it-work">
+<section class="section fs-section" id="see-it-work">
+  <canvas class="fs-dust" aria-hidden="true"></canvas>
   <div class="section-inner">
     <p class="section-eyebrow reveal">02 &middot; See It Work</p>
     <h2 class="section-title reveal">You type your P&amp;L. <em>MAKETZO holds the line.</em></h2>
-    <p class="section-sub reveal">One real morning in the app. After each trade, the trader types the session's net P&amp;L. Every card below is the app's own response, captured from the screen.</p>
+    <p class="section-sub reveal">One real morning in the app. After each trade, the trader types the session's net P&amp;L. Every card below is the app's own response, word for word.</p>
     <div class="fs reveal">
-      <div class="fs-chart" aria-hidden="true">
-        <div class="fs-chart-head"><span>Net P&amp;L, as typed</span><span class="fs-legend"><i class="fs-legend-floor"></i>Profit floor</span></div>
-        <div class="fs-plot">
-          <svg viewBox="0 0 1000 260" preserveAspectRatio="none" focusable="false">
-            <defs>
-              <linearGradient id="fsLine" gradientUnits="userSpaceOnUse" x1="40" y1="0" x2="899" y2="0">
-                <stop class="fs-line-gold" offset="0"/><stop class="fs-line-gold" offset=".42"/><stop class="fs-line-loss" offset="1"/>
-              </linearGradient>
-              <linearGradient id="fsArea" x1="0" y1="0" x2="0" y2="1">
-                <stop class="fs-area-top" offset="0"/><stop class="fs-area-bottom" offset="1"/>
-              </linearGradient>
-            </defs>
-            <line class="fs-zero" x1="40" y1="194.7" x2="960" y2="194.7"/>
-            <polygon class="fs-area" points="40,194.7 377.3,55.3 898.7,169.3 960,169.3 960,194.7"/>
-            <line class="fs-floor" x1="377.3" y1="83.2" x2="960" y2="83.2"/>
-            <polyline class="fs-line" points="40,194.7 377.3,55.3 898.7,169.3"/>
-            <line class="fs-after" x1="898.7" y1="169.3" x2="960" y2="169.3"/>
-          </svg>
-          <span class="fs-dot fs-dot--high"></span>
-          <span class="fs-dot fs-dot--called"></span>
-          <span class="fs-lab fs-lab--high"><b>+$220</b> high</span>
-          <span class="fs-lab fs-lab--floor">Floor <b>$176</b></span>
-          <span class="fs-lab fs-lab--called"><b>+$40</b> day called</span>
+      <div class="fs-chart" role="img" aria-label="Session P&amp;L as typed: up to $220 at 9:41, a profit floor at $176, down to $40 at 9:52 where the day is called, and the day ends green at $40 at 9:59.">
+        <div class="fs-chart-head" aria-hidden="true"><span>Session P&amp;L (as typed)</span><span class="fs-legend"><i></i>MAKETZO</span></div>
+        <div class="fs-graph" aria-hidden="true">
+          <div class="fs-y"><span class="fs-y-300">$300</span><span class="fs-y-200">$200</span><span class="fs-y-100">$100</span><span class="fs-y-0">$0</span></div>
+          <div class="fs-plot">
+            <svg viewBox="0 0 1000 1000" preserveAspectRatio="none" focusable="false">
+              <defs>
+                <linearGradient id="fsLine" gradientUnits="userSpaceOnUse" x1="20" y1="0" x2="960" y2="0">
+                  <stop class="fs-stop-gold" offset="0"/><stop class="fs-stop-gold" offset=".38"/><stop class="fs-stop-red" offset=".76"/><stop class="fs-stop-red" offset=".84"/><stop class="fs-stop-green" offset="1"/>
+                </linearGradient>
+                <linearGradient id="fsArea" x1="0" y1="0" x2="0" y2="1"><stop class="fs-area-top" offset="0"/><stop class="fs-area-bot" offset="1"/></linearGradient>
+              </defs>
+              <line class="fs-grid" x1="0" y1="50" x2="1000" y2="50"/><line class="fs-grid" x1="0" y1="350" x2="1000" y2="350"/><line class="fs-grid" x1="0" y1="650" x2="1000" y2="650"/>
+              <line class="fs-grid" x1="125" y1="0" x2="125" y2="950"/><line class="fs-grid" x1="250" y1="0" x2="250" y2="950"/><line class="fs-grid" x1="500" y1="0" x2="500" y2="950"/><line class="fs-grid" x1="625" y1="0" x2="625" y2="950"/><line class="fs-grid" x1="875" y1="0" x2="875" y2="950"/>
+              <line class="fs-axis0" x1="0" y1="950" x2="1000" y2="950"/>
+              <polygon class="fs-area" points="20,950 376.6,290 733.1,830 960,830 960,950"/>
+              <line class="fs-floor" x1="376.6" y1="422" x2="1000" y2="422"/>
+              <line class="fs-drop fs-drop--1" x1="376.6" y1="290" x2="376.6" y2="1000"/>
+              <line class="fs-drop fs-drop--2" x1="733.1" y1="830" x2="733.1" y2="1000"/>
+              <line class="fs-drop fs-drop--3" x1="960" y1="830" x2="960" y2="1000"/>
+              <polyline class="fs-line fs-line--glow" points="20,950 376.6,290 733.1,830 960,830"/>
+              <polyline class="fs-line" points="20,950 376.6,290 733.1,830 960,830"/>
+            </svg>
+            <span class="fs-pt fs-pt--1"></span><span class="fs-pt fs-pt--2"></span><span class="fs-pt fs-pt--3"></span>
+            <span class="fs-mark fs-mark--1">1</span><span class="fs-mark fs-mark--2">2</span><span class="fs-mark fs-mark--3">3</span>
+            <span class="fs-tag fs-tag--1">Up $220</span>
+            <span class="fs-tag fs-tag--2">Down to $40</span>
+            <span class="fs-tag fs-tag--3">End green<br>at $40</span>
+            <span class="fs-tag fs-tag--floor">Profit Floor: $176</span>
+          </div>
         </div>
-        <div class="fs-axis"><span class="fs-axis-0">9:30</span><span class="fs-axis-1">9:41</span><span class="fs-axis-2">9:58</span></div>
+        <div class="fs-x" aria-hidden="true"><span class="fs-x-0">9:30<i class="fs-am"> AM</i></span><span class="fs-x-1">9:41<i class="fs-am"> AM</i></span><span class="fs-x-2">9:52<i class="fs-am"> AM</i></span><span class="fs-x-3">9:59<i class="fs-am"> AM</i></span></div>
       </div>
       <ol class="fs-beats">
-        <li class="fs-beat">
+        <li class="fs-beat fs-beat--1">
+          <span class="fs-badge" aria-hidden="true">1</span>
           <p class="fs-time">9:41 AM</p>
-          <h3 class="fs-head">Up $220. A floor goes in.</h3>
+          <h3 class="fs-head">Up $220.<br>A floor goes in.</h3>
           <div class="fs-step">
             <p class="fs-k">You type</p>
-            <img class="fs-shot fs-shot--type" src="assets/see-it-work/type-220.png" width="280" height="49" loading="lazy" alt="The Net P&amp;L field with 220 typed in, beside the Update button">
+            <div class="fs-input" role="img" aria-label="Net P&amp;L field with 220 typed in, and the Update button"><span class="fs-input-k">NET P&amp;L</span><span class="fs-input-v"><i>$</i>220</span><span class="fs-input-btn">Update</span></div>
           </div>
           <div class="fs-step">
             <p class="fs-k">MAKETZO answers</p>
-            <img class="fs-shot" src="assets/see-it-work/floor-176.png" width="316" height="139" loading="lazy" alt="Profit Floor, $176, from the $220 high: Your walk-away line. Hit it and the day is called.">
+            <div class="fs-card fs-card--floor"><p class="fs-card-k">Profit Floor</p><p class="fs-card-v">$176</p><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></div>
           </div>
-          <p class="fs-note">Your walk-away line sits 20% under the $220 high, and it only moves up.</p>
+          <p class="fs-note">From the $220 high.<br>Your walk-away line is set.<br>It only moves up.</p>
         </li>
-        <li class="fs-beat fs-beat--called">
-          <p class="fs-time">9:58 AM</p>
-          <h3 class="fs-head">One chase. Through the floor.</h3>
+        <li class="fs-beat fs-beat--2">
+          <span class="fs-badge" aria-hidden="true">2</span>
+          <p class="fs-time">9:52 AM</p>
+          <h3 class="fs-head">One chase.<br>Through the floor.</h3>
           <div class="fs-step">
             <p class="fs-k">You type</p>
-            <img class="fs-shot fs-shot--type" src="assets/see-it-work/type-40.png" width="280" height="49" loading="lazy" alt="The Net P&amp;L field with 40 typed in, beside the Update button">
+            <div class="fs-input" role="img" aria-label="Net P&amp;L field with 40 typed in, and the Update button"><span class="fs-input-k">NET P&amp;L</span><span class="fs-input-v"><i>$</i>40</span><span class="fs-input-btn">Update</span></div>
           </div>
           <div class="fs-step">
             <p class="fs-k">MAKETZO answers</p>
-            <img class="fs-shot" src="assets/see-it-work/day-called.png" width="316" height="198" loading="lazy" alt="Day Called, $40: You went through your $176 floor. Call the day here and keep the rest. $136 below your floor. Override and keep trading.">
+            <div class="fs-card fs-card--called"><p class="fs-card-k">Day Called</p><p class="fs-card-v">$40</p><p class="fs-card-t">You went through your $176 floor. Call the day here and keep the rest.</p><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M5.7 5.7l12.6 12.6"/></svg></div>
           </div>
-          <p class="fs-note">The chase cost $180. It counts as strike one and drops the day through the $176 floor, so the app calls the day while you're still green.</p>
+          <p class="fs-pill"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg>$136 below your floor</p>
         </li>
-        <li class="fs-beat fs-beat--green">
+        <li class="fs-beat fs-beat--3">
+          <span class="fs-badge" aria-hidden="true">3</span>
           <p class="fs-time">9:59 AM</p>
           <h3 class="fs-head">You walk away green.</h3>
-          <div class="fs-step">
-            <p class="fs-k">You tap</p>
-            <img class="fs-shot fs-shot--tap" src="assets/see-it-work/walk-away.png" width="302" height="61" loading="lazy" alt="The Walk Away button">
-          </div>
+          <div class="fs-walk" role="img" aria-label="The Walk Away button">Walk Away<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></div>
           <div class="fs-step">
             <p class="fs-k">MAKETZO answers</p>
-            <img class="fs-shot" src="assets/see-it-work/snapshot-low.png" width="282" height="143" loading="lazy" alt="From the Today's Snapshot debrief: peak $220, drawdown $180, 1 of 3 strikes used, 0 rules fired.">
+            <div class="fs-tiles">
+              <div class="fs-tile fs-tile--up"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg><p><span class="fs-tile-k">Peak</span><span class="fs-tile-v">$220</span></p></div>
+              <div class="fs-tile fs-tile--down"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg><p><span class="fs-tile-k">Drawdown</span><span class="fs-tile-v">$180</span></p></div>
+              <div class="fs-tile"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 13l9 5 9-5"/></svg><p><span class="fs-tile-k">Strikes Used</span><span class="fs-tile-v">1 / 3</span></p></div>
+              <div class="fs-tile"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg><p><span class="fs-tile-k">Rules Fired</span><span class="fs-tile-v">0</span></p></div>
+            </div>
           </div>
           <p class="fs-note">The day closes at +$40 with one strike used. Your debrief opens with every number already filled in.</p>
         </li>
       </ol>
     </div>
     <div class="fs-end reveal">
+      <button class="btn-primary fs-cta" data-cta-source="see-it-work" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
       <p class="fs-end-line">One bad trade, then done. <strong>The day ends green.</strong></p>
-      <button class="btn-primary" data-cta-source="see-it-work" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
     </div>
     <p class="sec-more reveal">How the profit floor calls the day: <a href="system.html#profit-floor" data-cta-source="see-it-work" data-cta-target="system-profit-floor">The System &rarr;</a></p>
   </div>
 </section>
+<script>
+/* The gold dust under section 02 (Ed's mock): dots on two slow swells, high at the sides, low behind the call to
+   action. Draws only while the section is on screen and the tab is visible; reduced motion hides it in CSS. */
+(function () {
+  var c = document.querySelector('.fs-dust');
+  if (!c || !c.getContext || (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) return;
+  var ctx = c.getContext('2d'), w = 0, h = 0, t = 0, raf = 0, last = 0, visible = false;
+  var gold = (getComputedStyle(document.documentElement).getPropertyValue('--mk-gold-300') || '').trim() || 'rgb(240,200,80)';
+  function size() {
+    var r = c.getBoundingClientRect(), d = Math.min(2, window.devicePixelRatio || 1);
+    w = r.width; h = r.height; c.width = Math.round(w * d); c.height = Math.round(h * d); ctx.setTransform(d, 0, 0, d, 0, 0);
+  }
+  function draw() {
+    ctx.clearRect(0, 0, w, h); ctx.fillStyle = gold;
+    var cols = Math.min(190, Math.round(w / 7)), rows = 30;
+    for (var j = 0; j < rows; j++) {
+      var near = j / (rows - 1), base = h * .30 + near * h * .74;
+      for (var i = 0; i < cols; i++) {
+        var u = i / (cols - 1), side = Math.pow(Math.abs(u - .5) * 2, 1.7);
+        var y = base - side * h * .55 * (1 - near * .4) + (Math.sin(u * 8 + t * .55 + j * .33) * 6 + Math.sin(u * 2.7 - t * .35 + j * .21) * 12) * (.45 + near);
+        ctx.globalAlpha = Math.min(1, (.08 + .95 * side) * (.3 + .7 * near));
+        var r = .9 + near * 1.7;
+        ctx.fillRect(u * w, y, r, r);
+      }
+    }
+    ctx.globalAlpha = 1;
+  }
+  function frame(now) {
+    raf = 0; if (!visible || document.hidden) return;
+    if (now - last > 33) { t += .033; last = now; draw(); }
+    raf = requestAnimationFrame(frame);
+  }
+  function go() { if (!raf && visible && !document.hidden) raf = requestAnimationFrame(frame); }
+  size(); draw();
+  window.addEventListener('resize', function () { size(); draw(); });
+  document.addEventListener('visibilitychange', go);
+  if ('IntersectionObserver' in window) new IntersectionObserver(function (e) { visible = e[0].isIntersecting; go(); }).observe(c);
+})();
+</script>
 <!-- SOCIAL PROOF -->
 <hr class="mk-rule-gold">
 
