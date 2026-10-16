@@ -752,12 +752,17 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
 
 /* ── THE WARM-UP — game cards ────────────────────────────────────────── */
 .warmup-grid {
+  position: relative;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(224px, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 18px;
   max-width: 1180px;
   margin: 0 auto 32px;
 }
+/* Nine games, three across: the free three make the top row. auto-fit gave four across and left Snake alone on a
+   third row; two across, the last card spans the row instead of standing alone. */
+@media (max-width: 1000px) { .warmup-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 760px; } .warmup-card:last-of-type:nth-of-type(odd) { grid-column: 1 / -1; } }
+@media (max-width: 600px) { .warmup-grid { grid-template-columns: 1fr; max-width: 460px; } }
 .warmup-card {
   padding: 24px 22px;
   background: var(--mk-surface-raised);
@@ -776,6 +781,34 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
 .warmup-use a { color: var(--mk-brand); border-bottom: 1px solid rgba(212,175,55,.4); }
 .warmup-note { text-align: center; font-size: var(--mk-text-base); color: var(--mk-text-secondary); max-width: 640px; margin: 0 auto; line-height: 1.6; }
 .warmup-note strong { color: var(--mk-text-primary); }
+/* The Warm-Up plays once (Ed, 2026-10-16: "Create a beautiful elegant animation for this section"). It is an arcade,
+   so the product move is the game-select screen: gold corner brackets glide across the nine games in reading order,
+   each card catching the light as they pass, then come back to The Gauntlet (today's seven questions) and select it,
+   and its Play now lights; the closing line takes a glow last. Stacked, the brackets land on The Gauntlet as it comes
+   into view. The brackets then fade, so the end state is the static section; no card is dimmed or hidden, and nothing
+   applies without .wu-live. Reduce motion keeps the light and the timing, and the brackets jump instead of gliding. */
+.wu-cursor { position: absolute; left: 0; top: 0; z-index: 2; pointer-events: none; opacity: 0; width: var(--w, 0); height: var(--h, 0); transform: translate(var(--x, 0), var(--y, 0)); transition: transform var(--wu-t, .24s) cubic-bezier(.4, 0, .2, 1), width var(--wu-t, .24s) cubic-bezier(.4, 0, .2, 1), height var(--wu-t, .24s) cubic-bezier(.4, 0, .2, 1), opacity .45s ease; }
+.wu-cursor.is-on { opacity: 1; }
+.wu-cursor.is-snap { transition: opacity .45s ease; }
+.wu-frame { position: absolute; inset: -7px; --c: var(--mk-gold-300);
+  background: linear-gradient(var(--c), var(--c)) top left / 20px 2px, linear-gradient(var(--c), var(--c)) top left / 2px 20px,
+    linear-gradient(var(--c), var(--c)) top right / 20px 2px, linear-gradient(var(--c), var(--c)) top right / 2px 20px,
+    linear-gradient(var(--c), var(--c)) bottom left / 20px 2px, linear-gradient(var(--c), var(--c)) bottom left / 2px 20px,
+    linear-gradient(var(--c), var(--c)) bottom right / 20px 2px, linear-gradient(var(--c), var(--c)) bottom right / 2px 20px;
+  background-repeat: no-repeat; filter: drop-shadow(0 0 6px rgba(240,200,80,.75)); }
+.wu-cursor.is-select .wu-frame { animation: wuSelect .6s cubic-bezier(.34, 1.56, .64, 1) both; }
+.wu-live .warmup-card { transition: opacity var(--mk-dur-slow) var(--mk-ease-out), transform var(--mk-dur-med) var(--mk-ease-out), border-color .35s ease, box-shadow .5s ease; }
+.wu-live .warmup-card.is-hot { border-color: rgba(240,200,80,.45); box-shadow: 0 0 28px rgba(240,200,80,.12); }
+.wu-live .warmup-card.is-picked { border-color: rgba(240,200,80,.7); box-shadow: 0 0 0 1px rgba(240,200,80,.18), 0 0 44px rgba(240,200,80,.22); }
+.wu-live .warmup-card.is-picked .warmup-use a { animation: wuPlay 1.6s ease-out both; }
+.wu-live .warmup-note.is-lit strong { animation: wuLine 2s ease-out both; }
+@keyframes wuSelect { 0% { transform: scale(1.12); opacity: .4; } 100% { transform: scale(1); opacity: 1; } }
+@keyframes wuPlay { 0%, 100% { text-shadow: none; border-bottom-color: rgba(212,175,55,.4); } 30% { text-shadow: 0 0 14px rgba(240,200,80,.9); border-bottom-color: var(--mk-gold-300); } }
+@keyframes wuLine { 0%, 100% { text-shadow: none; } 35% { text-shadow: 0 0 18px rgba(240,200,80,.55); } }
+@media (prefers-reduced-motion: reduce) {
+  .wu-cursor { transition: opacity .3s ease; }
+  .wu-cursor.is-select .wu-frame { animation: none; }
+}
 
 /* ── THE RESET — triage cards ────────────────────────────────────────── */
 .triage-grid {
@@ -1177,7 +1210,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 <hr class="mk-rule-gold">
 
 <!-- ─── THE WARM-UP · pre-market games ────────────────────────────── -->
-<section class="section">
+<section class="section" id="warm-up">
   <div class="section-inner">
     <p class="section-eyebrow reveal">THE WARM-UP</p>
     <h2 class="section-title reveal">Sharpen the mind. <em>Then trade.</em></h2>
@@ -1200,32 +1233,32 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
         <p class="warmup-use">Two minutes on a simulated tape that fights back. Go long or short, then watch it try to take it back, and find out what kind of trader you really are. <a href="/trader-type">Play now &rarr;</a></p>
       </div>
       <div class="warmup-card reveal">
-        <p class="warmup-num">Game 02</p>
+        <p class="warmup-num">In the app</p>
         <div class="warmup-name">Sit on Your Hands</div>
         <p class="warmup-use">The hardest rep in trading: doing nothing when there's nothing there.</p>
       </div>
       <div class="warmup-card reveal">
-        <p class="warmup-num">Game 03</p>
+        <p class="warmup-num">In the app</p>
         <div class="warmup-name">The Trigger</div>
         <p class="warmup-use">Real breakout or fakeout? Train the split-second read that costs the most.</p>
       </div>
       <div class="warmup-card reveal">
-        <p class="warmup-num">Game 04</p>
+        <p class="warmup-num">In the app</p>
         <div class="warmup-name">Cut It</div>
         <p class="warmup-use">Cut the loser fast, before it becomes the loss that ruins the day.</p>
       </div>
       <div class="warmup-card reveal">
-        <p class="warmup-num">Game 05</p>
+        <p class="warmup-num">In the app</p>
         <div class="warmup-name">Four in a Row</div>
         <p class="warmup-use">Hold focus under pressure, one deliberate move at a time.</p>
       </div>
       <div class="warmup-card reveal">
-        <p class="warmup-num">Game 06</p>
+        <p class="warmup-num">In the app</p>
         <div class="warmup-name">Quick Math</div>
         <p class="warmup-use">Sixty seconds of mental math to break the impulse loop before it starts.</p>
       </div>
       <div class="warmup-card reveal">
-        <p class="warmup-num">Game 07</p>
+        <p class="warmup-num">In the app</p>
         <div class="warmup-name">Snake</div>
         <p class="warmup-use">Flow state, no clock. Just you and a clean line.</p>
       </div>
@@ -1238,6 +1271,64 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
     </div>
   </div>
 </section>
+<script>
+/* The Warm-Up game select, once (the CSS comment above .wu-cursor says what plays and why). */
+(function () {
+  var sec = document.getElementById('warm-up');
+  var grid = sec && sec.querySelector('.warmup-grid'), note = sec && sec.querySelector('.warmup-note');
+  if (!grid || !note || !('IntersectionObserver' in window)) return;
+  var cards = Array.prototype.slice.call(grid.querySelectorAll('.warmup-card'));
+  if (cards.length !== 9) return;
+  var cursor = document.createElement('span');
+  cursor.className = 'wu-cursor is-snap';
+  cursor.setAttribute('aria-hidden', 'true');
+  cursor.innerHTML = '<span class="wu-frame"></span>';
+  grid.appendChild(cursor);
+  sec.classList.add('wu-live');
+
+  function at(card, glide) {
+    cursor.style.setProperty('--wu-t', glide || '.24s');
+    cursor.style.setProperty('--x', card.offsetLeft + 'px'); cursor.style.setProperty('--y', card.offsetTop + 'px');
+    cursor.style.setProperty('--w', card.offsetWidth + 'px'); cursor.style.setProperty('--h', card.offsetHeight + 'px');
+    cards.forEach(function (c) { c.classList.toggle('is-hot', c === card); });
+  }
+  function select(card) {
+    cursor.classList.remove('is-select'); void cursor.offsetWidth; cursor.classList.add('is-select');
+    card.classList.remove('is-hot'); card.classList.add('is-picked');
+    setTimeout(function () { cursor.classList.remove('is-on'); card.classList.remove('is-picked'); }, 1900);
+  }
+  function start() { at(cards[0]); void cursor.offsetWidth; cursor.classList.add('is-on'); setTimeout(function () { cursor.classList.remove('is-snap'); }, 60); }
+  function lightNote() { note.classList.add('is-lit'); }
+
+  var wide = cards[2].offsetTop === cards[0].offsetTop;
+  if (wide) {
+    var o = new IntersectionObserver(function (es) {
+      if (!es[0].isIntersecting) return;
+      o.disconnect();
+      setTimeout(start, 500);
+      for (var i = 1; i < 9; i++) (function (i) { setTimeout(function () { at(cards[i]); }, 500 + i * 260); })(i);
+      setTimeout(function () { at(cards[0], '.55s'); }, 500 + 9 * 260 + 200);
+      setTimeout(function () { select(cards[0]); }, 500 + 9 * 260 + 850);
+      setTimeout(lightNote, 500 + 9 * 260 + 1500);
+    }, { threshold: 0.45 });
+    o.observe(grid);
+  } else {
+    var oc = new IntersectionObserver(function (es) {
+      if (!es[0].isIntersecting) return;
+      oc.disconnect();
+      setTimeout(start, 300);
+      setTimeout(function () { select(cards[0]); }, 650);
+    }, { threshold: 0.8 });
+    oc.observe(cards[0]);
+    var on = new IntersectionObserver(function (es) {
+      if (!es[0].isIntersecting) return;
+      on.disconnect();
+      setTimeout(lightNote, 300);
+    }, { threshold: 1 });
+    on.observe(note);
+  }
+})();
+</script>
 
 <hr class="mk-rule-gold">
 
