@@ -585,7 +585,8 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 .fd-fill { fill: url(#fdFill); }
 .fd-line { fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linejoin: round; stroke-linecap: round; }
 .fd-floor { fill: none; stroke: var(--mk-gold-400); stroke-width: 2.2; stroke-linejoin: round; filter: drop-shadow(0 0 4px rgba(212,175,55,.55)); }
-.fd-floor-t { fill: var(--mk-gold-400); }
+.fd-floor-t { fill: var(--mk-gold-400); font-weight: 600; }
+.fd-cushline { stroke: var(--mk-gold-400); stroke-width: 1.2; stroke-dasharray: 2 3; opacity: .8; }
 .fd-high circle { fill: var(--mk-text-primary); }
 .fd-high text { fill: var(--mk-text-secondary); }
 .fd-called .fd-ring { fill: none; stroke: var(--mk-danger-500); stroke-width: 1.5; opacity: .7; }
@@ -617,8 +618,9 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 .fdx-armed .floorx-list li.is-lit::before { border-top-style: solid; filter: drop-shadow(0 0 5px rgba(212,175,55,.9)); }
 .fdx-armed .fd-card { transition: opacity .5s ease, transform .6s cubic-bezier(.2,.8,.2,1), border-color .5s ease, background .5s ease; }
 .fdx-armed .fd-card.is-pre { opacity: 0; transform: translateY(8px); }
-.fdx-armed .fd-called, .fdx-armed .fd-high, .fdx-armed .fd-floor-t { transition: opacity .5s ease; }
-.fdx-armed .fd-called.is-pre, .fdx-armed .fd-high.is-pre, .fdx-armed .fd-floor-t.is-pre { opacity: 0; }
+.fdx-armed .fd-called, .fdx-armed .fd-high, .fdx-armed .fd-floor-t, .fdx-armed .fd-cushline { transition: opacity .5s ease; }
+.fdx-armed .fd-called.is-pre, .fdx-armed .fd-high.is-pre, .fdx-armed .fd-floor-t.is-pre, .fdx-armed .fd-cushline.is-pre { opacity: 0; }
+.fdx-armed .fd-floor-t.is-tick { animation: fdTick 1s ease-out 1; }
 .fdx-armed .fd-called.is-on .fd-ring { animation: fdRing 1.6s ease-out 1; transform-box: fill-box; transform-origin: center; }
 .fdx-armed .fd-arm.is-crossed { animation: fdArm 1.2s ease-out 1; }
 .fdx-armed .fd-card.is-flip { animation: fdFlip 1.2s ease-out 1; }
@@ -631,12 +633,10 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
   .fd-arm-t, .fd-floor-t, .fd-high text { font-size: 15px; }
   .fd-pill, .fd-pill-t { display: none; }
 }
-/* Reduce motion (Ed's PC runs with Windows animations off): the gentle version. The chart is drawn at once and fades
-   in; the card, the labels and the rules step through the same moments with fades; no ripple. */
+/* Reduce motion (Ed's PC runs with Windows animations off): the gentle version. The line steps from update to update
+   instead of sweeping, the header still counts, the card and labels change with it; no ripple. */
 .fdx-gentle .fd-card.is-pre { transform: none; }
 .fdx-gentle .fd-called.is-on .fd-ring { animation: none; }
-.fdx-gentle .fd-svg > g:first-of-type { transition: opacity 1.2s ease; }
-.fdx-gentle .fd-svg.is-pre > g:first-of-type { opacity: 0; }
 @media (max-width: 860px) { .floorx { grid-template-columns: minmax(0, 1fr); padding: 24px 20px; } }
 </style>
 <script>try{if(document.cookie.indexOf('mkt_csrf=')>-1)document.documentElement.classList.add('mkt-auth');}catch(e){}</script>
@@ -932,26 +932,27 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
       <div class="fd">
         <div class="fd-chart">
           <div class="fd-head"><span class="fd-k">TODAY'S P&amp;L</span><span class="fd-pnl">+$176</span></div>
-          <svg class="fd-svg" viewBox="0 0 460 196" role="img" aria-label="One morning: the P&amp;L climbs past half the $400 goal, a floor sets 20% under the best P&amp;L and rises with it to $176, then the P&amp;L falls back to $176 and the day is called while still green.">
+          <svg class="fd-svg" viewBox="0 0 480 196" role="img" aria-label="One morning: the P&amp;L climbs past half the $400 goal, a floor sets 20% under the best P&amp;L and steps up with it to $176, then the P&amp;L falls back to $176 and the day is called while still green.">
             <defs>
               <linearGradient id="fdFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="currentColor" stop-opacity=".22"/><stop offset="1" stop-color="currentColor" stop-opacity="0"/></linearGradient>
-              <clipPath id="fdWipe"><rect class="fd-wipe" x="0" y="0" width="460" height="196"/></clipPath>
+              <clipPath id="fdWipe"><rect class="fd-wipe" x="0" y="0" width="480" height="196"/></clipPath>
             </defs>
             <line class="fd-zero" x1="20" y1="180" x2="400" y2="180"/>
             <line class="fd-arm" x1="20" y1="56" x2="400" y2="56"/>
             <text class="fd-arm-t" x="22" y="49">HALF YOUR GOAL · $200</text>
             <g clip-path="url(#fdWipe)">
               <path class="fd-fill" d="M20 180L67.5 136.6L115 155.2L162.5 99.4L210 52.9L257.5 65.3L305 43.6L352.5 57.24L400 70.88L400 180Z"/>
-              <path class="fd-floor" d="M206.8 80.8L210 78.32H284.6L305 70.88H400"/>
+              <path class="fd-floor" d="M210 78.32H305V70.88H400"/>
               <path class="fd-line" d="M20 180L67.5 136.6L115 155.2L162.5 99.4L210 52.9L257.5 65.3L305 43.6L352.5 57.24L400 70.88"/>
-              <text class="fd-floor-t" x="214" y="94">FLOOR</text>
             </g>
+            <line class="fd-cushline" x1="400" y1="70.88" x2="400" y2="70.88"/>
+            <text class="fd-floor-t" x="408" y="74.4">FLOOR $176</text>
             <g class="fd-high"><circle cx="305" cy="43.6" r="3.4"/><text x="305" y="33" text-anchor="middle">HIGH $220</text></g>
             <g class="fd-called">
               <circle class="fd-ring" cx="400" cy="70.88" r="7"/>
               <circle class="fd-dot" cx="400" cy="70.88" r="3.6"/>
-              <rect class="fd-pill" x="334" y="84" width="74" height="18" rx="9"/>
-              <text class="fd-pill-t" x="371" y="96.5" text-anchor="middle">DAY CALLED</text>
+              <rect class="fd-pill" x="362" y="22" width="76" height="18" rx="9"/>
+              <text class="fd-pill-t" x="400" y="34.5" text-anchor="middle">DAY CALLED</text>
             </g>
           </svg>
         </div>
@@ -972,100 +973,103 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
   </div>
 </section>
 <script>
-/* The morning, replayed. The P&L line draws left to right and the app's rules run on it as it goes: once the best
-   P&L passes $200 (half the $400 goal) the floor sits 20% under it and rises with every new best, and when the P&L
-   falls back to the floor the day is called. The header counts the P&L, the card under the chart shows what the app
-   shows at each moment (its own strings), and each rule on the left lights at its moment. The draw pauses on the
-   three moments so each can be read. Plays once, when the chart is well in view; every value ends exactly as
-   written. Reduce motion gets the gentle version (CSS); without IntersectionObserver nothing is armed. */
+/* The morning, replayed, on one clock (Ed, 2026-10-16: "The graph on top MUST be synchronized to the bottom card").
+   The line draws one P&L update at a time while the header counts along it; the moment a segment lands, everything
+   that reads that update changes together: the card (the app's own strings), the floor on the chart and its label,
+   the high marker, and the dotted cushion from the P&L down to the floor. Then it holds so it can be read. The floor
+   steps up only when a new high lands, as the app recomputes it on each entry. Once the best P&L reaches $200 (half
+   the $400 goal) the floor sits 20% under it; when the P&L falls back to it, the day is called. Each rule on the
+   left lights at its moment. Plays once when the chart is well in view; every value ends exactly as written. Reduce
+   motion steps the line instead of sweeping it (CSS + below); without IntersectionObserver nothing is armed. */
 (function () {
   var box = document.getElementById('profit-floor');
   if (!box || !('IntersectionObserver' in window)) return;
-  var demo = box.querySelector('.fd'), svg = box.querySelector('.fd-svg'), wipe = box.querySelector('.fd-wipe');
+  var demo = box.querySelector('.fd'), wipe = box.querySelector('.fd-wipe');
   var head = box.querySelector('.fd-pnl'), card = box.querySelector('.fd-card'), arm = box.querySelector('.fd-arm');
   var lis = Array.prototype.slice.call(box.querySelectorAll('.floorx-list li'));
   var q = function (s) { return card.querySelector(s); };
   var eb = q('.fd-eb'), from = q('.fd-from'), amt = q('.fd-amt'), cap = q('.fd-cap'), cush = q('.fd-cush');
   var called = box.querySelector('.fd-called'), high = box.querySelector('.fd-high'), floorT = box.querySelector('.fd-floor-t');
-  if (!demo || !svg || !wipe || !head || lis.length < 3) return;
+  var cushLine = box.querySelector('.fd-cushline');
+  if (!demo || !wipe || !head || !cushLine || !high || lis.length < 3) return;
+  var highDot = high.querySelector('circle'), highT = high.querySelector('text');
   var gentle = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-  // The morning: [x on the chart, P&L]. Goal $400, so the floor arms at a $200 best; give-back 20%.
+  // The morning: [x on the chart, P&L] per update. Goal $400, so the floor arms at a $200 best; give-back 20%.
   var P = [[20, 0], [67.5, 70], [115, 40], [162.5, 130], [210, 205], [257.5, 185], [305, 220], [352.5, 198], [400, 176]];
   var ARM = 200, KEEP = 0.8;
-  var end = { head: head.textContent, eb: eb.textContent, from: from.textContent, amt: amt.textContent, cap: cap.textContent, cush: cush.textContent };
-  function pnlAt(x) {
-    for (var i = 1; i < P.length; i++) if (x <= P[i][0]) { var a = P[i - 1], b = P[i]; return a[1] + (b[1] - a[1]) * (x - a[0]) / (b[0] - a[0]); }
-    return P[P.length - 1][1];
-  }
+  // [update, draw ms, hold ms]: quick before the floor exists, then a long hold on every update the card shows
+  var PLAN = [[1, 700, 250], [2, 700, 250], [3, 700, 250], [4, 1000, 2400], [5, 900, 1900], [6, 1000, 2400], [7, 900, 1900], [8, 1000, 0]];
+  function y(v) { return 180 - v * 0.62; }
   function money(v) { return '$' + Math.round(v).toLocaleString('en-US'); }
+  function signed(v) { return (v < 0 ? '−$' : '+$') + Math.abs(Math.round(v)).toLocaleString('en-US'); }
   function lit(i) { lis.forEach(function (li, j) { li.classList.toggle('is-lit', j === i); }); }
+  function tick(el) { el.classList.remove('is-tick'); void el.getBoundingClientRect(); el.classList.add('is-tick'); }
+  var end = { head: head.textContent, eb: eb.textContent, from: from.textContent, amt: amt.textContent, cap: cap.textContent, cush: cush.textContent };
 
   box.classList.add('fdx-armed');
   if (gentle) box.classList.add('fdx-gentle');
   card.classList.add('is-pre'); card.classList.remove('is-called');
-  called.classList.add('is-pre'); high.classList.add('is-pre'); floorT.classList.add('is-pre');
+  [called, high, floorT, cushLine].forEach(function (el) { el.classList.add('is-pre'); });
   head.textContent = '+$0';
-  if (gentle) svg.classList.add('is-pre'); else wipe.setAttribute('width', 0);
+  wipe.setAttribute('width', 0);
 
-  // The header follows the line; the card moves only when the line reaches a P&L update (Ed, 2026-10-16: the card
-  // was "too fast"), as the app's card does on each entry, and each change glows so the eye can follow it.
-  var armed = false, seen = 0, cardBest = 0, tickT = null;
-  function cardAt(pnl) {
-    cardBest = Math.max(cardBest, pnl);
-    if (!armed && cardBest >= ARM) {
-      armed = true; card.classList.remove('is-pre'); floorT.classList.remove('is-pre');
+  var best = 0, bestAt = 0, armed = false, floor = null, tickT = null;
+  // The line has just reached update i: the chart and the card now say the same thing.
+  function land(i) {
+    var x = P[i][0], pnl = P[i][1];
+    head.textContent = signed(pnl);
+    if (pnl > best) { best = pnl; bestAt = i; }
+    if (!armed && best >= ARM) {
+      armed = true;
+      [card, floorT, cushLine, high].forEach(function (el) { el.classList.remove('is-pre'); });
       arm.classList.add('is-crossed'); lit(0);
     }
     if (!armed) return;
-    var floor = Math.round(cardBest * KEEP), given = cardBest - pnl, span = cardBest - floor;
-    eb.textContent = 'PROFIT FLOOR'; from.textContent = 'from ' + money(cardBest) + ' high'; amt.textContent = money(floor);
+    var f = Math.round(best * KEEP), raised = floor !== null && f > floor, given = best - pnl;
+    floor = f;
+    // the chart
+    highDot.setAttribute('cx', P[bestAt][0]); highDot.setAttribute('cy', y(best));
+    highT.setAttribute('x', P[bestAt][0]); highT.setAttribute('y', y(best) - 10.6); highT.textContent = 'HIGH ' + money(best);
+    floorT.setAttribute('x', x + 8); floorT.setAttribute('y', y(floor) + 3.5); floorT.textContent = 'FLOOR ' + money(floor);
+    cushLine.setAttribute('x1', x); cushLine.setAttribute('x2', x); cushLine.setAttribute('y1', y(pnl) + 3); cushLine.setAttribute('y2', y(floor) - 1);
+    // the card, same numbers
+    eb.textContent = 'PROFIT FLOOR'; from.textContent = 'from ' + money(best) + ' high'; amt.textContent = money(floor);
     cap.textContent = 'Your walk-away line. Hit it and the day is called.';
     cush.textContent = money(pnl - floor) + ' cushion · ' + (given >= 0.5 ? money(given) + ' given back' : 'nothing given back');
-    demo.style.setProperty('--fd-gone', span > 0 ? Math.max(0, Math.min(1, given / span)) : 0);
-    if (cardBest > 205.5) lit(1);
-    card.classList.remove('is-tick'); void card.offsetWidth; card.classList.add('is-tick');
-    clearTimeout(tickT); tickT = setTimeout(function () { card.classList.remove('is-tick'); }, 1000);
-  }
-  function show(x) {
-    var pnl = pnlAt(x);
-    head.textContent = (pnl < 0 ? '−$' : '+$') + Math.abs(Math.round(pnl));
-    while (seen < P.length - 1 && x >= P[seen + 1][0] - 0.01) { seen++; if (seen < P.length - 1) cardAt(P[seen][1]); }
-    if (x >= 305) high.classList.remove('is-pre');
+    demo.style.setProperty('--fd-gone', best - floor > 0 ? Math.max(0, Math.min(1, given / (best - floor))) : 0);
+    if (raised) lit(1);
+    tick(card); tick(floorT);
+    clearTimeout(tickT); tickT = setTimeout(function () { card.classList.remove('is-tick'); floorT.classList.remove('is-tick'); }, 1000);
   }
   function finish() {
     head.textContent = end.head; eb.textContent = end.eb; from.textContent = end.from; amt.textContent = end.amt;
     cap.textContent = end.cap; cush.textContent = end.cush; demo.style.setProperty('--fd-gone', 1);
+    floorT.setAttribute('x', 408); floorT.setAttribute('y', y(176) + 3.5); floorT.textContent = 'FLOOR $176';
+    cushLine.classList.add('is-pre');
+    wipe.setAttribute('width', 480);
     card.classList.add('is-called', 'is-flip'); called.classList.remove('is-pre'); called.classList.add('is-on');
     lit(2);
-    setTimeout(function () { lit(-1); }, 2600);
+    setTimeout(function () { lit(-1); }, 2800);
   }
-  // Draw from x0 to x1 over ms, then call next.
-  function leg(x0, x1, ms, next) {
-    var t0 = null;
+  // Draw update i-1 to i: the line's leading edge and the header move together; then land, hold, go on.
+  function seg(k) {
+    var i = PLAN[k][0], ms = PLAN[k][1], hold = PLAN[k][2], a = P[i - 1], b = P[i], t0 = null;
+    if (armed) cushLine.classList.add('is-pre');
     function step(now) {
       if (t0 === null) t0 = now;
       var u = Math.min(1, (now - t0) / ms), e = u < .5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2;
-      var x = x0 + (x1 - x0) * e;
-      if (!gentle) wipe.setAttribute('width', x + 3);
-      show(x);
-      if (u < 1) requestAnimationFrame(step); else setTimeout(next, 0);
+      if (!gentle) wipe.setAttribute('width', a[0] + (b[0] - a[0]) * e + 1.2);
+      head.textContent = signed(a[1] + (b[1] - a[1]) * e);
+      if (u < 1) { requestAnimationFrame(step); return; }
+      wipe.setAttribute('width', b[0] + 1.2);
+      if (k === PLAN.length - 1) { finish(); return; }
+      land(i);
+      if (armed) cushLine.classList.remove('is-pre');
+      setTimeout(function () { seg(k + 1); }, hold);
     }
     requestAnimationFrame(step);
   }
-  function play() {
-    if (gentle) svg.classList.remove('is-pre');
-    // slower than the first cut so each card state can be read: about 11s in all, holding 2s on each moment
-    leg(20, 210, 2600, function () {
-      setTimeout(function () {
-        leg(210, 305, 2600, function () {
-          setTimeout(function () {
-            leg(305, 400, 2600, function () { wipe.setAttribute('width', 460); finish(); });
-          }, 2000);
-        });
-      }, 2200);
-    });
-  }
-  var o = new IntersectionObserver(function (es) { if (es[0].isIntersecting) { o.disconnect(); play(); } }, { threshold: 0.6 });
+  var o = new IntersectionObserver(function (es) { if (es[0].isIntersecting) { o.disconnect(); seg(0); } }, { threshold: 0.6 });
   o.observe(demo);
 })();
 </script>
