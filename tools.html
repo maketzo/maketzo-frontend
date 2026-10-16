@@ -159,6 +159,29 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
   100% { box-shadow: 0 0 0 0 rgba(212,175,55,0); }
 }
 
+/* ── The page in motion (Ed, 2026-10-16: "Create a beautiful elegant animation for the entire page") ──
+   The page is one path ("Go top to bottom"), so the motion is the path filling: a gold light runs down the rail as
+   the visitor scrolls, a bead on its leading edge, and each station's number lights as the light reaches it. It is
+   driven by the visitor's own scroll, so it is never faster or slower than they read; scrolling back up drains it.
+   Bookends: the hero's gold line and the closing call's gold line each take one slow sweep of light, and the
+   Knowledge Center's three steps (learn, write, drill) light once in order. Nothing is dimmed or hidden; nothing here
+   applies without .path-live / .tl-live, so with no script the page stands as it was (with its old per-station
+   pulse). Reduce motion keeps the fill and the lights and drops the two sweeps. */
+.path-live .station.visible .station-num { animation: none; }
+.path-live .station-num { position: relative; transition: box-shadow .7s ease; }
+.path-live .station.is-reached .station-num { box-shadow: 0 0 0 5px rgba(212,175,55,.14), 0 0 24px rgba(240,200,80,.45); }
+.path-live .station-line { position: relative; }
+.path-live .station-line::after { content: ''; position: absolute; inset: 0; transform-origin: top; transform: scaleY(var(--f, 0)); background: linear-gradient(180deg, var(--mk-gold-300), var(--mk-brand)); box-shadow: 0 0 10px rgba(240,200,80,.45); }
+.path-live .station-line::before { content: ''; position: absolute; left: 50%; top: calc(var(--f, 0) * 100%); z-index: 1; width: 8px; height: 8px; margin: -4px 0 0 -4px; border-radius: 50%; background: var(--mk-gold-300); box-shadow: 0 0 12px 2px rgba(240,200,80,.7); opacity: 0; transition: opacity .4s ease; }
+.path-live .station-line.is-filling::before { opacity: 1; }
+.kc-step, .kc-step-num { transition: border-color .7s ease, box-shadow .8s ease, background-color .7s ease; }
+.tl-live .kc-step.is-lit { border-color: rgba(212,175,55,.5); box-shadow: 0 0 26px rgba(240,200,80,.1); }
+.tl-live .kc-step.is-lit .kc-step-num { background: rgba(212,175,55,.22); box-shadow: 0 0 14px rgba(240,200,80,.45); }
+.tl-live .tl-sweep { background: linear-gradient(100deg, transparent 42%, rgba(255,250,235,.85) 50%, transparent 58%) 160% 0 / 250% 100% no-repeat, var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; }
+.tl-live .tl-sweep.is-on { animation: tlSweep 2.4s cubic-bezier(.45, 0, .25, 1) both; }
+@keyframes tlSweep { from { background-position: 160% 0, 0 0; } to { background-position: -60% 0, 0 0; } }
+@media (prefers-reduced-motion: reduce) { .tl-live .tl-sweep.is-on { animation: none; } }
+
 /* ── How the free works ──────────────────────────────────────────── */
 .freebox-wrap { padding: 0 24px; }
 .freebox { max-width: 720px; margin: 56px auto 0; padding: 24px 30px 26px; background: var(--mk-surface-raised); border: 1px solid rgba(212,175,55,.18); border-radius: var(--mk-radius-card); }
@@ -469,6 +492,71 @@ body:has(.sticky-bar.visible) { padding-bottom: 80px; }
   <button class="btn-primary reveal" data-cta-source="tools" data-cta-target="trial" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
   <p class="tools-cta-hint reveal">7 days free &middot; No charge until day 8 &middot; Cancel in one click.</p>
 </section>
+<script>
+/* The page in motion (the CSS comment above .path-live says what plays and why). */
+(function () {
+  if (!window.requestAnimationFrame) return;
+  document.body.classList.add('tl-live');
+
+  // The path fills with the visitor's scroll: a marker 60% down the screen is "where you are" on the path.
+  var path = document.getElementById('tools-path');
+  if (path) {
+    var stations = Array.prototype.slice.call(path.querySelectorAll('.station'));
+    var nums = stations.map(function (s) { return s.querySelector('.station-num'); });
+    var lines = stations.map(function (s) { return s.querySelector('.station-line'); });
+    if (stations.length && nums.every(Boolean)) {
+      path.classList.add('path-live');
+      var queued = false;
+      var frame = function () {
+        queued = false;
+        var mark = innerHeight * 0.6;
+        stations.forEach(function (s, i) {
+          var n = nums[i].getBoundingClientRect();
+          s.classList.toggle('is-reached', mark >= n.top + n.height / 2);
+          var l = lines[i];
+          if (!l || !l.offsetHeight) return;   // the last station has no line
+          var r = l.getBoundingClientRect();
+          var f = Math.max(0, Math.min(1, (mark - r.top) / r.height));
+          l.style.setProperty('--f', f.toFixed(4));
+          l.classList.toggle('is-filling', f > 0 && f < 1);
+        });
+      };
+      var queue = function () { if (!queued) { queued = true; requestAnimationFrame(frame); } };
+      addEventListener('scroll', queue, { passive: true });
+      addEventListener('resize', queue);
+      queue();
+    }
+  }
+
+  // The Knowledge Center's loop lights once in order: learn, write, drill.
+  var loop = document.querySelector('#knowledge-center .kc-loop');
+  if (loop && 'IntersectionObserver' in window) {
+    var steps = Array.prototype.slice.call(loop.querySelectorAll('.kc-step'));
+    var ol = new IntersectionObserver(function (es) {
+      if (!es[0].isIntersecting) return;
+      ol.disconnect();
+      steps.forEach(function (st, i) {
+        setTimeout(function () { st.classList.add('is-lit'); }, 400 + i * 1000);
+        setTimeout(function () { st.classList.remove('is-lit'); }, 400 + i * 1000 + 1700);
+      });
+    }, { threshold: 0.7 });
+    ol.observe(loop);
+  }
+
+  // The bookends: one slow sweep of light through each gold line.
+  var heroEm = document.querySelector('.tools-h1 em'), ctaEm = document.querySelector('.tools-cta h2 em');
+  if (heroEm) { heroEm.classList.add('tl-sweep'); setTimeout(function () { heroEm.classList.add('is-on'); }, 900); }
+  if (ctaEm && 'IntersectionObserver' in window) {
+    ctaEm.classList.add('tl-sweep');
+    var oc = new IntersectionObserver(function (es) {
+      if (!es[0].isIntersecting) return;
+      oc.disconnect();
+      setTimeout(function () { ctaEm.classList.add('is-on'); }, 400);
+    }, { threshold: 1 });
+    oc.observe(ctaEm);
+  }
+})();
+</script>
 
 <footer>
   <div class="footer-inner">
