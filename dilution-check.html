@@ -64,6 +64,8 @@
 <script src="assets/js/mkt-consent.js?v=1" defer></script>
 <script src="assets/js/checkout.js?v=10" defer></script>
 <script src="assets/js/newsletter.js?v=5" defer></script>
+<link rel="stylesheet" href="assets/css/lightbox.css?v=2">
+<script src="assets/js/lightbox.js?v=2" defer></script>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html { overflow-y: scroll; }
@@ -148,12 +150,15 @@ hr.mk-rule-gold { border: 0; height: 1px; background: linear-gradient(90deg, tra
 .dc-proof { margin-top: 28px; text-align: center; font-size: var(--mk-text-sm); color: var(--mk-text-tertiary); }
 .dc-proof strong { color: var(--mk-brand); font-weight: 500; }
 
-/* ── Closing CTA ─────────────────────────────────────────────────── */
-.dc-cta { text-align: center; padding: 76px 24px 96px; }
-.dc-cta h2 { font-family: var(--mk-font-display); font-size: clamp(1.8rem, 3.6vw, 2.5rem); letter-spacing: var(--mk-track-display); text-transform: uppercase; margin-bottom: 14px; }
-.dc-cta h2 em { font-style: normal; background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
-.dc-cta p { font-size: 1.05rem; color: var(--mk-text-secondary); line-height: 1.55; max-width: 600px; margin: 0 auto 26px; }
-.dc-cta-hint { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: 0.04em; color: var(--mk-text-tertiary); margin-top: 18px; }
+/* ── Closing CTA: the site's standard final CTA (as /pricing and /system), 2026-10-16. The page's own version let
+   .dc-cta p outrank its note's class, so the small mono note rendered at body size (Ed: "fonts are all weird"). */
+.final-cta-section { padding: 96px 24px; background: var(--mk-obsidian-950); text-align: center; border-top: var(--mk-border-hairline); }
+.final-cta-eyebrow { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); margin-bottom: 18px; }
+.final-cta-title { font-family: var(--mk-font-display); font-size: clamp(2.2rem, 4.6vw, 3.2rem); letter-spacing: var(--mk-track-display); line-height: 1.04; text-transform: uppercase; font-weight: 400; margin: 0 auto 24px; max-width: 700px; text-wrap: balance; }
+.final-cta-title em { font-style: normal; background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.final-cta-btn-wrap { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.final-cta-btn-wrap .btn-primary { padding: 16px 36px; font-size: var(--mk-text-md); }
+.final-cta-note { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: 0.04em; color: var(--mk-text-tertiary); }
 
 /* ── Footer ──────────────────────────────────────────────────────── */
 footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairline); padding: 56px 0 28px; }
@@ -257,8 +262,8 @@ body:has(.sticky-bar.visible) { padding-bottom: 80px; }
   <div class="section-inner">
     <p class="section-eyebrow reveal">WHAT COMES BACK</p>
     <h2 class="section-title reveal">Type a ticker. <em>Get the answer.</em></h2>
-    <figure class="dc-shot reveal"><img src="assets/dilution/card-answer.webp" width="1280" height="2120" alt="A Dilution Check card: supply risk HIGH, can sell today, the biggest supply fact from the filings, and the Can They Sell and Will They Sell gauges" decoding="async"></figure>
-    <p class="dc-shotnote reveal">A real read from the app, with the company&rsquo;s name and ticker changed.</p>
+    <figure class="dc-shot mk-zoom-fig reveal"><img src="assets/dilution/card-answer.webp" width="1280" height="2120" alt="A Dilution Check card: supply risk HIGH, can sell today, the biggest supply fact from the filings, and the Can They Sell and Will They Sell gauges" decoding="async"></figure>
+    <p class="dc-shotnote reveal">A real read from the app, with the company&rsquo;s name and ticker changed. Tap the card to enlarge it.</p>
 
     <ul class="dc-promises">
       <li class="dc-promise reveal"><h3>Can they sell today?</h3><p>A shelf or an at-the-market program, found in their filings.</p></li>
@@ -283,11 +288,13 @@ body:has(.sticky-bar.visible) { padding-bottom: 80px; }
 <hr class="mk-rule-gold">
 
 <!-- ─── CTA ──────────────────────────────────────────────────────── -->
-<section class="dc-cta">
-  <h2 class="reveal">Know what is on file. <em>Before the open.</em></h2>
-  <p class="reveal">Included with Pro, 100 company reads a month, and Elite, 200. Checking a company again is free.</p>
-  <button class="btn-primary reveal" data-cta-source="dilution-check-footer" data-cta-target="trial" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
-  <p class="dc-cta-hint reveal">7 days free, with 15 company reads &middot; No charge until day 8 &middot; SEC filings only, not financial advice.</p>
+<section class="final-cta-section">
+  <p class="final-cta-eyebrow reveal">7-DAY FREE TRIAL &middot; 15 COMPANY READS</p>
+  <h2 class="final-cta-title reveal">Know what is on file. <em>Before the open.</em></h2>
+  <div class="final-cta-btn-wrap reveal">
+    <button class="btn-primary" data-cta-source="dilution-check-footer" data-cta-target="trial" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial</button>
+    <p class="final-cta-note">Pro: 100 company reads a month &middot; Elite: 200 &middot; No charge until day 8 &middot; Not financial advice</p>
+  </div>
 </section>
 
 <footer>

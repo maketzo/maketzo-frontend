@@ -21,10 +21,11 @@
 (function () {
   'use strict';
 
-  // Scoped to blog figures only. Author avatars, the brand lockup and the
-  // share icons are images too and must never become zoomable.
-  // .blog-hero-figure is the legacy class still carried by 15 published posts.
-  var FIG_SELECTOR = '.blog-fig, .blog-embed, .blog-hero-figure';
+  // Scoped to blog figures, plus any marketing figure that opts in with
+  // .mk-zoom-fig (the /dilution-check card, 2026-10-16). Author avatars, the
+  // brand lockup and the share icons are images too and must never become
+  // zoomable. .blog-hero-figure is the legacy class still carried by 15 posts.
+  var FIG_SELECTOR = '.blog-fig, .blog-embed, .blog-hero-figure, .mk-zoom-fig';
   var MIN_SCALE = 1;
   var MAX_SCALE = 6;
   var TAP_SCALE = 2.5;      // where a double tap lands

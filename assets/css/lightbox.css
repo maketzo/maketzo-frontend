@@ -20,7 +20,8 @@
    .blog-hero-figure is the legacy class still carried by 15 published posts. */
 .blog-fig img.mk-zoomable,
 .blog-embed img.mk-zoomable,
-.blog-hero-figure img.mk-zoomable { cursor: zoom-in; }
+.blog-hero-figure img.mk-zoomable,
+.mk-zoom-fig img.mk-zoomable { cursor: zoom-in; }   /* a marketing figure that opts in (2026-10-16) */
 
 /* .blog-fig and .blog-hero-figure already establish a containing block; the
    author-inserted .blog-embed does not, and the badge is positioned. */
