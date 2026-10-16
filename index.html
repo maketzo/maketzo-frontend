@@ -1172,14 +1172,18 @@ a.focus-feature-card { text-decoration: none; color: inherit; }
 .focus-closing-line em { font-style: normal; background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
 
 /* ── REVIEWS ─────────────────────────────────────────────────── */
+/* Always four cards, so four across, two by two, or one column: never a row holding one card (Ed, 2026-10-16:
+   "I want everything to look symmetrical"). auto-fit dropped to three plus an orphan below a 1100px grid. */
 .reviews-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 20px;
   max-width: 1100px;
   margin: 0 auto;
   transition: opacity var(--mk-dur-slow);
 }
+@media (max-width: 1000px) { .reviews-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .reviews-grid { grid-template-columns: 1fr; } }
 .review-card {
   background: var(--mk-surface-raised);
   border: var(--mk-border-hairline);
