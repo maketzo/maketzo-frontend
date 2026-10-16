@@ -266,51 +266,44 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
 .why-pullquote em { font-style: normal; background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
 /* The state monitor (Ed, 2026-10-16: "create a beautiful animation for this section"). Each threat lights in turn
    in its own colour: a light runs along its top edge and its trace draws in the corner (clicks coming faster, the
-   spike after a loss, a signal sagging out, a line chasing a move that already left). Then the calm: the quote mark
-   glows in, the answer catches the light and its rule draws out from the centre. Static (no script) is the end state. */
+   spike after a loss, a signal sagging out, a late entry at the top of a run that then falls). The quote is always
+   on (Ed: "Quote needs to always be on - just draw emphasis to it at the end"): as the last threat settles, its
+   mark glows, its halo swells, a light runs through the gold answer and its rule flares. Static is the end state. */
 .why-card[data-threat="overtrading"] { --threat: var(--mk-warning-500); }
 .why-card[data-threat="revenge"] { --threat: var(--mk-danger-500); }
 .why-card[data-threat="fatigue"] { --threat: var(--mk-caution-500); }
 .why-card[data-threat="fomo"] { --threat: var(--mk-brand); }
 .why-trace { position: absolute; top: 22px; right: 22px; width: 72px; height: 24px; overflow: visible; color: var(--threat); opacity: .9; }
 .why-trace path { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-.why-trace .why-trace-ghost { stroke-dasharray: 2 3; opacity: .55; }
+.why-trace circle { fill: currentColor; }
+.why-trace .why-trace-entry { filter: drop-shadow(0 0 3px currentColor); }
 .why-card::after { content: ""; position: absolute; left: 0; right: 0; top: -3px; height: 3px; border-radius: var(--mk-radius-card) var(--mk-radius-card) 0 0; pointer-events: none; opacity: 0;
   background: linear-gradient(90deg, transparent, rgba(255,255,255,.95), transparent) no-repeat; background-size: 36% 100%; background-position: -40% 0; }
+/* The answer carries a light band parked off its right edge; the emphasis runs it across. */
+.why-pullquote em { background: linear-gradient(105deg, transparent 42%, rgba(255,246,214,.95) 50%, transparent 58%) no-repeat, var(--mk-gold-gradient); background-size: 250% 100%, 100% 100%; background-position: 0 0, 0 0; -webkit-background-clip: text; background-clip: text; }
 .wsm-armed .why-trace { clip-path: inset(0 100% 0 0); transition: clip-path 1s cubic-bezier(.5,0,.2,1); }
 .wsm-armed .why-card.is-on .why-trace { clip-path: inset(0 0 0 0); }
 .wsm-armed .why-card.is-on { animation: wsmGlow 1.6s ease-out 1; }
 .wsm-armed .why-card.is-on::after { animation: wsmSheen 1s ease-in-out 1; }
-/* The quote is the climax: the threats step back, a gold light grows behind it, the line arrives word by word (each
-   word sharpening into focus), the gold answer lands slower and flares, the rule draws; then the threats return. */
-.wsm-armed .why-card { transition: opacity .9s ease, transform var(--mk-dur-slow) var(--mk-ease-out); }
-.wsm-armed .why-grid.is-quiet .why-card { opacity: .38; }
-.wsm-armed .why-halo { opacity: 0; transform: translate(-50%, -50%) scale(.7); transition: opacity 1.6s ease, transform 2s cubic-bezier(.2,.8,.2,1); }
-.wsm-armed .why-pullquote.is-on .why-halo { opacity: 1; transform: translate(-50%, -50%); }
-.wsm-armed .why-pullquote::before { opacity: 0; transform: scale(.86); transition: opacity .8s ease, transform .9s cubic-bezier(.3,1.4,.5,1); }
-.wsm-armed .why-pullquote::after { transform: scaleX(0); transition: transform 1s cubic-bezier(.5,0,.2,1); }
-.wsm-armed .why-pullquote.is-on::before { opacity: 1; transform: none; animation: wsmQuoteGlow 2.2s ease-out .3s 1; }
-.wsm-armed .why-pullquote.is-answered::after { transform: none; }
-.why-pullquote em.wq-split { background: none; }
-.why-pullquote em.wq-split .wq-w { background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
-.wq-w { display: inline-block; }
-.wsm-armed .wq-w { opacity: 0; filter: blur(8px); transform: translateY(10px); transition: opacity .6s ease, filter .7s ease, transform .7s cubic-bezier(.2,.8,.2,1); }
-.wsm-armed .wq-w.is-on { opacity: 1; filter: none; transform: none; }
-.wsm-armed .why-pullquote.is-answered em { animation: wsmAnswer 1.8s ease-in-out 1; }
+.wsm-armed .why-pullquote.is-lit::before { animation: wsmQuoteGlow 2.4s ease-out 1; }
+.wsm-armed .why-pullquote.is-lit .why-halo { animation: wsmHalo 2.6s ease-in-out 1; }
+.wsm-armed .why-pullquote.is-lit em { animation: wsmAnswerSheen 1.6s ease-in-out .35s 1 both, wsmAnswer 2.2s ease-in-out .35s 1; }
+.wsm-armed .why-pullquote.is-lit::after { animation: wsmRule 2.2s ease-in-out .6s 1; }
 @keyframes wsmGlow { 0% { box-shadow: 0 0 0 transparent; } 35% { box-shadow: 0 -8px 28px -8px color-mix(in srgb, var(--threat) 70%, transparent), 0 0 0 1px color-mix(in srgb, var(--threat) 30%, transparent); } 100% { box-shadow: 0 0 0 transparent; } }
 @keyframes wsmSheen { 0% { opacity: 1; background-position: -40% 0; } 100% { opacity: 0; background-position: 140% 0; } }
-@keyframes wsmQuoteGlow { 0% { filter: none; } 40% { filter: drop-shadow(0 0 18px rgba(212,175,55,.55)); } 100% { filter: none; } }
-@keyframes wsmAnswer { 0% { filter: none; } 45% { filter: brightness(1.35) drop-shadow(0 0 14px rgba(212,175,55,.45)); } 100% { filter: none; } }
+@keyframes wsmQuoteGlow { 0% { filter: none; } 40% { filter: drop-shadow(0 0 20px rgba(212,175,55,.6)); } 100% { filter: none; } }
+@keyframes wsmHalo { 0% { opacity: 1; transform: translate(-50%, -50%); } 45% { opacity: 1; transform: translate(-50%, -50%) scale(1.12); filter: brightness(1.45); } 100% { opacity: 1; transform: translate(-50%, -50%); } }
+@keyframes wsmAnswerSheen { 0% { background-position: 100% 0, 0 0; } 100% { background-position: 0 0, 0 0; } }
+@keyframes wsmAnswer { 0% { filter: none; } 45% { filter: brightness(1.25) drop-shadow(0 0 16px rgba(212,175,55,.5)); } 100% { filter: none; } }
+@keyframes wsmRule { 0% { transform: none; opacity: .8; } 40% { transform: scaleX(2.4); opacity: 1; } 100% { transform: none; opacity: .8; } }
 /* Reduce motion (Ed's PC runs with Windows animations off): the gentle version. Traces fade in instead of drawing,
-   no light runs along the edge, the quote mark and rule fade instead of growing; the glows stay. */
+   no light runs along an edge or through the answer and nothing grows; the glows stay. */
 .wsm-gentle .why-trace { clip-path: none; opacity: 0; transition: opacity .9s ease; }
 .wsm-gentle .why-card.is-on .why-trace { opacity: .9; }
 .wsm-gentle .why-card.is-on::after { animation: none; }
-.wsm-gentle .why-pullquote::before { transform: none; }
-.wsm-gentle .why-pullquote::after { transform: none; opacity: 0; transition: opacity .9s ease; }
-.wsm-gentle .why-pullquote.is-answered::after { opacity: .8; }
-.wsm-gentle .why-halo { transform: translate(-50%, -50%); }
-.wsm-gentle .wq-w { filter: none; transform: none; }
+.wsm-gentle .why-pullquote.is-lit .why-halo { animation: none; }
+.wsm-gentle .why-pullquote.is-lit em { animation: wsmAnswer 2.2s ease-in-out .35s 1; }
+.wsm-gentle .why-pullquote.is-lit::after { animation: none; }
 
 /* ── THE SOUNDTRACK + HEAR IT FOR YOURSELF · built to Ed's mock (2026-10-16) ───────────────────────────────────────
    Two sections. The Soundtrack: the page's centred eyebrow, the title and intro beside the summit art, the two
@@ -894,7 +887,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
         <p class="why-text">By hour three the brain stops weighing setups and starts pattern-matching. Quality drops. Conviction stays. That is the danger zone.</p>
       </div>
       <div class="why-card reveal" data-threat="fomo">
-        <svg class="why-trace" viewBox="0 0 72 24" aria-hidden="true"><path d="M2 19L18 17L31 12L44 6L58 2"/><path class="why-trace-ghost" d="M26 22L40 20.5L52 16.5L66 12"/></svg>
+        <svg class="why-trace" viewBox="0 0 72 24" aria-hidden="true"><path d="M2 20H12L20 17.5L27 12L33 6L38 3.5L45 9L53 16L61 19L70 20.5"/><circle class="why-trace-entry" cx="38" cy="3.5" r="2.6"/></svg>
         <p class="why-tag">Threat 04</p>
         <p class="why-name">FOMO</p>
         <p class="why-text">The move you missed is not the move you would have caught. The replay in your head is louder than the chart in front of you.</p>
@@ -913,59 +906,32 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 </section>
 <script>
 /* The state monitor. Side by side (four across, or two by two) the threats light in order once the grid is in view,
-   then the quote answers them as the climax: the threats step back, the light grows behind the quote, its words
-   arrive one at a time and the gold answer lands slower; then the threats return. Stacked on a phone, each card
-   lights as it scrolls in and the quote plays as it does. Every word ends exactly as written. Reduce motion gets the
-   gentle version (CSS); without IntersectionObserver nothing is armed. */
+   and as the last one settles the always-on quote is lit. Stacked on a phone, each card lights as it scrolls in (one
+   after another when several arrive together) and the quote is lit when it does. Reduce motion gets the gentle
+   version (CSS); without IntersectionObserver nothing is armed. */
 (function () {
   var grid = document.querySelector('.why-grid'), quote = document.querySelector('.why-pullquote');
   if (!grid || !quote || !('IntersectionObserver' in window)) return;
   var cards = Array.prototype.slice.call(grid.querySelectorAll('.why-card'));
-  var line = quote.querySelector('p'), em = line && line.querySelector('em');
-  if (!line || !em) return;
-  // Each word in its own span (the spaces stay as text, so the line wraps exactly as before).
-  function split(node, into) {
-    Array.prototype.slice.call(node.childNodes).forEach(function (n) {
-      if (n.nodeType !== 3) return;
-      var frag = document.createDocumentFragment();
-      n.textContent.split(/(\s+)/).forEach(function (part) {
-        if (!part) return;
-        if (/^\s+$/.test(part)) { frag.appendChild(document.createTextNode(part)); return; }
-        var w = document.createElement('span'); w.className = 'wq-w'; w.textContent = part; frag.appendChild(w); into.push(w);
-      });
-      node.replaceChild(frag, n);
-    });
-  }
-  var lead = [], answer = [];
-  split(line, lead); split(em, answer); em.classList.add('wq-split');
   var sec = grid.closest('.section-inner');
   sec.classList.add('wsm-armed');
   if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) sec.classList.add('wsm-gentle');
   var stacked = cards.length > 1 && cards[1].offsetTop > cards[0].offsetTop + 10 && grid.offsetWidth < 560;
   function later(ms, fn) { setTimeout(fn, ms); }
+  function on(el) { el.classList.add('is-on'); }
   var next = 0;
-  function playQuote() {
-    grid.classList.add('is-quiet');
-    quote.classList.add('is-on');
-    var t = 450;
-    lead.forEach(function (w) { later(t, function () { w.classList.add('is-on'); }); t += 85; });
-    t += 380;
-    answer.forEach(function (w) { later(t, function () { w.classList.add('is-on'); }); t += 140; });
-    later(t + 350, function () { quote.classList.add('is-answered'); });
-    later(t + 1500, function () { grid.classList.remove('is-quiet'); });
-  }
   var o = new IntersectionObserver(function (es) {
     es.forEach(function (en) {
       if (!en.isIntersecting) return;
       o.unobserve(en.target);
       if (en.target === grid) {
-        cards.forEach(function (c, i) { later(250 + i * 750, function () { c.classList.add('is-on'); }); });
-        later(250 + cards.length * 750 + 600, playQuote);
-      } else if (en.target === quote) playQuote();
+        cards.forEach(function (c, i) { later(200 + i * 600, function () { on(c); }); });
+        later(200 + (cards.length - 1) * 600 + 700, function () { quote.classList.add('is-lit'); });
+      } else if (en.target === quote) later(Math.max(300, next - Date.now()), function () { quote.classList.add('is-lit'); });
       else {
         // cards that scroll in together still light one after another
         var at = Math.max(Date.now() + 150, next); next = at + 600;
-        later(at - Date.now(), function () { en.target.classList.add('is-on'); });
+        later(at - Date.now(), function () { on(en.target); });
       }
     });
   }, { threshold: 0.45 });
