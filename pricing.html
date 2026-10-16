@@ -566,89 +566,124 @@ hr.mk-rule-gold, hr.mk-rule-gold--bold { margin: 0 auto; max-width: 1180px; }
 .compare-soon { display:inline-block; font-size:.6rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--mk-brand); background:rgba(212,175,55,.10); border:1px solid rgba(212,175,55,.30); border-radius:var(--mk-radius-pill); padding:2px 8px; vertical-align:middle; }
 .compare-table td.featured-col { background: rgba(212,175,55,.04); }
 
-/* ── TRIAL MECHANICS, built to Ed's comp (2026-10-16) in our fonts and colours ─────────────
-   A gold dome of light over the header, the eyebrow at its original size with the comp's flanking hairlines, a
-   two-tone sub line, and three dark-glass cards with a gold edge, a light bar at the top and bottom, a ringed
-   medallion with hairlines running out from it, a larger title over a short gold rule, and a floor glow under the
-   row. The copy is unchanged. */
-.tm { position: relative; overflow: hidden; }
-.tm .section-inner { position: relative; z-index: 1; }
-.tm-dome { position: absolute; left: 50%; top: -80px; width: max(95vw, 900px); aspect-ratio: 1; transform: translateX(-50%); border-radius: 50%; border: 1.5px solid rgba(240,200,80,.62); box-shadow: 0 0 50px rgba(212,175,55,.18), inset 0 0 120px rgba(212,175,55,.09); -webkit-mask-image: linear-gradient(180deg, #000 0, #000 12%, rgba(0,0,0,.5) 30%, transparent 46%); mask-image: linear-gradient(180deg, #000 0, #000 12%, rgba(0,0,0,.5) 30%, transparent 46%); pointer-events: none; }
-.tm-dome::after { content: ''; position: absolute; inset: -9%; border-radius: 50%; border: 1px solid rgba(240,200,80,.16); box-shadow: 0 0 60px rgba(212,175,55,.08); }
-.tm::before { content: ''; position: absolute; left: 50%; top: 0; width: min(1300px, 100vw); height: 620px; transform: translateX(-50%); background: radial-gradient(ellipse 55% 60% at 50% 22%, rgba(212,175,55,.09), transparent 72%); pointer-events: none; }
+/* ── TRIAL MECHANICS, built to Ed's comp (2026-10-16) ─────────────────────────────────
+   Ed: "Outside of TRIAL MECHANICS - must replicate the look and feel. Gradients must match, lighting must match,
+   Rings must match." So every colour below is SAMPLED from the comp (tools/site-preview/sample-colors.js) and every
+   proportion is MEASURED from it and scaled to the viewport (the comp is 1672 wide: 1vw there = 16.72 comp px), so
+   the section keeps the comp's proportions at any desktop width. The eyebrow keeps the site's original size (Ed's
+   one constraint). The copy is unchanged. */
+.section.tm { position: relative; overflow: hidden; background: #05090d; padding-bottom: calc(88px + 2vw); }
+.tm .section-inner { position: relative; z-index: 1; max-width: none; }
+/* The dome: fitted from two points on the comp's arc, a circle 95.2% of the width whose top sits 12.2vw above the
+   eyebrow. A thin gold line (#dbbb72 at its brightest) that fades down the sides, and a faint slate outer arc. */
+.tm-dome { position: absolute; left: 50%; top: calc(88px - 12.2vw); width: 95.2vw; aspect-ratio: 1; transform: translateX(-50%); border-radius: 50%; border: 1.5px solid #e2c27a; box-shadow: 0 0 16px rgba(226,180,96,.4), inset 0 0 26px rgba(226,180,96,.12); -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 6%, #000 20%, rgba(0,0,0,.45) 32%, transparent 44%); mask-image: linear-gradient(180deg, transparent 0, #000 6%, #000 20%, rgba(0,0,0,.45) 32%, transparent 44%); pointer-events: none; }
+.tm-dome::after { content: ''; position: absolute; inset: -7.5%; border-radius: 50%; border: 1px solid rgba(64,80,94,.55); -webkit-mask-image: linear-gradient(180deg, #000 0, #000 18%, transparent 40%); mask-image: linear-gradient(180deg, #000 0, #000 18%, transparent 40%); }
+.tm::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 38vw; background: radial-gradient(ellipse 48% 70% at 50% 0%, rgba(40,58,78,.16), transparent 70%); pointer-events: none; }
 .tm-eyebrow { display: flex; align-items: center; justify-content: center; gap: 18px; }
 .tm-eyebrow::before, .tm-eyebrow::after { content: ''; width: 92px; height: 1px; flex: none; }
 .tm-eyebrow::before { background: linear-gradient(90deg, transparent, rgba(212,175,55,.7)); }
 .tm-eyebrow::after { background: linear-gradient(90deg, rgba(212,175,55,.7), transparent); }
-.tm .section-sub { color: rgba(255,255,255,.88); }
-.tm-sub-2 { display: block; color: var(--mk-text-secondary); }
-.trial-strip {
-  position: relative;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 30px;
-  width: min(1300px, calc(100vw - 48px));
-  margin-left: 50%;
-  translate: -50% 0;
-}
-.trial-strip::after { content: ''; position: absolute; left: 50%; bottom: -30px; width: 66%; height: 2px; transform: translateX(-50%); background: linear-gradient(90deg, transparent, rgba(246,221,140,.95), transparent); box-shadow: 0 0 34px 6px rgba(212,175,55,.34); pointer-events: none; }
+/* Headline and sub at the comp's measure: the headline spans 67% of the width, the sub's first line 64%. */
+.tm .section-title { font-size: clamp(2.2rem, 4.75vw, 5.2rem); line-height: 1; margin-bottom: 1.6vw; text-shadow: 0 2px 18px rgba(0,0,0,.6); }
+.tm .section-title em { text-shadow: none; background: linear-gradient(180deg, #ffd766 0%, #ffcd4a 50%, #f2b53a 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.tm .section-sub { max-width: none; font-size: clamp(1rem, 1.56vw, 1.65rem); line-height: 1.6; color: #f4f6f8; margin-bottom: 4.4vw; }
+.tm-sub-2 { display: block; color: #aeb7c2; }
+/* The row: 91% of the width, gaps of 1.85vw. */
+.trial-strip { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.85vw; width: 91.2vw; margin-left: 50%; translate: -50% 0; }
+/* The floor: a white-hot streak under the middle card (#fdf7e3 at its core), dimmer bronze ones under the outer two. */
+.trial-strip::after { content: ''; position: absolute; left: 50%; bottom: -1.6vw; width: 26%; height: 2px; transform: translateX(-50%); background: linear-gradient(90deg, transparent, rgba(225,150,60,.55) 22%, #fdf7e3 50%, rgba(225,150,60,.55) 78%, transparent); box-shadow: 0 0 22px 5px rgba(214,140,50,.32); pointer-events: none; }
+.trial-strip::before { content: ''; position: absolute; left: 0; right: 0; bottom: calc(-1.6vw - 3px); height: 8px; background: radial-gradient(ellipse 9% 50% at 15% 50%, rgba(150,98,42,.75), transparent 72%), radial-gradient(ellipse 9% 50% at 85% 50%, rgba(150,98,42,.75), transparent 72%); filter: blur(1px); pointer-events: none; }
+/* The card: navy glass (#080b11 at the middle, lifting to #0f1215 low), warm light spilling down from the top flare
+   and up from the bottom corners. The border is a gradient ring: silver-gold along the top (#bbb08b), bronze down the
+   sides (#6d4625), bright gold along the bottom (#eeda7f). */
 .trial-card {
-  position: relative;
+  position: relative; isolation: isolate;
   display: flex; flex-direction: column; align-items: center;
   text-align: center;
-  padding: 40px 34px 38px;
-  background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.012) 55%), rgba(10,12,18,.72);
-  border: 1px solid rgba(222,186,80,.66);
-  border-radius: 18px;
-  box-shadow: 0 0 0 1px rgba(212,175,55,.08), 0 0 44px rgba(212,175,55,.2), inset 0 1px 0 rgba(255,220,130,.3), inset 0 0 50px rgba(212,175,55,.06);
+  padding: 2.4vw 2vw 3.2vw;
+  border-radius: 1.3vw;
+  background:
+    radial-gradient(ellipse 52% 26% at 50% 0%, rgba(255,186,96,.24), rgba(255,170,80,.07) 48%, transparent 76%),
+    radial-gradient(ellipse 22% 9% at 0% 100%, rgba(236,160,64,.12), transparent 72%),
+    radial-gradient(ellipse 22% 9% at 100% 100%, rgba(236,160,64,.12), transparent 72%),
+    linear-gradient(180deg, #0b1118 0%, #080b11 46%, #0d1014 100%);
+  box-shadow: 0 0 26px rgba(214,150,60,.1), 0 18px 34px -18px rgba(236,170,70,.35);
 }
-.trial-card::before, .trial-card::after { content: ''; position: absolute; left: 50%; height: 2px; transform: translateX(-50%); border-radius: 2px; pointer-events: none; }
-.trial-card::before { top: -1px; width: 58%; background: linear-gradient(90deg, transparent, #F6DD8C, transparent); box-shadow: 0 0 20px 3px rgba(240,200,80,.55); }
-.trial-card::after { bottom: -1px; width: 44%; background: linear-gradient(90deg, transparent, rgba(240,200,80,.8), transparent); box-shadow: 0 0 16px 2px rgba(240,200,80,.35); }
-.tm-medal-row { display: flex; align-items: center; justify-content: center; gap: 16px; width: 100%; margin-bottom: 26px; }
-.tm-medal-row::before, .tm-medal-row::after { content: ''; flex: 0 1 96px; height: 1px; }
-.tm-medal-row::before { background: linear-gradient(90deg, transparent, rgba(212,175,55,.65)); }
-.tm-medal-row::after { background: linear-gradient(90deg, rgba(212,175,55,.65), transparent); }
-.tm-medal { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 74px; height: 74px; border-radius: 50%; background: radial-gradient(circle at 50% 40%, #191c24, #0b0d12 70%); border: 2px solid #D4AF37; box-shadow: 0 0 0 4px rgba(212,175,55,.12), 0 0 26px rgba(240,200,80,.42), inset 0 0 16px rgba(240,200,80,.22); font-family: var(--mk-font-display); font-size: 2.1rem; line-height: 1; font-variant-numeric: tabular-nums; }
-.tm-medal span { background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
-.tm-medal .tm-x { font-family: var(--mk-font-sans); font-size: 2.3rem; font-weight: 300; line-height: 1; }
-.trial-card-title {
-  font-family: var(--mk-font-display);
-  font-size: 2.15rem;
-  letter-spacing: var(--mk-track-display);
-  text-transform: uppercase;
-  color: var(--mk-text-primary);
-  line-height: 1.1;
+.trial-card::before { content: ''; position: absolute; inset: 0; z-index: -1; border-radius: inherit; padding: 1px; pointer-events: none;
+  background: linear-gradient(180deg, #c4b78f 0%, #9a7442 14%, #7a4f2a 42%, #94622f 70%, #d0a457 88%, #eeda7f 100%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0); }
+/* The top flare: a white-hot core on the top edge (#f7e1b5 sampled) with a long horizontal streak and a glow that
+   spills above the card. */
+.trial-card::after { content: ''; position: absolute; left: 50%; top: -1.3vw; width: 82%; height: 2.6vw; transform: translateX(-50%); pointer-events: none;
+  background: radial-gradient(ellipse 13% 22% at 50% 50%, #fffaf0 0%, rgba(255,226,170,.9) 40%, transparent 100%),
+    radial-gradient(ellipse 40% 50% at 50% 50%, rgba(255,186,96,.62), rgba(255,166,76,.18) 55%, transparent 100%),
+    linear-gradient(90deg, transparent 0%, rgba(240,200,130,.5) 22%, rgba(255,240,205,.95) 50%, rgba(240,200,130,.5) 78%, transparent 100%) center / 100% 1.5px no-repeat; }
+/* Light running out along the floor from the bottom corners. */
+.tm-base { position: absolute; bottom: -1px; width: 22%; height: 1px; pointer-events: none; box-shadow: 0 0 10px rgba(236,160,64,.3); display: none; }
+.trial-card:first-child .tm-base { display: block; left: -20%; background: linear-gradient(90deg, transparent, rgba(236,170,80,.6) 70%, rgba(236,190,110,.2)); }
+.trial-card:last-child .tm-base { display: block; right: -20%; background: linear-gradient(90deg, rgba(236,190,110,.2), rgba(236,170,80,.6) 30%, transparent); }
+/* The medallion: 6.2vw across. A thick metallic band (bronze #ac6a24 on the sides, pale glints #feffc2 / #faf5ca at
+   twelve and six), a dark gap, a thin inner gold line, a dark glass disc lit from the top, and a warm glow. */
+.tm-medal-row { display: flex; align-items: center; justify-content: center; gap: .9vw; width: 100%; margin-bottom: 1.55vw; }
+.tm-medal-row::before, .tm-medal-row::after { content: ''; flex: 0 1 7.2vw; height: 1.5px; }
+.tm-medal-row::before { background: linear-gradient(90deg, transparent, rgba(190,140,60,.6) 40%, #eec258); }
+.tm-medal-row::after { background: linear-gradient(90deg, #eec258, rgba(190,140,60,.6) 60%, transparent); }
+.tm-medal { position: relative; flex: none; display: inline-flex; align-items: center; justify-content: center; width: clamp(64px, 6.2vw, 108px); aspect-ratio: 1; border-radius: 50%;
+  background: conic-gradient(from 0deg, #fff6c8 0deg, #f0c060 22deg, #cf8c36 52deg, #b8732a 80deg, #9a5a1c 100deg, #b8792c 132deg, #f2cf74 162deg, #fbf3c8 180deg, #f2cf74 198deg, #b8792c 228deg, #9a5a1c 260deg, #b8732a 280deg, #cf8c36 308deg, #f0c060 338deg, #fff6c8 360deg);
+  box-shadow: 0 0 18px rgba(240,170,60,.42), 0 0 42px rgba(214,140,50,.18), 0 -4px 16px -2px rgba(255,214,130,.4); }
+.tm-medal::before { content: ''; position: absolute; inset: 7%; border-radius: 50%;
+  background: radial-gradient(ellipse 70% 45% at 50% 12%, rgba(255,214,150,.16), transparent 70%), radial-gradient(circle at 50% 55%, #1c1812 0%, #110e0b 62%, #0b0907 100%);
+  box-shadow: inset 0 0 0 2px #1b140e, inset 0 0 0 3px rgba(226,176,92,.6), inset 0 0 14px rgba(0,0,0,.6); }
+.tm-medal::after { content: ''; position: absolute; inset: -6%; border-radius: 50%; pointer-events: none;
+  background: radial-gradient(ellipse 24% 8% at 50% 6%, rgba(255,255,240,.95), rgba(255,224,150,.45) 55%, transparent 100%), radial-gradient(ellipse 18% 6% at 50% 94%, rgba(255,252,226,.8), transparent 100%); }
+.tm-medal > span { position: relative; z-index: 1; font-family: var(--mk-font-sans); font-weight: 700; font-size: clamp(26px, 2.5vw, 44px); line-height: 1; background: linear-gradient(180deg, #fff6c0 0%, #feef96 30%, #f3c860 70%, #d29a3a 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.tm-medal .tm-x { display: block; width: 34%; height: 34%; background: none; }
+.tm-x svg { display: block; width: 100%; height: 100%; }
+/* Card text: the comp's title is white with a faint glow; a short gold rule (#baab5d); near-white body. */
+.trial-card-title { font-family: var(--mk-font-display); font-size: clamp(1.6rem, 2.75vw, 3rem); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: #fff; line-height: 1.05; text-shadow: 0 0 14px rgba(255,255,255,.12); }
+.tm-rule { display: block; width: 2.4vw; min-width: 28px; height: 2px; margin: 1.3vw auto 1.4vw; background: linear-gradient(90deg, #c9b464, #e9d58a, #c9b464); border-radius: 2px; box-shadow: 0 0 8px rgba(214,180,90,.35); }
+.trial-card-text { font-size: clamp(.95rem, 1.14vw, 1.25rem); color: #e7eaef; line-height: 1.68; max-width: 25vw; }
+@media (max-width: 1100px) { .trial-card { padding: 30px 22px 36px; border-radius: 16px; } .trial-card-text { max-width: none; } }
+@media (max-width: 800px) {
+  .trial-strip { grid-template-columns: 1fr; width: min(440px, calc(100vw - 40px)); gap: 30px; }
+  .trial-card { padding: 34px 26px 40px; }
+  .trial-card-title { font-size: 2rem; }
+  .tm-medal { width: 84px; } .tm-medal > span { font-size: 34px; }
+  .tm-medal-row { gap: 12px; margin-bottom: 22px; } .tm-medal-row::before, .tm-medal-row::after { flex-basis: 80px; }
+  .tm-rule { width: 34px; margin: 16px auto 18px; }
+  .trial-card::after { top: -18px; height: 36px; }
+  .trial-strip::after, .trial-strip::before, .trial-strip .trial-card .tm-base { display: none; }
+  .tm-dome { width: 175vw; top: calc(88px - 30vw); }
+  .tm .section-sub { margin-bottom: 44px; }
 }
-.tm-rule { display: block; width: 34px; height: 2px; margin: 16px auto 20px; background: var(--mk-gold-gradient); border-radius: 2px; }
-.trial-card-text { font-size: var(--mk-text-lg); color: rgba(255,255,255,.86); line-height: 1.7; }
-@media (max-width: 1100px) { .trial-strip { gap: 20px; } .trial-card { padding: 34px 24px 32px; } .trial-card-title { font-size: 1.7rem; } .trial-card-text { font-size: var(--mk-text-md); } }
-@media (max-width: 800px) { .trial-strip { grid-template-columns: 1fr; width: min(440px, calc(100vw - 40px)); gap: 26px; } .trial-card-title { font-size: 1.9rem; } .tm-dome { width: 175vw; top: -40px; } }
-/* The trial in motion: the dome lights, then the three cards light in the order the trial runs (the seven days count
-   1 to 7, then day 8, then cancel any time), each card's top light opening from the centre, its medallion igniting
-   and its hairlines and rule drawing out, then the floor glow spreads. About 1.6 s a card. The words never change
-   or dim; nothing applies without .tm-armed, so with no script the section is the comp as drawn. Reduce motion
-   keeps the light and the count and fades the lines in instead of drawing them. Stacked, each card plays as it
-   comes into view, in order. */
+/* The trial in motion: the dome lights, then the cards light in the order the trial runs (the seven days count 1 to
+   7, then day 8, then cancel any time): each card's flare opens from the centre, its medallion ignites, its hairlines
+   and rule draw out; then the floor light spreads. About 1.6 s a card. The words never change or dim; nothing
+   applies without .tm-armed, so with no script the section is the comp as drawn. Reduce motion keeps the light and
+   the count and fades the lines in instead of drawing them. Stacked, each card plays as it comes into view. */
 .tm-armed .tm-dome { opacity: .3; transition: opacity 1.8s ease; }
 .tm-armed.is-lit .tm-dome { opacity: 1; }
-.tm-armed .trial-card { transition: opacity var(--mk-dur-slow) var(--mk-ease-out), transform var(--mk-dur-slow) var(--mk-ease-out), border-color .9s ease, box-shadow 1.1s ease; }
-.tm-armed .trial-card:not(.is-on) { border-color: rgba(212,175,55,.2); box-shadow: 0 0 0 1px rgba(212,175,55,.03), inset 0 1px 0 rgba(255,220,130,.08); }
-.tm-armed .trial-card::before, .tm-armed .trial-card::after, .tm-armed .tm-rule, .tm-armed .tm-medal-row::before, .tm-armed .tm-medal-row::after, .tm-armed .trial-strip::after { transition: transform .9s cubic-bezier(.45, 0, .25, 1), opacity .9s ease; }
-.tm-armed .trial-card:not(.is-on)::before, .tm-armed .trial-card:not(.is-on)::after { transform: translateX(-50%) scaleX(0); }
+.tm-armed .trial-card { transition: opacity var(--mk-dur-slow) var(--mk-ease-out), transform var(--mk-dur-slow) var(--mk-ease-out), box-shadow 1.1s ease; }
+.tm-armed .trial-card:not(.is-on) { box-shadow: 0 0 0 rgba(214,150,60,0); }
+.tm-armed .trial-card::before { transition: opacity 1s ease; }
+.tm-armed .trial-card:not(.is-on)::before { opacity: .45; }
+.tm-armed .trial-card::after, .tm-armed .tm-rule, .tm-armed .tm-medal-row::before, .tm-armed .tm-medal-row::after, .tm-armed .trial-strip::after, .tm-armed .trial-strip::before, .tm-armed .tm-base { transition: transform .9s cubic-bezier(.45, 0, .25, 1), opacity .9s ease; }
+.tm-armed .trial-card:not(.is-on)::after { transform: translateX(-50%) scaleX(0); opacity: 0; }
+.tm-armed .trial-card:not(.is-on) .tm-base { opacity: 0; }
 .tm-armed .trial-card:not(.is-on) .tm-rule { transform: scaleX(0); }
 .tm-armed .tm-medal-row::before { transform-origin: right; }
 .tm-armed .tm-medal-row::after { transform-origin: left; }
 .tm-armed .trial-card:not(.is-on) .tm-medal-row::before, .tm-armed .trial-card:not(.is-on) .tm-medal-row::after { transform: scaleX(0); }
-.tm-armed .tm-medal { transition: box-shadow 1s ease, border-color .8s ease; }
-.tm-armed .trial-card:not(.is-on) .tm-medal { border-color: rgba(212,175,55,.45); box-shadow: 0 0 0 4px rgba(212,175,55,.05), inset 0 0 10px rgba(240,200,80,.08); }
+.tm-armed .tm-medal { transition: box-shadow 1s ease, filter 1s ease; }
+.tm-armed .trial-card:not(.is-on) .tm-medal { filter: saturate(.55) brightness(.7); box-shadow: 0 0 0 rgba(240,170,60,0); }
 .tm-armed .trial-card.is-on .tm-medal { animation: tmIgnite 1.4s ease-out both; }
-.tm-armed:not(.is-floor) .trial-strip::after { transform: translateX(-50%) scaleX(0); }
-@keyframes tmIgnite { 0% { box-shadow: 0 0 0 4px rgba(212,175,55,.05), 0 0 0 rgba(240,200,80,0), inset 0 0 10px rgba(240,200,80,.08); } 40% { box-shadow: 0 0 0 8px rgba(212,175,55,.16), 0 0 44px rgba(240,200,80,.7), inset 0 0 20px rgba(240,200,80,.35); } 100% { box-shadow: 0 0 0 4px rgba(212,175,55,.12), 0 0 26px rgba(240,200,80,.42), inset 0 0 16px rgba(240,200,80,.22); } }
+.tm-armed:not(.is-floor) .trial-strip::after { transform: translateX(-50%) scaleX(0); opacity: 0; }
+.tm-armed:not(.is-floor) .trial-strip::before { opacity: 0; }
+@keyframes tmIgnite { 0% { box-shadow: 0 0 0 rgba(240,170,60,0), 0 0 0 rgba(214,140,50,0), 0 -4px 16px -2px rgba(255,214,130,0); } 40% { box-shadow: 0 0 30px rgba(240,170,60,.7), 0 0 60px rgba(214,140,50,.3), 0 -4px 22px -2px rgba(255,214,130,.6); } 100% { box-shadow: 0 0 18px rgba(240,170,60,.42), 0 0 42px rgba(214,140,50,.18), 0 -4px 16px -2px rgba(255,214,130,.4); } }
 @media (prefers-reduced-motion: reduce) {
-  .tm-armed .trial-card:not(.is-on)::before, .tm-armed .trial-card:not(.is-on)::after { transform: translateX(-50%); opacity: 0; }
+  .tm-armed .trial-card:not(.is-on)::after { transform: translateX(-50%); }
   .tm-armed .trial-card:not(.is-on) .tm-rule, .tm-armed .trial-card:not(.is-on) .tm-medal-row::before, .tm-armed .trial-card:not(.is-on) .tm-medal-row::after { transform: none; opacity: 0; }
-  .tm-armed:not(.is-floor) .trial-strip::after { transform: translateX(-50%); opacity: 0; }
+  .tm-armed:not(.is-floor) .trial-strip::after { transform: translateX(-50%); }
 }
 
 /* ── FAQ ─────────────────────────────────────────────────────── */
@@ -1230,18 +1265,21 @@ a.toolkit-card { text-decoration: none; color: inherit; }
         <div class="trial-card-title">7 Full Days</div>
         <span class="tm-rule" aria-hidden="true"></span>
         <div class="trial-card-text">Every feature in your chosen tier, from the resource toolkit on Journal to the discipline OS on Pro. On Pro and Elite, the trial includes 15 Dilution Check company reads.</div>
+        <span class="tm-base" aria-hidden="true"></span>
       </div>
       <div class="trial-card reveal">
         <div class="tm-medal-row" aria-hidden="true"><span class="tm-medal"><span>$</span></span></div>
         <div class="trial-card-title">No Charge Until Day 8</div>
         <span class="tm-rule" aria-hidden="true"></span>
         <div class="trial-card-text">Card on file via Stripe. Day 8 billing only if you stay. We email you a heads-up 3 days before. Use all 15 company reads before day 8 and you can start your plan early to keep reading. That charges your card that day, and only when you confirm it.</div>
+        <span class="tm-base" aria-hidden="true"></span>
       </div>
       <div class="trial-card reveal">
-        <div class="tm-medal-row" aria-hidden="true"><span class="tm-medal"><span class="tm-x">&times;</span></span></div>
+        <div class="tm-medal-row" aria-hidden="true"><span class="tm-medal"><span class="tm-x"><svg viewBox="0 0 24 24"><defs><linearGradient id="tmXg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff2b0"/><stop offset=".45" stop-color="#fccf6d"/><stop offset="1" stop-color="#d9a040"/></linearGradient></defs><path d="M4 4L20 20M20 4L4 20" stroke="url(#tmXg)" stroke-width="3.6" fill="none"/></svg></span></span></div>
         <div class="trial-card-title">One-Click Cancel</div>
         <span class="tm-rule" aria-hidden="true"></span>
         <div class="trial-card-text">Cancel from your account page any time. No phone call, no email chain.</div>
+        <span class="tm-base" aria-hidden="true"></span>
       </div>
     </div>
 
