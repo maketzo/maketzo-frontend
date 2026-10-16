@@ -128,6 +128,8 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 .tool-card-name { font-family: var(--mk-font-display); font-size: var(--mk-display-sm); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); font-weight: 400; line-height: 1.1; }
 .tool-card--featured .tool-card-name { font-size: var(--mk-display-md); }
 .tool-card-desc { font-size: var(--mk-text-sm); color: var(--mk-text-tertiary); line-height: 1.55; flex: 1; }
+.tool-card-facts { list-style: disc; margin: 4px 0 0; padding: 0 0 0 18px; display: grid; gap: 6px; font-size: var(--mk-text-sm); line-height: 1.5; color: var(--mk-text-secondary); }
+.tool-card-facts li::marker { color: var(--mk-brand); }
 .tool-card--featured .tool-card-desc { font-size: var(--mk-text-md); color: var(--mk-text-secondary); }
 .tool-card-cta { display: inline-flex; align-items: center; gap: 6px; align-self: flex-start; margin-top: 4px; font-family: var(--mk-font-sans); font-size: var(--mk-text-sm); font-weight: 600; letter-spacing: 0.02em; color: var(--mk-brand); transition: gap var(--mk-dur-snap); }
 .tool-card:has(a.tool-card-cta:hover) .tool-card-cta { gap: 10px; }
@@ -303,7 +305,7 @@ body:has(.sticky-bar.visible) { padding-bottom: 80px; }
       <h2 class="station-title">Learn the game</h2>
       <div class="station-cards">
         <!-- The Knowledge Center as the learn-write-drill loop (Ed, 2026-10-15): the library, My Playbook and Flash Cards are one tool, not three rows. -->
-        <div class="tool-card tool-card--featured">
+        <div class="tool-card tool-card--featured" id="knowledge-center">
           <div class="tool-card-name">Knowledge Center</div>
           <p class="tool-card-desc">Learn it, write it, drill it. The library, your own playbook and your flash cards live in one place, and the loop runs on every plan.</p>
           <div class="kc-loop">
@@ -396,17 +398,28 @@ body:has(.sticky-bar.visible) { padding-bottom: 80px; }
     <div class="station-body">
       <h2 class="station-title">Trade the tape</h2>
       <div class="station-cards">
-        <div class="tool-card tool-card--row">
+        <div class="tool-card tool-card--row" id="halt-clock">
           <div class="tool-card-main">
             <div class="tool-card-name">Halt Clock</div>
-            <p class="tool-card-desc">Estimate when a halted small-cap reopens, so an LULD halt never catches you flat-footed. Pops out into its own window over your platform.</p>
+            <p class="tool-card-desc">Estimate when a halted small-cap reopens, so an LULD halt never catches you flat-footed.</p>
+            <ul class="tool-card-facts">
+              <li>Enter the last price and the resumption price. It counts the halts the move needs, about 5% per 5-minute halt, up or down.</li>
+              <li>Regular hours only, when the LULD bands run. A reopen that would land after 3:50 holds to the 4:00 bell.</li>
+              <li>Pops out into its own window in Chrome or Edge, so it sits beside your charts.</li>
+              <li>An estimate, and it says so. Halts are unpredictable.</li>
+            </ul>
           </div>
           <div class="tool-card-tag">IN THE APP &middot; FREE</div>
         </div>
-        <div class="tool-card tool-card--row">
+        <div class="tool-card tool-card--row" id="sticky-notes">
           <div class="tool-card-main">
             <div class="tool-card-name">Sticky Notes</div>
-            <p class="tool-card-desc">A scratchpad that pops out over your platform, for the half-thought at 10:41 you would otherwise lose. One click sends a note to the journal.</p>
+            <p class="tool-card-desc">A scratchpad on your MAKETZO screen, for the half-thought at 10:41 you would otherwise lose.</p>
+            <ul class="tool-card-facts">
+              <li>Up to 20 notes in five colors. Drag them anywhere on the screen.</li>
+              <li>Send to Journal copies a note into today's entry. The note stays until you clear it.</li>
+              <li>Synced, so a note written at the desk is on your laptop. Alt+S shows or hides them, and only you can hide them.</li>
+            </ul>
           </div>
           <div class="tool-card-tag">IN THE APP &middot; FREE</div>
         </div>
