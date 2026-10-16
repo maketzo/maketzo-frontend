@@ -26,6 +26,7 @@
 <link rel="stylesheet" href="assets/css/audio-player.css?v=11">
 <script src="assets/js/mkt-analytics.js?v=9" defer></script>
 <script src="assets/js/newsletter.js?v=5" defer></script>
+<script src="assets/js/breath-orb.js?v=3" defer></script>
 <script src="assets/js/mkt-consent.js?v=1" defer></script>
 <script src="assets/js/checkout.js?v=10" defer></script>
 <script src="assets/js/audio-player.js?v=11" defer></script>
@@ -493,6 +494,18 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
   aspect-ratio: 1/1;
   display: flex; align-items: center; justify-content: center;
 }
+/* The app's ring replaces the CSS orb once its script is in (see The Reset above). Its exhale motes draw on a canvas
+   wider than the orb, so the card clips them. */
+.med-borb { display: none; --mk-borb-size: min(250px, 60vw); }
+.rs-live.med-wrap, .rs-live .med-wrap { overflow: hidden; }
+.rs-live .med-orb { display: none; }
+.rs-live .med-borb { display: block; }
+.rs-live .med-visual { flex-direction: column; gap: 16px; }
+.rs-live .med-orb-label { position: static; height: 1.4em; }
+.med-now { display: block; opacity: 0; transition: opacity .45s ease; }
+.med-now.is-on { opacity: 1; }
+.rs-live .med-pill { transition: box-shadow .6s ease, border-color .6s ease, background-color .6s ease; }
+.rs-live .med-pill.is-lit { border-color: rgba(45,212,191,.7); background: rgba(45,212,191,.16); box-shadow: 0 0 22px rgba(45,212,191,.28); }
 .med-orb {
   width: min(220px, 80%);
   aspect-ratio: 1/1;
@@ -717,6 +730,21 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
 .triage-dur { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); color: var(--mk-text-tertiary); white-space: nowrap; }
 @media (max-width: 900px) { .triage-grid { grid-template-columns: repeat(2, 1fr); max-width: 640px; } }
 @media (max-width: 560px) { .triage-grid { grid-template-columns: 1fr; max-width: 420px; } }
+/* The Reset plays once when the cards come into view (Ed, 2026-10-16: "Create a beautiful elegant animation for this
+   section"). The room listens down the six feelings, the first is picked, and the app's own breathing ring
+   (assets/js/breath-orb.js, the reset's real visual, the file /zone loads) starts that reset's real cadence, named
+   under it. Any card can then be picked and the ring answers with its reset. Stacked on a phone, each card lights as
+   it scrolls in and the pick lands when the ring does. Nothing applies without .rs-live, so with no script the
+   section stands as it was; reduce motion keeps the light and the timing and drops the press. */
+.rs-live .triage-card { cursor: pointer; transition: background-color .5s ease, border-color .5s ease, box-shadow .5s ease, transform .26s ease; }
+.rs-live .triage-card .triage-feel { transition: color .5s ease; }
+.rs-live .triage-card:hover { border-color: rgba(45,212,191,.42); }
+.rs-live .triage-card:focus-visible { outline: 2px solid var(--mk-lockin-500); outline-offset: 3px; }
+.rs-live .triage-card.is-lit { border-color: rgba(45,212,191,.55); box-shadow: 0 0 0 1px rgba(45,212,191,.16), 0 0 28px rgba(45,212,191,.16); }
+.rs-live .triage-card.is-picked { background: linear-gradient(135deg, rgba(45,212,191,.13), rgba(45,212,191,.03) 70%), var(--mk-surface-raised);
+  border-color: rgba(45,212,191,.6); box-shadow: 0 0 0 1px rgba(45,212,191,.22), 0 0 36px rgba(45,212,191,.2); }
+.rs-live .triage-card.is-press { transform: scale(.985); }
+@media (prefers-reduced-motion: reduce) { .rs-live .triage-card.is-press { transform: none; } }
 
 /* ── THE DEBRIEF — 3-block session review ────────────────────────────── */
 .debrief-grid {
@@ -1234,27 +1262,27 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
     <p class="section-sub reveal">Six guided resets, one for each way a session goes sideways. Tell the room what you're feeling and it takes it from there.</p>
 
     <div class="triage-grid">
-      <div class="triage-card reveal">
+      <div class="triage-card reveal" data-reset="loss">
         <p class="triage-feel">&ldquo;I just took a loss and I want it back.&rdquo;</p>
         <div class="triage-meta"><span class="triage-name">Loss Reset</span><span class="triage-dur">3 min</span></div>
       </div>
-      <div class="triage-card reveal">
+      <div class="triage-card reveal" data-reset="bored">
         <p class="triage-feel">&ldquo;I'm clicking because I'm bored.&rdquo;</p>
         <div class="triage-meta"><span class="triage-name">Sit-On-Hands</span><span class="triage-dur">5 min</span></div>
       </div>
-      <div class="triage-card reveal">
+      <div class="triage-card reveal" data-reset="fomo">
         <p class="triage-feel">&ldquo;I'm chasing a move I already missed.&rdquo;</p>
         <div class="triage-meta"><span class="triage-name">FOMO Reset</span><span class="triage-dur">2 min</span></div>
       </div>
-      <div class="triage-card reveal">
+      <div class="triage-card reveal" data-reset="stop-negotiate">
         <p class="triage-feel">&ldquo;I'm negotiating with my stop.&rdquo;</p>
         <div class="triage-meta"><span class="triage-name">Stop Negotiation</span><span class="triage-dur">1 min</span></div>
       </div>
-      <div class="triage-card reveal">
+      <div class="triage-card reveal" data-reset="hod-heat">
         <p class="triage-feel">&ldquo;I'm buying the high because it feels unstoppable.&rdquo;</p>
         <div class="triage-meta"><span class="triage-name">HOD Heat Check</span><span class="triage-dur">2 min</span></div>
       </div>
-      <div class="triage-card reveal">
+      <div class="triage-card reveal" data-reset="meditate">
         <p class="triage-feel">&ldquo;I just want to get back to baseline.&rdquo;</p>
         <div class="triage-meta"><span class="triage-name">Meditation Zone</span><span class="triage-dur">3-15 min</span></div>
       </div>
@@ -1263,6 +1291,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
     <div class="med-wrap reveal">
       <div class="med-visual">
         <div class="med-orb" aria-hidden="true"></div>
+        <div class="med-borb" aria-hidden="true"></div>
         <span class="med-orb-label" aria-hidden="true"><span class="med-cue med-cue--in">Inhale</span><span class="med-cue med-cue--hold">Hold</span><span class="med-cue med-cue--out">Exhale</span></span>
       </div>
       <div class="med-copy">
@@ -1282,6 +1311,98 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
     </div>
   </div>
 </section>
+<script>
+/* The Reset, replayed (see the CSS note above .rs-live). Cadences and the reset-to-cadence map are the app's own
+   (maketzo-app app.js BREATH_PATTERNS and PROTOCOL_BREATH_PATTERN), so the ring breathes exactly what a member gets.
+   The ring runs only while its card is on screen. */
+(function () {
+  function init() {
+    var sec = document.getElementById('reset');
+    var grid = sec && sec.querySelector('.triage-grid'), wrap = sec && sec.querySelector('.med-wrap');
+    var host = sec && sec.querySelector('.med-borb'), label = sec && sec.querySelector('.med-orb-label');
+    if (!grid || !wrap || !host || !label || !window.MaketzoBreathOrb || !('IntersectionObserver' in window)) return;
+    var PATTERNS = {
+      steady:   { name: 'Steady',    count: '4-5-6',   phases: [{ k: 'inhale', label: 'Inhale', sec: 4, scale: 1 }, { k: 'hold', label: 'Hold', sec: 5, scale: 1 }, { k: 'exhale', label: 'Exhale', sec: 6, scale: 0.55 }] },
+      box:      { name: 'Box',       count: '4-4-4-4', phases: [{ k: 'inhale', label: 'Inhale', sec: 4, scale: 1 }, { k: 'hold', label: 'Hold', sec: 4, scale: 1 }, { k: 'exhale', label: 'Exhale', sec: 4, scale: 0.55 }, { k: 'hold2', label: 'Hold', sec: 4, scale: 0.55 }] },
+      calm:     { name: 'Deep Calm', count: '4-7-8',   phases: [{ k: 'inhale', label: 'Inhale', sec: 4, scale: 1 }, { k: 'hold', label: 'Hold', sec: 7, scale: 1 }, { k: 'exhale', label: 'Exhale', sec: 8, scale: 0.55 }] },
+      resonant: { name: 'Resonant',  count: '5.5-5.5', phases: [{ k: 'inhale', label: 'Inhale', sec: 5.5, scale: 1 }, { k: 'exhale', label: 'Exhale', sec: 5.5, scale: 0.55 }] }
+    };
+    var MAP = { loss: 'calm', bored: 'resonant', fomo: 'box', 'stop-negotiate': 'box', 'hod-heat': 'steady', meditate: 'resonant' };
+    var cards = Array.prototype.slice.call(grid.querySelectorAll('.triage-card[data-reset]'));
+    var pill = sec.querySelector('.med-pill');
+    var orb = window.MaketzoBreathOrb.mount(host);
+    if (!orb || !cards.length) return;
+
+    sec.classList.add('rs-live');
+    label.innerHTML = '<span class="med-now"></span>';
+    label.removeAttribute('aria-hidden'); label.setAttribute('aria-live', 'polite');
+    var now = label.firstChild;
+    var picked = null, ringOn = false, timers = [], pillDone = false;
+    function later(ms, fn) { timers.push(setTimeout(fn, ms)); }
+    function patternOf(card) { return PATTERNS[MAP[card.getAttribute('data-reset')]] || PATTERNS.steady; }
+    function breathe() { if (picked) orb.start(patternOf(picked).phases); else orb.ready(patternOf(cards[0]).phases); }
+
+    function pick(card, how) {
+      if (picked === card) return;
+      picked = card;
+      cards.forEach(function (c) { c.classList.toggle('is-picked', c === card); c.setAttribute('aria-pressed', String(c === card)); });
+      card.classList.add('is-press'); setTimeout(function () { card.classList.remove('is-press'); }, 260);
+      var p = patternOf(card), name = card.querySelector('.triage-name').textContent;
+      now.classList.remove('is-on');
+      setTimeout(function () { now.textContent = name + ' \u00b7 ' + p.name + ' ' + p.count; now.classList.add('is-on'); }, now.textContent ? 260 : 0);
+      if (ringOn) orb.start(p.phases);
+      if (pill && !pillDone) { pillDone = true; setTimeout(function () { pill.classList.add('is-lit'); }, 500); setTimeout(function () { pill.classList.remove('is-lit'); }, 2600); }
+      if (how === 'tap') { try { if (window.MKT && window.MKT.trackEvent) window.MKT.trackEvent('focus_reset_pick', { reset: card.getAttribute('data-reset') }); } catch (e) {} }
+    }
+
+    cards.forEach(function (c) {
+      c.setAttribute('role', 'button'); c.setAttribute('tabindex', '0'); c.setAttribute('aria-pressed', 'false');
+      c.addEventListener('click', function () { timers.forEach(clearTimeout); timers = []; pick(c, 'tap'); });
+      c.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); c.click(); } });
+    });
+
+    // The ring breathes only while its card is on screen.
+    new IntersectionObserver(function (es) {
+      es.forEach(function (en) { ringOn = en.isIntersecting; if (ringOn) breathe(); else orb.stop(); });
+    }).observe(wrap);
+
+    var stacked = cards[1].offsetTop > cards[0].offsetTop + 10;
+    if (!stacked) {
+      // Side by side: the room listens down the six feelings in reading order, then the first is picked.
+      var o = new IntersectionObserver(function (es) {
+        if (!es[0].isIntersecting) return;
+        o.disconnect();
+        cards.forEach(function (c, i) {
+          later(150 + i * 320, function () { c.classList.add('is-lit'); });
+          later(150 + i * 320 + 760, function () { c.classList.remove('is-lit'); });
+        });
+        later(150 + cards.length * 320 + 700, function () { if (!picked) pick(cards[0], 'auto'); });
+      }, { threshold: 0.5 });
+      o.observe(grid);
+    } else {
+      // Stacked: each card lights as it scrolls in, one after another; the pick lands when the ring does.
+      var next = 0;
+      var oc = new IntersectionObserver(function (es) {
+        es.forEach(function (en) {
+          if (!en.isIntersecting) return;
+          oc.unobserve(en.target);
+          var at = Math.max(Date.now() + 120, next); next = at + 420;
+          later(at - Date.now(), function () { en.target.classList.add('is-lit'); });
+          later(at - Date.now() + 900, function () { en.target.classList.remove('is-lit'); });
+        });
+      }, { threshold: 0.6 });
+      cards.forEach(function (c) { oc.observe(c); });
+      var ow = new IntersectionObserver(function (es) {
+        if (!es[0].isIntersecting) return;
+        ow.disconnect();
+        later(500, function () { if (!picked) pick(cards[0], 'auto'); });
+      }, { threshold: 0.45 });
+      ow.observe(wrap);
+    }
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+})();
+</script>
 
 <hr class="mk-rule-gold">
 
