@@ -210,6 +210,11 @@ body:has(.sticky-bar.visible) { padding-bottom: 80px; }
 }
 </style>
 <script>try{if(document.cookie.indexOf('mkt_csrf=')>-1)document.documentElement.classList.add('mkt-auth');}catch(e){}</script>
+<style id="nav-fit">/* The nav on one line at every width (Ed, 2026-10-16: it wrapped at about 1024px). The full bar fits from 1024px, so below that the menu button takes over (it was 900px, which left 901-1140 wrapping); items never break, and the bar tightens up to 1180px. Last in the head so it wins over the page's own nav rules. */
+.nav-links > li > a{white-space:nowrap}
+@media (max-width:1180px){#mainNav{padding-left:28px;padding-right:24px;gap:16px}.nav-links{gap:18px}}
+@media (max-width:1023px){#mainNav{padding:12px 20px;gap:16px}.nav-links{display:none}.hamburger{display:flex}}
+</style>
 </head>
 <body>
 
