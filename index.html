@@ -55,7 +55,7 @@
 <script src="assets/js/mkt-consent.js?v=1" defer></script>
 <link rel="stylesheet" href="assets/css/audio-player.css?v=11">
 <script src="assets/js/checkout.js?v=10" defer></script>
-<script src="assets/js/audio-player.js?v=11" defer></script>
+<script src="assets/js/audio-player.js?v=12" defer></script>
 <script src="assets/js/newsletter.js?v=5" defer></script>
 <style>
 /* ====================================================================
@@ -1169,67 +1169,6 @@ a.focus-feature-card { text-decoration: none; color: inherit; }
 }
 .focus-closing-line em { font-style: normal; background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
 
-/* ── MAKETZO SOUNDTRACK · embedded album player ─────────────────────── */
-.mk-soundtrack-section { padding: 96px 0; }
-.mk-soundtrack-inner {
-  display: grid;
-  grid-template-columns: 1fr 1.1fr;
-  gap: 56px;
-  align-items: center;
-}
-.mk-soundtrack-title {
-  font-family: var(--mk-font-display);
-  font-size: clamp(2rem, 3.4vw, 2.75rem);
-  letter-spacing: var(--mk-track-display);
-  text-transform: uppercase;
-  line-height: 1.15;
-  margin: 14px 0 18px;
-}
-.mk-soundtrack-title em { font-style: normal; background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
-.mk-soundtrack-lede {
-  color: var(--mk-text-primary);
-  font-size: 1.15rem;
-  line-height: 1.5;
-  font-weight: 500;
-  margin-bottom: 18px;
-}
-.mk-soundtrack-body {
-  color: var(--mk-text-secondary);
-  font-size: 1rem;
-  line-height: 1.65;
-  margin-bottom: 14px;
-}
-.mk-soundtrack-cue {
-  color: var(--mk-text-primary);
-  font-size: 1.0625rem;
-  line-height: 1.55;
-  margin: 18px 0;
-  padding: 14px 16px;
-  background: linear-gradient(90deg, rgba(212,175,55,.08), transparent 80%);
-  border-left: 3px solid var(--mk-brand);
-  border-radius: var(--mk-radius-card-sm);
-}
-.mk-soundtrack-cue em {
-  color: var(--mk-brand);
-  font-style: normal;
-  font-weight: 600;
-}
-.mk-soundtrack-tagline {
-  font-family: var(--mk-font-display);
-  font-size: clamp(1.1rem, 1.6vw, 1.35rem);
-  letter-spacing: var(--mk-track-display);
-  text-transform: uppercase;
-  color: var(--mk-brand);
-  line-height: 1.3;
-  margin: 24px 0 0;
-  padding-top: 20px;
-  border-top: 1px solid rgba(212, 175, 55, 0.18);
-}
-@media (max-width: 900px) {
-  .mk-soundtrack-section { padding: 64px 0; }
-  .mk-soundtrack-inner { grid-template-columns: 1fr; gap: 32px; }
-}
-
 /* ── REVIEWS ─────────────────────────────────────────────────── */
 .reviews-grid {
   display: grid;
@@ -2132,6 +2071,65 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
 .wyg-w { display: block; margin-top: auto; padding-top: 6px; font-size: var(--mk-text-md); font-weight: 600; line-height: 1.35; color: var(--mk-gold-300); }
 @media (max-width: 900px) { .wyg { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 520px) { .wyg { grid-template-columns: 1fr; } }
+/* the soundtrack (index section 06, Ed's graphic 2026-10-15): copy at left; at right a tilted glass player card in
+   front of a vinyl record and a gold equaliser that move only while the music plays */
+.sp-inner { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr); gap: 64px; align-items: center; }
+.sp-copy { min-width: 0; }
+.sp-eyebrow { display: flex; align-items: center; gap: 18px; margin: 0 0 22px; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: .3em; text-transform: uppercase; color: var(--mk-brand); }
+.sp-eyebrow::before { content: ""; width: 48px; height: 1px; background: var(--mk-brand); }
+.sp-title { margin: 0 0 24px; font-family: var(--mk-font-display); font-weight: 400; font-size: clamp(2.6rem, 4.6vw, 4.4rem); line-height: .98; letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); }
+.sp-title em { font-style: normal; color: var(--mk-gold-300); text-shadow: 0 0 28px rgba(240,200,80,.25); }
+.sp-lede { margin: 0 0 20px; font-size: clamp(1.15rem, 1.5vw, 1.4rem); line-height: 1.45; color: var(--mk-text-primary); }
+.sp-body { margin: 0 0 16px; font-size: var(--mk-text-md); line-height: 1.6; color: var(--mk-text-secondary); }
+.sp-cue { display: flex; align-items: center; gap: 22px; margin: 26px 0; padding: 20px 24px; border-radius: 16px; border: 1px solid rgba(240,200,80,.35); border-left: 3px solid var(--mk-gold-300); background: linear-gradient(90deg, rgba(212,175,55,.12), rgba(212,175,55,.02) 70%); box-shadow: 0 0 24px rgba(240,200,80,.08); }
+.sp-cue svg { flex: none; width: 34px; height: 34px; fill: none; stroke: var(--mk-gold-300); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 0 8px rgba(240,200,80,.35)); }
+.sp-cue p { margin: 0; font-size: var(--mk-text-md); line-height: 1.55; color: var(--mk-text-primary); }
+.sp-cue em { font-style: normal; font-weight: 600; color: var(--mk-gold-300); }
+.sp-tag { margin: 30px 0 0; padding-top: 26px; border-top: 1px solid rgba(212,175,55,.3); font-family: var(--mk-font-mono); font-size: var(--mk-mono-sm); letter-spacing: .26em; color: var(--mk-gold-300); }
+/* the player: the shared root, re-skinned; its gradient frame is replaced by the card */
+.mk-audio-player.sp-player { position: relative; padding: 140px 0 70px; border-radius: 0; background: none; box-shadow: none; }
+.sp-stage { position: absolute; inset: 0 0 auto; height: 300px; pointer-events: none; }
+.sp-eq { position: absolute; left: 4%; right: 2%; bottom: 120px; height: 150px; display: flex; align-items: flex-end; justify-content: space-between; -webkit-mask-image: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent); mask-image: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent); }
+.sp-eq i { width: 3px; height: 30%; border-radius: 2px; background: linear-gradient(0deg, rgba(240,200,80,.15), var(--mk-gold-300)); box-shadow: 0 0 8px rgba(240,200,80,.4); transform-origin: bottom; opacity: .55; transition: opacity .4s; }
+.sp-eq i:nth-child(3n) { height: 62%; } .sp-eq i:nth-child(4n) { height: 85%; } .sp-eq i:nth-child(5n) { height: 45%; } .sp-eq i:nth-child(7n) { height: 100%; } .sp-eq i:nth-child(11n) { height: 18%; }
+.sp-vinyl { position: absolute; right: 9%; bottom: -30px; width: 290px; height: 290px; border-radius: 50%;
+  background: radial-gradient(circle, #1a1712 0 9%, var(--mk-gold-500) 9.5% 15%, #14120e 15.5% 17%, transparent 17.5%), repeating-radial-gradient(circle, #0a0a0b 0 2px, #17171a 2.5px 4px), #0d0d0f;
+  box-shadow: inset 0 0 0 2px rgba(240,200,80,.12), 8px -8px 0 -6px rgba(240,200,80,.55), 0 0 40px rgba(240,200,80,.25); }
+.sp-vinyl::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: conic-gradient(from 30deg, transparent 0 12%, rgba(255,240,200,.14) 18%, transparent 26% 60%, rgba(255,240,200,.08) 66%, transparent 74%); }
+.sp-card { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 28px; align-items: center; padding: 26px; border-radius: 24px; background: linear-gradient(155deg, rgba(48,42,30,.95), rgba(14,14,16,.97) 55%); border: 1px solid rgba(240,200,80,.4); box-shadow: 0 0 0 1px rgba(240,200,80,.06), 0 30px 80px rgba(0,0,0,.6), 0 0 70px rgba(240,200,80,.12); transform: perspective(1600px) rotateY(-8deg) rotateX(2deg); }
+.sp-card::after { content: ""; position: absolute; left: 8%; right: 8%; bottom: -46px; height: 40px; border-radius: 50%; background: radial-gradient(closest-side, rgba(240,200,80,.22), transparent); filter: blur(6px); }
+.sp-art { border-radius: 14px; overflow: hidden; border: 1px solid rgba(240,200,80,.25); box-shadow: 0 16px 40px rgba(0,0,0,.5); }
+.sp-art img { display: block; width: 100%; height: auto; aspect-ratio: 1; object-fit: cover; }
+.sp-main { min-width: 0; }
+.sp-player .sp-list { display: none; }
+.sp-player .sp-k { margin: 0 0 12px; white-space: nowrap; font-size: 11px; letter-spacing: .18em; color: var(--mk-gold-300); }
+.sp-player .sp-name { margin: 0; font-family: var(--mk-font-sans); font-weight: 700; font-size: clamp(1.4rem, 2vw, 1.9rem); line-height: 1.12; letter-spacing: -.01em; text-transform: none; color: var(--mk-text-primary); }
+.sp-sub { margin: 14px 0 26px; white-space: nowrap; font-family: var(--mk-font-mono); font-size: 11px; letter-spacing: .16em; color: var(--mk-text-tertiary); }
+.sp-player .sp-bar { height: 4px; border-radius: 4px; background: rgba(255,255,255,.12); cursor: pointer; }
+.sp-player .sp-bar .mk-audio-player__progress { position: relative; height: 100%; border-radius: 4px; background: var(--mk-gold-300); box-shadow: 0 0 10px rgba(240,200,80,.5); }
+.sp-player .sp-bar .mk-audio-player__progress::after { content: ""; position: absolute; right: -6px; top: 50%; width: 12px; height: 12px; margin-top: -6px; border-radius: 50%; background: var(--mk-gold-300); box-shadow: 0 0 10px rgba(240,200,80,.7); }
+.sp-time { display: flex; justify-content: space-between; margin-top: 10px; font-family: var(--mk-font-mono); font-size: 12px; color: var(--mk-text-tertiary); }
+.sp-controls { display: flex; align-items: center; justify-content: center; gap: 30px; margin-top: 18px; }
+.sp-player .mk-audio-player__play { width: 76px; height: 76px; background: var(--mk-gold-300); box-shadow: 0 0 30px rgba(240,200,80,.45); }
+.sp-player .mk-audio-player__play svg { width: 30px; height: 30px; }
+.sp-skip { display: grid; place-items: center; width: 40px; height: 40px; border: 0; border-radius: 50%; background: none; color: var(--mk-text-primary); cursor: pointer; transition: color var(--mk-dur-snap), transform var(--mk-dur-snap) var(--mk-ease-out); }
+.sp-skip:hover { color: var(--mk-gold-300); transform: scale(1.1); }
+.sp-skip:focus-visible { outline: 2px solid var(--mk-brand); outline-offset: 3px; }
+.sp-skip svg { width: 24px; height: 24px; fill: currentColor; }
+/* motion only while the music plays */
+.sp-player.is-playing .sp-vinyl { animation: spSpin 3.2s linear infinite; }
+.sp-player.is-playing .sp-eq i { opacity: 1; animation: spEq 1.1s ease-in-out infinite alternate; }
+.sp-player.is-playing .sp-eq i:nth-child(2n) { animation-duration: .8s; } .sp-player.is-playing .sp-eq i:nth-child(3n) { animation-duration: 1.4s; } .sp-player.is-playing .sp-eq i:nth-child(5n) { animation-duration: .65s; }
+@keyframes spSpin { to { transform: rotate(360deg); } }
+@keyframes spEq { from { transform: scaleY(.35); } to { transform: scaleY(1); } }
+@media (prefers-reduced-motion: reduce) { .sp-player.is-playing .sp-vinyl, .sp-player.is-playing .sp-eq i { animation: none; } }
+@media (max-width: 900px) {
+  .sp-inner { grid-template-columns: 1fr; gap: 24px; }
+  .mk-audio-player.sp-player { padding: 110px 0 50px; }
+  .sp-card { transform: none; grid-template-columns: 1fr; gap: 20px; max-width: 440px; margin: 0 auto; }
+  .sp-vinyl { width: 220px; height: 220px; right: 12%; bottom: 0; }
+  .sp-eq { bottom: 90px; height: 110px; }
+}
 .wyg-line, .sec-more { text-align: center; max-width: 760px; margin: 28px auto 0; font-size: var(--mk-text-sm); color: var(--mk-text-secondary); line-height: 1.6; }
 /* the deeper links: a gold underlined word wherever a feature is named in running copy */
 .wyg-line a, .sec-more a, .faq-a a, .proof-sub a { color: var(--mk-brand); border-bottom: 1px solid rgba(212,175,55,.4); text-decoration: none; }
@@ -2609,50 +2607,54 @@ document.addEventListener("DOMContentLoaded", function() {
   </div>
 </section>
 
-<!-- 06 THE SOUNDTRACK -->
+<!-- 06 THE SOUNDTRACK: Ed's graphic, the shared player under it -->
 <hr class="mk-rule-gold">
 
-<section class="section section-dark mk-soundtrack-section">
-  <div class="section-inner mk-soundtrack-inner">
-    <div class="mk-soundtrack-copy reveal">
-      <p class="section-eyebrow">06 &middot; The Soundtrack</p>
-      <h2 class="mk-soundtrack-title">We turned trading mistakes <em>into music</em>.</h2>
-      <p class="mk-soundtrack-lede">Most traders know exactly what they should do. The hard part is actually doing it.</p>
-      <p class="mk-soundtrack-body">That&rsquo;s why MAKETZO includes something you won&rsquo;t find anywhere else: a trading soundtrack designed to keep you focused, disciplined, and out of your own way.</p>
-      <p class="mk-soundtrack-body">The songs are catchy, painfully relatable, and built around the mistakes every trader knows too well: revenge trading, FOMO, overtrading, and paying &ldquo;tuition to the market.&rdquo;</p>
-      <p class="mk-soundtrack-cue">Hit play on <em>&ldquo;I Paid Tuition to the Market.&rdquo;</em> You&rsquo;ll laugh, cringe, and probably recognize yourself.</p>
-      <p class="mk-soundtrack-body">And the next time you&rsquo;re tempted to force a trade, the chorus may be the thing that keeps you sitting on your hands.</p>
-      <p class="mk-soundtrack-tagline">Mental conditioning, disguised as music.</p>
+<section class="section section-dark sp-section" id="soundtrack">
+  <div class="section-inner sp-inner">
+    <div class="sp-copy reveal">
+      <p class="sp-eyebrow">06 &middot; The Soundtrack</p>
+      <h2 class="sp-title">We turned trading mistakes into <em>music.</em></h2>
+      <p class="sp-lede">Most traders know exactly what they should do. The hard part is actually doing it.</p>
+      <p class="sp-body">That&rsquo;s why we made a trading soundtrack to keep you focused, disciplined, and out of your own way.</p>
+      <p class="sp-body">The songs are catchy, painfully relatable, and built around the mistakes every trader knows too well: revenge trading, FOMO, overtrading, and paying &ldquo;tuition to the market.&rdquo;</p>
+      <div class="sp-cue">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+        <p>Hit play on <em>&ldquo;I Paid Tuition to the Market.&rdquo;</em><br>You&rsquo;ll laugh, cringe, and probably recognize yourself.</p>
+      </div>
+      <p class="sp-body">And the next time you&rsquo;re tempted to force a trade, the chorus may be the thing that keeps you sitting on your hands.</p>
+      <p class="sp-tag">MENTAL CONDITIONING, DISGUISED AS MUSIC.</p>
     </div>
-    <div class="mk-audio-player mk-soundtrack-player reveal">
+    <div class="mk-audio-player sp-player reveal">
       <audio preload="metadata">
         <source src="https://pub-aedb1c7ff17d48a496393b71ec4b91ee.r2.dev/music/track-tuition.mp3" type="audio/mpeg">
       </audio>
-      <div class="mk-audio-player__inner">
-        <div class="mk-audio-player__art">
-          <img src="assets/album-cover.jpg" alt="Earn the Right album cover" onerror="this.style.display='none'">
-        </div>
-        <div class="mk-audio-player__main">
-          <div class="mk-audio-player__meta">
-            <p class="mk-audio-player__eyebrow">MAKETZO &middot; Earn the Right</p>
-            <h3 class="mk-audio-player__title">I Paid Tuition to the Market<span class="mk-audio-player__explicit mk-audio-player__explicit--full" role="img" aria-label="Explicit lyrics" title="Explicit lyrics">EXPLICIT LYRICS</span></h3>
-          </div>
-          <div class="mk-audio-player__controls">
+      <div class="sp-stage" aria-hidden="true"><div class="sp-eq"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="sp-vinyl"></div></div>
+      <div class="sp-card">
+        <div class="sp-art"><img src="assets/album-cover.jpg" alt="Earn the Right, the MAKETZO album" width="400" height="400" loading="lazy"></div>
+        <div class="sp-main">
+          <p class="mk-audio-player__eyebrow sp-k">MAKETZO &middot; EARN THE RIGHT</p>
+          <h3 class="mk-audio-player__title sp-name">I Paid Tuition to the Market</h3>
+          <p class="sp-sub">REAL MISTAKES. REAL LESSONS.</p>
+          <div class="mk-audio-player__bar sp-bar" role="slider" tabindex="0" aria-label="Seek"><div class="mk-audio-player__progress"></div></div>
+          <div class="sp-time"><span class="mk-audio-player__time-cur">0:00</span><span class="mk-audio-player__time-dur">0:00</span></div>
+          <div class="sp-controls">
+            <button class="mk-audio-player__prev sp-skip" type="button" aria-label="Previous track"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h2v14H6zM19 5v14L9 12z"/></svg></button>
             <button class="mk-audio-player__play" type="button" aria-label="Play / pause">
               <svg class="mk-audio-player__icon mk-audio-player__icon--play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
               <svg class="mk-audio-player__icon mk-audio-player__icon--pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg>
             </button>
-            <div class="mk-audio-player__bar" role="slider" tabindex="0" aria-label="Seek">
-              <div class="mk-audio-player__progress"></div>
-            </div>
-            <div class="mk-audio-player__time">
-              <span class="mk-audio-player__time-cur">0:00</span>
-              <span class="mk-audio-player__time-sep">/</span>
-              <span class="mk-audio-player__time-dur">0:00</span>
-            </div>
+            <button class="mk-audio-player__next sp-skip" type="button" aria-label="Next track"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 5h2v14h-2zM5 5v14l10-7z"/></svg></button>
           </div>
         </div>
       </div>
+      <ol class="mk-audio-player__list sp-list" hidden>
+          <li class="mk-audio-player__item is-active" data-track-id="tuition" data-src="https://pub-aedb1c7ff17d48a496393b71ec4b91ee.r2.dev/music/track-tuition.mp3" data-title="I Paid Tuition to the Market">I Paid Tuition to the Market</li>
+          <li class="mk-audio-player__item" data-track-id="earn" data-src="https://pub-aedb1c7ff17d48a496393b71ec4b91ee.r2.dev/music/track-earn-the-right.mp3" data-title="Earn the Right">Earn the Right</li>
+          <li class="mk-audio-player__item" data-track-id="wait" data-src="https://pub-aedb1c7ff17d48a496393b71ec4b91ee.r2.dev/music/track-wait-for-acceptance.mp3" data-title="Wait for Acceptance">Wait for Acceptance</li>
+          <li class="mk-audio-player__item" data-track-id="stronger" data-src="https://pub-aedb1c7ff17d48a496393b71ec4b91ee.r2.dev/music/track-stronger.mp3" data-title="Stronger Than the Red">Stronger Than the Red</li>
+          <li class="mk-audio-player__item" data-track-id="cushion" data-src="https://pub-aedb1c7ff17d48a496393b71ec4b91ee.r2.dev/music/track-cushion.mp3" data-title="Build a Cushion">Build a Cushion</li>
+      </ol>
     </div>
     <div class="mk-cta-repeat">
       <button class="btn-primary" data-cta-source="soundtrack" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>

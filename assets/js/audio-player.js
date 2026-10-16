@@ -134,6 +134,23 @@ var MK_SHARE_ICON_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1
       }
     });
 
+    // Previous / next, opt-in: only a player that carries the buttons gets them (the homepage soundtrack card,
+    // 2026-10-15). Previous restarts the track past its first 3 seconds, the way every music app does.
+    var prevBtn = root.querySelector(".mk-audio-player__prev");
+    var nextBtn = root.querySelector(".mk-audio-player__next");
+    function step(d) {
+      if (!items.length) return;
+      var i = items.indexOf(getActiveLi());
+      loadTrack(items[(i + d + items.length) % items.length]);
+      pauseOthers();
+      audio.play();
+    }
+    if (prevBtn) prevBtn.addEventListener("click", function () {
+      if (audio.currentTime > 3) { audio.currentTime = 0; return; }
+      step(-1);
+    });
+    if (nextBtn) nextBtn.addEventListener("click", function () { step(1); });
+
     audio.addEventListener("pause", function () { root.classList.remove("is-playing"); });
 
     audio.addEventListener("ended", function () {
