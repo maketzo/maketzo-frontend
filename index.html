@@ -2000,7 +2000,6 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
   .fs-end-line { display: block; font-size: var(--mk-text-md); }
   .fs-end-line::before, .fs-end-line::after { display: none; }
 }
-@media (prefers-reduced-motion: reduce) { .fs-dust { display: none; } }
 
 /* The morning plays once when the section comes into view (Ed, 2026-10-16: draw the eye to the boxes, "elegant and
    appropriate to the section"). The script after the section adds .fs-armed, then .fs-s1/2/3 on the chart as the
@@ -2618,38 +2617,114 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
   </div>
 </section>
 <script>
-/* The gold dust under section 02 (Ed's mock): dots on two slow swells, high at the sides, low behind the call to
-   action. Draws only while the section is on screen and the tab is visible; reduced motion hides it in CSS. */
+/* The light under section 02. Ed (2026-10-16) on the gold dust: "i'm not a big fan of the dotted curved lines. Can you
+   replace this with something more refined and elegant in the background", and asked to see options. Four, picked
+   with ?bg= on the page until he chooses one (the default is horizon):
+     horizon   one fine gold arc, a planet's rim low behind the call to action, a faint slate ring above it and a
+               glint drifting slowly along it (the pricing dome's language)
+     silk      three thin continuous ribbons of light, brightest at the sides and faint behind the button
+     floor     no lines: a pool of warm light behind the button over a lit horizon with a white-hot centre
+     contours  the old swells as fine solid lines instead of dots
+   All of them stay clear of the words: bright at the sides, faint in the middle where the button and its line sit.
+   Draws only while the section is on screen and the tab is visible; under reduce motion it draws ONE still frame
+   (the dust used to vanish under reduce, which is why Ed's desktop looked plainer than his iPad). */
 (function () {
   var c = document.querySelector('.fs-dust');
-  if (!c || !c.getContext || (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) return;
+  if (!c || !c.getContext) return;
+  var KINDS = ['horizon', 'silk', 'floor', 'contours'];
+  var q = (location.search.match(/[?&]bg=([a-z]+)/) || [])[1];
+  var kind = KINDS.indexOf(q) >= 0 ? q : 'horizon';
+  c.setAttribute('data-bg', kind);
+  var still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   var ctx = c.getContext('2d'), w = 0, h = 0, t = 0, raf = 0, last = 0, visible = false;
-  var gold = (getComputedStyle(document.documentElement).getPropertyValue('--mk-gold-300') || '').trim() || 'rgb(240,200,80)';
   function size() {
     var r = c.getBoundingClientRect(), d = Math.min(2, window.devicePixelRatio || 1);
     w = r.width; h = r.height; c.width = Math.round(w * d); c.height = Math.round(h * d); ctx.setTransform(d, 0, 0, d, 0, 0);
   }
-  function draw() {
-    ctx.clearRect(0, 0, w, h); ctx.fillStyle = gold;
-    var cols = Math.min(190, Math.round(w / 7)), rows = 30;
-    for (var j = 0; j < rows; j++) {
-      var near = j / (rows - 1), base = h * .30 + near * h * .74;
-      for (var i = 0; i < cols; i++) {
-        var u = i / (cols - 1), side = Math.pow(Math.abs(u - .5) * 2, 1.7);
-        var y = base - side * h * .55 * (1 - near * .4) + (Math.sin(u * 8 + t * .55 + j * .33) * 6 + Math.sin(u * 2.7 - t * .35 + j * .21) * 12) * (.45 + near);
-        ctx.globalAlpha = Math.min(1, (.08 + .95 * side) * (.3 + .7 * near));
-        var r = .9 + near * 1.7;
-        ctx.fillRect(u * w, y, r, r);
-      }
-    }
-    ctx.globalAlpha = 1;
+  // A horizontal gradient that is bright at the sides and faint in the middle, where the words are.
+  function sideFade(a, mid) {
+    var g = ctx.createLinearGradient(0, 0, w, 0);
+    g.addColorStop(0, 'rgba(240,200,120,0)'); g.addColorStop(.12, 'rgba(240,200,120,' + a + ')');
+    g.addColorStop(.34, 'rgba(240,200,120,' + mid + ')'); g.addColorStop(.5, 'rgba(240,200,120,' + mid * .4 + ')'); g.addColorStop(.66, 'rgba(240,200,120,' + mid + ')');
+    g.addColorStop(.88, 'rgba(240,200,120,' + a + ')'); g.addColorStop(1, 'rgba(240,200,120,0)');
+    return g;
   }
+  function ellipseArc(cx, cy, rx, ry) { ctx.beginPath(); ctx.ellipse(cx, cy, rx, ry, 0, Math.PI, 2 * Math.PI); }
+
+  var DRAW = {
+    horizon: function () {
+      // a rim low behind the button that climbs toward the sides (top at 82% of the height, the edges at about 20%)
+      var ry = h * 1.51, cy = h * .82 + ry, rx = w * .62;
+      ctx.save();
+      ellipseArc(w / 2, cy - h * .2, rx * 1.16, ry * 1.08);          // the faint slate ring above
+      var sr = ctx.createLinearGradient(0, 0, w, 0); sr.addColorStop(0, 'rgba(120,138,158,0)'); sr.addColorStop(.14, 'rgba(120,138,158,.4)'); sr.addColorStop(.32, 'rgba(120,138,158,0)'); sr.addColorStop(.68, 'rgba(120,138,158,0)'); sr.addColorStop(.86, 'rgba(120,138,158,.4)'); sr.addColorStop(1, 'rgba(120,138,158,0)');
+      ctx.strokeStyle = sr; ctx.lineWidth = 1; ctx.stroke();
+      var g = ctx.createRadialGradient(w / 2, h * .82, 0, w / 2, h * .82, w * .55);   // atmosphere under the rim
+      g.addColorStop(0, 'rgba(212,160,70,.10)'); g.addColorStop(1, 'rgba(212,160,70,0)');
+      ellipseArc(w / 2, cy, rx, ry); ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.closePath(); ctx.fillStyle = g; ctx.fill();
+      ellipseArc(w / 2, cy, rx, ry);                                  // the rim
+      var s = ctx.createLinearGradient(0, 0, w, 0);
+      s.addColorStop(0, 'rgba(226,190,120,0)'); s.addColorStop(.18, 'rgba(226,190,120,.75)'); s.addColorStop(.5, 'rgba(240,214,160,.55)');
+      s.addColorStop(.82, 'rgba(226,190,120,.75)'); s.addColorStop(1, 'rgba(226,190,120,0)');
+      ctx.strokeStyle = s; ctx.lineWidth = 1.4; ctx.shadowColor = 'rgba(230,170,80,.7)'; ctx.shadowBlur = 12; ctx.stroke();
+      ctx.restore();
+      // the glint: a white-gold flare drifting slowly along the rim
+      var gx = w / 2 + Math.sin(t * .22) * w * .26, dx = (gx - w / 2) / rx, gy = cy - ry * Math.sqrt(Math.max(0, 1 - dx * dx));
+      var f = ctx.createRadialGradient(gx, gy, 0, gx, gy, 90);
+      f.addColorStop(0, 'rgba(255,246,222,.9)'); f.addColorStop(.12, 'rgba(255,214,140,.45)'); f.addColorStop(1, 'rgba(255,190,100,0)');
+      ctx.save(); ctx.translate(gx, gy); ctx.scale(1, .16); ctx.translate(-gx, -gy);
+      ctx.fillStyle = f; ctx.beginPath(); ctx.arc(gx, gy, 90, 0, 2 * Math.PI); ctx.fill(); ctx.restore();
+    },
+    silk: function () {
+      ctx.save(); ctx.lineWidth = 1.1; ctx.shadowColor = 'rgba(230,170,80,.5)'; ctx.shadowBlur = 8;
+      [[0, .55, 1], [2.1, .4, .8], [4.2, .3, .65]].forEach(function (p) {
+        ctx.beginPath();
+        for (var i = 0; i <= 160; i++) {
+          var u = i / 160, side = Math.pow(Math.abs(u - .5) * 2, 1.6);
+          var y = h * (.95 - .66 * side * p[2]) + (Math.sin(u * 5.2 + t * .18 + p[0]) * h * .04 + Math.sin(u * 2.2 - t * .11 + p[0]) * h * .025) * (.35 + .65 * side);
+          if (i) ctx.lineTo(u * w, y); else ctx.moveTo(u * w, y);
+        }
+        ctx.strokeStyle = sideFade(p[1], .05); ctx.stroke();
+      });
+      ctx.restore();
+    },
+    floor: function () {
+      var pool = ctx.createRadialGradient(w / 2, h * .34, 0, w / 2, h * .34, w * .36);   // the pool of light behind the button
+      var b = .17 + Math.sin(t * .25) * .02;
+      pool.addColorStop(0, 'rgba(214,160,74,' + b + ')'); pool.addColorStop(.5, 'rgba(214,160,74,' + b * .35 + ')'); pool.addColorStop(1, 'rgba(214,160,74,0)');
+      ctx.save(); ctx.translate(w / 2, h * .34); ctx.scale(1, .45); ctx.translate(-w / 2, -h * .34);
+      ctx.fillStyle = pool; ctx.fillRect(0, 0, w, h * 2.2); ctx.restore();
+      var y = h * .9;                                                                  // the lit horizon
+      var band = ctx.createLinearGradient(0, y - 30, 0, y + 30);
+      band.addColorStop(0, 'rgba(40,30,20,0)'); band.addColorStop(.5, 'rgba(40,30,20,.55)'); band.addColorStop(1, 'rgba(40,30,20,0)');
+      ctx.fillStyle = band; ctx.fillRect(0, y - 30, w, 60);
+      var line = ctx.createLinearGradient(0, 0, w, 0);
+      line.addColorStop(0, 'rgba(210,150,60,0)'); line.addColorStop(.3, 'rgba(210,150,60,.45)'); line.addColorStop(.5, 'rgba(255,246,226,.95)');
+      line.addColorStop(.7, 'rgba(210,150,60,.45)'); line.addColorStop(1, 'rgba(210,150,60,0)');
+      ctx.save(); ctx.shadowColor = 'rgba(214,140,50,.8)'; ctx.shadowBlur = 16; ctx.fillStyle = line; ctx.fillRect(0, y - 1, w, 2); ctx.restore();
+    },
+    contours: function () {
+      ctx.save(); ctx.lineWidth = 1;
+      for (var j = 0; j < 7; j++) {
+        var near = j / 6, base = h * .5 + near * h * .48;
+        ctx.beginPath();
+        for (var i = 0; i <= 180; i++) {
+          var u = i / 180, side = Math.pow(Math.abs(u - .5) * 2, 1.7);
+          var y = base - side * h * .55 * (1 - near * .4) + (Math.sin(u * 6 + t * .2 + j * .5) * 4 + Math.sin(u * 2.4 - t * .14 + j * .3) * 9) * (.5 + near);
+          if (i) ctx.lineTo(u * w, y); else ctx.moveTo(u * w, y);
+        }
+        ctx.strokeStyle = sideFade(.12 + .38 * near, .015 + .03 * near); ctx.stroke();
+      }
+      ctx.restore();
+    }
+  };
+  function draw() { ctx.clearRect(0, 0, w, h); DRAW[kind](); }
   function frame(now) {
     raf = 0; if (!visible || document.hidden) return;
     if (now - last > 33) { t += .033; last = now; draw(); }
     raf = requestAnimationFrame(frame);
   }
-  function go() { if (!raf && visible && !document.hidden) raf = requestAnimationFrame(frame); }
+  function go() { if (!still && !raf && visible && !document.hidden) raf = requestAnimationFrame(frame); }
   size(); draw();
   window.addEventListener('resize', function () { size(); draw(); });
   document.addEventListener('visibilitychange', go);
