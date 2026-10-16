@@ -264,58 +264,65 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
 .state-rule strong { color: var(--mk-text-primary); }
 .state-rule + .state-rule { margin-top: 6px; }
 
-/* ── COACH SAYS PANEL ───────────────────────────────────────── */
-.coach-wrap { max-width: 1080px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 36px; align-items: center; }
-.coach-mock {
-  position: relative;
-  padding: 28px 28px 24px;
-  background:
-    linear-gradient(135deg, rgba(212,175,55,.08), transparent 60%),
-    var(--mk-surface-raised);
-  border: 1px solid rgba(212,175,55,.28);
-  border-radius: var(--mk-radius-card);
-  box-shadow: var(--mk-shadow-3);
+/* ── COACH SAYS (built to Ed's mock, 2026-10-16: tools/site-preview/mock-system-coach-says.png) ──────────────
+   Sizes are the mock's, scaled into the 1180px section (its content is 1424 wide in the mock, ours 1116). The
+   eyebrow keeps the page's own style (Ed). COACH SAYS is on-screen text, so the mock's speaker became a live-read
+   pulse and its "voice prompt" a prompt on your screen (Ed's pick); the gold bars stay as drawn. */
+.coach-title { margin: 0 0 14px; font-family: var(--mk-font-display); font-weight: 400; font-size: clamp(2.5rem, 5.9vw, 5rem); line-height: .92; letter-spacing: .01em; text-transform: uppercase; text-align: center; color: var(--mk-text-primary); }
+.coach-title em { display: block; font-style: normal; background: linear-gradient(180deg, var(--mk-gold-300), var(--mk-gold-500) 55%, var(--mk-gold-600)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.coach-sub { max-width: 680px; margin: 0 auto 30px; font-size: clamp(1.0625rem, 1.5vw, 1.2rem); line-height: 1.4; text-align: center; color: var(--mk-text-secondary); }
+.coach-wrap { display: grid; grid-template-columns: minmax(0, 1.03fr) minmax(0, 1fr); gap: 52px; align-items: start; }
+.coach-card { padding: 24px 35px 26px; border-radius: 17px; background: linear-gradient(160deg, #161a22, #0c0e13 70%); border: 1px solid rgba(212,175,55,.58); box-shadow: 0 18px 44px rgba(0,0,0,.55), 0 0 22px rgba(212,175,55,.07), inset 0 1px 0 rgba(255,255,255,.04); }
+.coach-card-top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding-bottom: 17px; border-bottom: 1px solid rgba(255,255,255,.11); }
+.coach-card-eb { font-family: var(--mk-font-sans); font-size: .8rem; font-weight: 600; letter-spacing: .12em; color: var(--mk-gold-500); }
+.coach-card-time { font-family: var(--mk-font-mono); font-size: .75rem; letter-spacing: .04em; color: var(--mk-text-tertiary); }
+.coach-read { display: flex; align-items: center; gap: 18px; padding: 9px 0; border-bottom: 1px solid rgba(255,255,255,.11); }
+.coach-ring { flex: none; display: grid; place-items: center; width: 64px; height: 64px; border-radius: 50%; border: 2.5px solid var(--mk-gold-500); background: radial-gradient(circle closest-side, #14171e 70%, rgba(212,175,55,.14)); box-shadow: 0 0 16px rgba(212,175,55,.28), inset 0 0 12px rgba(212,175,55,.12); color: var(--mk-gold-500); }
+.coach-ring svg { width: 54%; height: 54%; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.coach-wave { flex: 1; min-width: 0; height: 62px; filter: drop-shadow(0 0 3px rgba(212,175,55,.75)) drop-shadow(0 0 9px rgba(212,175,55,.3)); }
+.coach-wave path { fill: none; stroke: url(#coachWave); stroke-width: 1.9; stroke-linecap: round; }
+.coach-quote { margin: 13px 0 6px; font-family: var(--mk-font-display); font-weight: 400; font-size: clamp(1.9rem, 2.7vw, 2.4rem); line-height: 1; letter-spacing: .01em; text-transform: uppercase; color: var(--mk-text-primary); }
+.coach-quote em { font-style: normal; color: var(--mk-gold-500); }
+.coach-body { margin: 0; max-width: 18.6em; font-size: clamp(1.0625rem, 1.5vw, 1.2rem); line-height: 1.38; color: #D6DBE3; }
+.coach-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 19px; padding-top: 18px; border-top: 1px solid rgba(255,255,255,.11); }
+.coach-stats > div { display: grid; gap: 4px; }
+.coach-stat-k { font-family: var(--mk-font-sans); font-size: .78rem; font-weight: 500; letter-spacing: .07em; color: #9AA4B4; }
+.coach-stat-v { font-family: var(--mk-font-display); font-size: 2.3rem; line-height: 1; letter-spacing: .01em; }
+.coach-stat-v.profit { color: var(--mk-profit-500); }
+.coach-stat-v.danger { color: var(--mk-danger-500); }
+.coach-stat-v.warning { color: var(--mk-warning-500); }
+.coach-copy h3 { margin: 4px 0 12px; font-family: var(--mk-font-display); font-weight: 400; font-size: clamp(1.9rem, 3.1vw, 2.75rem); line-height: 1; letter-spacing: .01em; text-transform: uppercase; text-wrap: balance; color: var(--mk-text-primary); }
+.coach-copy h3 em { font-style: normal; color: var(--mk-gold-500); }
+.coach-copy > p { margin: 0 0 22px; font-size: var(--mk-text-md); line-height: 1.47; color: #C5CBD5; }
+.coach-triggers { margin: 0; padding: 0; list-style: none; display: grid; gap: 9px; }
+.coach-triggers li { display: grid; grid-template-columns: 52px 110px minmax(0, 1fr); gap: 11px; align-items: center; }
+.coach-triggers .coach-ring { width: 52px; height: 52px; }
+.coach-triggers .coach-ring svg { width: 58%; height: 58%; }
+.coach-trig-k, .coach-trig-d { min-height: 72px; border-radius: 10px; background: linear-gradient(180deg, #141821, #0f1218); border: 1px solid rgba(255,255,255,.07); }
+.coach-trig-k { display: flex; align-items: center; padding: 0 18px; font-family: var(--mk-font-display); font-size: 1.8rem; letter-spacing: .02em; color: var(--mk-gold-500); }
+.coach-trig-d { display: flex; flex-direction: column; justify-content: center; padding: 8px 16px; font-size: .875rem; line-height: 1.32; color: #AEB6C3; }
+.coach-trig-d strong { font-size: .95rem; font-weight: 600; color: var(--mk-text-primary); }
+.coach-banner { display: flex; justify-content: center; align-items: center; gap: 30px; margin: 24px 0 0; min-height: 76px; padding: 12px 24px; border-radius: 12px; background: linear-gradient(90deg, rgba(212,175,55,.13), rgba(212,175,55,.03) 45%, transparent 75%), #0c0e12; border: 1px solid rgba(212,175,55,.55); box-shadow: 0 0 22px rgba(212,175,55,.08); }
+.coach-banner svg { flex: none; width: 38px; height: 42px; fill: none; stroke: var(--mk-gold-500); stroke-width: 2.6; stroke-linejoin: round; filter: drop-shadow(0 0 6px rgba(212,175,55,.45)); }
+.coach-banner-bar { flex: none; width: 2px; height: 26px; background: var(--mk-gold-500); opacity: .8; }
+.coach-banner p { margin: 0; font-family: var(--mk-font-display); font-size: clamp(1.6rem, 3.2vw, 2.6rem); line-height: 1; letter-spacing: .02em; text-transform: uppercase; color: var(--mk-text-primary); }
+.coach-banner p em { font-style: normal; color: var(--mk-gold-500); }
+.coach-banner p span, .coach-banner p em { white-space: nowrap; }
+@media (max-width: 980px) { .coach-wrap { grid-template-columns: minmax(0, 1fr); gap: 32px; max-width: 640px; margin: 0 auto; } .coach-banner { max-width: 640px; margin-left: auto; margin-right: auto; } }
+@media (max-width: 560px) {
+  .coach-card { padding: 20px 20px 24px; }
+  .coach-ring { width: 52px; height: 52px; }
+  .coach-wave { height: 52px; }
+  .coach-stat-v { font-size: 1.9rem; }
+  .coach-triggers li { grid-template-columns: 40px 76px minmax(0, 1fr); gap: 8px; }
+  .coach-triggers .coach-ring { width: 40px; height: 40px; }
+  .coach-trig-k { font-size: 1.35rem; }
+  .coach-trig-k { padding: 0 10px; }
+  .coach-trig-d { padding: 9px 12px; }
+  .coach-banner { gap: 16px; padding: 14px 18px; }
+  .coach-banner p { font-size: 1.5rem; }
+  .coach-banner p em { display: block; }
 }
-.coach-mock::before {
-  content: 'COACH SAYS';
-  position: absolute; top: 14px; left: 28px;
-  font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs);
-  letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase;
-  color: var(--mk-brand);
-}
-.coach-mock-time {
-  font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs);
-  color: var(--mk-text-tertiary);
-  text-align: right; margin-bottom: 18px;
-}
-.coach-mock-line {
-  font-family: var(--mk-font-display);
-  font-size: clamp(1.4rem, 2.4vw, 1.8rem);
-  line-height: 1.18;
-  letter-spacing: var(--mk-track-display);
-  text-transform: uppercase;
-  color: var(--mk-text-primary);
-  margin: 16px 0 8px;
-}
-.coach-mock-line em { font-style: normal; background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
-.coach-mock-stat {
-  display: flex; gap: 18px; padding-top: 16px; margin-top: 16px;
-  border-top: var(--mk-border-hairline);
-}
-.coach-stat-item { display: flex; flex-direction: column; gap: 2px; }
-.coach-stat-label { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); color: var(--mk-text-tertiary); }
-.coach-stat-value { font-family: var(--mk-font-display); font-size: var(--mk-display-sm); color: var(--mk-text-primary); }
-.coach-stat-value.profit { color: var(--mk-profit-500); }
-.coach-stat-value.danger { color: var(--mk-danger-500); }
-.coach-stat-value.warning { color: var(--mk-warning-500); }
-.coach-copy h3 { font-family: var(--mk-font-display); font-size: clamp(1.6rem, 3vw, 2.2rem); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); font-weight: 400; margin-bottom: 14px; line-height: 1.1; }
-.coach-copy h3 em { font-style: normal; background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
-.coach-copy p { font-size: var(--mk-text-md); color: var(--mk-text-secondary); line-height: var(--mk-lead-body); margin-bottom: 14px; }
-.coach-trigger-list { margin-top: 18px; padding-left: 0; }
-.coach-trigger-list li { display: flex; gap: 12px; padding: 10px 0; border-bottom: var(--mk-border-hairline); font-size: var(--mk-text-sm); color: var(--mk-text-secondary); }
-.coach-trigger-list li:last-child { border-bottom: none; }
-.coach-trigger-list .trigger-time { font-family: var(--mk-font-mono); font-size: var(--mk-mono-sm); color: var(--mk-brand); flex-shrink: 0; min-width: 80px; }
-@media (max-width: 880px) { .coach-wrap { grid-template-columns: 1fr; gap: 28px; } }
 
 /* ── STRIKE SYSTEM ──────────────────────────────────────────── */
 .strikes-wrap { max-width: 880px; margin: 0 auto; }
@@ -1107,34 +1114,50 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 
 <hr class="mk-rule-gold">
 
-<!-- COACH SAYS -->
-<section class="section section-dark" id="coach-says">
+<!-- COACH SAYS, built to Ed's mock (2026-10-16, tools/site-preview/mock-system-coach-says.png). The eyebrow keeps the
+     page's own style (his call). COACH SAYS is on-screen text and never speaks, so the mock's speaker became a
+     live-read pulse and "a clear, calm voice prompt" became a prompt on your screen (Ed's pick); em dashes became
+     commas and a colon, and the card's quote is closed. -->
+<section class="section section-dark coach" id="coach-says">
   <div class="section-inner">
     <p class="section-eyebrow reveal">COACH SAYS</p>
-    <h2 class="section-title reveal">The voice in the room <em>that doesn't flinch</em></h2>
-    <p class="section-sub reveal">One job: drag the rules you set when calm back into the room the moment your behavior starts to break them.</p>
+    <h2 class="coach-title reveal">The voice in the room <em>that doesn't flinch</em></h2>
+    <p class="coach-sub reveal">You set the rules. When emotions take over, COACH SAYS speaks up, instantly and clearly, so you stick to them.</p>
 
     <div class="coach-wrap">
-      <div class="coach-mock reveal">
-        <div class="coach-mock-time" style="margin-top:14px;">10:30 AM · TUE</div>
-        <p class="coach-mock-line">Two losers <em>in a row.</em> Step into a reset: a timed breathing session to re-enter the zone before your next setup.</p>
-        <div class="coach-mock-stat">
-          <div class="coach-stat-item"><span class="coach-stat-label">Streak</span><span class="coach-stat-value profit">12 days</span></div>
-          <div class="coach-stat-item"><span class="coach-stat-label">Session P&amp;L</span><span class="coach-stat-value danger">-$240</span></div>
-          <div class="coach-stat-item"><span class="coach-stat-label">Strikes</span><span class="coach-stat-value warning">2 / 3</span></div>
+      <div class="coach-card reveal">
+        <div class="coach-card-top"><span class="coach-card-eb">COACH SAYS</span><span class="coach-card-time">10:30 AM · TUE</span></div>
+        <div class="coach-read" aria-hidden="true">
+          <span class="coach-ring"><svg viewBox="0 0 24 24"><path d="M2.5 12H7l2.5-6 4 12 2.5-6h5.5"/></svg></span>
+          <svg class="coach-wave" viewBox="0 0 480 80" preserveAspectRatio="none">
+            <defs><linearGradient id="coachWave" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#D4AF37" stop-opacity=".35"/><stop offset=".18" stop-color="#E5C572"/><stop offset=".82" stop-color="#E5C572"/><stop offset="1" stop-color="#D4AF37" stop-opacity=".35"/></linearGradient></defs>
+            <path d="M4.0 29.3V50.7M9.6 37.3V42.7M15.1 32.3V47.7M20.7 27.0V53.0M26.2 34.9V45.1M31.8 24.2V55.8M37.3 35.2V44.8M42.9 34.3V45.7M48.4 16.2V63.8M54.0 22.6V57.4M59.5 28.1V51.9M65.1 8.8V71.2M70.6 9.1V70.9M76.2 28.5V51.5M81.7 28.6V51.4M87.3 22.6V57.4M92.8 35.1V44.9M98.4 20.0V60.0M104.0 32.8V47.2M109.5 31.1V48.9M115.1 30.5V49.5M120.6 32.3V47.7M126.2 21.7V58.3M131.7 28.2V51.8M137.3 30.9V49.1M142.8 32.6V47.4M148.4 32.7V47.3M153.9 7.0V73.0M159.5 32.3V47.7M165.0 17.8V62.2M170.6 33.7V46.3M176.1 31.9V48.1M181.7 32.9V47.1M187.2 32.4V47.6M192.8 33.3V46.7M198.4 31.3V48.7M203.9 31.3V48.7M209.5 34.4V45.6M215.0 27.4V52.6M220.6 4.9V75.1M226.1 32.7V47.3M231.7 32.6V47.4M237.2 33.1V46.9M242.8 28.2V51.8M248.3 32.5V47.5M253.9 33.9V46.1M259.4 33.1V46.9M265.0 15.7V64.3M270.5 32.9V47.1M276.1 30.5V49.5M281.6 21.3V58.7M287.2 29.8V50.2M292.8 31.4V48.6M298.3 33.7V46.3M303.9 27.0V53.0M309.4 30.7V49.3M315.0 29.6V50.4M320.5 32.0V48.0M326.1 7.4V72.6M331.6 33.6V46.4M337.2 33.9V46.1M342.7 32.4V47.6M348.3 31.3V48.7M353.8 33.0V47.0M359.4 29.6V50.4M364.9 22.0V58.0M370.5 7.5V72.5M376.0 17.1V62.9M381.6 19.7V60.3M387.2 26.6V53.4M392.7 31.1V48.9M398.3 31.1V48.9M403.8 8.9V71.1M409.4 30.1V49.9M414.9 24.6V55.4M420.5 32.3V47.7M426.0 32.4V47.6M431.6 26.8V53.2M437.1 36.9V43.1M442.7 18.7V61.3M448.2 37.0V43.0M453.8 37.3V42.7M459.3 34.7V45.3M464.9 32.9V47.1M470.4 27.6V52.4M476.0 37.0V43.0"/>
+          </svg>
+        </div>
+        <p class="coach-quote">&ldquo;Two losers <em>in a row</em>.</p>
+        <p class="coach-body">Step into a reset: a timed breathing session to re-enter the zone before your next setup.&rdquo;</p>
+        <div class="coach-stats">
+          <div><span class="coach-stat-k">STREAK</span><span class="coach-stat-v profit">12 days</span></div>
+          <div><span class="coach-stat-k">SESSION P&amp;L</span><span class="coach-stat-v danger">-$240</span></div>
+          <div><span class="coach-stat-k">STRIKES</span><span class="coach-stat-v warning">2 / 3</span></div>
         </div>
       </div>
 
       <div class="coach-copy reveal">
-        <h3>It speaks when your <em>state turns.</em></h3>
-        <p>COACH SAYS doesn't nag on a clock. It reads your live P&amp;L, your strikes, and your current state, and speaks up the instant your behavior starts to turn.</p>
-        <p>It surfaces the one thing that matters right now, then stays quiet otherwise.</p>
-        <ul class="coach-trigger-list">
-          <li><span class="trigger-time">Tilt</span><span><strong>Two reds in a row.</strong> Step into a reset before the third one costs you the day.</span></li>
-          <li><span class="trigger-time">Strike</span><span><strong>A strike lands.</strong> The rule you just broke, named, before you break the next.</span></li>
-          <li><span class="trigger-time">Target</span><span><strong>You hit your number.</strong> Protect the win, and don't force the next tier.</span></li>
+        <h3>It speaks when your <em>state turns</em>.</h3>
+        <p>COACH SAYS monitors your live P&amp;L, strikes, and current state, and speaks up the moment your behavior starts to break from your rules. It puts a clear, calm prompt on your screen right when it matters, then stays quiet otherwise.</p>
+        <ul class="coach-triggers">
+          <li><span class="coach-ring" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 4v5h-5"/><path d="M4 20v-5h5"/><path d="M5.6 9.5A7 7 0 0 1 18.4 8.2L20 9M4 15l1.6.8a7 7 0 0 0 12.8-1.3"/></svg></span><span class="coach-trig-k">TILT</span><span class="coach-trig-d"><strong>Two losers in a row.</strong> Step into a reset before the third one costs you the day.</span></li>
+          <li><span class="coach-ring" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg></span><span class="coach-trig-k">STRIKE</span><span class="coach-trig-d"><strong>A strike lands.</strong> The rule you just broke, named, before you break the next.</span></li>
+          <li><span class="coach-ring" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><path d="M12 12l7.5-7.5M16.5 3.5v4h4"/></svg></span><span class="coach-trig-k">TARGET</span><span class="coach-trig-d"><strong>You hit your number.</strong> Protect the win, and don't force the next tier.</span></li>
         </ul>
       </div>
+    </div>
+
+    <div class="coach-banner reveal">
+      <svg viewBox="0 0 24 26" aria-hidden="true"><path d="M12 2l8 3.2v6.3c0 5.2-3.4 9.6-8 11.5-4.6-1.9-8-6.3-8-11.5V5.2L12 2z"/></svg>
+      <span class="coach-banner-bar" aria-hidden="true"></span>
+      <p><span>Clear rules.</span> <span>Calm reminders.</span> <em>Better decisions.</em></p>
     </div>
 
     <div class="mk-cta-repeat">
