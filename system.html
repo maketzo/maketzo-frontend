@@ -569,8 +569,72 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 .floorx-list { margin: 0; padding: 0; list-style: none; display: grid; gap: 12px; }
 .floorx-list li { position: relative; padding-left: 22px; font-size: var(--mk-text-md); line-height: 1.5; color: var(--mk-text-secondary); }
 .floorx-list li::before { content: ""; position: absolute; left: 0; top: .62em; width: 10px; border-top: 2px dashed var(--mk-gold-400); }
-.floorx-shots { display: grid; gap: 14px; min-width: 0; }
-.floorx-shots img { display: block; width: 100%; height: auto; border-radius: 14px; box-shadow: 0 16px 36px rgba(0,0,0,.45); }
+/* The morning, replayed (Ed, 2026-10-16). One chart and the app's own card: the P&L draws, pauses as it passes half
+   the goal (the floor sets under it, the card appears, the first rule lights), again at the new high (the floor has
+   risen with it), and at the fall back to the floor (the day is called, the card turns red). Static is the end state. */
+.fd { display: grid; gap: 14px; min-width: 0; --fd-gone: 1; }
+.fd-chart { padding: 16px 16px 10px; border-radius: 14px; background: linear-gradient(180deg, #12151b, #0d0f14); border: 1px solid rgba(255,255,255,.07); box-shadow: 0 16px 36px rgba(0,0,0,.45); }
+.fd-head { display: flex; justify-content: space-between; align-items: baseline; margin: 0 4px 4px; }
+.fd-k { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); color: var(--mk-text-tertiary); }
+.fd-pnl { font-family: var(--mk-font-mono); font-size: 1.1rem; color: var(--mk-profit-500); font-variant-numeric: tabular-nums; }
+.fd-svg { display: block; width: 100%; height: auto; overflow: visible; color: var(--mk-profit-500); }
+.fd-zero { stroke: rgba(255,255,255,.12); stroke-width: 1; }
+.fd-arm { stroke: rgba(255,255,255,.28); stroke-width: 1; stroke-dasharray: 4 5; }
+.fd-arm-t, .fd-floor-t, .fd-high text, .fd-pill-t { font-family: var(--mk-font-mono); font-size: 9.5px; letter-spacing: .12em; }
+.fd-arm-t { fill: var(--mk-text-tertiary); }
+.fd-fill { fill: url(#fdFill); }
+.fd-line { fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linejoin: round; stroke-linecap: round; }
+.fd-floor { fill: none; stroke: var(--mk-gold-400); stroke-width: 2.2; stroke-linejoin: round; filter: drop-shadow(0 0 4px rgba(212,175,55,.55)); }
+.fd-floor-t { fill: var(--mk-gold-400); }
+.fd-high circle { fill: var(--mk-text-primary); }
+.fd-high text { fill: var(--mk-text-secondary); }
+.fd-called .fd-ring { fill: none; stroke: var(--mk-danger-500); stroke-width: 1.5; opacity: .7; }
+.fd-called .fd-dot { fill: var(--mk-danger-500); }
+.fd-pill { fill: rgba(220,76,76,.16); stroke: rgba(220,76,76,.6); stroke-width: 1; }
+.fd-pill-t { fill: var(--mk-danger-500); font-size: 8.5px; }
+.fd-card { position: relative; padding: 16px 18px 16px 20px; border-radius: 14px; background: #14161c; border: 1px solid rgba(212,175,55,.35); box-shadow: 0 16px 36px rgba(0,0,0,.45); overflow: hidden; }
+.fd-card::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--mk-gold-500); }
+.fd-card-top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.fd-eb { font-family: var(--mk-font-mono); font-size: var(--mk-mono-sm); letter-spacing: var(--mk-track-eyebrow); color: var(--mk-gold-400); }
+.fd-from { font-family: var(--mk-font-mono); font-size: var(--mk-mono-sm); color: var(--mk-text-tertiary); }
+.fd-amt { margin: 6px 0 4px; font-family: var(--mk-font-sans); font-size: 2rem; font-weight: 400; line-height: 1.1; color: var(--mk-gold-400); font-variant-numeric: tabular-nums; }
+.fd-cap { margin: 0 0 12px; min-height: 2.9em; font-size: var(--mk-text-sm); line-height: 1.45; color: var(--mk-text-primary); }
+.fd-bar { height: 6px; border-radius: 3px; background: rgba(255,255,255,.08); overflow: hidden; }
+.fd-bar i { display: block; height: 100%; border-radius: 3px; background: var(--mk-gold-500); transform-origin: left; transform: scaleX(var(--fd-gone)); }
+.fd-cush { margin: 8px 0 0; font-family: var(--mk-font-mono); font-size: var(--mk-mono-sm); color: var(--mk-text-tertiary); }
+.fd-override { display: inline-block; visibility: hidden; margin-top: 12px; padding: 8px 14px; border: 1px solid rgba(255,255,255,.16); border-radius: 8px; font-size: var(--mk-text-sm); color: var(--mk-text-primary); }
+.fd-card.is-called { border-color: rgba(220,76,76,.55); background: linear-gradient(180deg, rgba(220,76,76,.08), transparent 60%), #14161c; }
+.fd-card.is-called::before { background: var(--mk-danger-500); }
+.fd-card.is-called .fd-eb { color: var(--mk-danger-500); }
+.fd-card.is-called .fd-amt { color: var(--mk-text-primary); }
+.fd-card.is-called .fd-bar i { background: var(--mk-danger-500); }
+.fd-card.is-called .fd-override { visibility: visible; }
+.floorx-list li { transition: color .5s ease; }
+.floorx-list li::before { transition: border-color .5s ease, filter .5s ease; }
+.fdx-armed .floorx-list li.is-lit { color: var(--mk-text-primary); }
+.fdx-armed .floorx-list li.is-lit::before { border-top-style: solid; filter: drop-shadow(0 0 5px rgba(212,175,55,.9)); }
+.fdx-armed .fd-card { transition: opacity .5s ease, transform .6s cubic-bezier(.2,.8,.2,1), border-color .5s ease, background .5s ease; }
+.fdx-armed .fd-card.is-pre { opacity: 0; transform: translateY(8px); }
+.fdx-armed .fd-called, .fdx-armed .fd-high, .fdx-armed .fd-floor-t { transition: opacity .5s ease; }
+.fdx-armed .fd-called.is-pre, .fdx-armed .fd-high.is-pre, .fdx-armed .fd-floor-t.is-pre { opacity: 0; }
+.fdx-armed .fd-called.is-on .fd-ring { animation: fdRing 1.6s ease-out 1; transform-box: fill-box; transform-origin: center; }
+.fdx-armed .fd-arm.is-crossed { animation: fdArm 1.2s ease-out 1; }
+.fdx-armed .fd-card.is-flip { animation: fdFlip 1.2s ease-out 1; }
+@keyframes fdRing { 0% { transform: scale(.4); opacity: 1; stroke-width: 2.5; } 100% { transform: scale(2.6); opacity: 0; stroke-width: .5; } }
+@keyframes fdArm { 0% { stroke: rgba(255,255,255,.28); } 30% { stroke: var(--mk-gold-400); } 100% { stroke: rgba(255,255,255,.28); } }
+@keyframes fdFlip { 0% { box-shadow: 0 16px 36px rgba(0,0,0,.45); } 30% { box-shadow: 0 0 0 1px rgba(220,76,76,.6), 0 0 34px rgba(220,76,76,.35); } 100% { box-shadow: 0 16px 36px rgba(0,0,0,.45); } }
+/* Phones: the chart scales down by about a third, so its labels are set larger in chart units; the small DAY CALLED
+   pill gives way to the card right under it, which says it in full. */
+@media (max-width: 560px) {
+  .fd-arm-t, .fd-floor-t, .fd-high text { font-size: 15px; }
+  .fd-pill, .fd-pill-t { display: none; }
+}
+/* Reduce motion (Ed's PC runs with Windows animations off): the gentle version. The chart is drawn at once and fades
+   in; the card, the labels and the rules step through the same moments with fades; no ripple. */
+.fdx-gentle .fd-card.is-pre { transform: none; }
+.fdx-gentle .fd-called.is-on .fd-ring { animation: none; }
+.fdx-gentle .fd-svg > g:first-of-type { transition: opacity 1.2s ease; }
+.fdx-gentle .fd-svg.is-pre > g:first-of-type { opacity: 0; }
 @media (max-width: 860px) { .floorx { grid-template-columns: minmax(0, 1fr); padding: 24px 20px; } }
 </style>
 <script>try{if(document.cookie.indexOf('mkt_csrf=')>-1)document.documentElement.classList.add('mkt-auth');}catch(e){}</script>
@@ -797,7 +861,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
         <div class="state-step">The Climb · 2×</div>
         <div class="state-name">Lock It In</div>
         <div class="state-time">At twice your target</div>
-        <p class="state-desc">House money now. The Give-Back Guard keeps a floor under the day so a green run can't bleed back to flat.</p>
+        <p class="state-desc">House money now. The Give-Back Guard keeps a floor under your best P&amp;L, so a green run can't bleed back to flat.</p>
         <span class="state-rule"><strong>Guardrails:</strong> Lock it in.</span>
         <span class="state-rule">Preserve capital.</span>
         <span class="state-rule">Don't give it back.</span>
@@ -847,20 +911,56 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
     <!-- THE PROFIT FLOOR, explained where the homepage's "How the profit floor calls the day" lands (Ed, 2026-10-15:
          a deeper link must land on the section that explains it). Facts from maketzo-app lib/giveback-guard.js: arms
          once the day's high clears half the daily goal, sits giveBackPct (default 20) under the high and only ratchets
-         up, and calls the day at the floor. The P&L input does NOT lock (removed 2026-06-26); Override is the way on. -->
+         up, and calls the day at the floor. The P&L input does NOT lock (removed 2026-06-26); Override is the way on.
+         2026-10-16 (Ed: "A FLOOR GOES UNDER THE DAY. This doesn't make any sense"; "an elegant animation here that helps
+         explain the profit floor concept easily"): the headline says what it is for, the bullets name the trader's own
+         best P&L (never "the day's high", which reads as the stock's), and one morning replays: the line climbs past
+         half the goal, the floor sets under it and rises with each new high, the P&L falls back to it and the day is
+         called while still green. The card under the chart is the app's own card, with its own strings, at each moment. -->
     <div class="floorx reveal" id="profit-floor">
       <div class="floorx-copy">
         <p class="section-eyebrow">PROFIT FLOOR</p>
-        <h3 class="floorx-title">Green early? <em>A floor goes under the day.</em></h3>
+        <h3 class="floorx-title">Green early? <em>Keep most of what you made.</em></h3>
         <ul class="floorx-list">
-          <li>It goes in once the day's high clears half your daily goal.</li>
-          <li>It sits 20% under that high unless you set a different give-back, and it only moves up.</li>
-          <li>Fall to it and the day is called while you're still green. Trading on means pressing Override and confirming it.</li>
+          <li>When your best P&amp;L of the day passes half your daily goal, MAKETZO sets a walk-away line under it: your Profit Floor.</li>
+          <li>The floor sits 20% below your best P&amp;L (you can set a different give-back) and only moves up as your best P&amp;L rises.</li>
+          <li>Fall back to the floor and the day is called while you're still green. To keep trading, you press Override and confirm it.</li>
         </ul>
       </div>
-      <div class="floorx-shots">
-        <img src="assets/see-it-work/floor-176.png" width="316" height="139" loading="lazy" alt="Profit Floor, $176, from the $220 high: Your walk-away line. Hit it and the day is called.">
-        <img src="assets/see-it-work/day-called.png" width="316" height="198" loading="lazy" alt="Day Called, $40: You went through your $176 floor. Call the day here and keep the rest.">
+      <div class="fd">
+        <div class="fd-chart">
+          <div class="fd-head"><span class="fd-k">TODAY'S P&amp;L</span><span class="fd-pnl">+$176</span></div>
+          <svg class="fd-svg" viewBox="0 0 460 196" role="img" aria-label="One morning: the P&amp;L climbs past half the $400 goal, a floor sets 20% under the best P&amp;L and rises with it to $176, then the P&amp;L falls back to $176 and the day is called while still green.">
+            <defs>
+              <linearGradient id="fdFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="currentColor" stop-opacity=".22"/><stop offset="1" stop-color="currentColor" stop-opacity="0"/></linearGradient>
+              <clipPath id="fdWipe"><rect class="fd-wipe" x="0" y="0" width="460" height="196"/></clipPath>
+            </defs>
+            <line class="fd-zero" x1="20" y1="180" x2="400" y2="180"/>
+            <line class="fd-arm" x1="20" y1="56" x2="400" y2="56"/>
+            <text class="fd-arm-t" x="22" y="49">HALF YOUR GOAL · $200</text>
+            <g clip-path="url(#fdWipe)">
+              <path class="fd-fill" d="M20 180L67.5 136.6L115 155.2L162.5 99.4L210 52.9L257.5 65.3L305 43.6L352.5 57.24L400 70.88L400 180Z"/>
+              <path class="fd-floor" d="M206.8 80.8L210 78.32H284.6L305 70.88H400"/>
+              <path class="fd-line" d="M20 180L67.5 136.6L115 155.2L162.5 99.4L210 52.9L257.5 65.3L305 43.6L352.5 57.24L400 70.88"/>
+              <text class="fd-floor-t" x="214" y="94">FLOOR</text>
+            </g>
+            <g class="fd-high"><circle cx="305" cy="43.6" r="3.4"/><text x="305" y="33" text-anchor="middle">HIGH $220</text></g>
+            <g class="fd-called">
+              <circle class="fd-ring" cx="400" cy="70.88" r="7"/>
+              <circle class="fd-dot" cx="400" cy="70.88" r="3.6"/>
+              <rect class="fd-pill" x="334" y="84" width="74" height="18" rx="9"/>
+              <text class="fd-pill-t" x="371" y="96.5" text-anchor="middle">DAY CALLED</text>
+            </g>
+          </svg>
+        </div>
+        <div class="fd-card is-called">
+          <div class="fd-card-top"><span class="fd-eb">DAY CALLED</span><span class="fd-from">from $220 high</span></div>
+          <p class="fd-amt">$176</p>
+          <p class="fd-cap">You hit your $176 floor. Call the day here and protect your gains.</p>
+          <div class="fd-bar"><i></i></div>
+          <p class="fd-cush">Floor hit</p>
+          <span class="fd-override">Override and keep trading</span>
+        </div>
       </div>
     </div>
 
@@ -869,6 +969,96 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
     </div>
   </div>
 </section>
+<script>
+/* The morning, replayed. The P&L line draws left to right and the app's rules run on it as it goes: once the best
+   P&L passes $200 (half the $400 goal) the floor sits 20% under it and rises with every new best, and when the P&L
+   falls back to the floor the day is called. The header counts the P&L, the card under the chart shows what the app
+   shows at each moment (its own strings), and each rule on the left lights at its moment. The draw pauses on the
+   three moments so each can be read. Plays once, when the chart is well in view; every value ends exactly as
+   written. Reduce motion gets the gentle version (CSS); without IntersectionObserver nothing is armed. */
+(function () {
+  var box = document.getElementById('profit-floor');
+  if (!box || !('IntersectionObserver' in window)) return;
+  var demo = box.querySelector('.fd'), svg = box.querySelector('.fd-svg'), wipe = box.querySelector('.fd-wipe');
+  var head = box.querySelector('.fd-pnl'), card = box.querySelector('.fd-card'), arm = box.querySelector('.fd-arm');
+  var lis = Array.prototype.slice.call(box.querySelectorAll('.floorx-list li'));
+  var q = function (s) { return card.querySelector(s); };
+  var eb = q('.fd-eb'), from = q('.fd-from'), amt = q('.fd-amt'), cap = q('.fd-cap'), cush = q('.fd-cush');
+  var called = box.querySelector('.fd-called'), high = box.querySelector('.fd-high'), floorT = box.querySelector('.fd-floor-t');
+  if (!demo || !svg || !wipe || !head || lis.length < 3) return;
+  var gentle = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // The morning: [x on the chart, P&L]. Goal $400, so the floor arms at a $200 best; give-back 20%.
+  var P = [[20, 0], [67.5, 70], [115, 40], [162.5, 130], [210, 205], [257.5, 185], [305, 220], [352.5, 198], [400, 176]];
+  var ARM = 200, KEEP = 0.8;
+  var end = { head: head.textContent, eb: eb.textContent, from: from.textContent, amt: amt.textContent, cap: cap.textContent, cush: cush.textContent };
+  function pnlAt(x) {
+    for (var i = 1; i < P.length; i++) if (x <= P[i][0]) { var a = P[i - 1], b = P[i]; return a[1] + (b[1] - a[1]) * (x - a[0]) / (b[0] - a[0]); }
+    return P[P.length - 1][1];
+  }
+  function money(v) { return '$' + Math.round(v).toLocaleString('en-US'); }
+  function lit(i) { lis.forEach(function (li, j) { li.classList.toggle('is-lit', j === i); }); }
+
+  box.classList.add('fdx-armed');
+  if (gentle) box.classList.add('fdx-gentle');
+  card.classList.add('is-pre'); card.classList.remove('is-called');
+  called.classList.add('is-pre'); high.classList.add('is-pre'); floorT.classList.add('is-pre');
+  head.textContent = '+$0';
+  if (gentle) svg.classList.add('is-pre'); else wipe.setAttribute('width', 0);
+
+  var best = 0, armed = false, ratcheted = false;
+  function show(x) {
+    var pnl = pnlAt(x); best = Math.max(best, pnl);
+    head.textContent = (pnl < 0 ? '−$' : '+$') + Math.abs(Math.round(pnl));
+    if (!armed && best >= ARM) {
+      armed = true; card.classList.remove('is-pre'); floorT.classList.remove('is-pre');
+      arm.classList.add('is-crossed'); lit(0);
+    }
+    if (armed) {
+      var floor = Math.round(best * KEEP), given = best - pnl, span = best - floor;
+      eb.textContent = 'PROFIT FLOOR'; from.textContent = 'from ' + money(best) + ' high'; amt.textContent = money(floor);
+      cap.textContent = 'Your walk-away line. Hit it and the day is called.';
+      cush.textContent = money(pnl - floor) + ' cushion · ' + (given >= 0.5 ? money(given) + ' given back' : 'nothing given back');
+      demo.style.setProperty('--fd-gone', span > 0 ? Math.max(0, Math.min(1, given / span)) : 0);
+      if (!ratcheted && best > 205.5) { ratcheted = true; lit(1); }
+    }
+    if (x >= 305) high.classList.remove('is-pre');
+  }
+  function finish() {
+    head.textContent = end.head; eb.textContent = end.eb; from.textContent = end.from; amt.textContent = end.amt;
+    cap.textContent = end.cap; cush.textContent = end.cush; demo.style.setProperty('--fd-gone', 1);
+    card.classList.add('is-called', 'is-flip'); called.classList.remove('is-pre'); called.classList.add('is-on');
+    lit(2);
+    setTimeout(function () { lit(-1); }, 2600);
+  }
+  // Draw from x0 to x1 over ms, then call next.
+  function leg(x0, x1, ms, next) {
+    var t0 = null;
+    function step(now) {
+      if (t0 === null) t0 = now;
+      var u = Math.min(1, (now - t0) / ms), e = u < .5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2;
+      var x = x0 + (x1 - x0) * e;
+      if (!gentle) wipe.setAttribute('width', x + 3);
+      show(x);
+      if (u < 1) requestAnimationFrame(step); else setTimeout(next, 0);
+    }
+    requestAnimationFrame(step);
+  }
+  function play() {
+    if (gentle) svg.classList.remove('is-pre');
+    leg(20, 210, 2000, function () {
+      setTimeout(function () {
+        leg(210, 305, 1400, function () {
+          setTimeout(function () {
+            leg(305, 400, 1400, function () { wipe.setAttribute('width', 460); finish(); });
+          }, 900);
+        });
+      }, 1000);
+    });
+  }
+  var o = new IntersectionObserver(function (es) { if (es[0].isIntersecting) { o.disconnect(); play(); } }, { threshold: 0.6 });
+  o.observe(demo);
+})();
+</script>
 
 <hr class="mk-rule-gold">
 
