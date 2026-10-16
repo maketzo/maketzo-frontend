@@ -504,33 +504,88 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
 .lockout-timer { font-family: var(--mk-font-mono); font-size: clamp(2rem, 5vw, 3rem); letter-spacing: 0.06em; color: var(--mk-danger-500); margin-bottom: 16px; font-variant-numeric: tabular-nums; }
 .lockout-text { font-size: var(--mk-text-md); color: var(--mk-text-secondary); line-height: var(--mk-lead-body); max-width: 560px; margin: 0 auto; }
 
-/* ── RESULTS GRID ───────────────────────────────────────────── */
+/* ── RESULTS: THE RECORD ────────────────────────────────────────
+   Each card carries a small readout of the app surface it names (the In-Trade Rules, the Picard Score, the days at
+   7 or better, the last 20 sessions), all telling the same day. Four columns, then two, then one: auto-fit left a
+   three-and-one orphan between about 760 and 1000px. */
 .results-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 20px;
-  max-width: 1080px;
+  max-width: 1120px;
   margin: 0 auto;
 }
+@media (max-width: 1000px) { .results-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 640px; } }
+@media (max-width: 560px) { .results-grid { grid-template-columns: 1fr; max-width: 400px; } }
 .result-card {
-  padding: 28px 24px;
+  padding: 18px 18px 26px;
   background: var(--mk-surface-raised);
   border: 1px solid rgba(255,255,255,.06);
   border-radius: var(--mk-radius-card);
   text-align: center;
 }
-.result-icon {
-  display: inline-flex; align-items: center; justify-content: center;
-  width: 48px; height: 48px;
-  border-radius: 50%;
-  background: rgba(212,175,55,.08);
-  border: var(--mk-border-gold-soft);
-  color: var(--mk-brand);
-  font-size: 1.2rem;
-  margin-bottom: 16px;
-}
 .result-title { font-family: var(--mk-font-display); font-size: var(--mk-display-sm); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); margin-bottom: 8px; }
 .result-text { font-size: var(--mk-text-sm); color: var(--mk-text-tertiary); line-height: 1.5; }
+.rr-view { height: 132px; margin-bottom: 20px; padding: 12px; display: flex; flex-direction: column; justify-content: center; border-radius: 12px; background: linear-gradient(180deg, rgba(255,255,255,.03), transparent 45%), var(--mk-obsidian-900); border: 1px solid rgba(255,255,255,.08); }
+.rr-rules { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; text-align: left; }
+.rr-rules li { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 6px 8px 6px 10px; border-radius: 8px; background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.06); font-size: var(--mk-text-xs); line-height: 1.3; color: var(--mk-text-secondary); }
+.rr-rule { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rr-slot { flex: none; display: inline-flex; justify-content: flex-end; min-width: 74px; border: 1px dashed transparent; border-radius: 6px; }
+.rr-ans { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; font-weight: 700; color: var(--mk-profit-500); }
+.rr-ans svg { width: 14px; height: 14px; fill: rgba(74,222,128,.14); stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.rr-score { margin: 0; display: flex; align-items: baseline; justify-content: center; gap: 6px; }
+.rr-score-v { font-family: var(--mk-font-sans); font-weight: 800; font-size: 40px; line-height: 1; color: var(--mk-profit-500); text-shadow: 0 0 18px rgba(74,222,128,.25); font-variant-numeric: tabular-nums; }
+.rr-score small { font-size: var(--mk-text-md); color: var(--mk-text-tertiary); }
+.rr-score-name { margin: 6px 0 0; font-family: var(--mk-font-display); font-size: var(--mk-text-xl); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); }
+.rr-bar { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 3px; margin: 12px 0 0; }
+.rr-bar i { height: 8px; border-radius: 3px; background: rgba(255,255,255,.08); }
+.rr-bar i:nth-child(-n+8) { background: var(--mk-gold-300); box-shadow: 0 0 8px rgba(240,200,80,.4); }
+.rr-bar i:nth-child(9) { background: linear-gradient(90deg, var(--mk-gold-300) 30%, rgba(255,255,255,.08) 30%); }
+.rr-k { margin: 0 0 4px; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: .18em; text-transform: uppercase; color: var(--mk-text-tertiary); }
+.rr-big { margin: 0; font-family: var(--mk-font-display); font-size: 52px; line-height: 1; color: var(--mk-gold-300); text-shadow: 0 0 18px rgba(240,200,80,.25); font-variant-numeric: tabular-nums; }
+.rr-pips { display: flex; justify-content: center; gap: 4px; margin: 10px 0 0; }
+.rr-pips i { width: 9px; height: 9px; border-radius: 50%; background: var(--mk-gold-300); box-shadow: 0 0 6px rgba(240,200,80,.45); transition: background-color .4s ease, box-shadow .4s ease; }
+.rr-spark { display: block; width: 100%; height: auto; overflow: visible; }
+.rr-zone { fill: rgba(74,222,128,.05); }
+.rr-seven { stroke: rgba(255,255,255,.28); stroke-width: 1; stroke-dasharray: 3 3; }
+.rr-seven-t { font-family: var(--mk-font-mono); font-size: 8px; fill: var(--mk-text-tertiary); }
+.rr-line, .rr-today-seg { fill: none; stroke: var(--mk-text-secondary); stroke-width: 1.6; stroke-linejoin: round; stroke-linecap: round; }
+.rr-dots circle { fill: var(--mk-text-secondary); }
+.rr-today { fill: var(--mk-gold-300); filter: drop-shadow(0 0 4px rgba(240,200,80,.7)); }
+.rr-today-ring { fill: none; stroke: var(--mk-gold-300); stroke-width: 1.2; opacity: 0; }
+.rr-cap { margin: 8px 0 0; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: .14em; color: var(--mk-text-tertiary); }
+.rr-cap b { font-weight: 400; color: var(--mk-gold-300); }
+
+/* The record lands once in debrief order (script after the section). Nothing here applies without .rr-armed, and the
+   card words are never touched: only the readouts move, from the day-before state to the static one. */
+.rr-armed .result-card { transition: opacity var(--mk-dur-slow) var(--mk-ease-out), transform var(--mk-dur-slow) var(--mk-ease-out), border-color .6s ease, box-shadow .9s ease; }
+.rr-armed .result-card.is-live { border-color: rgba(240,200,80,.5); box-shadow: 0 0 0 1px rgba(240,200,80,.1), 0 0 36px rgba(240,200,80,.16); }
+.rr-armed .rr-ans { transition: opacity .35s ease, transform .5s cubic-bezier(.34, 1.56, .64, 1); }
+.rr-armed .rr-slot { transition: border-color .3s ease; }
+.rr-armed .rr-rules li:not(.is-on) .rr-slot { border-color: rgba(255,255,255,.18); }
+.rr-armed .rr-rules li:not(.is-on) .rr-ans { opacity: 0; transform: scale(.6); }
+.rr-armed .rr-view--score:not(.is-scored) :is(.rr-score-name, .rr-score small) { color: var(--mk-text-tertiary); }
+.rr-armed .rr-view--score:not(.is-on) .rr-score-v { color: var(--mk-text-tertiary); text-shadow: none; }
+.rr-armed .rr-bar i { --f: 0; background: linear-gradient(90deg, var(--mk-gold-300) calc(var(--f) * 100%), rgba(255,255,255,.08) calc(var(--f) * 100%)); box-shadow: none; }
+.rr-armed .rr-bar i.is-full { box-shadow: 0 0 8px rgba(240,200,80,.4); }
+.rr-armed .rr-view--streak:not(.is-on) .rr-pips i:last-child { background: transparent; box-shadow: inset 0 0 0 1px rgba(240,200,80,.5); }
+.rr-armed .rr-today-seg { stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset .6s cubic-bezier(.4, 0, .2, 1); }
+.rr-armed .rr-view--trend.is-on .rr-today-seg { stroke-dashoffset: 0; }
+.rr-armed .rr-today, .rr-armed .rr-today-ring { transform-box: fill-box; transform-origin: center; }
+.rr-armed .rr-today { transform: scale(0); transition: transform .5s cubic-bezier(.34, 1.56, .64, 1); }
+.rr-armed .rr-view--trend.is-landed .rr-today { transform: scale(1); }
+.rr-armed .rr-view--trend.is-landed .rr-today-ring { animation: rrRing 1.3s ease-out both; }
+.rr-armed .is-tick { animation: rrTick 1.4s ease-out both; }
+.rr-armed .rr-big.is-tick { animation: rrPop .7s cubic-bezier(.34, 1.56, .64, 1) both, rrTick 1.4s ease-out both; }
+@keyframes rrRing { from { opacity: .9; transform: scale(1); } to { opacity: 0; transform: scale(3.4); } }
+@keyframes rrTick { 0% { text-shadow: 0 0 0 rgba(240,200,80,0); } 25% { text-shadow: 0 0 22px rgba(240,200,80,.85); } 100% { text-shadow: 0 0 18px rgba(240,200,80,.25); } }
+@keyframes rrPop { 0% { transform: scale(.7); } 100% { transform: scale(1); } }
+/* Reduce motion: the same story on the same clock, without the pops and the ring. */
+.rr-gentle .rr-ans, .rr-gentle .rr-rules li:not(.is-on) .rr-ans { transform: none; }
+.rr-armed.rr-gentle .rr-today { transform: none; opacity: 0; transition: opacity .5s ease; }
+.rr-armed.rr-gentle .rr-view--trend.is-landed .rr-today { opacity: 1; }
+.rr-armed.rr-gentle .rr-view--trend.is-landed .rr-today-ring { animation: none; }
+.rr-armed.rr-gentle .rr-big.is-tick { animation: rrTick 1.4s ease-out both; }
 
 /* ── FINAL CTA ──────────────────────────────────────────────── */
 .final-cta-section { padding: 96px 0; background: var(--mk-obsidian-950); text-align: center; border-top: var(--mk-border-hairline); }
@@ -1313,33 +1368,65 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 
 <hr class="mk-rule-gold">
 
-<!-- RESULTS -->
-<section class="section section-dark">
+<!-- RESULTS: the record the System leaves. Rebuilt 2026-10-16 on Ed's accuracy review ("Probably needs to be adjusted
+     with more relevant and meaningful impactful cards"). The old four were a P&L streak on a discipline section, a
+     "hard-blocked at the engine level" claim (there is a deliberate override), a "one question" Picard Score (it grades
+     the rules, behaviour and journal, never the P&L), and a repeat of the lockout section above. Each card now names a
+     real app surface, in the order the debrief produces them, and the readouts tell one consistent day: 3 rules
+     followed, a score of 8.3, the run going from 11 to 12, today's point at 8.3 with the last 12 sessions at 7 or
+     better (the one before them is 6.4, so 12 is the true count). -->
+<section class="section section-dark" id="results">
   <div class="section-inner">
-    <p class="section-eyebrow reveal">WHAT YOU ACTUALLY GET</p>
+    <p class="section-eyebrow reveal">AFTER THE CLOSE</p>
     <h2 class="section-title reveal">Discipline you can <em>actually see</em></h2>
-    <p class="section-sub reveal">The System isn't a feature you flip on. It's the architecture of every MAKETZO session, and it leaves you a record of how disciplined you actually were.</p>
+    <p class="section-sub reveal">Every session ends with a record of whether you traded your plan, so discipline stops being a feeling and becomes something you can track.</p>
 
-    <div class="results-grid">
+    <div class="results-grid" id="results-record">
       <div class="result-card reveal">
-        <div class="result-icon">▲</div>
-        <div class="result-title">Green-Day Streaks</div>
-        <div class="result-text">The app counts your consecutive green days, plus your 1× and 2× days. One losing day resets it, so the streak is a number you actually protect.</div>
+        <div class="rr-view" aria-hidden="true">
+          <ul class="rr-rules">
+            <li><span class="rr-rule">Never average down</span><span class="rr-slot"><b class="rr-ans"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M7.5 12.3l3 3 6-6.3"/></svg>Followed</b></span></li>
+            <li><span class="rr-rule">No revenge trades</span><span class="rr-slot"><b class="rr-ans"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M7.5 12.3l3 3 6-6.3"/></svg>Followed</b></span></li>
+            <li><span class="rr-rule">Don't trade tired</span><span class="rr-slot"><b class="rr-ans"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M7.5 12.3l3 3 6-6.3"/></svg>Followed</b></span></li>
+          </ul>
+        </div>
+        <div class="result-title">In-Trade Rules</div>
+        <div class="result-text">In your debrief you answer every rule you wrote: Followed or Broke. Leave one blank and the day gets no score, so you can't skip the day you'd rather forget.</div>
       </div>
       <div class="result-card reveal">
-        <div class="result-icon">$</div>
-        <div class="result-title">Max-Loss Adherence</div>
-        <div class="result-text">The line you set when calm holds when it's loud. Hard-blocked at the engine level.</div>
-      </div>
-      <div class="result-card reveal">
-        <div class="result-icon">●</div>
+        <div class="rr-view rr-view--score" aria-hidden="true">
+          <p class="rr-score"><span class="rr-score-v">8.3</span><small>/ 10</small></p>
+          <p class="rr-score-name">Held the Line</p>
+          <p class="rr-bar"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></p>
+        </div>
         <div class="result-title">Picard Score</div>
-        <div class="result-text">A daily 1-to-10 grade on one question: did you follow the rules you set? It grades whether you followed your plan, not the P&amp;L you got.</div>
+        <div class="result-text">A daily grade on how well you kept your rules. Your P&amp;L isn't part of it, so a lucky green day can't buy a good score.</div>
       </div>
       <div class="result-card reveal">
-        <div class="result-icon">✓</div>
-        <div class="result-title">Fewer Bad Days</div>
-        <div class="result-text">The worst sessions get cut short. Hit your strike cap and the day closes before one red morning takes the week with it.</div>
+        <div class="rr-view rr-view--streak" aria-hidden="true">
+          <p class="rr-k">DAYS AT 7 OR BETTER</p>
+          <p class="rr-big">12</p>
+          <p class="rr-pips"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></p>
+        </div>
+        <div class="result-title">Held-the-Line Streak</div>
+        <div class="result-text">Sessions in a row scoring 7 or better. Keeping your rules builds it, not a green P&amp;L, and a logged no-trade day never breaks the run.</div>
+      </div>
+      <div class="result-card reveal">
+        <div class="rr-view rr-view--trend" aria-hidden="true">
+          <svg class="rr-spark" viewBox="0 0 200 62">
+            <rect class="rr-zone" x="12" y="4" width="186" height="28"/>
+            <line class="rr-seven" x1="12" y1="32" x2="198" y2="32"/>
+            <text class="rr-seven-t" x="6" y="32" text-anchor="middle" dominant-baseline="central">7</text>
+            <polyline class="rr-line" points="18,39.8 27.2,28.5 36.3,47.6 45.5,52.8 54.6,33.7 63.8,30.3 72.9,41.5 82.1,37.2 91.3,29.4 100.4,25.1 109.6,22.5 118.7,31.1 127.9,18.1 137.1,26.8 146.2,13.8 155.4,24.2 164.5,19.9 173.7,30.3 182.8,16.4"/>
+            <g class="rr-dots"><circle cx="18" cy="39.8" r="1.6"/><circle cx="27.2" cy="28.5" r="1.6"/><circle cx="36.3" cy="47.6" r="1.6"/><circle cx="45.5" cy="52.8" r="1.6"/><circle cx="54.6" cy="33.7" r="1.6"/><circle cx="63.8" cy="30.3" r="1.6"/><circle cx="72.9" cy="41.5" r="1.6"/><circle cx="82.1" cy="37.2" r="1.6"/><circle cx="91.3" cy="29.4" r="1.6"/><circle cx="100.4" cy="25.1" r="1.6"/><circle cx="109.6" cy="22.5" r="1.6"/><circle cx="118.7" cy="31.1" r="1.6"/><circle cx="127.9" cy="18.1" r="1.6"/><circle cx="137.1" cy="26.8" r="1.6"/><circle cx="146.2" cy="13.8" r="1.6"/><circle cx="155.4" cy="24.2" r="1.6"/><circle cx="164.5" cy="19.9" r="1.6"/><circle cx="173.7" cy="30.3" r="1.6"/><circle cx="182.8" cy="16.4" r="1.6"/></g>
+            <line class="rr-today-seg" x1="182.8" y1="16.4" x2="192" y2="20.7" pathLength="1"/>
+            <circle class="rr-today-ring" cx="192" cy="20.7" r="3.6"/>
+            <circle class="rr-today" cx="192" cy="20.7" r="3.6"/>
+          </svg>
+          <p class="rr-cap">TODAY <b>8.3</b> · NO STRIKES</p>
+        </div>
+        <div class="result-title">Last 20 Sessions</div>
+        <div class="result-text">Your last 20 scores on one line. Open it to see the facts behind each day: the contract, the strikes, any reset, how the day ended.</div>
       </div>
     </div>
 
@@ -1348,6 +1435,85 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
     </div>
   </div>
 </section>
+<script>
+/* The record lands once, in the order the debrief makes it (Ed, 2026-10-16: "animate it so its beautiful and
+   elegant"): the three rules are answered, the Picard Score counts to 8.3, the run goes from 11 to 12, and today's
+   point joins the last 20 sessions, a gold light passing card to card. The card words never change; only the
+   readouts move, starting from the truthful state before the debrief (unanswered, not scored, yesterday's run).
+   Wide, the beats run back to back once the cards are on screen; stacked, each beat waits for its own card and for
+   the one before it, so the story keeps its order. Classes only; the CSS is under .rr-armed. */
+(function () {
+  var grid = document.getElementById('results-record');
+  if (!grid || !('IntersectionObserver' in window) || !window.matchMedia || !window.requestAnimationFrame) return;
+  var cards = Array.prototype.slice.call(grid.querySelectorAll('.result-card'));
+  if (cards.length !== 4) return;
+  var rules = Array.prototype.slice.call(cards[0].querySelectorAll('.rr-rules li'));
+  var scoreView = cards[1].querySelector('.rr-view'), scoreV = cards[1].querySelector('.rr-score-v'), scoreName = cards[1].querySelector('.rr-score-name');
+  var segs = Array.prototype.slice.call(cards[1].querySelectorAll('.rr-bar i'));
+  var streakView = cards[2].querySelector('.rr-view'), big = cards[2].querySelector('.rr-big');
+  var trend = cards[3].querySelector('.rr-view'), cap = cards[3].querySelector('.rr-cap');
+  if (rules.length !== 3 || segs.length !== 10 || !scoreV || !scoreName || !big || !trend || !cap) return;
+  var gentle = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var end = { score: Number(scoreV.textContent), name: scoreName.textContent, big: big.textContent, cap: cap.innerHTML };
+  function fill(v) {
+    segs.forEach(function (s, i) { var f = Math.max(0, Math.min(1, v - i)); s.style.setProperty('--f', f.toFixed(3)); s.classList.toggle('is-full', f >= 1); });
+  }
+  function glow(el) { el.classList.remove('is-tick'); void el.getBoundingClientRect(); el.classList.add('is-tick'); }
+  function live(i, on) { cards[i].classList.toggle('is-live', on); }
+
+  grid.classList.add('rr-armed');
+  if (gentle) grid.classList.add('rr-gentle');
+  scoreV.textContent = '—'; scoreName.textContent = 'Not scored yet'; fill(0);
+  big.textContent = String(Number(end.big) - 1);
+  cap.textContent = 'TODAY · NOT SCORED YET';
+
+  var beats = [
+    function (done) {
+      live(0, true);
+      rules.forEach(function (li, j) { setTimeout(function () { li.classList.add('is-on'); }, 300 + j * 480); });
+      setTimeout(function () { live(0, false); done(); }, 1750);
+    },
+    function (done) {
+      live(1, true); scoreView.classList.add('is-on');
+      var t0 = null, DUR = 1300;
+      function step(t) {
+        if (t0 === null) t0 = t;
+        var p = Math.min(1, (t - t0) / DUR), v = end.score * (1 - Math.pow(1 - p, 3));
+        scoreV.textContent = v.toFixed(1); fill(v);
+        if (p < 1) { requestAnimationFrame(step); return; }
+        scoreName.textContent = end.name; scoreView.classList.add('is-scored'); glow(scoreName);
+        setTimeout(function () { live(1, false); done(); }, 600);
+      }
+      setTimeout(function () { requestAnimationFrame(step); }, 150);
+    },
+    function (done) {
+      live(2, true);
+      setTimeout(function () { big.textContent = end.big; streakView.classList.add('is-on'); glow(big); }, 300);
+      setTimeout(function () { live(2, false); done(); }, 1150);
+    },
+    function (done) {
+      live(3, true); trend.classList.add('is-on');
+      setTimeout(function () { trend.classList.add('is-landed'); cap.innerHTML = end.cap; glow(cap); }, 650);
+      setTimeout(function () { live(3, false); done(); }, 1800);
+    }
+  ];
+  var next = 0, running = false, seen = 0;
+  function pump() {
+    if (running || next >= beats.length || next >= seen) return;
+    running = true;
+    beats[next++](function () { running = false; pump(); });
+  }
+  cards.forEach(function (c, i) {
+    var o = new IntersectionObserver(function (es) {
+      if (!es[0].isIntersecting) return;
+      o.disconnect();
+      seen = Math.max(seen, i + 1);
+      setTimeout(pump, 450);
+    }, { threshold: 0.6 });
+    o.observe(c);
+  });
+})();
+</script>
 
 <!-- FINAL CTA -->
 <hr class="mk-rule-gold mk-rule-gold--bold" aria-hidden="true">
