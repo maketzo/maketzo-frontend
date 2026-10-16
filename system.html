@@ -632,7 +632,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
         </div>
         <p class="moment-verdict moment-verdict--us">The read came before the damage. It was ignored.</p>
       </article>
-      <div class="moment-link" aria-hidden="true"><span>12 min</span></div>
+      <div class="moment-link" aria-hidden="true"><span>12 min</span><i></i></div>
       <article class="moment-card moment-card--us" aria-label="MAKETZO at 10:42, second strike">
         <header class="moment-bar"><span>MAKETZO</span><span><i class="moment-live" aria-hidden="true"></i>Tuesday &middot; 10:42 AM</span></header>
         <div class="moment-app">
@@ -643,7 +643,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
         </div>
         <p class="moment-verdict moment-verdict--us">The warning lands with one strike left.</p>
       </article>
-      <div class="moment-link" aria-hidden="true"><span>25 min</span></div>
+      <div class="moment-link" aria-hidden="true"><span>25 min</span><i></i></div>
       <article class="moment-card moment-card--closed" aria-label="MAKETZO at 11:07, third strike, day closed">
         <header class="moment-bar"><span>MAKETZO</span><span><i class="moment-live moment-live--closed" aria-hidden="true"></i>Tuesday &middot; 11:07 AM</span></header>
         <div class="moment-app">
@@ -660,6 +660,66 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
     <div class="mk-cta-repeat"><button class="btn-primary" data-cta-source="moment" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial</button></div>
   </div>
 </section>
+<script>
+/* The morning plays once (Ed, 2026-10-16: "create beautiful animations for this section... Just make this
+   beautiful"). Wide screens: once the cards are well on screen, 10:30 plays, the 12 minutes pass along the first
+   link, 10:42 plays, the 25 minutes pass, 11:07 plays (about nine and a half seconds). The P&L carries from card to
+   card: -$180, then -$380, then -$590. Stacked (1100px and under): each card and each link plays as it scrolls in.
+   Reduce motion gets the gentle version in moment.css. Without IntersectionObserver nothing is armed and the section
+   stands finished. Classes only; the CSS is under .mo-armed in assets/css/moment.css. */
+(function () {
+  var grid = document.querySelector('.moment--three');
+  if (!grid || !('IntersectionObserver' in window) || !window.matchMedia) return;
+  var cards = Array.prototype.slice.call(grid.querySelectorAll('.moment-card'));
+  var links = Array.prototype.slice.call(grid.querySelectorAll('.moment-link'));
+  if (cards.length !== 3 || links.length !== 2) return;
+  var PNL = [[0, -180], [-180, -380], [-380, -590]], MIN = [12, 25];
+  function money(v) { return (v < 0 ? '−$' : '$') + Math.abs(v).toFixed(2); }
+  function tween(ms, fn) {
+    var t0 = null;
+    function step(now) {
+      if (t0 === null) t0 = now;
+      var u = Math.min(1, (now - t0) / ms);
+      fn(1 - Math.pow(1 - u, 3));
+      if (u < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+  cards.forEach(function (c, i) { var v = c.querySelector('.moment-pnl-val'); if (v) v.textContent = money(PNL[i][0]); });
+  links.forEach(function (l) { var s = l.querySelector('span'); if (s) s.textContent = '0 min'; });
+  grid.classList.add('mo-armed');
+
+  function card(i) {
+    var c = cards[i]; if (c.classList.contains('is-on')) return;
+    c.classList.add('is-on');
+    var v = c.querySelector('.moment-pnl-val');
+    if (v) setTimeout(function () { tween(900, function (e) { v.textContent = money(PNL[i][0] + (PNL[i][1] - PNL[i][0]) * e); }); }, 350);
+  }
+  function link(i) {
+    var l = links[i]; if (l.classList.contains('is-on')) return;
+    l.classList.add('is-on');
+    var s = l.querySelector('span');
+    if (s) tween(1100, function (e) { s.textContent = Math.round(MIN[i] * e) + ' min'; });
+  }
+  function once(el, opts, fn) {
+    var o = new IntersectionObserver(function (es) { if (es[0].isIntersecting) { o.disconnect(); fn(); } }, opts);
+    o.observe(el);
+  }
+
+  if (matchMedia('(max-width: 1100px)').matches) {
+    cards.forEach(function (c, i) { once(c, { threshold: 0.3 }, function () { card(i); }); });
+    links.forEach(function (l, i) { once(l, { threshold: 1 }, function () { link(i); }); });
+  } else {
+    once(grid, { threshold: 0.45 }, function () {
+      card(0);
+      setTimeout(function () { link(0); }, 2500);
+      setTimeout(function () { card(1); }, 3600);
+      setTimeout(function () { link(1); }, 5600);
+      setTimeout(function () { card(2); }, 6700);
+    });
+  }
+})();
+</script>
 <hr class="mk-rule-gold">
 <!-- SEVEN STATES -->
 <section class="section" id="checkpoints">

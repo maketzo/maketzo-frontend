@@ -82,3 +82,101 @@
   .moment--three .moment-link { flex-direction: row; padding: 2px 0; }
   .moment--three .moment-link::before, .moment--three .moment-link::after { width: auto; height: 1px; background: linear-gradient(90deg, transparent, var(--mk-brand), transparent); }
 }
+
+/* /system, the time between the cards (2026-10-16). The links were a vertical rule through the label, which read as
+   a divider; Ed: "Not sure if that's correct or misleading". Now a forward track: the minutes over a dashed line that
+   ends in an arrow (pointing down when the cards stack), and a dot that travels it while the minutes count. */
+.moment--three .moment-link { position: relative; display: block; width: 76px; padding: 0; }
+.moment--three .moment-link span { position: absolute; left: 0; right: 0; bottom: calc(50% + 12px); text-align: center; color: var(--mk-text-secondary); }
+.moment--three .moment-link::before { position: absolute; left: 4px; right: 7px; top: 50%; width: auto; height: 2px; margin-top: -1px;
+  background: repeating-linear-gradient(90deg, var(--mk-brand) 0 6px, transparent 6px 11px); opacity: .85; }
+.moment--three .moment-link::after { position: absolute; right: 5px; top: 50%; width: 9px; height: 9px; margin-top: -5.5px; background: none;
+  border-top: 2px solid var(--mk-brand); border-right: 2px solid var(--mk-brand); transform: rotate(45deg); }
+.moment--three .moment-link i { position: absolute; left: 2px; top: 50%; width: 9px; height: 9px; margin-top: -4.5px; border-radius: 50%; opacity: 0;
+  background: var(--mk-gold-300); box-shadow: 0 0 10px 3px rgba(240,200,80,.7); pointer-events: none; }
+@media (max-width: 1100px) {
+  .moment--three .moment-link { width: auto; height: 76px; }
+  .moment--three .moment-link span { left: calc(50% + 16px); right: auto; top: 50%; bottom: auto; transform: translateY(-50%); text-align: left; }
+  .moment--three .moment-link::before { left: 50%; right: auto; top: 6px; bottom: 9px; width: 2px; height: auto; margin: 0 0 0 -1px;
+    background: repeating-linear-gradient(180deg, var(--mk-brand) 0 6px, transparent 6px 11px); }
+  .moment--three .moment-link::after { left: 50%; right: auto; top: auto; bottom: 7px; margin: 0 0 0 -5.5px; transform: rotate(135deg); }
+  .moment--three .moment-link i { left: 50%; top: 4px; margin: 0 0 0 -4.5px; }
+}
+/* The closed card's three facts are longer than a third of a narrow card ("Frozen at 3 At the close0 strikes" ran
+   together at 1170px), so they read as rows there. */
+.moment--three .moment-card--closed .moment-facts { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+/* and DAY CLOSED, which wrapped to two lines inside a round pill, is a full-width banner there */
+.moment--three .moment-closed { justify-self: stretch; text-align: center; border-radius: var(--mk-radius-card); line-height: 1.6; }
+.moment--three .moment-card--closed .moment-facts div { flex-direction: row; justify-content: space-between; align-items: baseline; gap: 12px; }
+
+/* /system, the morning plays once (Ed, 2026-10-16: "create beautiful animations for this section... Just make this
+   beautiful"). The script in system.html adds .mo-armed, then .is-on to each card and link in turn: the P&L counts
+   and carries from card to card (-$180, -$380, -$590), each card lights its new strike, 10:30 stamps WALK AWAY,
+   the links count the minutes between, and 11:07 stamps DAY CLOSED. Nothing here applies without .mo-armed; reduce
+   motion gets the gentle version at the end. */
+.moment--three .moment-card, .moment--three .moment-strikes span { position: relative; }
+.mo-armed .moment-card { --mo-c: var(--mk-brand); transition: opacity .6s ease, translate .7s cubic-bezier(.22, 1, .36, 1); }
+.mo-armed .moment-card--read { --mo-c: var(--mk-state-warning); }
+.mo-armed .moment-card--closed { --mo-c: var(--mk-strike-lockout); }
+.mo-armed .moment-card:not(.is-on) { opacity: .25; translate: 0 18px; }
+.mo-armed .moment-card::after { content: ""; position: absolute; inset: -1px; border-radius: inherit; border: 2px solid var(--mo-c); opacity: 0; pointer-events: none; }
+.mo-armed .moment-card.is-on::after { animation: moCardRing 1.3s ease-out .1s both; }
+@keyframes moCardRing { from { opacity: .7; transform: scale(1); } to { opacity: 0; transform: scale(1.045); } }
+.mo-armed .moment-app > *, .mo-armed .moment-verdict { transition: opacity .5s ease, translate .6s cubic-bezier(.22, 1, .36, 1); }
+.mo-armed .moment-card:not(.is-on) :is(.moment-app > *, .moment-verdict) { opacity: 0; translate: 0 10px; }
+.mo-armed .moment-card.is-on .moment-pnl { transition-delay: .3s; }
+.mo-armed .moment-card.is-on .moment-strikes { transition-delay: .55s; }
+.mo-armed .moment-card.is-on .moment-facts { transition-delay: 1.05s; }
+.mo-armed .moment-card--read.is-on .moment-read { transition-delay: 1.3s; }
+.mo-armed .moment-card--read.is-on .moment-coach { transition-delay: 1.8s; }
+.mo-armed .moment-card--read.is-on .moment-verdict { transition-delay: 2.2s; }
+.mo-armed .moment-card--us.is-on .moment-coach { transition-delay: 1.35s; }
+.mo-armed .moment-card--us.is-on .moment-verdict { transition-delay: 1.75s; }
+.mo-armed .moment-card--closed.is-on .moment-closed { transition-delay: 1.35s; }
+.mo-armed .moment-card--closed.is-on .moment-facts { transition-delay: 1.75s; }
+.mo-armed .moment-card--closed.is-on .moment-coach { transition-delay: 2.1s; }
+.mo-armed .moment-card--closed.is-on .moment-verdict { transition-delay: 2.5s; }
+/* the strike this card adds: unlit, then it lands with a ring */
+.mo-armed .moment-strikes span { transition: background-color .35s ease, border-color .35s ease, color .35s ease, box-shadow .35s ease; }
+.mo-armed .moment-card--read:not(.is-on) .moment-strikes span:nth-child(1),
+.mo-armed .moment-card--us:not(.is-on) .moment-strikes span:nth-child(2),
+.mo-armed .moment-card--closed:not(.is-on) .moment-strikes span:nth-child(3) { background: transparent; border: var(--mk-border-default); color: var(--mk-text-tertiary); box-shadow: none; }
+.mo-armed .moment-card--read.is-on .moment-strikes span:nth-child(1),
+.mo-armed .moment-card--us.is-on .moment-strikes span:nth-child(2),
+.mo-armed .moment-card--closed.is-on .moment-strikes span:nth-child(3) { transition-delay: .9s; animation: moStrike .55s cubic-bezier(.34, 1.56, .64, 1) .9s both; }
+@keyframes moStrike { 0% { scale: 1; } 45% { scale: 1.28; } 100% { scale: 1; } }
+.mo-armed .moment-strikes span::after { content: ""; position: absolute; inset: -2px; border-radius: 50%; border: 2px solid var(--mo-c); opacity: 0; pointer-events: none; }
+.mo-armed .moment-card--read.is-on .moment-strikes span:nth-child(1)::after,
+.mo-armed .moment-card--us.is-on .moment-strikes span:nth-child(2)::after,
+.mo-armed .moment-card--closed.is-on .moment-strikes span:nth-child(3)::after { animation: moRing 1s ease-out 1s both; }
+@keyframes moRing { from { opacity: .9; transform: scale(1); } to { opacity: 0; transform: scale(2.1); } }
+.mo-armed .moment-strikes em { transition: opacity .4s ease; }
+.mo-armed .moment-card:not(.is-on) .moment-strikes em { opacity: 0; }
+.mo-armed .moment-card.is-on .moment-strikes em { transition-delay: 1.1s; }
+/* 10:30: WALK AWAY lands like a stamp and the alarm rings out from the box */
+.mo-armed .moment-read strong { display: inline-block; transition: opacity .3s ease, scale .6s cubic-bezier(.22, 1, .36, 1); }
+.mo-armed .moment-card:not(.is-on) .moment-read strong { opacity: 0; scale: 1.35; }
+.mo-armed .moment-card.is-on .moment-read strong { transition-delay: 1.45s; }
+.mo-armed .moment-card.is-on .moment-read { animation: moAlarm 1.4s ease-out 1.55s both; }
+@keyframes moAlarm { 0% { box-shadow: 0 0 0 0 rgba(251,146,60,.55); } 60% { box-shadow: 0 0 0 12px rgba(251,146,60,0); } 100% { box-shadow: 0 0 0 0 rgba(251,146,60,0); } }
+/* 11:07: DAY CLOSED stamps in and the card glows red once */
+.mo-armed .moment-closed { transition: opacity .35s ease, scale .6s cubic-bezier(.22, 1, .36, 1); }
+.mo-armed .moment-card:not(.is-on) .moment-closed { scale: 1.2; }
+.mo-armed .moment-card--closed.is-on { animation: moLockout 1.8s ease-out 1.45s both; }
+@keyframes moLockout { 35% { box-shadow: 0 0 0 1px rgba(248,113,113,.7), 0 28px 110px rgba(248,113,113,.4); } 100% { box-shadow: var(--mk-strike-glow-lockout); } }
+/* the time between: the dot travels the track while the minutes count */
+.mo-armed .moment-link { transition: opacity .5s ease; }
+.mo-armed .moment-link:not(.is-on) { opacity: .3; }
+.mo-armed .moment-link.is-on i { animation: moTravel 1.15s cubic-bezier(.45, 0, .55, 1) both; }
+@keyframes moTravel { 0% { opacity: 0; translate: 0 0; } 15% { opacity: 1; } 85% { opacity: 1; } 100% { opacity: 0; translate: 58px 0; } }
+.mo-armed .moment-link.is-on span { color: var(--mk-gold-300); transition: color .3s ease; }
+@media (max-width: 1100px) { @keyframes moTravel { 0% { opacity: 0; translate: 0 0; } 15% { opacity: 1; } 85% { opacity: 1; } 100% { opacity: 0; translate: 0 56px; } } }
+/* reduce motion: the gentle version (Ed, 2026-10-16). Light, fades, strikes and numbers stay; nothing slides, scales,
+   ripples or travels. */
+@media (prefers-reduced-motion: reduce) {
+  .mo-armed .moment-card:not(.is-on), .mo-armed .moment-card:not(.is-on) :is(.moment-app > *, .moment-verdict),
+  .mo-armed .moment-card:not(.is-on) .moment-read strong, .mo-armed .moment-card:not(.is-on) .moment-closed { translate: none; scale: none; }
+  .mo-armed .moment-card::after, .mo-armed .moment-strikes span::after, .mo-armed .moment-link i { display: none; }
+  .mo-armed .moment-card.is-on .moment-strikes span { animation: none; }
+  .mo-armed .moment-card.is-on .moment-read { animation: none; }
+}
