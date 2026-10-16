@@ -324,8 +324,7 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
    One size whatever plays (Ed: "why is it moving all over the place"): rows have a fixed height and the list keeps
    room for the three the page ships with while it loads, growing only when the admin list holds more (Ed: "only
    expand when there are more tracks"); the title stays on one line, the style line keeps its space when a track has
-   none, and the time has a fixed width so the bar never shifts. The title is weight 400: Bebas Neue has no bold, and
-   an h3's default bold made the browser smear a fake one (Ed saw it as halation). */
+   none, and the time has a fixed width so the bar never shifts. (The title's weight is fixed in audio-player.css.) */
 .zone-samples-player { max-width: 880px; margin: 0 auto; text-align: left; }
 .st .zone-samples-player.mk-audio-player {
   border-radius: 22px;
@@ -339,7 +338,7 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
 .st .zone-samples-player .mk-audio-player__art { width: 285px; height: 285px; border-radius: 6px; border: 1px solid rgba(255,255,255,.12); box-shadow: 0 12px 30px rgba(0,0,0,.5); }
 .st .zone-samples-player .mk-audio-player__meta { margin: -4px 0 4px; padding-left: 90px; min-width: 0; }
 .st .zone-samples-player .mk-audio-player__eyebrow { font-size: var(--mk-mono-sm); letter-spacing: .22em; color: var(--mk-text-primary); margin: 0 0 8px; }
-.st .zone-samples-player .mk-audio-player__title { font-weight: 400; font-size: clamp(1.7rem, 3vw, 2.2rem); line-height: 1.05; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.st .zone-samples-player .mk-audio-player__title { font-size: clamp(1.7rem, 3vw, 2.2rem); line-height: 1.05; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .mk-audio-player__style { height: 1.4em; line-height: 1.4; font-family: var(--mk-font-mono); font-size: .8125rem; letter-spacing: .22em; text-transform: uppercase; color: var(--mk-text-secondary); margin: 6px 0 0; }
 .st .zone-samples-player .mk-audio-player__controls { grid-template-columns: 56px 1fr auto; gap: 34px; }
 .st .zone-samples-player .mk-audio-player__play { background: radial-gradient(circle at 40% 35%, #f3d77a, var(--mk-gold-500) 60%, #b8941f); box-shadow: 0 0 18px rgba(var(--st-gold), .45); }

@@ -94,8 +94,11 @@
   color: var(--mk-brand);
   margin: 0 0 6px;
 }
+/* Weight 400: the title is an h3 and Bebas Neue has no bold, so the h3's default bold made the browser fake one,
+   which Ed saw as halation on /focus (2026-10-16); /soundtrack had the same smear. */
 .mk-audio-player__title {
   font-family: var(--mk-font-display);
+  font-weight: 400;
   font-size: clamp(1.25rem, 2vw, 1.6rem);
   letter-spacing: var(--mk-track-display);
   text-transform: uppercase;
