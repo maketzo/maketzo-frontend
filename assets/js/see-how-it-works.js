@@ -9,6 +9,10 @@
    The trigger stays a plain link to #see-it-work, so with no script the button
    still does what it did before: scroll to the section.
 
+   A click on the picture pauses it, and a pause sign sits in the middle of the
+   frame until the next click plays it again (Ed, 2026-10-16: "If i click the
+   center it pauses, but should show the pause sign"; no separate button).
+
    Closes on the X, Escape, or a click outside the frame; closing pauses and
    rewinds. When the video ends, its last card gets real buttons: the trial and
    Watch Again. Pairs with assets/css/see-how-it-works.css.
@@ -21,7 +25,8 @@
   var MUTE_KEY = 'mk_shiw_muted';
   var ICON_ON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a10 10 0 0 1 0 14"/></svg>';
   var ICON_OFF = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="m23 9-6 6"/><path d="m17 9 6 6"/></svg>';
-  var ICON_X = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>';
+  var ICON_PAUSE = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="4.5" width="4" height="15" rx="1.2"/><rect x="14" y="4.5" width="4" height="15" rx="1.2"/></svg>';
+  var ICON_X ='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>';
 
   var root = null, video = null, muteBtn = null, endBox = null, bar = null, opener = null;
 
@@ -43,6 +48,7 @@
     root.innerHTML =
       '<div class="shiw-frame">' +
         '<video class="shiw-video" playsinline preload="none" poster="' + POSTER + '"></video>' +
+        '<div class="shiw-paused" aria-hidden="true"><span>' + ICON_PAUSE + '</span></div>' +
         '<button type="button" class="shiw-btn shiw-mute"></button>' +
         '<button type="button" class="shiw-btn shiw-close" aria-label="Close the video">' + ICON_X + '</button>' +
         '<div class="shiw-end" hidden>' +
@@ -61,7 +67,13 @@
     });
     root.querySelector('.shiw-close').addEventListener('click', close);
     root.addEventListener('click', function (e) { if (e.target === root) close(); });
-    video.addEventListener('click', function () { if (video.paused) video.play().catch(function () {}); else video.pause(); });
+    video.addEventListener('click', function () {
+      if (video.paused) video.play().catch(function () {}); else video.pause();
+      track('see_how_it_works_pause', { paused: video.paused, at_s: Math.round(video.currentTime) });
+    });
+    // The pause sign shows only for a pause the viewer chose: not at the end (the end card takes over) and not on close.
+    video.addEventListener('pause', function () { if (!video.ended && !root.hidden) root.classList.add('is-paused'); });
+    video.addEventListener('play', function () { root.classList.remove('is-paused'); endBox.hidden = true; });
     video.addEventListener('timeupdate', function () { if (video.duration) bar.style.width = (100 * video.currentTime / video.duration) + '%'; });
     video.addEventListener('ended', function () { endBox.hidden = false; track('see_how_it_works_complete', {}); });
     root.querySelector('[data-shiw-again]').addEventListener('click', function () {
@@ -81,7 +93,7 @@
     opener = document.activeElement;
     if (!video.getAttribute('src')) video.setAttribute('src', SRC);
     video.muted = savedMuted(); paintMute();
-    endBox.hidden = true; video.currentTime = 0; bar.style.width = '0';
+    endBox.hidden = true; video.currentTime = 0; bar.style.width = '0'; root.classList.remove('is-paused');
     root.hidden = false; document.documentElement.style.overflow = 'hidden';
     requestAnimationFrame(function () { root.classList.add('is-open'); });
     // Opened by a click, so sound is allowed; if the browser still refuses, start muted rather than not at all.
@@ -93,8 +105,8 @@
   function close() {
     if (!root || root.hidden) return;
     track('see_how_it_works_close', { at_s: Math.round(video.currentTime), ended: !endBox.hidden });
-    video.pause(); video.currentTime = 0;
-    root.classList.remove('is-open'); root.hidden = true; document.documentElement.style.overflow = '';
+    root.hidden = true; video.pause(); video.currentTime = 0;
+    root.classList.remove('is-open', 'is-paused'); document.documentElement.style.overflow = '';
     if (opener && opener.focus) opener.focus();
   }
 

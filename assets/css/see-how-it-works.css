@@ -25,6 +25,16 @@
 .shiw-mute { left: 14px; }
 .shiw-close { right: 14px; width: 40px; padding: 0; justify-content: center; }
 
+/* A click on the picture pauses it; the pause sign holds the middle of the frame until the next click (Ed,
+   2026-10-16). It lets clicks through to the video, which is what plays it again. */
+.shiw-paused { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  pointer-events: none; opacity: 0; transition: opacity .18s ease; }
+.shiw-paused span { display: flex; align-items: center; justify-content: center; width: 96px; height: 96px; border-radius: 50%;
+  background: rgba(10, 11, 15, .62); border: 1px solid rgba(212, 175, 55, .55); color: #FBF7EC;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, .45); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+.shiw-paused svg { width: 40px; height: 40px; }
+.shiw.is-paused .shiw-paused { opacity: 1; }
+
 /* A thin gold progress line along the bottom edge. */
 .shiw-bar { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: rgba(255, 255, 255, .08); }
 .shiw-bar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #B8941F, #F3D77A); }
@@ -41,5 +51,7 @@
   .shiw-mute { left: 10px; }
   .shiw-close { right: 10px; width: 36px; padding: 0; }
   .shiw-end { bottom: 5%; gap: 8px; }
+  .shiw-paused span { width: 68px; height: 68px; }
+  .shiw-paused svg { width: 28px; height: 28px; }
   .shiw-end .btn-primary, .shiw-end .btn-secondary { font-size: 13px; padding: 9px 14px; }
 }
