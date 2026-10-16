@@ -142,6 +142,22 @@
   function isPriceId(s) { return typeof s === 'string' && s.indexOf('price_') === 0; }
   function isEventLike(o) { return o && typeof o === 'object' && ('currentTarget' in o || typeof o.preventDefault === 'function'); }
 
+  // ── Buttons left as "Loading..." ──────────────────────────────────────
+  // Every exit below that leaves the page (signup, Stripe, sign out) keeps the
+  // clicked button as "Loading..." and disabled. Back restores the page from the
+  // back-forward cache exactly as it was, so the trader returns to a trial
+  // button that can no longer be pressed (Ed, 2026-10-16, on the See How It
+  // Works end card; the hero's button did the same, and so did every CTA on
+  // every page). On a restored page, put each one back.
+  const _pending = [];
+  window.addEventListener('pageshow', function (e) {
+    if (!e.persisted) return;
+    while (_pending.length) {
+      const p = _pending.pop();
+      p.btn.innerHTML = p.orig; p.btn.disabled = false;
+    }
+  });
+
   // handleCheckout accepts: (event) | (tier, event) | (tier, fakeEvent) | (priceId, event) [legacy].
   async function handleCheckout(a, b) {
     // Normalize args. If the first arg is the event itself, there's no hint.
@@ -191,7 +207,7 @@
     }
 
     const orig = btn ? btn.innerHTML : '';
-    if (btn) { btn.innerHTML = 'Loading...'; btn.disabled = true; }
+    if (btn) { _pending.push({ btn: btn, orig: orig }); btn.innerHTML = 'Loading...'; btn.disabled = true; }
 
     function restoreBtn() {
       if (btn) { btn.innerHTML = orig; btn.disabled = false; }
