@@ -2145,6 +2145,104 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
 }
 @media (prefers-reduced-motion: reduce) { .hw::after { display: none; } .hw-stop--live .hw-badge { animation: none; } }
 .how-note { text-align: center; margin: 26px auto 0; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: .08em; text-transform: uppercase; color: var(--mk-text-tertiary); }
+/* The day plays once when the cards come into view (Ed, 2026-10-16: "Can you create animations now for this
+   section? Make it elegant and impactful"), in See It Work's grammar: the timeline draws stop to stop, each badge
+   arrives with a ring, and its card plays what the app does at that moment. The contract writes itself in and is
+   signed; at 10:30 the P&L counts and the read lands; the debrief ticks each rule and the Picard Score fills. The
+   script after the section adds .hw-armed, .hw-s1/2/3 and .hw-done on the list and .is-on on each stop; nothing
+   here applies without .hw-armed, and reduce motion gets the gentle version at the end of this block. */
+.hw-armed::before { clip-path: inset(-20px 100% -20px -20px); transition: clip-path .7s cubic-bezier(.45, 0, .25, 1); }
+.hw-armed.hw-s1::before { clip-path: inset(-20px 81% -20px -20px); }
+.hw-armed.hw-s2::before { clip-path: inset(-20px 49.5% -20px -20px); }
+.hw-armed.hw-s3::before { clip-path: inset(-20px 18% -20px -20px); }
+.hw-armed.hw-done::before { clip-path: inset(-20px -20px -20px -20px); }
+.hw-armed::after { transition: opacity .8s ease; }
+.hw-armed:not(.hw-done)::after { opacity: 0; }
+/* the stop: badge, then its words */
+.hw-armed .hw-badge { transition: scale .6s cubic-bezier(.34, 1.56, .64, 1), opacity .4s ease; }
+.hw-armed .hw-stop:not(.is-on) .hw-badge { scale: .6; opacity: .45; }
+.hw-badge::after { content: ""; position: absolute; inset: -3px; border-radius: 50%; border: 2px solid var(--mk-gold-300); opacity: 0; pointer-events: none; --fs-ring: 1.9; }
+.hw-armed .hw-stop.is-on .hw-badge::after { animation: fsRing 1.2s ease-out .15s both; }
+.hw-armed .hw-stop > :is(.hw-when, h3, .hw-line) { transition: opacity .5s ease, translate .6s cubic-bezier(.22, 1, .36, 1); }
+.hw-armed .hw-stop > .hw-link { transition: opacity .5s ease, translate .6s cubic-bezier(.22, 1, .36, 1), border-color var(--mk-dur-snap) var(--mk-ease-out), color var(--mk-dur-snap); }
+.hw-armed .hw-stop:not(.is-on) > :is(.hw-when, h3, .hw-line, .hw-link) { opacity: .18; translate: 0 8px; }
+.hw-armed .hw-stop.is-on > .hw-when { transition-delay: .15s; }
+.hw-armed .hw-stop.is-on > h3 { transition-delay: .22s; }
+.hw-armed .hw-stop.is-on > .hw-line { transition-delay: .3s; }
+.hw-armed .hw-stop.is-on > .hw-link { transition-delay: .38s, .38s, 0s, 0s; }
+/* the card rises, then fills the way the app fills it */
+.hw-armed .hw-screen { transition: opacity .6s ease .25s, translate .7s cubic-bezier(.22, 1, .36, 1) .25s; }
+.hw-armed .hw-stop:not(.is-on) .hw-screen { opacity: .3; translate: 0 16px; }
+.hw-armed .hw-screen :is(.hw-mode, .hw-row, .hw-focus, .hw-signed, .hw-tile, .hw-call, .hw-coach, .hw-pills span, .hw-score) { transition: opacity .5s ease, translate .6s cubic-bezier(.22, 1, .36, 1), scale .5s cubic-bezier(.34, 1.56, .64, 1); }
+.hw-armed .hw-stop:not(.is-on) .hw-screen :is(.hw-mode, .hw-focus, .hw-signed, .hw-tile, .hw-call, .hw-coach, .hw-score) { opacity: 0; translate: 0 10px; }
+.hw-armed .hw-stop:not(.is-on) .hw-row { opacity: 0; translate: -12px 0; }
+.hw-armed .hw-stop:not(.is-on) .hw-pills span { opacity: 0; scale: .85; }
+/* 1 · the Lock-In: the contract writes itself in, then it is signed */
+.hw-armed .hw-stop:nth-child(1).is-on .hw-mode { transition-delay: .45s; }
+.hw-armed .hw-stop:nth-child(1).is-on .hw-row:nth-child(1) { transition-delay: .7s; }
+.hw-armed .hw-stop:nth-child(1).is-on .hw-row:nth-child(2) { transition-delay: .88s; }
+.hw-armed .hw-stop:nth-child(1).is-on .hw-row:nth-child(3) { transition-delay: 1.06s; }
+.hw-armed .hw-stop:nth-child(1).is-on .hw-focus { transition-delay: 1.3s; }
+.hw-armed .hw-stop:nth-child(1).is-on .hw-signed { transition-delay: 1.6s; animation: hwSignedGlow 1.4s ease-out 1.9s both; }
+@keyframes hwSignedGlow { 40% { box-shadow: 0 0 40px rgba(240,200,80,.55); } 100% { box-shadow: 0 0 22px rgba(240,200,80,.16); } }
+.hw-armed .hw-signed { position: relative; overflow: hidden; }
+.hw-armed .hw-signed::before { content: ""; position: absolute; inset: 0; background: linear-gradient(100deg, transparent 20%, rgba(255,236,170,.5) 50%, transparent 80%); translate: -110% 0; pointer-events: none; }
+.hw-armed .hw-stop.is-on .hw-signed::before { animation: hwSheen 1s ease-in-out 1.95s both; }
+@keyframes hwSheen { from { translate: -110% 0; } to { translate: 110% 0; } }
+.hw-armed .hw-signed path { stroke-dasharray: 1; transition: stroke-dashoffset .5s ease; }
+.hw-armed .hw-stop:not(.is-on) .hw-signed path { stroke-dashoffset: 1; }
+.hw-armed .hw-stop.is-on .hw-signed path { transition-delay: 1.85s; }
+/* 2 · the Checkpoint: the P&L counts, the read lands like a stamp, the coach speaks, the contract stays on screen */
+.hw-armed .hw-stop:nth-child(2).is-on .hw-tile:nth-child(1) { transition-delay: .45s; }
+.hw-armed .hw-stop:nth-child(2).is-on .hw-tile:nth-child(2) { transition-delay: .55s; }
+.hw-armed .hw-stop:nth-child(2).is-on .hw-call { transition-delay: 1s; animation: hwCallGlow 1.6s ease-out 1.1s both; }
+@keyframes hwCallGlow { 35% { box-shadow: 0 0 52px rgba(240,200,80,.5); } 100% { box-shadow: 0 0 26px rgba(240,200,80,.2); } }
+.hw-armed .hw-call-v { transition: opacity .35s ease, scale .6s cubic-bezier(.22, 1, .36, 1); }
+.hw-armed .hw-stop:not(.is-on) .hw-call-v { opacity: 0; scale: 1.18; }
+.hw-armed .hw-stop.is-on .hw-call-v { transition-delay: 1.1s; }
+.hw-armed .hw-call-t { transition: opacity .5s ease; }
+.hw-armed .hw-stop:not(.is-on) .hw-call-t { opacity: 0; }
+.hw-armed .hw-stop.is-on .hw-call-t { transition-delay: 1.5s; }
+.hw-armed .hw-stop:nth-child(2).is-on .hw-coach { transition-delay: 1.75s; }
+.hw-armed .hw-stop.is-on .hw-pills span:nth-child(1) { transition-delay: 2.05s; }
+.hw-armed .hw-stop.is-on .hw-pills span:nth-child(2) { transition-delay: 2.15s; }
+.hw-armed .hw-stop.is-on .hw-pills span:nth-child(3) { transition-delay: 2.25s; }
+.hw-armed .hw-stop.is-on .hw-pills span:nth-child(4) { transition-delay: 2.35s; }
+/* 3 · the Debrief: each rule ticked in turn, then the score counts and its bar fills */
+.hw-armed .hw-stop:nth-child(3).is-on .hw-tile:nth-child(1) { transition-delay: .45s; }
+.hw-armed .hw-stop:nth-child(3).is-on .hw-tile:nth-child(2) { transition-delay: .55s; }
+.hw-armed .hw-stop:nth-child(3).is-on .hw-row:nth-child(1) { transition-delay: 1s; }
+.hw-armed .hw-stop:nth-child(3).is-on .hw-row:nth-child(2) { transition-delay: 1.25s; }
+.hw-armed .hw-stop:nth-child(3).is-on .hw-row:nth-child(3) { transition-delay: 1.5s; }
+.hw-armed .hw-ok svg { transition: scale .45s cubic-bezier(.34, 1.56, .64, 1), opacity .3s ease; }
+.hw-armed .hw-stop:not(.is-on) .hw-ok svg { scale: .3; opacity: 0; }
+.hw-armed .hw-stop.is-on .hw-row:nth-child(1) .hw-ok svg { transition-delay: 1.25s; }
+.hw-armed .hw-stop.is-on .hw-row:nth-child(2) .hw-ok svg { transition-delay: 1.5s; }
+.hw-armed .hw-stop.is-on .hw-row:nth-child(3) .hw-ok svg { transition-delay: 1.75s; }
+.hw-armed .hw-stop:nth-child(3).is-on .hw-score { transition-delay: 1.9s; }
+.hw-armed .hw-bar i { transition: background-color .25s ease, box-shadow .25s ease; }
+.hw-armed .hw-stop:not(.is-on) .hw-bar i { background: rgba(255,255,255,.08); box-shadow: none; }
+.hw-armed .hw-stop.is-on .hw-bar i:nth-child(1) { transition-delay: 2.05s; }
+.hw-armed .hw-stop.is-on .hw-bar i:nth-child(2) { transition-delay: 2.14s; }
+.hw-armed .hw-stop.is-on .hw-bar i:nth-child(3) { transition-delay: 2.23s; }
+.hw-armed .hw-stop.is-on .hw-bar i:nth-child(4) { transition-delay: 2.32s; }
+.hw-armed .hw-stop.is-on .hw-bar i:nth-child(5) { transition-delay: 2.41s; }
+.hw-armed .hw-stop.is-on .hw-bar i:nth-child(6) { transition-delay: 2.5s; }
+.hw-armed .hw-stop.is-on .hw-bar i:nth-child(7) { transition-delay: 2.59s; }
+.hw-armed .hw-stop.is-on .hw-bar i:nth-child(8) { transition-delay: 2.68s; }
+.hw-armed .hw-stop.is-on .hw-bar i:nth-child(9) { transition-delay: 2.77s; }
+.hw-armed :is(.hw-score-name, .hw-score-t) { transition: opacity .5s ease, translate .6s cubic-bezier(.22, 1, .36, 1); }
+.hw-armed .hw-stop:not(.is-on) :is(.hw-score-name, .hw-score-t) { opacity: 0; translate: 0 6px; }
+.hw-armed .hw-stop.is-on .hw-score-name { transition-delay: 2.95s; }
+.hw-armed .hw-stop.is-on .hw-score-t { transition-delay: 3.15s; }
+/* reduce motion: the gentle version (Ed, 2026-10-16). Light, fades, ticks and numbers stay; nothing slides, scales,
+   ripples or sweeps. */
+@media (prefers-reduced-motion: reduce) {
+  .hw-armed .hw-stop:not(.is-on) :is(.hw-badge, .hw-screen, .hw-row, .hw-pills span, .hw-ok svg, .hw-call-v, .hw-score-name, .hw-score-t),
+  .hw-armed .hw-stop:not(.is-on) > :is(.hw-when, h3, .hw-line, .hw-link),
+  .hw-armed .hw-stop:not(.is-on) .hw-screen :is(.hw-mode, .hw-focus, .hw-signed, .hw-tile, .hw-call, .hw-coach, .hw-score) { translate: none; scale: none; }
+  .hw-badge::after, .hw-armed .hw-signed::before { display: none; }
+}
 .focus-feature-tag { display: inline-block; margin-left: 8px; vertical-align: middle; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); color: var(--mk-brand); border: 1px solid rgba(212,175,55,.35); border-radius: var(--mk-radius-pill); padding: 2px 8px; }
 /* free tools: four tools, each a gold icon, a name, what it does and one line that sells it; each lands on its own
    explanation (index section 05, Ed 2026-10-15) */
@@ -2699,7 +2797,7 @@ document.addEventListener("DOMContentLoaded", function() {
             <p class="hw-k">TODAY'S FOCUS</p>
             <p>Pick two names from the gappers list by 9:00, not five.</p>
           </div>
-          <p class="hw-signed"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>CONTRACT SIGNED</p>
+          <p class="hw-signed"><svg viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M5 12.5l4.5 4.5L19 7.5"/></svg>CONTRACT SIGNED</p>
         </div>
       </li>
       <li class="hw-stop hw-stop--live">
@@ -2755,6 +2853,70 @@ document.addEventListener("DOMContentLoaded", function() {
     <p class="how-note reveal">Checkpoints, COACH SAYS, strikes and the Focus Room are Pro. The journal and the daily grade come with every plan.</p>
   </div>
 </section>
+<script>
+/* How It Works plays its day once (Ed, 2026-10-16: "elegant and impactful"). Wide screens: once the cards reach the
+   screen, the timeline draws to each stop in turn and that stop's card plays (about nine seconds), then the glint
+   runs again. Stacked (900px and under): each stop plays as its card scrolls in. Counts: the 10:30 and debrief
+   P&L to +$120.00, the debrief's 2 trades and its 8.3 score. Reduce motion gets the gentle version in CSS. Without
+   IntersectionObserver nothing is armed and the section stands finished. Classes only; the CSS is under .hw-armed. */
+(function () {
+  var hw = document.querySelector('.hw');
+  if (!hw || !('IntersectionObserver' in window) || !window.matchMedia) return;
+  var stops = Array.prototype.slice.call(hw.querySelectorAll('.hw-stop'));
+  if (stops.length !== 3) return;
+  // [stop, selector, from, to, decimals, prefix, start ms after the stop lights]
+  var COUNTS = [
+    [1, '.hw-tile:nth-child(1) .hw-tile-v', 0, 120, 2, '+$', 550],
+    [2, '.hw-tile:nth-child(1) .hw-tile-v', 0, 120, 2, '+$', 550],
+    [2, '.hw-tile:nth-child(2) .hw-tile-v', 0, 2, 0, '', 650],
+    [2, '.hw-score-v', 0, 8.3, 1, '', 2000]
+  ];
+  // The score keeps its "/ 10" (a <small>); only its first text node counts.
+  function target(el) { return el.firstChild && el.firstChild.nodeType === 3 ? el.firstChild : null; }
+  COUNTS.forEach(function (c) {
+    var el = stops[c[0]].querySelector(c[1]), t = el && target(el);
+    if (t) t.nodeValue = c[5] + c[2].toFixed(c[4]);
+  });
+  hw.classList.add('hw-armed');
+
+  function count(t, c) {
+    var t0 = null;
+    function step(now) {
+      if (t0 === null) t0 = now;
+      var u = Math.min(1, (now - t0) / 900), e = 1 - Math.pow(1 - u, 3);
+      t.nodeValue = c[5] + (c[2] + (c[3] - c[2]) * e).toFixed(c[4]);
+      if (u < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+  function play(i) {
+    var s = stops[i]; if (s.classList.contains('is-on')) return;
+    s.classList.add('is-on');
+    COUNTS.forEach(function (c) {
+      if (c[0] !== i) return;
+      var el = s.querySelector(c[1]), t = el && target(el);
+      if (t) setTimeout(function () { count(t, c); }, c[6]);
+    });
+  }
+  function at(ms, fn) { setTimeout(fn, ms); }
+  function once(el, opts, fn) {
+    var o = new IntersectionObserver(function (es) { if (es[0].isIntersecting) { o.disconnect(); fn(); } }, opts);
+    o.observe(el);
+  }
+
+  if (matchMedia('(max-width: 900px)').matches) {
+    stops.forEach(function (s, i) { once(s.querySelector('.hw-screen') || s, { threshold: 0.25 }, function () { play(i); }); });
+  } else {
+    // Starts when the top of the cards is well on screen, so the timeline above and the cards are both in view.
+    once(stops[0].querySelector('.hw-screen') || hw, { rootMargin: '0px 0px -20% 0px' }, function () {
+      hw.classList.add('hw-s1'); at(700, function () { play(0); });
+      at(2600, function () { hw.classList.add('hw-s2'); }); at(3200, function () { play(1); });
+      at(5400, function () { hw.classList.add('hw-s3'); }); at(6000, function () { play(2); });
+      at(9000, function () { hw.classList.add('hw-done'); });
+    });
+  }
+})();
+</script>
 
 <!-- 05 WHAT YOU GET -->
 <hr class="mk-rule-gold">
