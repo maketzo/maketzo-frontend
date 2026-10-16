@@ -566,41 +566,90 @@ hr.mk-rule-gold, hr.mk-rule-gold--bold { margin: 0 auto; max-width: 1180px; }
 .compare-soon { display:inline-block; font-size:.6rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--mk-brand); background:rgba(212,175,55,.10); border:1px solid rgba(212,175,55,.30); border-radius:var(--mk-radius-pill); padding:2px 8px; vertical-align:middle; }
 .compare-table td.featured-col { background: rgba(212,175,55,.04); }
 
-/* ── TRIAL STRIP ─────────────────────────────────────────────── */
+/* ── TRIAL MECHANICS, built to Ed's comp (2026-10-16) in our fonts and colours ─────────────
+   A gold dome of light over the header, the eyebrow at its original size with the comp's flanking hairlines, a
+   two-tone sub line, and three dark-glass cards with a gold edge, a light bar at the top and bottom, a ringed
+   medallion with hairlines running out from it, a larger title over a short gold rule, and a floor glow under the
+   row. The copy is unchanged. */
+.tm { position: relative; overflow: hidden; }
+.tm .section-inner { position: relative; z-index: 1; }
+.tm-dome { position: absolute; left: 50%; top: -80px; width: max(95vw, 900px); aspect-ratio: 1; transform: translateX(-50%); border-radius: 50%; border: 1.5px solid rgba(240,200,80,.62); box-shadow: 0 0 50px rgba(212,175,55,.18), inset 0 0 120px rgba(212,175,55,.09); -webkit-mask-image: linear-gradient(180deg, #000 0, #000 12%, rgba(0,0,0,.5) 30%, transparent 46%); mask-image: linear-gradient(180deg, #000 0, #000 12%, rgba(0,0,0,.5) 30%, transparent 46%); pointer-events: none; }
+.tm-dome::after { content: ''; position: absolute; inset: -9%; border-radius: 50%; border: 1px solid rgba(240,200,80,.16); box-shadow: 0 0 60px rgba(212,175,55,.08); }
+.tm::before { content: ''; position: absolute; left: 50%; top: 0; width: min(1300px, 100vw); height: 620px; transform: translateX(-50%); background: radial-gradient(ellipse 55% 60% at 50% 22%, rgba(212,175,55,.09), transparent 72%); pointer-events: none; }
+.tm-eyebrow { display: flex; align-items: center; justify-content: center; gap: 18px; }
+.tm-eyebrow::before, .tm-eyebrow::after { content: ''; width: 92px; height: 1px; flex: none; }
+.tm-eyebrow::before { background: linear-gradient(90deg, transparent, rgba(212,175,55,.7)); }
+.tm-eyebrow::after { background: linear-gradient(90deg, rgba(212,175,55,.7), transparent); }
+.tm .section-sub { color: rgba(255,255,255,.88); }
+.tm-sub-2 { display: block; color: var(--mk-text-secondary); }
 .trial-strip {
+  position: relative;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  max-width: 960px;
-  margin: 0 auto;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 30px;
+  width: min(1300px, calc(100vw - 48px));
+  margin-left: 50%;
+  translate: -50% 0;
 }
+.trial-strip::after { content: ''; position: absolute; left: 50%; bottom: -30px; width: 66%; height: 2px; transform: translateX(-50%); background: linear-gradient(90deg, transparent, rgba(246,221,140,.95), transparent); box-shadow: 0 0 34px 6px rgba(212,175,55,.34); pointer-events: none; }
 .trial-card {
+  position: relative;
+  display: flex; flex-direction: column; align-items: center;
   text-align: center;
-  padding: 28px 24px;
-  background: var(--mk-surface-raised);
-  border: 1px solid rgba(255,255,255,.06);
-  border-radius: var(--mk-radius-card);
+  padding: 40px 34px 38px;
+  background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.012) 55%), rgba(10,12,18,.72);
+  border: 1px solid rgba(222,186,80,.66);
+  border-radius: 18px;
+  box-shadow: 0 0 0 1px rgba(212,175,55,.08), 0 0 44px rgba(212,175,55,.2), inset 0 1px 0 rgba(255,220,130,.3), inset 0 0 50px rgba(212,175,55,.06);
 }
-.trial-card-icon {
-  display: inline-flex; align-items: center; justify-content: center;
-  width: 44px; height: 44px;
-  border-radius: 50%;
-  background: rgba(212,175,55,.08);
-  border: var(--mk-border-gold-soft);
-  color: var(--mk-brand);
-  font-size: 1.2rem;
-  margin-bottom: 14px;
-}
+.trial-card::before, .trial-card::after { content: ''; position: absolute; left: 50%; height: 2px; transform: translateX(-50%); border-radius: 2px; pointer-events: none; }
+.trial-card::before { top: -1px; width: 58%; background: linear-gradient(90deg, transparent, #F6DD8C, transparent); box-shadow: 0 0 20px 3px rgba(240,200,80,.55); }
+.trial-card::after { bottom: -1px; width: 44%; background: linear-gradient(90deg, transparent, rgba(240,200,80,.8), transparent); box-shadow: 0 0 16px 2px rgba(240,200,80,.35); }
+.tm-medal-row { display: flex; align-items: center; justify-content: center; gap: 16px; width: 100%; margin-bottom: 26px; }
+.tm-medal-row::before, .tm-medal-row::after { content: ''; flex: 0 1 96px; height: 1px; }
+.tm-medal-row::before { background: linear-gradient(90deg, transparent, rgba(212,175,55,.65)); }
+.tm-medal-row::after { background: linear-gradient(90deg, rgba(212,175,55,.65), transparent); }
+.tm-medal { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 74px; height: 74px; border-radius: 50%; background: radial-gradient(circle at 50% 40%, #191c24, #0b0d12 70%); border: 2px solid #D4AF37; box-shadow: 0 0 0 4px rgba(212,175,55,.12), 0 0 26px rgba(240,200,80,.42), inset 0 0 16px rgba(240,200,80,.22); font-family: var(--mk-font-display); font-size: 2.1rem; line-height: 1; font-variant-numeric: tabular-nums; }
+.tm-medal span { background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.tm-medal .tm-x { font-family: var(--mk-font-sans); font-size: 2.3rem; font-weight: 300; line-height: 1; }
 .trial-card-title {
   font-family: var(--mk-font-display);
-  font-size: var(--mk-display-sm);
+  font-size: 2.15rem;
   letter-spacing: var(--mk-track-display);
   text-transform: uppercase;
   color: var(--mk-text-primary);
-  margin-bottom: 6px;
+  line-height: 1.1;
 }
-.trial-card-text { font-size: var(--mk-text-sm); color: var(--mk-text-tertiary); line-height: 1.5; }
-@media (max-width: 800px) { .trial-strip { grid-template-columns: 1fr; max-width: 420px; } }
+.tm-rule { display: block; width: 34px; height: 2px; margin: 16px auto 20px; background: var(--mk-gold-gradient); border-radius: 2px; }
+.trial-card-text { font-size: var(--mk-text-lg); color: rgba(255,255,255,.86); line-height: 1.7; }
+@media (max-width: 1100px) { .trial-strip { gap: 20px; } .trial-card { padding: 34px 24px 32px; } .trial-card-title { font-size: 1.7rem; } .trial-card-text { font-size: var(--mk-text-md); } }
+@media (max-width: 800px) { .trial-strip { grid-template-columns: 1fr; width: min(440px, calc(100vw - 40px)); gap: 26px; } .trial-card-title { font-size: 1.9rem; } .tm-dome { width: 175vw; top: -40px; } }
+/* The trial in motion: the dome lights, then the three cards light in the order the trial runs (the seven days count
+   1 to 7, then day 8, then cancel any time), each card's top light opening from the centre, its medallion igniting
+   and its hairlines and rule drawing out, then the floor glow spreads. About 1.6 s a card. The words never change
+   or dim; nothing applies without .tm-armed, so with no script the section is the comp as drawn. Reduce motion
+   keeps the light and the count and fades the lines in instead of drawing them. Stacked, each card plays as it
+   comes into view, in order. */
+.tm-armed .tm-dome { opacity: .3; transition: opacity 1.8s ease; }
+.tm-armed.is-lit .tm-dome { opacity: 1; }
+.tm-armed .trial-card { transition: opacity var(--mk-dur-slow) var(--mk-ease-out), transform var(--mk-dur-slow) var(--mk-ease-out), border-color .9s ease, box-shadow 1.1s ease; }
+.tm-armed .trial-card:not(.is-on) { border-color: rgba(212,175,55,.2); box-shadow: 0 0 0 1px rgba(212,175,55,.03), inset 0 1px 0 rgba(255,220,130,.08); }
+.tm-armed .trial-card::before, .tm-armed .trial-card::after, .tm-armed .tm-rule, .tm-armed .tm-medal-row::before, .tm-armed .tm-medal-row::after, .tm-armed .trial-strip::after { transition: transform .9s cubic-bezier(.45, 0, .25, 1), opacity .9s ease; }
+.tm-armed .trial-card:not(.is-on)::before, .tm-armed .trial-card:not(.is-on)::after { transform: translateX(-50%) scaleX(0); }
+.tm-armed .trial-card:not(.is-on) .tm-rule { transform: scaleX(0); }
+.tm-armed .tm-medal-row::before { transform-origin: right; }
+.tm-armed .tm-medal-row::after { transform-origin: left; }
+.tm-armed .trial-card:not(.is-on) .tm-medal-row::before, .tm-armed .trial-card:not(.is-on) .tm-medal-row::after { transform: scaleX(0); }
+.tm-armed .tm-medal { transition: box-shadow 1s ease, border-color .8s ease; }
+.tm-armed .trial-card:not(.is-on) .tm-medal { border-color: rgba(212,175,55,.45); box-shadow: 0 0 0 4px rgba(212,175,55,.05), inset 0 0 10px rgba(240,200,80,.08); }
+.tm-armed .trial-card.is-on .tm-medal { animation: tmIgnite 1.4s ease-out both; }
+.tm-armed:not(.is-floor) .trial-strip::after { transform: translateX(-50%) scaleX(0); }
+@keyframes tmIgnite { 0% { box-shadow: 0 0 0 4px rgba(212,175,55,.05), 0 0 0 rgba(240,200,80,0), inset 0 0 10px rgba(240,200,80,.08); } 40% { box-shadow: 0 0 0 8px rgba(212,175,55,.16), 0 0 44px rgba(240,200,80,.7), inset 0 0 20px rgba(240,200,80,.35); } 100% { box-shadow: 0 0 0 4px rgba(212,175,55,.12), 0 0 26px rgba(240,200,80,.42), inset 0 0 16px rgba(240,200,80,.22); } }
+@media (prefers-reduced-motion: reduce) {
+  .tm-armed .trial-card:not(.is-on)::before, .tm-armed .trial-card:not(.is-on)::after { transform: translateX(-50%); opacity: 0; }
+  .tm-armed .trial-card:not(.is-on) .tm-rule, .tm-armed .trial-card:not(.is-on) .tm-medal-row::before, .tm-armed .trial-card:not(.is-on) .tm-medal-row::after { transform: none; opacity: 0; }
+  .tm-armed:not(.is-floor) .trial-strip::after { transform: translateX(-50%); opacity: 0; }
+}
 
 /* ── FAQ ─────────────────────────────────────────────────────── */
 .faq-wrap { max-width: 800px; margin: 0 auto; }
@@ -1167,27 +1216,31 @@ a.toolkit-card { text-decoration: none; color: inherit; }
 
 <hr class="mk-rule-gold">
 
-<!-- TRIAL MECHANICS -->
-<section class="section section-dark">
+<!-- TRIAL MECHANICS, built to Ed's comp (2026-10-16); the copy is unchanged. -->
+<section class="section section-dark tm" id="trial-mechanics">
+  <div class="tm-dome" aria-hidden="true"></div>
   <div class="section-inner">
-    <p class="section-eyebrow reveal">TRIAL MECHANICS</p>
+    <p class="section-eyebrow tm-eyebrow reveal">TRIAL MECHANICS</p>
     <h2 class="section-title reveal">Try every feature. <em>Pay only if it sticks.</em></h2>
-    <p class="section-sub reveal">Card required at signup so day-8 billing is friction-free. Cancel anytime in your account. One click, no questions, no save-the-customer call.</p>
+    <p class="section-sub reveal">Card required at signup so day-8 billing is friction-free. Cancel anytime in your account. <span class="tm-sub-2">One click, no questions, no save-the-customer call.</span></p>
 
     <div class="trial-strip">
       <div class="trial-card reveal">
-        <div class="trial-card-icon">7</div>
+        <div class="tm-medal-row" aria-hidden="true"><span class="tm-medal"><span class="tm-count">7</span></span></div>
         <div class="trial-card-title">7 Full Days</div>
+        <span class="tm-rule" aria-hidden="true"></span>
         <div class="trial-card-text">Every feature in your chosen tier, from the resource toolkit on Journal to the discipline OS on Pro. On Pro and Elite, the trial includes 15 Dilution Check company reads.</div>
       </div>
       <div class="trial-card reveal">
-        <div class="trial-card-icon">$</div>
+        <div class="tm-medal-row" aria-hidden="true"><span class="tm-medal"><span>$</span></span></div>
         <div class="trial-card-title">No Charge Until Day 8</div>
+        <span class="tm-rule" aria-hidden="true"></span>
         <div class="trial-card-text">Card on file via Stripe. Day 8 billing only if you stay. We email you a heads-up 3 days before. Use all 15 company reads before day 8 and you can start your plan early to keep reading. That charges your card that day, and only when you confirm it.</div>
       </div>
       <div class="trial-card reveal">
-        <div class="trial-card-icon">✕</div>
+        <div class="tm-medal-row" aria-hidden="true"><span class="tm-medal"><span class="tm-x">&times;</span></span></div>
         <div class="trial-card-title">One-Click Cancel</div>
+        <span class="tm-rule" aria-hidden="true"></span>
         <div class="trial-card-text">Cancel from your account page any time. No phone call, no email chain.</div>
       </div>
     </div>
@@ -1197,6 +1250,60 @@ a.toolkit-card { text-decoration: none; color: inherit; }
     </div>
   </div>
 </section>
+<script>
+/* The trial in motion, once (the CSS comment above .tm-armed says what plays and why). */
+(function () {
+  var sec = document.getElementById('trial-mechanics');
+  var strip = sec && sec.querySelector('.trial-strip');
+  if (!strip || !('IntersectionObserver' in window) || !window.requestAnimationFrame) return;
+  var cards = Array.prototype.slice.call(strip.querySelectorAll('.trial-card'));
+  var count = sec.querySelector('.tm-count');
+  if (cards.length !== 3 || !count) return;
+  var DAYS = Number(count.textContent) || 7;
+  sec.classList.add('tm-armed');
+  count.textContent = '1';
+
+  // The seven days glide by: one eased count from 1 to 7.
+  function countDays() {
+    var t0 = null, DUR = 1100;
+    function step(t) {
+      if (t0 === null) t0 = t;
+      var p = Math.min(1, (t - t0) / DUR), e = 1 - Math.pow(1 - p, 2);
+      count.textContent = String(Math.max(1, Math.round(1 + (DAYS - 1) * e)));
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+  var beats = [
+    function () { cards[0].classList.add('is-on'); countDays(); },
+    function () { cards[1].classList.add('is-on'); },
+    function () { cards[2].classList.add('is-on'); }
+  ];
+  var next = 0, busy = false, seen = 0, BEAT = 1600;
+  function pump() {
+    if (busy || next >= beats.length || next >= seen) {
+      if (next >= beats.length && !busy) setTimeout(function () { sec.classList.add('is-floor'); }, 200);
+      return;
+    }
+    busy = true; beats[next++]();
+    setTimeout(function () { busy = false; pump(); }, BEAT);
+  }
+  var od = new IntersectionObserver(function (es) {
+    if (!es[0].isIntersecting) return;
+    od.disconnect(); sec.classList.add('is-lit');
+  }, { threshold: 0.15 });
+  od.observe(sec);
+  cards.forEach(function (c, i) {
+    var o = new IntersectionObserver(function (es) {
+      if (!es[0].isIntersecting) return;
+      o.disconnect();
+      seen = Math.max(seen, i + 1);
+      setTimeout(pump, 500);
+    }, { threshold: 0.6 });
+    o.observe(c);
+  });
+})();
+</script>
 
 <hr class="mk-rule-gold">
 
