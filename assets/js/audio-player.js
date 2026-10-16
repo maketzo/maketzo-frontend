@@ -78,11 +78,11 @@ var MK_SHARE_ICON_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1
       var title = li.getAttribute("data-title");
       var eyebrow = li.getAttribute("data-eyebrow");
       if (src) audio.src = src;
-      // Opt-in: a player with a style line shows the song and its style apart (/focus, 2026-10-16).
+      // Opt-in: a player with a style line shows the song and its style apart (/focus, 2026-10-16). The line stays
+      // in place when a track has no style, so the player never changes size between tracks.
       if (styleEl) {
         title = li.getAttribute("data-name") || title;
         styleEl.textContent = li.getAttribute("data-style") || "";
-        styleEl.hidden = !styleEl.textContent;
       }
       if (title && titleEl) titleEl.textContent = title;
       if (eyebrow && eyebrowEl) eyebrowEl.textContent = eyebrow;
@@ -760,7 +760,7 @@ var MK_SHARE_ICON_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1
         if (audio && tracks[0].src) audio.src = tracks[0].src;
         if (titleEl && tracks[0].name) titleEl.textContent = tracks[0].name;
         var styleEl = player.querySelector(".mk-audio-player__style");
-        if (styleEl) { styleEl.textContent = tracks[0].variantTag || ""; styleEl.hidden = !styleEl.textContent; }
+        if (styleEl) styleEl.textContent = tracks[0].variantTag || "";
         // Content advisory for the track the player is cued to. Class toggle rather
         // than markup injection: titleEl is written with textContent everywhere else,
         // and mixing the two is how a title ends up escaping or double-rendering.
