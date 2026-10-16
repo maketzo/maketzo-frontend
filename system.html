@@ -640,8 +640,8 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
   .fd-arm-t, .fd-floor-t, .fd-high text { font-size: 15px; }
   .fd-pill, .fd-pill-t { display: none; }
 }
-/* Reduce motion (Ed's PC runs with Windows animations off): the gentle version. The line steps from update to update
-   instead of sweeping, the header still counts, the card and labels change with it; no ripple. */
+/* Reduce motion (Ed's PC runs with Windows animations off): the gentle version. The chart draws on the same clock
+   (the floor appears only once the P&L passes $200), the numbers roll with it; the card does not slide, no ripple. */
 .fdx-gentle .fd-card.is-pre { transform: none; }
 .fdx-gentle .fd-called.is-on .fd-ring { animation: none; }
 @media (max-width: 860px) { .floorx { grid-template-columns: minmax(0, 1fr); padding: 24px 20px; } }
@@ -987,8 +987,10 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
    and every number on the card (the app's own card and strings), so the chart and the card always agree. The glide
    never stops; it slows through the floor setting (half the $400 goal), the new high (the floor rising to $176) and
    the fall back to the floor, where the day is called. Each rule on the left lights at its moment. Plays once when
-   the chart is well in view; every value ends exactly as written. Reduce motion keeps the finished chart still and
-   rolls the numbers only; without IntersectionObserver nothing is armed. */
+   the chart is well in view; every value ends exactly as written. Reduce motion plays the same glide, chart included
+   (Ed, whose PC has animations off: a still, finished chart showed the floor from the first frame while the numbers
+   rolled, "the yellow line persists throughout which makes no sense"); only the card's slide and the ring's ripple
+   go. Without IntersectionObserver nothing is armed. */
 (function () {
   var box = document.getElementById('profit-floor');
   if (!box || !('IntersectionObserver' in window)) return;
@@ -1041,7 +1043,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
   cush.textContent = money(ARM) + ' to go to ' + money(ARM); demo.style.setProperty('--fd-gone', 0);
   [called, high, floorT, cushLine].forEach(function (el) { el.classList.add('is-pre'); });
   head.textContent = '+$0';
-  if (!gentle) wipe.setAttribute('width', 0);
+  wipe.setAttribute('width', 0);
 
   var best = 0, bestX = X0, lastX = X0, armed = false, raised = false;
   function show(x) {
@@ -1050,7 +1052,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
     var pnl = pnlAt(x);
     if (pnl > best) { best = pnl; bestX = x; }
     lastX = x;
-    if (!gentle) wipe.setAttribute('width', x + 1.2);
+    wipe.setAttribute('width', x + 1.2);
     head.textContent = signed(pnl);
     if (!armed && best >= ARM) {
       armed = true;
@@ -1065,12 +1067,10 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
     }
     var floor = best * KEEP, given = Math.max(0, best - pnl);
     if (!raised && best > 205.5) { raised = true; lit(1); }
-    if (!gentle) {
-      highDot.setAttribute('cx', bestX); highDot.setAttribute('cy', y(best));
-      highT.setAttribute('x', bestX); highT.setAttribute('y', y(best) - 10.6);
-      floorT.setAttribute('x', x + 8); floorT.setAttribute('y', y(floor) + 3.5);
-      cushLine.setAttribute('x1', x); cushLine.setAttribute('x2', x); cushLine.setAttribute('y1', y(pnl) + 3); cushLine.setAttribute('y2', y(floor) - 1);
-    }
+    highDot.setAttribute('cx', bestX); highDot.setAttribute('cy', y(best));
+    highT.setAttribute('x', bestX); highT.setAttribute('y', y(best) - 10.6);
+    floorT.setAttribute('x', x + 8); floorT.setAttribute('y', y(floor) + 3.5);
+    cushLine.setAttribute('x1', x); cushLine.setAttribute('x2', x); cushLine.setAttribute('y1', y(pnl) + 3); cushLine.setAttribute('y2', y(floor) - 1);
     highT.textContent = 'HIGH ' + money(best);
     floorT.textContent = 'FLOOR ' + money(floor);
     eb.textContent = 'PROFIT FLOOR'; from.textContent = 'from ' + money(best) + ' high'; amt.textContent = money(floor);
