@@ -612,6 +612,13 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 .fd-card.is-called .fd-amt { color: var(--mk-text-primary); }
 .fd-card.is-called .fd-bar i { background: var(--mk-danger-500); }
 .fd-card.is-called .fd-override { visibility: visible; }
+/* Before the floor sets: the card counts the way there, muted, its bar filling toward $200. */
+.fd-card.is-waiting { border-color: rgba(255,255,255,.12); }
+.fd-card.is-waiting::before { background: rgba(212,175,55,.4); }
+.fd-card.is-waiting .fd-eb { color: var(--mk-text-tertiary); }
+.fd-card.is-waiting .fd-amt { color: var(--mk-text-tertiary); }
+.fd-card.is-waiting .fd-bar i { background: rgba(212,175,55,.45); }
+.fdx-armed .fd-card .fd-eb, .fdx-armed .fd-card .fd-amt { transition: color .6s ease; }
 .floorx-list li { transition: color .5s ease; }
 .floorx-list li::before { transition: border-color .5s ease, filter .5s ease; }
 .fdx-armed .floorx-list li.is-lit { color: var(--mk-text-primary); }
@@ -1026,7 +1033,12 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 
   box.classList.add('fdx-armed');
   if (gentle) box.classList.add('fdx-gentle');
-  card.classList.add('is-pre'); card.classList.remove('is-called');
+  // The card is live from the first frame (Ed: "You need to start earlier!"): until the floor sets it counts the
+  // way there. (In the app this card appears once the floor is set; the lead-in is the page's.)
+  card.classList.add('is-waiting'); card.classList.remove('is-called');
+  eb.textContent = 'PROFIT FLOOR'; from.textContent = 'sets at ' + money(ARM); amt.textContent = 'Not set yet';
+  cap.textContent = 'Sets once your best P&L reaches ' + money(ARM) + ', half your daily goal.';
+  cush.textContent = money(ARM) + ' to go to ' + money(ARM); demo.style.setProperty('--fd-gone', 0);
   [called, high, floorT, cushLine].forEach(function (el) { el.classList.add('is-pre'); });
   head.textContent = '+$0';
   if (!gentle) wipe.setAttribute('width', 0);
@@ -1042,10 +1054,15 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
     head.textContent = signed(pnl);
     if (!armed && best >= ARM) {
       armed = true;
-      [card, floorT, cushLine, high].forEach(function (el) { el.classList.remove('is-pre'); });
+      [floorT, cushLine, high].forEach(function (el) { el.classList.remove('is-pre'); });
+      card.classList.remove('is-waiting');
       arm.classList.add('is-crossed'); lit(0); glow(card);
     }
-    if (!armed) return;
+    if (!armed) {
+      cush.textContent = money(ARM - best) + ' to go to ' + money(ARM);
+      demo.style.setProperty('--fd-gone', Math.max(0, Math.min(1, best / ARM)));
+      return;
+    }
     var floor = best * KEEP, given = Math.max(0, best - pnl);
     if (!raised && best > 205.5) { raised = true; lit(1); }
     if (!gentle) {
@@ -1082,8 +1099,9 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
     }
     requestAnimationFrame(step);
   }
-  var o = new IntersectionObserver(function (es) { if (es[0].isIntersecting) { o.disconnect(); play(); } }, { threshold: 0.6 });
-  o.observe(demo);
+  // starts as soon as the chart is half on screen, so the climb is seen from its first dollar
+  var o = new IntersectionObserver(function (es) { if (es[0].isIntersecting) { o.disconnect(); play(); } }, { threshold: 0.5 });
+  o.observe(box.querySelector('.fd-chart') || demo);
 })();
 </script>
 
