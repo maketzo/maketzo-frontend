@@ -53,7 +53,9 @@
 <link rel="stylesheet" href="assets/css/components.css">
 <script src="assets/js/mkt-analytics.js?v=9" defer></script>
 <script src="assets/js/mkt-consent.js?v=1" defer></script>
+<link rel="stylesheet" href="assets/css/audio-player.css?v=11">
 <script src="assets/js/checkout.js?v=10" defer></script>
+<script src="assets/js/audio-player.js?v=11" defer></script>
 <script src="assets/js/newsletter.js?v=5" defer></script>
 <style>
 /* ====================================================================
@@ -2607,12 +2609,63 @@ document.addEventListener("DOMContentLoaded", function() {
   </div>
 </section>
 
+<!-- 06 THE SOUNDTRACK -->
+<hr class="mk-rule-gold">
+
+<section class="section section-dark mk-soundtrack-section">
+  <div class="section-inner mk-soundtrack-inner">
+    <div class="mk-soundtrack-copy reveal">
+      <p class="section-eyebrow">06 &middot; The Soundtrack</p>
+      <h2 class="mk-soundtrack-title">We turned trading mistakes <em>into music</em>.</h2>
+      <p class="mk-soundtrack-lede">Most traders know exactly what they should do. The hard part is actually doing it.</p>
+      <p class="mk-soundtrack-body">That&rsquo;s why MAKETZO includes something you won&rsquo;t find anywhere else: a trading soundtrack designed to keep you focused, disciplined, and out of your own way.</p>
+      <p class="mk-soundtrack-body">The songs are catchy, painfully relatable, and built around the mistakes every trader knows too well: revenge trading, FOMO, overtrading, and paying &ldquo;tuition to the market.&rdquo;</p>
+      <p class="mk-soundtrack-cue">Hit play on <em>&ldquo;I Paid Tuition to the Market.&rdquo;</em> You&rsquo;ll laugh, cringe, and probably recognize yourself.</p>
+      <p class="mk-soundtrack-body">And the next time you&rsquo;re tempted to force a trade, the chorus may be the thing that keeps you sitting on your hands.</p>
+      <p class="mk-soundtrack-tagline">Mental conditioning, disguised as music.</p>
+    </div>
+    <div class="mk-audio-player mk-soundtrack-player reveal">
+      <audio preload="metadata">
+        <source src="https://pub-aedb1c7ff17d48a496393b71ec4b91ee.r2.dev/music/track-tuition.mp3" type="audio/mpeg">
+      </audio>
+      <div class="mk-audio-player__inner">
+        <div class="mk-audio-player__art">
+          <img src="assets/album-cover.jpg" alt="Earn the Right album cover" onerror="this.style.display='none'">
+        </div>
+        <div class="mk-audio-player__main">
+          <div class="mk-audio-player__meta">
+            <p class="mk-audio-player__eyebrow">MAKETZO &middot; Earn the Right</p>
+            <h3 class="mk-audio-player__title">I Paid Tuition to the Market<span class="mk-audio-player__explicit mk-audio-player__explicit--full" role="img" aria-label="Explicit lyrics" title="Explicit lyrics">EXPLICIT LYRICS</span></h3>
+          </div>
+          <div class="mk-audio-player__controls">
+            <button class="mk-audio-player__play" type="button" aria-label="Play / pause">
+              <svg class="mk-audio-player__icon mk-audio-player__icon--play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+              <svg class="mk-audio-player__icon mk-audio-player__icon--pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg>
+            </button>
+            <div class="mk-audio-player__bar" role="slider" tabindex="0" aria-label="Seek">
+              <div class="mk-audio-player__progress"></div>
+            </div>
+            <div class="mk-audio-player__time">
+              <span class="mk-audio-player__time-cur">0:00</span>
+              <span class="mk-audio-player__time-sep">/</span>
+              <span class="mk-audio-player__time-dur">0:00</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="mk-cta-repeat">
+      <button class="btn-primary" data-cta-source="soundtrack" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
+    </div>
+  </div>
+</section>
+
 <!-- PRICING -->
 <hr class="mk-rule-gold">
 
 <section class="section" id="pricing">
   <div class="section-inner">
-    <p class="section-eyebrow reveal">06 &middot; Pricing</p>
+    <p class="section-eyebrow reveal">07 &middot; Pricing</p>
     <h2 class="section-title reveal">Start free. Stay because it works.</h2>
     <p class="section-sub reveal">7-day free trial on all plans. Card required, not charged until day 8. Cancel anytime.</p>
     <div class="pricing-toggle-wrap reveal">
@@ -2681,7 +2734,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 <section class="section section-dark" id="faq">
   <div class="section-inner">
-    <p class="section-eyebrow reveal">07 &middot; Questions</p>
+    <p class="section-eyebrow reveal">08 &middot; Questions</p>
     <h2 class="section-title reveal">The questions traders actually ask.</h2>
     <p class="section-sub reveal">Anything else, email info@maketzo.co. We read every one.</p>
     <div class="faq-list">
