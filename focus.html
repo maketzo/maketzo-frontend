@@ -117,16 +117,16 @@ hr.mk-rule-gold, hr.mk-rule-gold--bold { margin: 0 auto; max-width: 1180px; }
   object-fit: cover;
   object-position: 50% 40%;
   display: block;
-  -webkit-mask-image: linear-gradient(90deg, #000 0%, #000 50%, rgba(0,0,0,0.55) 68%, transparent 88%, transparent 100%);
-          mask-image: linear-gradient(90deg, #000 0%, #000 50%, rgba(0,0,0,0.55) 68%, transparent 88%, transparent 100%);
+  -webkit-mask-image: linear-gradient(90deg, #000 0%, #000 min(100% - 716px, 50% + 4px), rgba(0,0,0,0.55) min(100% - 461px, 50% + 259px), transparent min(100% - 173px, 50% + 547px), transparent 100%);
+          mask-image: linear-gradient(90deg, #000 0%, #000 min(100% - 716px, 50% + 4px), rgba(0,0,0,0.55) min(100% - 461px, 50% + 259px), transparent min(100% - 173px, 50% + 547px), transparent 100%);
 }
 .page-hero-scrim {
   position: absolute; inset: 0; z-index: 1; pointer-events: none;
   background: linear-gradient(90deg,
-    transparent 40%,
-    rgba(6,7,10,0.14) 50%,
-    rgba(6,7,10,0.74) 66%,
-    var(--mk-obsidian-950) 92%);
+    transparent min(100% - 864px, 50% - 144px),
+    rgba(6,7,10,0.14) min(100% - 720px, 50%),
+    rgba(6,7,10,0.74) min(100% - 490px, 50% + 230px),
+    var(--mk-obsidian-950) min(100% - 115px, 50% + 605px));
 }
 .page-hero-inner {
   position: relative; z-index: 2;
@@ -148,6 +148,30 @@ hr.mk-rule-gold, hr.mk-rule-gold--bold { margin: 0 auto; max-width: 1180px; }
 .page-hero-sub { font-size: var(--mk-text-lg); color: var(--mk-text-secondary); line-height: var(--mk-lead-body); margin-bottom: 14px; text-shadow: 0 1px 24px rgba(0,0,0,0.5); }
 .page-hero-sub:last-child { margin-bottom: 0; }
 .page-hero-sub--action { color: var(--mk-text-primary); }
+
+/* The fade is measured from the copy column's left edge, as on system.html (identical to the old 50/68/88% stops at
+   1440; at narrower desk widths the copy no longer lands on the bright part of the photo). */
+/* Wider than 1440, ultrawide included (Ed, 2026-10-16: "make sure hero images are completely responsive even at max
+   resolution"). The photo is sized to the room beside the copy, not the window: its box ends where the 1440 fade
+   ends (50% + 547px, just past the copy's left edge) and reaches left at most 1.9x the hero's height, so the photo
+   is never zoomed past a fifth of its frame and never leaves a black gap before the copy. On wide windows the hero
+   grows toward that height (up to the window's height) so the photo still reaches the left edge, and the copy centres
+   in it. A window wider than 2.4:1 can still outgrow it, so there the photo's left edge fades into the obsidian. */
+@media (min-width: 1441px) {
+  .page-hero-inner { min-height: min(calc((50vw + 547px) / 1.9), 100vh); align-items: center; }
+  .page-hero-bg { left: auto; right: calc(50% - 547px); width: auto; height: 100%; max-width: calc(50% + 547px); aspect-ratio: 19 / 10; }
+  .page-hero-bg img {
+    object-position: 0% 30%;
+    -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 543px), rgba(0,0,0,0.55) calc(100% - 288px), transparent 100%);
+            mask-image: linear-gradient(90deg, #000 calc(100% - 543px), rgba(0,0,0,0.55) calc(100% - 288px), transparent 100%);
+  }
+}
+@media (min-width: 1441px) and (min-aspect-ratio: 12/5) {
+  .page-hero-bg img {
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 140px, #000 calc(100% - 543px), rgba(0,0,0,0.55) calc(100% - 288px), transparent 100%);
+            mask-image: linear-gradient(90deg, transparent 0%, #000 140px, #000 calc(100% - 543px), rgba(0,0,0,0.55) calc(100% - 288px), transparent 100%);
+  }
+}
 
 /* Hero entrance — class-flip + transition, no @keyframes. */
 .page-hero .page-hero-eyebrow,

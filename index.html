@@ -369,6 +369,35 @@ html.mkt-auth .nav-login-btn:hover{color:var(--mk-text-on-gold);background:var(-
   color: var(--mk-text-tertiary);
   margin-top: 2px;
 }
+/* Wider than 1440, ultrawide included (Ed, 2026-10-16: "make sure hero images are completely responsive even at max
+   resolution"). The photo is sized to the room beside the copy, not the window: its box starts where the 1440 fade
+   starts (50% - 518px) and reaches right at most 1.75x the hero's height, so it is barely cropped (its HUD cards run
+   the photo's full height; at the full window width they were cut off at 3440). On wide windows the hero grows
+   toward that height (up to the window's height) so the photo still reaches the right edge, and the copy centres in
+   it. Wider than 2.7:1 the photo's right edge fades into the obsidian. Fade and scrim are measured from the 1440 row
+   (identical at 1440). */
+@media (min-width: 1441px) {
+  .hero-content { min-height: min(calc((50vw + 518px) / 1.75), 100vh); justify-content: center; }
+  .hero-bg { right: auto; left: calc(50% - 518px); width: auto; height: 100%; max-width: calc(50% + 518px); aspect-ratio: 7 / 4; }
+  .hero-bg img {
+    object-position: 67.5% 50%;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, rgba(0,0,0,0.45) 288px, #000 547px);
+            mask-image: linear-gradient(90deg, transparent 0, rgba(0,0,0,0.45) 288px, #000 547px);
+  }
+  .hero-scrim {
+    background: linear-gradient(90deg,
+      var(--mk-obsidian-950) calc(50% - 720px),
+      rgba(6,7,10,0.72) calc(50% - 288px),
+      rgba(6,7,10,0.12) calc(50% - 58px),
+      transparent calc(50% + 86px));
+  }
+}
+@media (min-width: 1441px) and (min-aspect-ratio: 27/10) {
+  .hero-bg img {
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, rgba(0,0,0,0.45) 288px, #000 547px, #000 calc(100% - 140px), transparent 100%);
+            mask-image: linear-gradient(90deg, transparent 0, rgba(0,0,0,0.45) 288px, #000 547px, #000 calc(100% - 140px), transparent 100%);
+  }
+}
 @media (max-width: 1200px) {
   .hero-content { padding: 116px 44px 64px; }
   .hero-bg img { object-position: 50% center; }
