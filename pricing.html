@@ -572,27 +572,27 @@ hr.mk-rule-gold, hr.mk-rule-gold--bold { margin: 0 auto; max-width: 1180px; }
    proportion is MEASURED from it and scaled to the viewport (the comp is 1672 wide: 1vw there = 16.72 comp px), so
    the section keeps the comp's proportions at any desktop width. The eyebrow keeps the site's original size (Ed's
    one constraint). The copy is unchanged. */
-.section.tm { position: relative; overflow: hidden; background: #05090d; padding-bottom: calc(88px + 2vw); }
+.section.tm { position: relative; overflow: hidden; background: #05090d; padding-bottom: calc(88px + 40px); }
 .tm .section-inner { position: relative; z-index: 1; max-width: none; }
 /* The dome: fitted from two points on the comp's arc, a circle 95.2% of the width whose top sits 12.2vw above the
    eyebrow. A thin gold line (#dbbb72 at its brightest) that fades down the sides, and a faint slate outer arc. */
-.tm-dome { position: absolute; left: 50%; top: calc(88px - 12.2vw); width: 95.2vw; aspect-ratio: 1; transform: translateX(-50%); border-radius: 50%; border: 1.5px solid #e2c27a; box-shadow: 0 0 16px rgba(226,180,96,.4), inset 0 0 26px rgba(226,180,96,.12); -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 6%, #000 20%, rgba(0,0,0,.45) 32%, transparent 44%); mask-image: linear-gradient(180deg, transparent 0, #000 6%, #000 20%, rgba(0,0,0,.45) 32%, transparent 44%); pointer-events: none; }
-.tm-dome::after { content: ''; position: absolute; inset: -7.5%; border-radius: 50%; border: 1px solid rgba(64,80,94,.55); -webkit-mask-image: linear-gradient(180deg, #000 0, #000 18%, transparent 40%); mask-image: linear-gradient(180deg, #000 0, #000 18%, transparent 40%); }
-.tm::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 38vw; background: radial-gradient(ellipse 48% 70% at 50% 0%, rgba(40,58,78,.16), transparent 70%); pointer-events: none; }
+.tm-dome { position: absolute; left: 50%; top: calc(96px - 16.09vw); width: 78.11vw; height: 65.19vw; transform: translateX(-50%); border-radius: 50%; border: 1.5px solid #efd29c; box-shadow: 0 0 10px rgba(230,180,100,.45), 0 0 26px rgba(214,160,80,.16), inset 0 0 38px 4px rgba(64,82,100,.2); -webkit-mask-image: linear-gradient(180deg, #000 0, #000 18%, rgba(0,0,0,.72) 22%, #000 27%, #000 34%, rgba(0,0,0,.45) 38%, transparent 42.5%); mask-image: linear-gradient(180deg, #000 0, #000 18%, rgba(0,0,0,.72) 22%, #000 27%, #000 34%, rgba(0,0,0,.45) 38%, transparent 42.5%); pointer-events: none; }
+.tm::after { content: ''; position: absolute; left: 50%; top: calc(96px - 18.79vw); width: 90.55vw; height: 70.57vw; transform: translateX(-50%); border-radius: 50%; border: 1px solid rgba(84,102,120,.85); -webkit-mask-image: linear-gradient(180deg, #000 0, #000 27%, rgba(0,0,0,.35) 33.5%, transparent 39%); mask-image: linear-gradient(180deg, #000 0, #000 27%, rgba(0,0,0,.35) 33.5%, transparent 39%); pointer-events: none; }
+.tm::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 38vw; pointer-events: none; background: radial-gradient(ellipse 5% 3.2vw at 20.2% 0, rgba(255,236,196,.42), rgba(230,190,120,.12) 45%, transparent 100%), radial-gradient(ellipse 7% 4.4vw at 79.6% 0, rgba(255,240,210,.5), rgba(220,200,160,.14) 45%, transparent 100%), radial-gradient(ellipse 48% 70% at 50% 0%, rgba(40,58,78,.18), transparent 70%); }
 .tm-eyebrow { display: flex; align-items: center; justify-content: center; gap: 18px; }
 .tm-eyebrow::before, .tm-eyebrow::after { content: ''; width: 92px; height: 1px; flex: none; }
 .tm-eyebrow::before { background: linear-gradient(90deg, transparent, rgba(212,175,55,.7)); }
 .tm-eyebrow::after { background: linear-gradient(90deg, rgba(212,175,55,.7), transparent); }
 /* Headline and sub at the comp's measure: the headline spans 67% of the width, the sub's first line 64%. */
-.tm .section-title { font-size: clamp(2.2rem, 4.75vw, 5.2rem); line-height: 1; margin-bottom: 1.6vw; text-shadow: 0 2px 18px rgba(0,0,0,.6); }
+.tm .section-title { font-size: clamp(2.2rem, 4.75vw, 5.2rem); line-height: 1; margin-top: 2.5vw; margin-bottom: 1.1vw; text-shadow: 0 2px 18px rgba(0,0,0,.6); }
 .tm .section-title em { text-shadow: none; background: linear-gradient(180deg, #ffd766 0%, #ffcd4a 50%, #f2b53a 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
-.tm .section-sub { max-width: none; font-size: clamp(1rem, 1.56vw, 1.65rem); line-height: 1.6; color: #f4f6f8; margin-bottom: 4.4vw; }
+.tm .section-sub { max-width: none; font-size: clamp(1rem, 1.56vw, 1.65rem); line-height: 1.6; color: #f4f6f8; margin-bottom: 3.8vw; }
 .tm-sub-2 { display: block; color: #aeb7c2; }
 /* The row: 91% of the width, gaps of 1.85vw. */
-.trial-strip { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.85vw; width: 91.2vw; margin-left: 50%; translate: -50% 0; }
+.trial-strip { position: relative; z-index: 0; isolation: isolate; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.85vw; width: 91.2vw; margin-left: 50%; translate: -50% 0; }
 /* The floor: a white-hot streak under the middle card (#fdf7e3 at its core), dimmer bronze ones under the outer two. */
-.trial-strip::after { content: ''; position: absolute; left: 50%; bottom: -1.6vw; width: 26%; height: 2px; transform: translateX(-50%); background: linear-gradient(90deg, transparent, rgba(225,150,60,.55) 22%, #fdf7e3 50%, rgba(225,150,60,.55) 78%, transparent); box-shadow: 0 0 22px 5px rgba(214,140,50,.32); pointer-events: none; }
-.trial-strip::before { content: ''; position: absolute; left: 0; right: 0; bottom: calc(-1.6vw - 3px); height: 8px; background: radial-gradient(ellipse 9% 50% at 15% 50%, rgba(150,98,42,.75), transparent 72%), radial-gradient(ellipse 9% 50% at 85% 50%, rgba(150,98,42,.75), transparent 72%); filter: blur(1px); pointer-events: none; }
+.trial-strip::after { content: ''; position: absolute; left: 50%; bottom: -27px; width: 22%; height: 2px; transform: translateX(-50%); background: linear-gradient(90deg, transparent, rgba(207,148,60,.7) 25%, #fdf7e3 50%, rgba(207,148,60,.7) 75%, transparent); box-shadow: 0 0 18px 5px rgba(207,140,55,.42), 0 0 46px 10px rgba(180,120,50,.16); pointer-events: none; }
+.trial-strip::before { content: ''; position: absolute; left: 50%; top: 100%; width: 100vw; height: 92px; transform: translateX(-50%); z-index: -1; pointer-events: none; background: radial-gradient(ellipse 6.5% 5px at 13.8% 30px, rgba(120,84,44,.85), transparent 100%), radial-gradient(ellipse 6.5% 5px at 86.2% 30px, rgba(120,84,44,.85), transparent 100%), linear-gradient(180deg, rgba(14,14,14,.6) 0, rgba(40,30,20,.95) 18px, rgba(26,21,16,.75) 34px, rgba(14,14,14,.55) 54px, rgba(9,11,12,.3) 76px, transparent 92px); }
 /* The card: navy glass (#080b11 at the middle, lifting to #0f1215 low), warm light spilling down from the top flare
    and up from the bottom corners. The border is a gradient ring: silver-gold along the top (#bbb08b), bronze down the
    sides (#6d4625), bright gold along the bottom (#eeda7f). */
@@ -600,13 +600,16 @@ hr.mk-rule-gold, hr.mk-rule-gold--bold { margin: 0 auto; max-width: 1180px; }
   position: relative; isolation: isolate;
   display: flex; flex-direction: column; align-items: center;
   text-align: center;
-  padding: 2.4vw 2vw 3.2vw;
+  padding: 2.4vw 2vw 2vw;
   border-radius: 1.3vw;
   background:
-    radial-gradient(ellipse 52% 26% at 50% 0%, rgba(255,186,96,.24), rgba(255,170,80,.07) 48%, transparent 76%),
-    radial-gradient(ellipse 22% 9% at 0% 100%, rgba(236,160,64,.12), transparent 72%),
-    radial-gradient(ellipse 22% 9% at 100% 100%, rgba(236,160,64,.12), transparent 72%),
-    linear-gradient(180deg, #0b1118 0%, #080b11 46%, #0d1014 100%);
+    radial-gradient(ellipse 34% 9% at 50% 0%, rgba(255,196,110,.3), transparent 80%),
+    radial-gradient(ellipse 62% 16% at 50% 0%, rgba(120,140,156,.26), transparent 82%),
+    linear-gradient(180deg, rgba(30,46,62,.5) 0, rgba(26,36,46,.24) 32px, transparent 78px),
+    radial-gradient(ellipse 34% 11% at 0% 100%, rgba(160,112,60,.6), transparent 74%),
+    radial-gradient(ellipse 34% 11% at 100% 100%, rgba(160,112,60,.6), transparent 74%),
+    linear-gradient(0deg, rgba(70,58,44,.42) 0, rgba(36,32,28,.2) 18px, transparent 60px),
+    linear-gradient(180deg, #0a1118 0%, #080c10 30%, #080c11 72%, #0b0f12 100%);
   box-shadow: 0 0 26px rgba(214,150,60,.1), 0 18px 34px -18px rgba(236,170,70,.35);
 }
 .trial-card::before { content: ''; position: absolute; inset: 0; z-index: -1; border-radius: inherit; padding: 1px; pointer-events: none;
@@ -641,8 +644,8 @@ hr.mk-rule-gold, hr.mk-rule-gold--bold { margin: 0 auto; max-width: 1180px; }
 .tm-x svg { display: block; width: 100%; height: 100%; }
 /* Card text: the comp's title is white with a faint glow; a short gold rule (#baab5d); near-white body. */
 .trial-card-title { font-family: var(--mk-font-display); font-size: clamp(1.6rem, 2.75vw, 3rem); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: #fff; line-height: 1.05; text-shadow: 0 0 14px rgba(255,255,255,.12); }
-.tm-rule { display: block; width: 2.4vw; min-width: 28px; height: 2px; margin: 1.3vw auto 1.4vw; background: linear-gradient(90deg, #c9b464, #e9d58a, #c9b464); border-radius: 2px; box-shadow: 0 0 8px rgba(214,180,90,.35); }
-.trial-card-text { font-size: clamp(.95rem, 1.14vw, 1.25rem); color: #e7eaef; line-height: 1.68; max-width: 25vw; }
+.tm-rule { display: block; width: 2.4vw; min-width: 28px; height: 2px; margin: 1vw auto 1.15vw; background: linear-gradient(90deg, #c9b464, #e9d58a, #c9b464); border-radius: 2px; box-shadow: 0 0 8px rgba(214,180,90,.35); }
+.trial-card-text { font-size: clamp(.95rem, 1.14vw, 1.25rem); color: #e7eaef; line-height: 1.68; max-width: 23vw; }
 @media (max-width: 1100px) { .trial-card { padding: 30px 22px 36px; border-radius: 16px; } .trial-card-text { max-width: none; } }
 @media (max-width: 800px) {
   .trial-strip { grid-template-columns: 1fr; width: min(440px, calc(100vw - 40px)); gap: 30px; }
