@@ -434,6 +434,89 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
     <div class="mk-cta-repeat"><button class="btn-primary" data-cta-source="moment" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial</button></div>
   </div>
 </section>
+<script>
+/* The difference plays once (Ed, 2026-10-16: "Create a beautiful animation sequence in The Journal for this section").
+   Wide: once the cards are well on screen, the other journal's clock runs from Tuesday 10:42 to Wednesday 7:10 while
+   the loss tallies (it stops at the close), the entry writes itself, "A day late." lands; then that card steps back
+   and MAKETZO plays at 10:42, and both settle (about nine seconds). Stacked (900px and under): each card plays as it
+   comes into view. Every value ends exactly as written in the markup. Reduce motion gets the gentle version in
+   moment.css; without IntersectionObserver nothing is armed. Classes and text only; the CSS is under .mj-armed. */
+(function () {
+  var grid = document.querySelector('#the-moment .moment');
+  if (!grid || !('IntersectionObserver' in window) || !window.matchMedia) return;
+  var them = grid.querySelector('.moment-card--them'), us = grid.querySelector('.moment-card--us');
+  if (!them || !us) return;
+  var clock = them.querySelector('.moment-bar span:last-child'), loss = them.querySelector('.moment-v--loss');
+  var rows = them.querySelectorAll('.moment-row');
+  var note = rows[2] && rows[2].querySelector('.moment-v'), lesson = rows[3] && rows[3].querySelector('.moment-v');
+  var usPnl = us.querySelector('.moment-pnl-val');
+  if (!clock || !loss || !note || !lesson || !usPnl) return;
+  var D = ' · ';
+  var CLOCK = ['Tuesday' + D + '10:42 AM', 'Tuesday' + D + '11:25 AM', 'Tuesday' + D + '1:10 PM', 'Tuesday' + D + '2:45 PM',
+    'Tuesday' + D + '4:00 PM', 'Tuesday' + D + '8:15 PM', 'Tuesday' + D + '11:50 PM', 'Wednesday' + D + '3:30 AM'];
+  var finalClock = clock.textContent, fullNote = note.textContent, fullLesson = lesson.textContent;
+  function money(v) { return (v < 0 ? '−$' : '$') + Math.abs(v).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+  function tween(ms, fn) {
+    var t0 = null;
+    function step(now) {
+      if (t0 === null) t0 = now;
+      var u = Math.min(1, (now - t0) / ms);
+      fn(1 - Math.pow(1 - u, 3));
+      if (u < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+  function type(el, text, ms, done) {
+    el.classList.add('is-typing'); var n = 0;
+    (function next() {
+      n++; el.textContent = text.slice(0, n);
+      if (n < text.length) { setTimeout(next, ms); return; }
+      el.classList.remove('is-typing'); if (done) done();
+    })();
+  }
+  clock.textContent = CLOCK[0]; loss.textContent = money(0); note.textContent = ''; lesson.textContent = ''; usPnl.textContent = money(0);
+  grid.classList.add('mj-armed');
+
+  // The other journal: the day runs on, the loss tallies, the entry is written the next morning.
+  function playThem(done) {
+    if (them.classList.contains('is-on')) return;
+    them.classList.add('is-on');
+    CLOCK.concat([finalClock]).forEach(function (c, i) { setTimeout(function () { clock.textContent = c; }, 300 + i * 220); });
+    setTimeout(function () { tween(1000, function (e) { loss.textContent = money(-1140 * e); }); }, 300);
+    setTimeout(function () {
+      type(note, fullNote, 22, function () {
+        setTimeout(function () {
+          type(lesson, fullLesson, 22, function () {
+            setTimeout(function () { them.classList.add('is-done'); if (done) setTimeout(done, 700); }, 200);
+          });
+        }, 250);
+      });
+    }, 2800);
+  }
+  // MAKETZO, the same morning.
+  function playUs() {
+    if (us.classList.contains('is-on')) return;
+    us.classList.add('is-on');
+    setTimeout(function () { tween(900, function (e) { usPnl.textContent = money(-380 * e); }); }, 350);
+  }
+  function once(el, opts, fn) {
+    var o = new IntersectionObserver(function (es) { if (es[0].isIntersecting) { o.disconnect(); fn(); } }, opts);
+    o.observe(el);
+  }
+
+  if (matchMedia('(max-width: 900px)').matches) {
+    once(them, { threshold: 0.35 }, function () { playThem(); });
+    once(us, { threshold: 0.35 }, playUs);
+  } else {
+    once(grid, { threshold: 0.45 }, function () {
+      playThem(function () {
+        them.classList.add('is-past'); playUs();
+        setTimeout(function () { them.classList.remove('is-past'); }, 2700);
+      });
+    });
+  }
+})();
+</script>
 <hr class="mk-rule-gold">
 <!-- THE JOURNAL, IN FULL: the nineteen journal-plan capabilities, grouped (2026-10-15; the four-card block that duplicated the homepage is gone) -->
 <section class="section" id="in-full">
