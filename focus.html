@@ -639,6 +639,36 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
   line-height: 1.4;
 }
 @media (max-width: 700px) { .anchor-grid { grid-template-columns: repeat(2, 1fr); max-width: 480px; } .anchor-tile:nth-child(3) { display: none; } }
+/* The Anchors play once when the photos come into view (Ed, 2026-10-16: "Create a beautiful elegant animation for
+   this section"). Each photo surfaces the way the app's reset brings an anchor up on tilt (fr-reset-ghost-photo: up
+   out of the dark glass over 1.5 s, a gold mat edge lit), one after another, the heart lighting as it lands; as the
+   last one settles, the always-on line takes a run of light. The gold edge and glow then settle away, so the section
+   ends exactly as it stands without script. Nothing applies without .an-armed; reduce motion keeps the light and the
+   timing and drops the settle and the ring. */
+.an-armed .anchor-tile { transition: box-shadow 1.2s ease, border-color 1.2s ease; }
+.an-armed .anchor-tile img { filter: brightness(.3) saturate(.35) blur(6px); transform: scale(1.045);
+  transition: filter 1.5s cubic-bezier(.2,.7,.2,1), transform 1.9s cubic-bezier(.2,.7,.2,1); }
+.an-armed .anchor-tile.is-up img { filter: none; transform: none; }
+.an-armed .anchor-tile::before { content: ""; position: absolute; inset: 7px; z-index: 1; pointer-events: none;
+  border: 1px solid rgba(212,175,55,.55); border-radius: calc(var(--mk-radius-card) - 5px); opacity: 0; transition: opacity .9s ease; }
+.an-armed .anchor-tile.is-up::before { opacity: 1; }
+.an-armed .anchor-tile.is-up { border-color: rgba(212,175,55,.45); box-shadow: 0 18px 50px rgba(0,0,0,.45), 0 0 44px rgba(212,175,55,.14); }
+.an-armed .anchor-tile.is-up.is-settled { border-color: rgba(255,255,255,.08); box-shadow: none; }
+.an-armed .anchor-tile.is-up.is-settled::before { opacity: 0; transition-duration: 1.4s; }
+.an-armed .anchor-tile-heart { z-index: 2; opacity: .3; transition: opacity .8s ease .5s, box-shadow 1s ease; }
+.an-armed .anchor-tile.is-up .anchor-tile-heart { opacity: 1; box-shadow: 0 0 16px rgba(212,175,55,.55); }
+.an-armed .anchor-tile.is-settled .anchor-tile-heart { box-shadow: none; }
+.an-armed .anchor-tile-heart::after { content: ""; position: absolute; inset: -1px; border-radius: 999px; border: 1px solid rgba(212,175,55,.7); opacity: 0; }
+.an-armed .anchor-tile.is-up .anchor-tile-heart::after { animation: an-ring 1.2s ease-out .55s 1 both; }
+@keyframes an-ring { from { transform: scale(1); opacity: .8; } to { transform: scale(2.3); opacity: 0; } }
+.an-armed .anchor-line em { background-image: linear-gradient(100deg, transparent 38%, rgba(255,248,214,.95) 50%, transparent 62%), var(--mk-gold-gradient);
+  background-size: 260% 100%, 100% 100%; background-position: 130% 0, 0 0; background-repeat: no-repeat; }
+.an-armed .anchor-line.is-lit em { animation: an-shine 1.7s ease-in-out 1 both; }
+@keyframes an-shine { from { background-position: 130% 0, 0 0; } to { background-position: -30% 0, 0 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .an-armed .anchor-tile img { transform: none; }
+  .an-armed .anchor-tile.is-up .anchor-tile-heart::after { animation: none; }
+}
 
 /* ── THE LOCK-IN — day-contract mode cards ───────────────────────────── */
 .lockin-grid {
@@ -1413,9 +1443,9 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
     <h2 class="section-title reveal">The reason you <em>trade for.</em></h2>
     <p class="section-sub reveal">Upload up to five images of the life this account is really for. The people who depend on you, the thing you're building, the reason the rules exist at all. When a reset fires on tilt, they surface on the glass, right when the rule is hardest to keep.</p>
 
-    <div class="anchor-wrap">
+    <div class="anchor-wrap" id="anchors-wrap">
       <div class="anchor-concept-row">
-        <span class="anchor-concept-tag">PRO &middot; UP TO 5</span>
+        <span class="anchor-concept-tag">PRO</span>
       </div>
 
       <p class="anchor-examples-caption reveal">Examples of the personal anchors you can upload.</p>
@@ -1456,6 +1486,28 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
     </div>
   </div>
 </section>
+<script>
+/* The Anchors, surfacing (see the CSS note above .an-armed). The photos come up one after another once the grid is
+   half in view; the line takes its run of light as the last one settles. Hidden tiles (the third, on a phone) are
+   skipped. Without IntersectionObserver nothing is armed. */
+(function () {
+  var wrap = document.getElementById('anchors-wrap');
+  var grid = wrap && wrap.querySelector('.anchor-grid'), line = wrap && wrap.querySelector('.anchor-line');
+  if (!grid || !line || !('IntersectionObserver' in window)) return;
+  wrap.classList.add('an-armed');
+  var o = new IntersectionObserver(function (es) {
+    if (!es[0].isIntersecting) return;
+    o.disconnect();
+    var tiles = Array.prototype.slice.call(grid.querySelectorAll('.anchor-tile')).filter(function (t) { return t.offsetParent !== null; });
+    tiles.forEach(function (t, i) {
+      setTimeout(function () { t.classList.add('is-up'); }, 250 + i * 900);
+      setTimeout(function () { t.classList.add('is-settled'); }, 250 + i * 900 + 2600);
+    });
+    setTimeout(function () { line.classList.add('is-lit'); }, 250 + (tiles.length - 1) * 900 + 1300);
+  }, { threshold: 0.5 });
+  o.observe(grid);
+})();
+</script>
 
 <hr class="mk-rule-gold">
 
