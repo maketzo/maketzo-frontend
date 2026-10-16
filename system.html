@@ -18,7 +18,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta property="og:type" content="website">
 <link rel="canonical" href="https://maketzo.co/system">
-<link rel="preload" as="image" href="assets/system-hero.avif?v=2" type="image/avif" fetchpriority="high">
+<link rel="preload" as="image" href="assets/system-hero.avif?v=3" type="image/avif" fetchpriority="high">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/tokens.css">
@@ -125,16 +125,20 @@ hr.mk-rule-gold, hr.mk-rule-gold--bold { margin: 0 auto; max-width: 1180px; }
   object-fit: cover;
   object-position: 46% 40%;
   display: block;
-  -webkit-mask-image: linear-gradient(90deg, #000 0%, #000 50%, rgba(0,0,0,0.55) 68%, transparent 88%, transparent 100%);
-          mask-image: linear-gradient(90deg, #000 0%, #000 50%, rgba(0,0,0,0.55) 68%, transparent 88%, transparent 100%);
+  /* The fade is measured from the copy column's left edge (min(100% - 616px, 50% + 104px): the 552px column plus
+     64px padding, capped at the 1440px row), so the photo dims under the text at every desk width. At 1440 these
+     are exactly the old 50% / 68% / 88% stops; at 1180 the old percentages left the notebook bright under the
+     paragraph (2026-10-16, new photo). */
+  -webkit-mask-image: linear-gradient(90deg, #000 0%, #000 min(100% - 716px, 50% + 4px), rgba(0,0,0,0.55) min(100% - 461px, 50% + 259px), transparent min(100% - 173px, 50% + 547px), transparent 100%);
+          mask-image: linear-gradient(90deg, #000 0%, #000 min(100% - 716px, 50% + 4px), rgba(0,0,0,0.55) min(100% - 461px, 50% + 259px), transparent min(100% - 173px, 50% + 547px), transparent 100%);
 }
 .page-hero-scrim {
   position: absolute; inset: 0; z-index: 1; pointer-events: none;
   background: linear-gradient(90deg,
-    transparent 40%,
-    rgba(6,7,10,0.14) 50%,
-    rgba(6,7,10,0.74) 66%,
-    var(--mk-obsidian-950) 92%);
+    transparent min(100% - 864px, 50% - 144px),
+    rgba(6,7,10,0.14) min(100% - 720px, 50%),
+    rgba(6,7,10,0.74) min(100% - 490px, 50% + 230px),
+    var(--mk-obsidian-950) min(100% - 115px, 50% + 605px));
 }
 .page-hero-inner {
   position: relative; z-index: 2;
@@ -155,6 +159,11 @@ hr.mk-rule-gold, hr.mk-rule-gold--bold { margin: 0 auto; max-width: 1180px; }
 .page-hero-sub { font-size: var(--mk-text-lg); color: var(--mk-text-secondary); line-height: var(--mk-lead-body); margin-bottom: 14px; text-shadow: 0 1px 24px rgba(0,0,0,0.5); }
 .page-hero-sub:last-child { margin-bottom: 0; }
 .page-hero-sub--action { color: var(--mk-text-primary); }
+
+/* Wider than 1440 the photo keeps its own proportions at the hero's height instead of stretching to the full width,
+   so the trader and notebook sit where they do at 1440 and stay clear of the copy (at 1920 a full-width cover put
+   the bright notebook under the paragraph). */
+@media (min-width: 1441px) { .page-hero-bg img { width: auto; max-width: none; } }
 
 /* Hero entrance — class-flip + transition, no @keyframes. Mirrors index.html hero pattern. */
 .page-hero .page-hero-eyebrow,
@@ -702,9 +711,9 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 <!-- PAGE HERO -->
 <section class="page-hero">
   <picture class="page-hero-bg" aria-hidden="true">
-    <source srcset="assets/system-hero.avif?v=2" type="image/avif">
-    <source srcset="assets/system-hero.webp?v=2" type="image/webp">
-    <img src="assets/system-hero.png?v=2" alt="" fetchpriority="high" decoding="async">
+    <source srcset="assets/system-hero.avif?v=3" type="image/avif">
+    <source srcset="assets/system-hero.webp?v=3" type="image/webp">
+    <img src="assets/system-hero.png?v=3" alt="" fetchpriority="high" decoding="async">
   </picture>
   <div class="page-hero-scrim" aria-hidden="true"></div>
   <div class="page-hero-inner">
