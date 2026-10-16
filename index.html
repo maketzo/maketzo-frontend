@@ -2031,27 +2031,6 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
 .phero .hero-copy { min-width: 0; display: flex; flex-direction: column; align-items: flex-start; }
 .phero .hero-headline { font-size: clamp(2.4rem, 3.9vw, 3.7rem); max-width: none; text-shadow: none; }
 .phero .hero-sub { max-width: 52ch; }
-.hp-window { border-radius: 16px; background: var(--mk-obsidian-900); border: 1px solid rgba(212,175,55,.28); box-shadow: 0 30px 80px rgba(0,0,0,.55), var(--mk-glow-gold-sm); overflow: hidden; font-family: var(--mk-font-sans); }
-.hp-bar { display: flex; align-items: center; gap: 6px; padding: 10px 14px; background: var(--mk-obsidian-950); border-bottom: var(--mk-border-hairline); font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); color: var(--mk-text-tertiary); letter-spacing: .08em; text-transform: uppercase; }
-.hp-dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,.12); }
-.hp-bar-title { margin-left: 8px; color: var(--mk-text-secondary); }
-.hp-bar-time { margin-left: auto; }
-.hp-band { display: grid; gap: 3px; padding: 16px 18px; background: linear-gradient(90deg, rgba(245,158,11,.16), transparent 70%); border-left: 3px solid var(--mk-state-caution); }
-.hp-band-eyebrow { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-state-caution); }
-.hp-band-headline { font-family: var(--mk-font-display); font-size: 1.8rem; letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); line-height: 1; }
-.hp-band-sub { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); }
-.hp-tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; padding: 14px 18px 0; }
-.hp-tile { padding: 12px 14px; border-radius: var(--mk-radius-card); background: var(--mk-surface-raised); border: var(--mk-border-hairline); display: grid; gap: 4px; min-width: 0; }
-.hp-tile-label { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: .1em; text-transform: uppercase; color: var(--mk-text-tertiary); }
-.hp-tile-val { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xl); color: var(--mk-text-primary); white-space: nowrap; }
-.hp-tile-val small { font-size: var(--mk-mono-sm); color: var(--mk-text-tertiary); }
-.hp-tile--profit .hp-tile-val { color: var(--mk-state-profit); }
-.hp-coach { margin: 14px 18px 18px; padding: 14px 16px; border-radius: var(--mk-radius-card); background: rgba(212,175,55,.06); border: 1px solid rgba(212,175,55,.25); }
-.hp-coach-head { display: flex; justify-content: space-between; gap: 10px; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: .12em; text-transform: uppercase; color: var(--mk-brand); margin-bottom: 8px; }
-.hp-coach-msg { margin: 0 0 10px; font-size: var(--mk-text-md); color: var(--mk-text-primary); line-height: 1.4; }
-.hp-pills { display: flex; flex-wrap: wrap; gap: 6px; }
-.hp-pills span { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: .08em; padding: 4px 9px; border-radius: var(--mk-radius-pill); border: 1px solid rgba(255,255,255,.1); color: var(--mk-text-tertiary); }
-.hp-pills span.on { color: var(--mk-brand); border-color: rgba(212,175,55,.45); background: rgba(212,175,55,.08); }
 /* 01 Why MAKETZO: without / with, two cards from Ed's mock (2026-10-15). Red card = the trader alone, gold card = with the system. */
 .vs-sub strong { color: var(--mk-text-primary); font-weight: 600; }
 .vs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; max-width: 1180px; margin: 40px auto 0; }
@@ -2079,21 +2058,64 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
 .vs-arrow-head { fill: var(--mk-gold-300); }
 .vs-more { position: relative; z-index: 1; display: inline-block; margin-top: 18px; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: .14em; text-transform: uppercase; color: var(--mk-brand); text-decoration: none; }
 @media (max-width: 900px) { .vs { grid-template-columns: 1fr; gap: 18px; } .vs-card { padding: 24px 20px 22px; } .vs-chart { width: 190px; top: 12px; right: 12px; } }
-/* how it works: the three steps stacked at left, the dashboard at the 10:30 checkpoint at right, the whole shot one link to The System */
-.how-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 32px; align-items: center; max-width: 1100px; margin: 36px auto 0; }
-.how-steps { display: grid; gap: 14px; min-width: 0; }
-.how-shot { display: block; min-width: 0; text-decoration: none; color: inherit; transition: transform var(--mk-dur-snap) var(--mk-ease-out); }
-.how-shot:hover { transform: translateY(-3px); }
-.how-shot-cap { text-align: center; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-text-tertiary); margin: 0 0 12px; }
-.how-shot-more { text-align: center; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: .14em; text-transform: uppercase; color: var(--mk-brand); margin: 14px 0 0; }
-.how3-card h3 { font-family: var(--mk-font-display); font-size: var(--mk-display-sm); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); margin: 8px 0 8px; font-weight: 400; line-height: 1.1; }
-.how3-card p { margin: 0; font-size: var(--mk-text-sm); color: var(--mk-text-secondary); line-height: 1.55; }
-.how3-card { padding: 26px 24px; background: var(--mk-surface-raised); border: 1px solid rgba(212,175,55,.14); border-radius: var(--mk-radius-card); display: flex; flex-direction: column; gap: 10px; }
-.how3-card h3 { margin: 0; }
-.how3-card p { flex: 1; }
-.how3-card--live { border-color: rgba(212,175,55,.42); box-shadow: var(--mk-glow-gold-sm); background: linear-gradient(135deg, rgba(212,175,55,.08), transparent 60%), var(--mk-surface-raised); }
-.how3-step { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); }
-.how3-card a { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: .14em; text-transform: uppercase; color: var(--mk-brand); text-decoration: none; }
+/* how it works: one trading day as a timeline, three numbered stops, each with the app's own screen at that moment.
+   Ed's graphic is the look; every value is from a real morning on dev (tools/site-preview/capture-how.js). */
+.hw { list-style: none; position: relative; max-width: 1160px; margin: 44px auto 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 30px; }
+.hw::before { content: ""; position: absolute; top: 31px; left: -4%; right: -4%; height: 2px; background: linear-gradient(90deg, transparent, rgba(240,200,80,.55) 10%, var(--mk-gold-300) 50%, rgba(240,200,80,.55) 90%, transparent); box-shadow: 0 0 14px rgba(240,200,80,.45); }
+.hw::after { content: ""; position: absolute; top: 26px; left: 0; width: 140px; height: 12px; background: radial-gradient(closest-side, rgba(255,240,190,.95), rgba(240,200,80,.35) 55%, transparent); animation: hwGlint 7s linear infinite; pointer-events: none; }
+@keyframes hwGlint { from { transform: translateX(-140px); } to { transform: translateX(1160px); } }
+.hw-stop { position: relative; display: flex; flex-direction: column; align-items: center; min-width: 0; text-align: center; }
+.hw-badge { position: relative; z-index: 1; width: 64px; height: 64px; display: grid; place-items: center; border-radius: 50%; background: var(--mk-obsidian-950); border: 2px solid var(--mk-gold-300); font-family: var(--mk-font-display); font-size: 32px; line-height: 1; color: var(--mk-text-primary); box-shadow: 0 0 0 8px var(--mk-obsidian-950), 0 0 24px rgba(240,200,80,.45); }
+.hw-stop--live .hw-badge { width: 76px; height: 76px; margin-top: -6px; margin-bottom: -6px; border-width: 3px; font-size: 38px; animation: hwPulse 3.2s ease-in-out infinite; }
+@keyframes hwPulse { 0%, 100% { box-shadow: 0 0 0 8px var(--mk-obsidian-950), 0 0 26px rgba(240,200,80,.5); } 50% { box-shadow: 0 0 0 8px var(--mk-obsidian-950), 0 0 44px rgba(240,200,80,.85); } }
+.hw-when { margin: 22px 0 6px; font-family: var(--mk-font-mono); font-size: var(--mk-mono-sm); letter-spacing: .26em; text-transform: uppercase; color: var(--mk-gold-300); }
+.hw-stop h3 { margin: 0; font-family: var(--mk-font-display); font-size: clamp(1.9rem, 2.6vw, 2.5rem); letter-spacing: var(--mk-track-display); text-transform: uppercase; font-weight: 400; line-height: 1; color: var(--mk-text-primary); }
+.hw-line { margin: 10px auto 0; max-width: 34ch; min-height: 2.9em; font-size: var(--mk-text-md); line-height: 1.45; color: var(--mk-text-secondary); }
+.hw-link { margin-top: 8px; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: .14em; text-transform: uppercase; color: var(--mk-brand); text-decoration: none; border-bottom: 1px solid transparent; transition: border-color var(--mk-dur-snap) var(--mk-ease-out), color var(--mk-dur-snap); }
+.hw-link:hover { color: var(--mk-gold-300); border-bottom-color: rgba(240,200,80,.6); }
+.hw-screen { flex: 1; width: 100%; margin-top: 22px; display: flex; flex-direction: column; gap: 14px; padding: 22px; text-align: left; border-radius: 16px; background: linear-gradient(180deg, rgba(255,255,255,.03), transparent 45%), var(--mk-obsidian-900); border: 1px solid rgba(255,255,255,.09); box-shadow: 0 24px 60px rgba(0,0,0,.45); }
+.hw-stop--live .hw-screen { border-color: rgba(240,200,80,.6); box-shadow: 0 0 0 1px rgba(240,200,80,.12), 0 0 38px rgba(240,200,80,.2), 0 24px 60px rgba(0,0,0,.45); }
+.hw-screen p, .hw-screen ul { margin: 0; }
+.hw-k, .hw-screen .hw-k { display: block; margin: 0 0 8px; font-family: var(--mk-font-mono); font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--mk-text-tertiary); }
+.hw-mode { font-family: var(--mk-font-display); font-size: 30px; letter-spacing: var(--mk-track-display); line-height: 1; color: var(--mk-text-primary); }
+.hw-rows { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.hw-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 14px; border-radius: 10px; background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.07); font-size: var(--mk-text-sm); line-height: 1.35; color: var(--mk-text-secondary); }
+.hw-row b { font-weight: 700; white-space: nowrap; color: var(--mk-gold-300); }
+.hw-focus { padding: 12px 14px; border-radius: 10px; border-left: 3px solid var(--mk-gold-300); background: rgba(212,175,55,.07); }
+.hw-focus p:last-child { font-size: var(--mk-text-sm); line-height: 1.45; color: var(--mk-text-primary); }
+.hw-screen .hw-signed { margin-top: auto; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 14px; border-radius: 12px; border: 1px solid rgba(240,200,80,.55); background: linear-gradient(135deg, rgba(212,175,55,.24), rgba(212,175,55,.06)); box-shadow: 0 0 22px rgba(240,200,80,.16); font-family: var(--mk-font-mono); font-size: 13px; letter-spacing: .22em; color: var(--mk-gold-300); }
+.hw-signed svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+.hw-tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.hw-tile { min-width: 0; padding: 12px 14px; border-radius: 10px; background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.07); }
+.hw-screen .hw-tile .hw-k { margin-bottom: 4px; }
+.hw-tile-v { display: block; font-family: var(--mk-font-sans); font-weight: 800; font-size: 26px; line-height: 1.15; white-space: nowrap; color: var(--mk-text-primary); }
+.hw-tile-v small { font-size: 15px; font-weight: 500; color: var(--mk-text-tertiary); }
+.hw-pos { color: var(--mk-profit-500); text-shadow: 0 0 16px rgba(74,222,128,.28); }
+.hw-call { display: grid; gap: 6px; padding: 16px 14px; text-align: center; border-radius: 12px; border: 1px solid rgba(240,200,80,.6); background: linear-gradient(135deg, rgba(212,175,55,.26), rgba(212,175,55,.07)); box-shadow: 0 0 26px rgba(240,200,80,.2); }
+.hw-call-v { font-family: var(--mk-font-display); font-size: 34px; letter-spacing: .05em; line-height: 1; text-transform: uppercase; color: var(--mk-gold-300); text-shadow: 0 0 18px rgba(240,200,80,.4); }
+.hw-call-t { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); }
+.hw-coach { padding: 12px 14px; border-radius: 10px; background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.07); }
+.hw-coach p:last-child { font-size: var(--mk-text-md); line-height: 1.4; color: var(--mk-text-primary); }
+.hw-pills { display: flex; flex-wrap: wrap; gap: 6px; }
+.hw-pills span { padding: 7px 11px; border-radius: var(--mk-radius-pill); border: 1px solid rgba(255,255,255,.12); font-family: var(--mk-font-mono); font-size: 11px; letter-spacing: .1em; color: var(--mk-text-secondary); }
+.hw-ok { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; font-weight: 700; color: var(--mk-profit-500); }
+.hw-ok svg { width: 18px; height: 18px; fill: rgba(74,222,128,.14); stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.hw-score { padding: 14px; border-radius: 12px; background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.07); }
+.hw-score-top { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 12px; }
+.hw-score-v { font-family: var(--mk-font-sans); font-weight: 800; font-size: 40px; line-height: 1; color: var(--mk-profit-500); text-shadow: 0 0 18px rgba(74,222,128,.25); }
+.hw-score-v small { font-size: 17px; font-weight: 500; color: var(--mk-text-tertiary); text-shadow: none; }
+.hw-score-name { font-family: var(--mk-font-display); font-size: 24px; letter-spacing: var(--mk-track-display); color: var(--mk-text-primary); }
+.hw-screen .hw-bar { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 4px; margin: 12px 0 10px; }
+.hw-bar i { height: 10px; border-radius: 3px; background: rgba(255,255,255,.08); }
+.hw-bar i.on { background: var(--mk-gold-300); box-shadow: 0 0 8px rgba(240,200,80,.45); }
+.hw-bar i.part { background: linear-gradient(90deg, var(--mk-gold-300) 30%, rgba(255,255,255,.08) 30%); }
+.hw-score-t { font-size: var(--mk-text-sm); line-height: 1.45; color: var(--mk-text-secondary); }
+@media (max-width: 900px) {
+  .hw { grid-template-columns: 1fr; gap: 48px; max-width: 460px; }
+  .hw::before, .hw::after { display: none; }
+  .hw-line { min-height: 0; }
+}
+@media (prefers-reduced-motion: reduce) { .hw::after { display: none; } .hw-stop--live .hw-badge { animation: none; } }
 .how-note { text-align: center; margin: 26px auto 0; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: .08em; text-transform: uppercase; color: var(--mk-text-tertiary); }
 .tool-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 .tool-card { display: block; padding: 16px 18px; background: linear-gradient(135deg, rgba(212,175,55,.05), transparent 60%), var(--mk-surface-raised); border: 1px solid rgba(212,175,55,.18); border-left: 3px solid var(--mk-brand); border-radius: var(--mk-radius-card); text-decoration: none; color: inherit; transition: transform var(--mk-dur-snap) var(--mk-ease-out), border-color var(--mk-dur-snap); }
@@ -2105,14 +2127,13 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
 .wyg-line, .sec-more { text-align: center; max-width: 760px; margin: 28px auto 0; font-size: var(--mk-text-sm); color: var(--mk-text-secondary); line-height: 1.6; }
 /* the deeper links: a gold underlined word wherever a feature is named in running copy */
 .wyg-line a, .sec-more a, .faq-a a, .proof-sub a { color: var(--mk-brand); border-bottom: 1px solid rgba(212,175,55,.4); text-decoration: none; }
-@media (max-width: 900px) { .phero { padding: 112px 20px 48px; } .phero-grid { grid-template-columns: 1fr; gap: 32px; } .how-grid { grid-template-columns: 1fr; } .tool-grid--4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (max-width: 420px) { .tool-grid--4 { grid-template-columns: 1fr; } .hp-tiles { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 900px) { .phero { padding: 112px 20px 48px; } .phero-grid { grid-template-columns: 1fr; gap: 32px; } .tool-grid--4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 420px) { .tool-grid--4 { grid-template-columns: 1fr; } }
 
 /* h1: the photo hero with the dashboard over its right half */
 .hero-content--split { display: grid; grid-template-columns: 1.05fr 1fr; gap: 48px; align-items: center; }
 .hero-content--split .hero-copy { display: flex; flex-direction: column; align-items: flex-start; min-width: 0; }
 .hero-content--split .hero-headline { font-size: clamp(2.4rem, 3.9vw, 3.7rem); max-width: none; }
-.hero-content--split .hero-product { min-width: 0; }
 @media (max-width: 900px) { .hero-content--split { grid-template-columns: 1fr; gap: 28px; } }
 /* the trial button stays visible on phones, outside the hamburger */
 .nav-cta--phone { display: none; }
@@ -2484,49 +2505,81 @@ document.addEventListener("DOMContentLoaded", function() {
   <div class="section-inner">
     <p class="section-eyebrow reveal">04 &middot; How It Works</p>
     <h2 class="section-title reveal">Before the open. During the session. <em>After the close.</em></h2>
-    <p class="section-sub reveal">Everything runs off one number you type, your net P&amp;L. Connect DAS later for trade-level detail.</p>
-    <div class="how-grid reveal">
-      <div class="how-steps">
-        <div class="how3-card">
-          <span class="how3-step">Before the open</span>
-          <h3>The Lock-In</h3>
-          <p>A contract you sign while you're calm: your rules, your max loss, today's focus. It holds all day.</p>
-          <a href="focus.html#lock-in" data-cta-source="how" data-cta-target="focus-lock-in">Focus Room &rarr;</a>
+    <p class="section-sub reveal">Everything runs off one number you type, your net P&amp;L. MAKETZO holds you to your rules before, during and after.</p>
+    <ol class="hw reveal">
+      <li class="hw-stop">
+        <span class="hw-badge" aria-hidden="true">1</span>
+        <p class="hw-when">Before 9:30</p>
+        <h3>The Lock-In</h3>
+        <p class="hw-line">Sign your rules while you're calm.</p>
+        <a class="hw-link" href="focus.html#lock-in" data-cta-source="how" data-cta-target="focus-lock-in">How the Lock-In works &rarr;</a>
+        <div class="hw-screen" aria-label="The contract, signed before the open">
+          <div>
+            <p class="hw-k">TODAY'S CONTRACT</p>
+            <p class="hw-mode">A+ Only Day</p>
+          </div>
+          <ul class="hw-rows">
+            <li class="hw-row"><span>The day ends at</span><b>2 strikes</b></li>
+            <li class="hw-row"><span>Still red 90 min after the open</span><b>Day ends</b></li>
+            <li class="hw-row"><span>Give back half the peak</span><b>90-second pause</b></li>
+          </ul>
+          <div class="hw-focus">
+            <p class="hw-k">TODAY'S FOCUS</p>
+            <p>Pick two names from the gappers list by 9:00, not five.</p>
+          </div>
+          <p class="hw-signed"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>CONTRACT SIGNED</p>
         </div>
-        <div class="how3-card how3-card--live">
-          <span class="how3-step">During the session</span>
-          <h3>COACH SAYS, the strikes, the Reset</h3>
-          <p>At your checkpoints it calls the day from your real P&amp;L. Three strikes and MAKETZO closes your day inside the app, never at your broker. Tilt gets a Reset. A green run gets a floor.</p>
-          <a href="system.html#coach-says" data-cta-source="how" data-cta-target="system-coach-says">The System &rarr;</a>
+      </li>
+      <li class="hw-stop hw-stop--live">
+        <span class="hw-badge" aria-hidden="true">2</span>
+        <p class="hw-when">10:30</p>
+        <h3>The Checkpoint</h3>
+        <p class="hw-line">Type your P&amp;L. At each checkpoint, MAKETZO tells you what kind of day it is.</p>
+        <a class="hw-link" href="system.html#checkpoints" data-cta-source="how" data-cta-target="system-checkpoints">How the 10:30 call is made &rarr;</a>
+        <div class="hw-screen" aria-label="The dashboard at the 10:30 checkpoint">
+          <div class="hw-tiles">
+            <p class="hw-tile"><span class="hw-k">NET P&amp;L</span><span class="hw-tile-v hw-pos">+$120.00</span></p>
+            <p class="hw-tile"><span class="hw-k">STRIKES</span><span class="hw-tile-v">0 <small>of 2</small></span></p>
+          </div>
+          <p class="hw-call"><span class="hw-call-v">Protect Capital</span><span class="hw-call-t">Green at $120, $280 short of the $400 goal.</span></p>
+          <div class="hw-coach">
+            <p class="hw-k">COACH SAYS</p>
+            <p>Protect what you have. Take only the cleanest setup or step away.</p>
+          </div>
+          <div>
+            <p class="hw-k">YOUR CONTRACT, ON SCREEN ALL SESSION</p>
+            <p class="hw-pills"><span>A+ SETUPS ONLY</span><span>KEEP YOUR GAINS</span><span>TWO STRIKES CLOSES CONTRACT</span><span>PATIENCE IS KEY</span></p>
+          </div>
         </div>
-        <div class="how3-card">
-          <span class="how3-step">After the close</span>
-          <h3>The Debrief and the Picard Score</h3>
-          <p>The day reads itself back, graded on the rules you kept, not the money you made. Tomorrow's focus waits at the open.</p>
-          <a href="journal.html#in-full" data-cta-source="how" data-cta-target="journal-in-full">The Journal &rarr;</a>
+      </li>
+      <li class="hw-stop">
+        <span class="hw-badge" aria-hidden="true">3</span>
+        <p class="hw-when">After the close</p>
+        <h3>The Debrief</h3>
+        <p class="hw-line">Graded on the rules you followed, not the money you made.</p>
+        <a class="hw-link" href="journal.html#in-full" data-cta-source="how" data-cta-target="journal-in-full">What the journal records &rarr;</a>
+        <div class="hw-screen" aria-label="The debrief after the close">
+          <div class="hw-tiles">
+            <p class="hw-tile"><span class="hw-k">NET P&amp;L</span><span class="hw-tile-v hw-pos">+$120.00</span></p>
+            <p class="hw-tile"><span class="hw-k">TRADES</span><span class="hw-tile-v">2</span></p>
+          </div>
+          <div>
+            <p class="hw-k">IN-TRADE RULES</p>
+            <ul class="hw-rows">
+              <li class="hw-row"><span>The stop is the stop</span><span class="hw-ok"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M7.5 12.3l3 3 6-6.3"/></svg>Followed</span></li>
+              <li class="hw-row"><span>Never add to a loser</span><span class="hw-ok"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M7.5 12.3l3 3 6-6.3"/></svg>Followed</span></li>
+              <li class="hw-row"><span>No new names after 10:30</span><span class="hw-ok"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M7.5 12.3l3 3 6-6.3"/></svg>Followed</span></li>
+            </ul>
+          </div>
+          <div class="hw-score">
+            <p class="hw-k">PICARD SCORE</p>
+            <p class="hw-score-top"><span class="hw-score-v">8.3<small> / 10</small></span><span class="hw-score-name">Held the Line</span></p>
+            <p class="hw-bar" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="part"></i><i></i></p>
+            <p class="hw-score-t">You signed a contract and did not take a strike against it. That is most of this score.</p>
+          </div>
         </div>
-      </div>
-      <a class="how-shot" href="system.html#checkpoints" data-cta-source="how" data-cta-target="system-dashboard" aria-label="The dashboard at the 10:30 checkpoint. How the call is made, on The System page">
-        <p class="how-shot-cap">The dashboard at the 10:30 checkpoint</p>
-        <div class="hero-product" aria-hidden="true">
-      <div class="hp-window">
-        <div class="hp-bar"><span class="hp-dot"></span><span class="hp-dot"></span><span class="hp-dot"></span><span class="hp-bar-title">MAKETZO &middot; Dashboard</span><span class="hp-bar-time">10:30 AM ET</span></div>
-        <div class="hp-band"><span class="hp-band-eyebrow">Status</span><span class="hp-band-headline">Slow Day</span><span class="hp-band-sub">Flat at the 10:30 read. Protect capital, wind down.</span></div>
-        <div class="hp-tiles">
-          <div class="hp-tile hp-tile--profit"><span class="hp-tile-label">Session P&amp;L</span><span class="hp-tile-val">+$120.00</span></div>
-          <div class="hp-tile"><span class="hp-tile-label">Picard Score</span><span class="hp-tile-val">8<small>/10</small></span></div>
-          <div class="hp-tile"><span class="hp-tile-label">Strikes</span><span class="hp-tile-val">1<small> of 3</small></span></div>
-        </div>
-        <div class="hp-coach">
-          <div class="hp-coach-head"><span>&#128226; COACH SAYS</span><span>10:30 Checkpoint</span></div>
-          <p class="hp-coach-msg">Slow day. Protect capital: best setups only, or call it and keep the morning.</p>
-          <div class="hp-pills"><span class="on">SLOW DAY</span><span class="on">A+ SETUPS ONLY</span><span>NO EXPLORATORY</span><span class="on">STEP AWAY IF OFF</span><span>PROTECT CAPITAL</span></div>
-        </div>
-      </div>
-    </div>
-        <p class="how-shot-more">How the 10:30 call is made &rarr;</p>
-      </a>
-    </div>
+      </li>
+    </ol>
     <p class="how-note reveal">Checkpoints, COACH SAYS, strikes and the Focus Room are Pro. The journal and the daily grade come with every plan.</p>
   </div>
 </section>
@@ -2546,7 +2599,7 @@ document.addEventListener("DOMContentLoaded", function() {
       <a class="tool-card" href="tools.html#learn" data-cta-source="what-you-get" data-cta-target="knowledge-center"><div class="tool-card-title">Knowledge Center</div><p class="tool-card-text">Learn it, write it, drill it: the library, My Playbook, Flash Cards from what you wrote.</p></a>
       <a class="tool-card" href="tools.html#tape" data-cta-source="what-you-get" data-cta-target="sticky-notes"><div class="tool-card-title">Sticky Notes</div><p class="tool-card-text">A scratchpad over your platform. One click sends a note to the journal.</p></a>
       <a class="tool-card" href="journal.html#in-full" data-cta-source="what-you-get" data-cta-target="setups-mistakes"><div class="tool-card-title">Setups &amp; Mistakes</div><p class="tool-card-text">Mark the decision candle on the chart, tag the mistake, write the takeaway.</p></a>
-      <a class="tool-card" href="journal.html#in-full" data-cta-source="what-you-get" data-cta-target="picard-score"><div class="tool-card-title">Picard Score</div><p class="tool-card-text">A daily grade on the rules you kept, not the money you made.</p></a>
+      <a class="tool-card" href="journal.html#in-full" data-cta-source="what-you-get" data-cta-target="picard-score"><div class="tool-card-title">Picard Score</div><p class="tool-card-text">A daily grade on the rules you followed, not the money you made.</p></a>
       <a class="tool-card" href="soundtrack.html" data-cta-source="what-you-get" data-cta-target="soundtrack"><div class="tool-card-title">The Soundtrack</div><p class="tool-card-text">Trading mistakes, turned into music. Conditioning, disguised as an album.</p></a>
     </div>
     <p class="wyg-line reveal">Dilution Check comes with Pro. Everything else is on every plan. <a href="tools.html">Every free tool and game &rarr;</a> &nbsp;&middot;&nbsp; <a href="journal.html#compare">MAKETZO against TradeZella and TraderVue &rarr;</a></p>
@@ -2633,7 +2686,7 @@ document.addEventListener("DOMContentLoaded", function() {
     <div class="faq-list">
       <div class="faq-item reveal"><button class="faq-q" onclick="toggleFaq(this)">Do I need to connect my broker?</button><div class="faq-a"><strong>No.</strong> Type your net P&amp;L and the accountability engine runs from day one. DAS Trader Pro import is optional, for trade-level detail, &cent;/share tracking and session analysis from your fills.</div></div>
       <div class="faq-item reveal"><button class="faq-q" onclick="toggleFaq(this)">Can MAKETZO stop my broker from taking a trade?</button><div class="faq-a"><strong>No, and we say so plainly.</strong> At three strikes MAKETZO closes your day inside the app: the P&amp;L log locks, COACH SAYS tells you to walk, and getting back in is a deliberate override with the strikes still standing. Your broker never hears from it. It works because you set it up when you were calm, and the version of you that is tilting has to stop and choose.</div></div>
-      <div class="faq-item reveal"><button class="faq-q" onclick="toggleFaq(this)">How is this different from TradeZella or TraderVue?</button><div class="faq-a">They record and analyze trades well, and <strong>MAKETZO does that too</strong>: DAS import, &cent;/share, win rate, equity curve, streaks. The difference is what happens before the mistake: <a href="system.html#the-moment">checkpoints, strikes, a coach that speaks while the day is live</a>, and <a href="journal.html#in-full">a daily grade on the rules you kept</a>.</div></div>
+      <div class="faq-item reveal"><button class="faq-q" onclick="toggleFaq(this)">How is this different from TradeZella or TraderVue?</button><div class="faq-a">They record and analyze trades well, and <strong>MAKETZO does that too</strong>: DAS import, &cent;/share, win rate, equity curve, streaks. The difference is what happens before the mistake: <a href="system.html#the-moment">checkpoints, strikes, a coach that speaks while the day is live</a>, and <a href="journal.html#in-full">a daily grade on the rules you followed</a>.</div></div>
       <div class="faq-item reveal"><button class="faq-q" onclick="toggleFaq(this)">How does the 7-day free trial work?</button><div class="faq-a">Card required at signup, <strong>no charge until day 8</strong>. Cancel any time before then and you pay nothing. Pro and Elite get their TradingView indicator invite within 24 hours.</div></div>
       <div class="faq-item reveal"><button class="faq-q" onclick="toggleFaq(this)">Is MAKETZO built for small-cap traders?</button><div class="faq-a"><strong>Yes, on purpose.</strong> <a href="dilution-check.html">Dilution Check</a>, <a href="tools.html">Halt Clock</a> and the coaching cadence are built for the speed of small-cap momentum. If you trade large caps or swing, the accountability engine still applies; the indicators were tuned for small caps.</div></div>
       <div class="faq-item reveal"><button class="faq-q" onclick="toggleFaq(this)">Is my trading data private?</button><div class="faq-a">Yours alone. <strong>MAKETZO does not share, sell or expose your trading data</strong>, and nothing you log goes to an AI model unless you turn a feature on. Export or delete your data any time.</div></div>
