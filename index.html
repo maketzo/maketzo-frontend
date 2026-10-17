@@ -587,7 +587,7 @@ body:has(.sticky-bar.visible) { padding-bottom: 80px; }
 }
 .section-title em,
 .wyg-w,
-.trp-stat--if .trp-v {
+.trp-run--if .trp-v {
   font-style: normal;
   background: var(--mk-gold-gradient);
   -webkit-background-clip: text;
@@ -2290,7 +2290,7 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
    charts, and the section must sell; "SIMPLE to understand immediately"). A wide card, copy at left and one replayed
    trade at right: buy, add, sell, then the same trade with the add moved to the pullback. The other three below. */
 .wyg-feat { grid-column: 1 / -1; }
-.wyg-feat .wyg-card { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); align-items: center; gap: 36px; padding: 30px 30px 30px 32px; border-color: rgba(212,175,55,.3); isolation: isolate; background: linear-gradient(150deg, rgba(212,175,55,.06), rgba(255,255,255,.015) 55%, rgba(0,0,0,.18)); }
+.wyg-feat .wyg-card { position: relative; display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.45fr); align-items: center; gap: 36px; padding: 30px 30px 30px 32px; border-color: rgba(212,175,55,.3); isolation: isolate; background: linear-gradient(150deg, rgba(212,175,55,.06), rgba(255,255,255,.015) 55%, rgba(0,0,0,.18)); }
 /* A still gold haze behind the card (Ed: "some mist or hazy pattern"): soft pools of light, none of them moving. On its own layer, so the card's hover tint lays over it instead of replacing it. */
 .wyg-feat .wyg-card::before { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; pointer-events: none;
   background: radial-gradient(55% 85% at 6% 0%, rgba(229,197,114,.17), transparent 62%), radial-gradient(40% 60% at 34% 92%, rgba(212,175,55,.08), transparent 70%),
@@ -2299,65 +2299,79 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
 .wyg-feat .wyg-name { font-size: 2rem; }
 .wyg-feat .wyg-t { font-size: var(--mk-text-md); }
 .wyg-feat .wyg-w { margin-top: 0; padding-top: 0; }
-.trp { display: block; padding: 14px 16px 16px; border-radius: 14px; background: rgba(0,0,0,.28); border: 1px solid rgba(255,255,255,.07); }
-.trp-chart { display: block; width: 100%; height: auto; overflow: visible; }
+/* The same trade twice, each chart sitting on its own result (Ed, 2026-10-17: "pinning the graph to AS TRADED so
+   it's clear what's being watched. Then pinning the new add to the WHAT IF scenario... It needs to be brainless").
+   The only difference between the two is where the add is. On WHAT IF a faint ring keeps where it was, and the
+   dotted arrow carries it over the top of the chart, clear of the line, down to the pullback. */
+.trp { display: block; }
+.trp-pair { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+.trp-run { min-width: 0; display: flex; flex-direction: column; gap: 2px; padding: 12px 12px 14px; border-radius: 12px; background: rgba(0,0,0,.3); border: 1px solid rgba(255,255,255,.09); }
+.trp-run--if { background: rgba(212,175,55,.06); border-color: rgba(212,175,55,.4); }
+.trp-chart { display: block; width: 100%; height: auto; margin: 4px 0 6px; overflow: visible; }
 .trp-line { fill: none; stroke: rgba(232,237,233,.78); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-.trp-mk circle { fill: #E8EDE9; stroke: #0b0d0c; stroke-width: 2.5; transform-box: fill-box; transform-origin: center; }
+.trp-mk circle { fill: #E8EDE9; stroke: #0b0d0c; stroke-width: 2.2; transform-box: fill-box; transform-origin: center; }
 .trp-mk rect { fill: rgba(13,15,14,.92); stroke: rgba(232,237,233,.22); stroke-width: 1; }
-.trp-mk text { fill: #E8EDE9; font-family: var(--mk-font-mono); font-size: 9.5px; font-weight: 600; letter-spacing: .08em; text-anchor: middle; }
+.trp-mk text { fill: #E8EDE9; font-family: var(--mk-font-mono); font-size: 10.5px; font-weight: 600; letter-spacing: .06em; text-anchor: middle; }
 .trp-mk--buy circle { fill: var(--mk-profit-500); }
 .trp-mk--sell circle { fill: var(--mk-danger-500); }
 .trp-mk--add circle { fill: var(--mk-gold-500); }
 .trp-mk--add rect { stroke: rgba(212,175,55,.6); }
 .trp-mk--add text { fill: var(--mk-gold-400); }
 .trp-mk--add .trp-ring { fill: none; stroke: var(--mk-gold-500); stroke-width: 1.5; opacity: 0; }
+.trp-was { fill: none; stroke: rgba(232,237,233,.7); stroke-width: 1.6; stroke-dasharray: 2 2.2; }
 .trp-move-path { fill: none; stroke: var(--mk-gold-500); stroke-width: 2.2; stroke-linecap: round; stroke-dasharray: 0 5.5; }
 .trp-move-reveal { fill: none; stroke: #fff; stroke-width: 8; stroke-linecap: round; stroke-linejoin: round; }
 .trp-move-head { fill: var(--mk-gold-500); }
 .trp-move-v { fill: var(--mk-gold-400); font-family: var(--mk-font-mono); font-size: 11px; font-weight: 700; letter-spacing: .06em; text-anchor: middle; }
-.trp-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
-.trp-stat { min-width: 0; display: flex; flex-direction: column; gap: 2px; padding: 10px 14px; border-radius: 10px; background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.07); }
-.trp-stat--if { background: rgba(212,175,55,.07); border-color: rgba(212,175,55,.4); }
 .trp-k { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); color: var(--mk-text-secondary); }
-.trp-v { font-family: var(--mk-font-mono); font-size: clamp(1.15rem, 5vw, 1.6rem); font-weight: 600; line-height: 1.15; color: #E8EDE9; font-variant-numeric: tabular-nums; }
+.trp-run--if .trp-k { color: var(--mk-gold-400); }
 .trp-how { font-size: var(--mk-text-xs); color: var(--mk-text-secondary); }
-.trp-stat--if .trp-how { color: var(--mk-gold-400); }
+.trp-run--if .trp-how { color: var(--mk-gold-400); }
+.trp-v { font-family: var(--mk-font-mono); font-size: clamp(1.15rem, 5vw, 1.6rem); font-weight: 600; line-height: 1.15; color: #E8EDE9; font-variant-numeric: tabular-nums; }
 .trp-note { display: block; margin-top: 10px; text-align: center; font-size: var(--mk-text-sm); color: var(--mk-text-secondary); }
 @media (max-width: 900px) {
   .wyg-feat .wyg-card { grid-template-columns: minmax(0, 1fr); gap: 22px; padding: 24px 18px; }
-  .trp { padding: 12px 12px 14px; }
 }
+@media (max-width: 560px) { .trp-pair { grid-template-columns: minmax(0, 1fr); } }
 
-/* The replay plays once, when the chart is half on screen (classes from the script after the section; nothing is
-   armed without it, so the section stands finished). The line draws in 3 s and each dot lands as the line reaches
-   it; the sale counts AS TRADED to +$1,000; then the arrow draws from the $4.85 add, under the chart, up to the
-   $4.22 pullback, the gold add lands at its tip with +$630 beside the arrow, and WHAT IF counts to +$1,630. Every
-   end frame is the static card. */
+/* The replay plays once, when the charts are half on screen (classes from the script after the section; nothing is
+   armed without it, so the section stands finished). AS TRADED first: its panel lights, the line draws, BUY, the
+   $4.85 add and SELL land, and +$1,000 counts. Then WHAT IF: its panel lights, the same line draws, a faint ring sits
+   where the $4.85 add was, the dotted arrow carries it down to the $4.22 pullback, the gold add lands at its tip, and
+   +$1,630 counts. Every end frame is the static card. */
 .tk-armed .trp-line { stroke-dasharray: 1 1; stroke-dashoffset: 1; }
 .tk-armed .trp-mk circle { scale: 0; }
 .tk-armed .trp-mk :is(rect, text) { opacity: 0; }
+.tk-armed :is(.trp-was, .trp-move-head, .trp-move-v) { opacity: 0; }
 .tk-armed .trp-move-reveal { stroke-dasharray: 1 1; stroke-dashoffset: 1; }
-.tk-armed :is(.trp-move-head, .trp-move-v) { opacity: 0; }
-.tk-go .trp-line { animation: trpDraw 3s linear forwards; }
-.tk-go .trp-mk--buy circle { animation: trpPop .5s cubic-bezier(.3,1.5,.5,1) .48s forwards; }
-.tk-go .trp-mk--buy :is(rect, text) { animation: trpIn .5s ease .6s forwards; }
-.tk-go .trp-mk--sell circle { animation: trpPop .5s cubic-bezier(.3,1.5,.5,1) 2.28s forwards; }
-.tk-go .trp-mk--sell :is(rect, text) { animation: trpIn .5s ease 2.4s forwards; }
-.tk-go .trp-mk--was circle { animation: trpPop .5s cubic-bezier(.3,1.5,.5,1) 2.02s forwards; }
-.tk-go .trp-mk--was :is(rect, text) { animation: trpIn .5s ease 2.14s forwards; }
-.tk-go .trp-move-reveal { animation: trpDraw 1.4s cubic-bezier(.65,0,.35,1) 3.9s forwards; }
-.tk-go .trp-move-head { animation: trpIn .3s ease 5.15s forwards; }
-.tk-go .trp-mk--add > circle:not(.trp-ring) { animation: trpPop .5s cubic-bezier(.3,1.5,.5,1) 5.3s forwards; }
-.tk-go .trp-mk--add :is(rect, text) { animation: trpIn .5s ease 5.45s forwards; }
-.tk-go .trp-move-v { animation: trpIn .5s ease 5.5s forwards; }
-.tk-go .trp-ring { animation: trpRipple 1s ease-out 5.35s; }
-.tk-go .trp-stat--if { animation: trpLift 1.6s ease 5.5s; }
-.tk-go .trp-note { animation: trpSay 1.8s ease 6.5s; }
+.tk-go .trp-run--as { animation: trpOnAs 3.4s ease; }
+.tk-go .trp-run--as .trp-line { animation: trpDraw 2.4s linear forwards; }
+.tk-go .trp-run--as .trp-mk--buy circle { animation: trpPop .5s cubic-bezier(.3,1.5,.5,1) .38s forwards; }
+.tk-go .trp-run--as .trp-mk--buy :is(rect, text) { animation: trpIn .5s ease .5s forwards; }
+.tk-go .trp-run--as .trp-mk--was circle { animation: trpPop .5s cubic-bezier(.3,1.5,.5,1) 1.62s forwards; }
+.tk-go .trp-run--as .trp-mk--was :is(rect, text) { animation: trpIn .5s ease 1.74s forwards; }
+.tk-go .trp-run--as .trp-mk--sell circle { animation: trpPop .5s cubic-bezier(.3,1.5,.5,1) 1.83s forwards; }
+.tk-go .trp-run--as .trp-mk--sell :is(rect, text) { animation: trpIn .5s ease 1.95s forwards; }
+.tk-go .trp-run--if { animation: trpOnIf 5s ease 3.4s; }
+.tk-go .trp-run--if .trp-line { animation: trpDraw 1.6s linear 3.4s forwards; }
+.tk-go .trp-run--if .trp-mk--buy circle { animation: trpPop .5s cubic-bezier(.3,1.5,.5,1) 3.66s forwards; }
+.tk-go .trp-run--if .trp-mk--buy :is(rect, text) { animation: trpIn .5s ease 3.78s forwards; }
+.tk-go .trp-run--if .trp-mk--sell circle { animation: trpPop .5s cubic-bezier(.3,1.5,.5,1) 4.62s forwards; }
+.tk-go .trp-run--if .trp-mk--sell :is(rect, text) { animation: trpIn .5s ease 4.74s forwards; }
+.tk-go .trp-was { animation: trpIn .5s ease 4.48s forwards; }
+.tk-go .trp-move-reveal { animation: trpDraw 1.3s cubic-bezier(.65,0,.35,1) 5.2s forwards; }
+.tk-go .trp-move-head { animation: trpIn .3s ease 6.35s forwards; }
+.tk-go .trp-mk--add > circle:not(.trp-ring) { animation: trpPop .5s cubic-bezier(.3,1.5,.5,1) 6.5s forwards; }
+.tk-go .trp-mk--add :is(rect, text) { animation: trpIn .5s ease 6.65s forwards; }
+.tk-go .trp-ring { animation: trpRipple 1s ease-out 6.55s; }
+.tk-go .trp-move-v { animation: trpIn .5s ease 6.7s forwards; }
+.tk-go .trp-note { animation: trpSay 1.8s ease 7.8s; }
 @keyframes trpDraw { to { stroke-dashoffset: 0; } }
 @keyframes trpIn { to { opacity: 1; } }
 @keyframes trpPop { to { scale: 1; } }
 @keyframes trpRipple { from { opacity: .9; scale: 1; } to { opacity: 0; scale: 2.8; } }
-@keyframes trpLift { 35% { box-shadow: 0 0 0 1px rgba(212,175,55,.6), 0 0 24px rgba(212,175,55,.25); } }
+@keyframes trpOnAs { 12%, 80% { border-color: rgba(232,237,233,.5); box-shadow: 0 0 22px rgba(232,237,233,.08); } }
+@keyframes trpOnIf { 10%, 85% { border-color: rgba(212,175,55,.8); box-shadow: 0 0 26px rgba(212,175,55,.2); } }
 @keyframes trpSay { 40% { color: var(--mk-text-primary); text-shadow: 0 0 14px rgba(212,175,55,.45); } }
 
 /* Then the three below, one at a time (about 1.8 s a stop): the card lights, and its icon does its job once. The
@@ -2383,8 +2397,7 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
 @media (prefers-reduced-motion: reduce) {
   .tk-armed .trp-mk circle { scale: 1; opacity: 0; }
   .tk-armed .trp-mk--add .trp-ring { opacity: 0; }
-  .tk-go .trp-mk--buy circle, .tk-go .trp-mk--sell circle { animation-name: trpIn; animation-timing-function: ease; }
-  .tk-go .trp-mk--was circle { animation-name: trpIn; animation-timing-function: ease; }
+  .tk-go .trp-run :is(.trp-mk--buy, .trp-mk--sell, .trp-mk--was) circle { animation-name: trpIn; animation-timing-function: ease; }
   .tk-go .trp-mk--add > circle:not(.trp-ring) { animation-name: trpIn; animation-timing-function: ease; }
   .tk-go .trp-ring { animation: none; }
   .wyg a.is-lit :is(.wyg-hand, .wyg-pg) { animation: none; }
@@ -3075,21 +3088,35 @@ document.addEventListener("DOMContentLoaded", function() {
           <span class="wyg-t">Pull up any past chart and trade it again. Move an entry, an add or an exit, and see what it does to your P&amp;L.</span>
           <span class="wyg-w">Practice scaling in and out, the hardest skill in trading, with no money at risk.</span>
         </span>
-        <!-- One replayed trade (buy 1,000 at 4.25, add 1,000 at 4.85, sell 2,000 at 5.05: +$1,000), then the same trade
-             with the add moved to the 4.22 pullback (+$1,630). Average cost, as the tool computes it. -->
+        <!-- The same trade twice, average cost as the tool computes it: buy 1,000 at 4.25, add 1,000 more, sell all
+             2,000 at 5.05. AS TRADED adds at 4.85 (+$1,000); WHAT IF adds at the 4.22 pullback (+$1,630). -->
         <span class="trp" aria-hidden="true">
-          <svg class="trp-chart" viewBox="0 24 400 154">
-            <path class="trp-line" pathLength="1" d="M18 145.2 C23.1 143.6 38.2 139.7 48.3 135.7 C58.4 131.7 68.6 126.5 78.7 121.4 C88.8 116.3 98.9 106.3 109 105.2 C119.1 104.1 129.2 111.5 139.3 114.7 C149.4 117.9 159.6 124.9 169.7 124.2 C179.8 123.6 189.9 117.3 200 110.9 C210.1 104.5 220.2 93.9 230.3 86.1 C240.4 78.3 250.6 71 260.7 64.2 C270.8 57.3 280.9 50.3 291 45.1 C301.1 39.8 311.2 33.2 321.3 32.7 C331.4 32.2 341.6 38.7 351.7 42.2 C361.8 45.7 376.9 51.8 382 53.7"/>
-            <defs><mask id="trpMoveMask" maskUnits="userSpaceOnUse" x="0" y="24" width="400" height="154"><path class="trp-move-reveal" pathLength="1" d="M260.7 73 V158 Q260.7 164 254.7 164 H175.7 Q169.7 164 169.7 158 V139"/></mask></defs>
-            <g class="trp-move"><path class="trp-move-path" mask="url(#trpMoveMask)" d="M260.7 73 V158 Q260.7 164 254.7 164 H175.7 Q169.7 164 169.7 158 V139"/><path class="trp-move-head" d="M169.7 131.5 L165 139 L174.4 139 Z"/><text class="trp-move-v" x="215.2" y="158">+$630</text></g>
-            <g transform="translate(260.7 64.2)"><g class="trp-mk trp-mk--was"><circle r="5.5"/><rect x="-72" y="-23" width="64" height="15" rx="7.5"/><text x="-40" y="-12.5">ADD $4.85</text></g></g>
-            <g transform="translate(78.7 121.4)"><g class="trp-mk trp-mk--buy"><circle r="5.5"/><rect x="-42" y="-23" width="34" height="15" rx="7.5"/><text x="-25" y="-12.5">BUY</text></g></g>
-            <g transform="translate(291 45.1)"><g class="trp-mk trp-mk--sell"><circle r="5.5"/><rect x="8" y="6" width="38" height="15" rx="7.5"/><text x="27" y="16.5">SELL</text></g></g>
-            <g transform="translate(169.7 124.2)"><g class="trp-mk trp-mk--add"><circle class="trp-ring" r="5.5"/><circle r="5.5"/><rect x="-72" y="6" width="64" height="15" rx="7.5"/><text x="-40" y="16.5">ADD $4.22</text></g></g>
-          </svg>
-          <span class="trp-stats">
-            <span class="trp-stat"><span class="trp-k">AS TRADED</span><span class="trp-how">Add at $4.85</span><span class="trp-v" data-trp-to="1000">+$1,000</span></span>
-            <span class="trp-stat trp-stat--if"><span class="trp-k">WHAT IF</span><span class="trp-how">Add at $4.22</span><span class="trp-v" data-trp-to="1630">+$1,630</span></span>
+          <span class="trp-pair">
+            <span class="trp-run trp-run--as">
+              <span class="trp-k">AS TRADED</span>
+              <svg class="trp-chart" viewBox="0 4 260 118">
+                <path class="trp-line" pathLength="1" d="M12 108.8 C15.3 107.8 25.1 105.2 31.7 102.5 C38.2 99.9 44.8 96.4 51.3 93.1 C57.9 89.7 64.4 83.1 71 82.4 C77.6 81.6 84.1 86.6 90.7 88.7 C97.2 90.8 103.8 95.4 110.3 95 C116.9 94.5 123.4 90.3 130 86.1 C136.6 81.9 143.1 74.9 149.7 69.7 C156.2 64.6 162.8 59.8 169.3 55.2 C175.9 50.7 182.4 46.1 189 42.6 C195.6 39.1 202.1 34.7 208.7 34.4 C215.2 34.1 221.8 38.4 228.3 40.7 C234.9 43 244.7 47 248 48.3"/>
+                <g transform="translate(51.3 93.1)"><g class="trp-mk trp-mk--buy"><circle r="5"/><rect x="-44" y="-24" width="38" height="16" rx="8"/><text x="-25" y="-12.5">BUY</text></g></g>
+                <g transform="translate(169.3 55.2)"><g class="trp-mk trp-mk--was"><circle r="5"/><rect x="-82" y="-24" width="76" height="16" rx="8"/><text x="-44" y="-12.5">ADD $4.85</text></g></g>
+                <g transform="translate(189 42.6)"><g class="trp-mk trp-mk--sell"><circle r="5"/><rect x="8" y="6" width="42" height="16" rx="8"/><text x="29" y="17.5">SELL</text></g></g>
+              </svg>
+              <span class="trp-how">Add at $4.85</span>
+              <span class="trp-v" data-trp-to="1000">+$1,000</span>
+            </span>
+            <span class="trp-run trp-run--if">
+              <span class="trp-k">WHAT IF</span>
+              <svg class="trp-chart" viewBox="0 4 260 118">
+                <defs><mask id="trpMoveMask" maskUnits="userSpaceOnUse" x="0" y="4" width="260" height="118"><path class="trp-move-reveal" pathLength="1" d="M169.3 47 V20 Q169.3 14 163.3 14 H116.3 Q110.3 14 110.3 20 V82"/></mask></defs>
+                <path class="trp-line" pathLength="1" d="M12 108.8 C15.3 107.8 25.1 105.2 31.7 102.5 C38.2 99.9 44.8 96.4 51.3 93.1 C57.9 89.7 64.4 83.1 71 82.4 C77.6 81.6 84.1 86.6 90.7 88.7 C97.2 90.8 103.8 95.4 110.3 95 C116.9 94.5 123.4 90.3 130 86.1 C136.6 81.9 143.1 74.9 149.7 69.7 C156.2 64.6 162.8 59.8 169.3 55.2 C175.9 50.7 182.4 46.1 189 42.6 C195.6 39.1 202.1 34.7 208.7 34.4 C215.2 34.1 221.8 38.4 228.3 40.7 C234.9 43 244.7 47 248 48.3"/>
+                <circle class="trp-was" cx="169.3" cy="55.2" r="5"/>
+                <g class="trp-move"><path class="trp-move-path" mask="url(#trpMoveMask)" d="M169.3 47 V20 Q169.3 14 163.3 14 H116.3 Q110.3 14 110.3 20 V82"/><path class="trp-move-head" d="M110.3 88.5 L105.6 81 L115 81 Z"/><text class="trp-move-v" x="139.8" y="29">+$630</text></g>
+                <g transform="translate(51.3 93.1)"><g class="trp-mk trp-mk--buy"><circle r="5"/><rect x="-44" y="-24" width="38" height="16" rx="8"/><text x="-25" y="-12.5">BUY</text></g></g>
+                <g transform="translate(189 42.6)"><g class="trp-mk trp-mk--sell"><circle r="5"/><rect x="8" y="6" width="42" height="16" rx="8"/><text x="29" y="17.5">SELL</text></g></g>
+                <g transform="translate(110.3 95)"><g class="trp-mk trp-mk--add"><circle class="trp-ring" r="5"/><circle r="5"/><rect x="8" y="6" width="76" height="16" rx="8"/><text x="46" y="17.5">ADD $4.22</text></g></g>
+              </svg>
+              <span class="trp-how">Add at $4.22</span>
+              <span class="trp-v" data-trp-to="1630">+$1,630</span>
+            </span>
           </span>
           <span class="trp-note">Same shares. Adding 63&cent; lower made $630 more.</span>
         </span>
@@ -3152,10 +3179,10 @@ document.addEventListener("DOMContentLoaded", function() {
 
   function play() {
     started = true;
-    freeAt = Date.now() + 7200;
+    freeAt = Date.now() + 8600;
     sec.classList.add('tk-go');
-    setTimeout(function () { count(vals[0]); }, 2450);
-    setTimeout(function () { count(vals[1]); }, 5500);
+    setTimeout(function () { count(vals[0]); }, 2000);
+    setTimeout(function () { count(vals[1]); }, 6700);
     next();
   }
   var o = new IntersectionObserver(function (es) {
