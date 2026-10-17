@@ -335,53 +335,21 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
   60%     { box-shadow: 0 0 0 8px rgba(212,175,55,0); }
 }
 
-/* ── HERO: THE INTERCEPT (Ed, 2026-10-17: "a beautiful and elegant animation for this section") ──
-   The headline's claim, drawn: a good morning climbs and starts to roll over; at that moment a gold point catches it.
-   The faded red dash is where the day was heading (the damage other tools review afterwards), the gold line is the
-   day held. Once per visit: the morning draws, the point lands with a ring as the headline's gold words take a light,
-   then both paths draw on and their labels settle. The headline is never hidden; the finished chart is the static
-   design, and nothing is armed without the script. */
-.wy-chart { max-width: 940px; margin: 56px auto 0; padding: 0 32px; }
-.wy-chart svg { display: block; width: 100%; height: auto; overflow: visible; }
-.wy-chart path { fill: none; stroke-linejoin: round; stroke-linecap: round; vector-effect: non-scaling-stroke; }
-.wy-am { stroke: rgba(255,255,255,.62); stroke-width: 2; }
-.wy-ghost { stroke: var(--mk-danger-500); stroke-opacity: .5; stroke-width: 2; stroke-dasharray: 5 7; }
-.wy-gold { stroke: var(--mk-gold-500); stroke-width: 2.5; }
-.wy-chart .wy-rev { fill: none; stroke: #fff; stroke-width: 40; stroke-linecap: butt; stroke-dasharray: 1 1; stroke-dashoffset: 0; vector-effect: none; }
-.wy-dot { fill: var(--mk-gold-500); transform-box: fill-box; transform-origin: center; }
-.wy-ring { fill: none; stroke: var(--mk-gold-400); stroke-width: 2; vector-effect: non-scaling-stroke; opacity: 0; transform-box: fill-box; transform-origin: center; }
-.wy-lab { font-family: var(--mk-font-mono); font-size: 12px; letter-spacing: .2em; }
-.wy-lab--gold { fill: var(--mk-gold-400); }
-.wy-lab--ghost { fill: var(--mk-danger-500); fill-opacity: .7; }
+/* ── HERO: THE INTERCEPT, told in the headline (Ed, 2026-10-17). A drawn chart under the button read as "extremely
+   basic and ugly", so the claim now plays on the copy itself, in colour and light only (it survives any line wrap):
+   "the damage." warms to a muted red, the way a losing P&L does; a light sweeps through "intercepts it." and the
+   damage returns to white as it passes; then one light crosses the trial button. The headline is never dimmed, the
+   resting hero is exactly the static design, and nothing plays without the script. Reduce motion keeps all of it:
+   it is colour and light, nothing moves. */
 .wy .page-hero-title em { background-image: linear-gradient(100deg, rgba(255,250,235,0) 38%, rgba(255,250,235,.9) 50%, rgba(255,250,235,0) 62%), var(--mk-gold-gradient); background-size: 300% 100%, 100% 100%; background-position: 150% 0, 0 0; background-repeat: no-repeat; }
-.wy-armed .wy-rev { stroke-dashoffset: 1; }
-.wy-armed .wy-dot { opacity: 0; transform: scale(.4); }
-.wy-armed .wy-lab { opacity: 0; }
-.wy-go .wy-rev--am { animation: wyDraw 1.8s ease-in-out .2s forwards; }
-.wy-go .wy-rev--next { animation: wyDraw 1.5s ease-out 2.4s forwards; }
-.wy-go .wy-dot { animation: wyLand .45s cubic-bezier(.3, 1.5, .5, 1) 2s forwards; }
-.wy-go .wy-ring { animation: wyRing 1s ease-out 2s 2; }
-.wy-go .page-hero-title em { animation: wyShine 1.3s ease-in-out 2.1s; }
-.wy-go .wy-lab { animation: wyFade .6s ease 3.7s forwards; }
-@keyframes wyDraw { to { stroke-dashoffset: 0; } }
-@keyframes wyLand { to { opacity: 1; transform: none; } }
-@keyframes wyRing { from { opacity: .9; transform: none; } to { opacity: 0; transform: scale(3.2); } }
+.wy .btn-cta-lg { position: relative; overflow: hidden; }
+.wy .btn-cta-lg::after { content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: 38%; background: linear-gradient(100deg, rgba(255,255,255,0), rgba(255,255,255,.42) 50%, rgba(255,255,255,0)); transform: translateX(-130%) skewX(-18deg); pointer-events: none; }
+.wy-go .wy-dmg { animation: wyDamage 2.6s ease-in-out .3s; }
+.wy-go .page-hero-title em { animation: wyShine 1.3s ease-in-out 1.7s; }
+.wy-go .btn-cta-lg::after { animation: wySheen 1.1s ease-in-out 3s; }
+@keyframes wyDamage { 0%, 100% { color: var(--mk-text-primary); } 28%, 62% { color: var(--mk-danger-500); } }
 @keyframes wyShine { from { background-position: 150% 0, 0 0; } to { background-position: -50% 0, 0 0; } }
-@keyframes wyFade { to { opacity: 1; } }
-/* reduce motion: the same clock, nothing travels; each path fades in whole, the point appears without its ring */
-@media (prefers-reduced-motion: reduce) {
-  .wy-armed .wy-rev { stroke-dashoffset: 0; }
-  .wy-armed .wy-ln { opacity: 0; }
-  .wy-armed .wy-dot { transform: none; }
-  .wy-go .wy-rev--am, .wy-go .wy-rev--next, .wy-go .wy-ring { animation: none; }
-  .wy-go .wy-ln--am { animation: wyFade 1.2s ease .2s forwards; }
-  .wy-go .wy-ln--next { animation: wyFade 1.2s ease 2.4s forwards; }
-  .wy-go .wy-dot { animation: wyFade .6s ease 2s forwards; }
-}
-@media (max-width: 600px) {
-  .wy-chart { margin-top: 40px; padding: 0 16px; }
-  .wy-lab { font-size: 30px; }
-}
+@keyframes wySheen { from { transform: translateX(-130%) skewX(-18deg); } to { transform: translateX(320%) skewX(-18deg); } }
 
 /* ── THREE MOMENTS GRID ────────────────────────────────────────
    Replaces the prose-heavy "Why progress stalls" section with three
@@ -529,7 +497,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
     <p class="page-hero-eyebrow reveal">
       <span class="page-hero-eyebrow-with-dot"><span class="hero-eyebrow-dot" aria-hidden="true"></span>WHY MAKETZO</span>
     </p>
-    <h1 class="page-hero-title reveal">Every trading tool reviews the damage.<br>MAKETZO <em>intercepts it.</em></h1>
+    <h1 class="page-hero-title reveal">Every trading tool reviews <span class="wy-dmg">the damage.</span><br>MAKETZO <em>intercepts it.</em></h1>
     <p class="page-hero-sub reveal">After-the-fact analytics show you what went wrong. MAKETZO shows you the moment you're about to repeat it.</p>
 
     <div class="final-cta-btn-wrap reveal">
@@ -537,34 +505,18 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
       <p class="final-cta-note">7 days free &middot; No charge until day 8 &middot; Cancel in one click.</p>
     </div>
   </div>
-  <div class="wy-chart" aria-hidden="true">
-    <svg viewBox="0 0 1000 190" preserveAspectRatio="xMidYMid meet">
-      <defs>
-        <mask id="wyMaskAm" maskUnits="userSpaceOnUse" x="0" y="0" width="1000" height="190"><path class="wy-rev wy-rev--am" pathLength="1" d="M0 128L40 123 70 127 105 112 140 116 180 99 215 103 255 84 290 88 330 69 360 73 395 57 425 61 455 48 480 52 505 46 530 55 555 64"/></mask>
-        <mask id="wyMaskGhost" maskUnits="userSpaceOnUse" x="0" y="0" width="1000" height="190"><path class="wy-rev wy-rev--next" pathLength="1" d="M555 64L585 77 610 73 640 93 670 89 700 111 730 107 765 130 795 126 830 146 865 142 900 158 940 154 980 166"/></mask>
-        <mask id="wyMaskGold" maskUnits="userSpaceOnUse" x="0" y="0" width="1000" height="190"><path class="wy-rev wy-rev--next" pathLength="1" d="M555 64L590 60 625 65 660 58 700 62 740 54 780 58 820 50 860 54 900 46 940 49 980 43"/></mask>
-      </defs>
-      <g class="wy-ln wy-ln--am" mask="url(#wyMaskAm)"><path class="wy-am" d="M0 128L40 123 70 127 105 112 140 116 180 99 215 103 255 84 290 88 330 69 360 73 395 57 425 61 455 48 480 52 505 46 530 55 555 64"/></g>
-      <g class="wy-ln wy-ln--next" mask="url(#wyMaskGhost)"><path class="wy-ghost" d="M555 64L585 77 610 73 640 93 670 89 700 111 730 107 765 130 795 126 830 146 865 142 900 158 940 154 980 166"/></g>
-      <g class="wy-ln wy-ln--next" mask="url(#wyMaskGold)"><path class="wy-gold" d="M555 64L590 60 625 65 660 58 700 62 740 54 780 58 820 50 860 54 900 46 940 49 980 43"/></g>
-      <circle class="wy-ring" cx="555" cy="64" r="7"/>
-      <circle class="wy-dot" cx="555" cy="64" r="6"/>
-      <text class="wy-lab wy-lab--gold" x="980" y="26" text-anchor="end">INTERCEPTED</text>
-      <text class="wy-lab wy-lab--ghost" x="980" y="187" text-anchor="end">THE DAMAGE</text>
-    </svg>
-  </div>
 </section>
 <script>
-/* the hero's intercept plays once, when the chart is on screen (CSS under .wy-armed / .wy-go) */
+/* the hero's intercept plays once on the headline, when it is on screen (CSS under .wy-armed / .wy-go) */
 (function () {
-  var sec = document.querySelector('.page-hero.wy'), chart = sec && sec.querySelector('.wy-chart');
-  if (!chart || !('IntersectionObserver' in window)) return;
+  var sec = document.querySelector('.page-hero.wy'), title = sec && sec.querySelector('.page-hero-title');
+  if (!title || !('IntersectionObserver' in window)) return;
   sec.classList.add('wy-armed');
   var o = new IntersectionObserver(function (es) {
     var e = es[0];
-    if (e.intersectionRatio >= 0.4 || (!e.isIntersecting && e.boundingClientRect.top < 0)) { o.disconnect(); sec.classList.add('wy-go'); }
-  }, { threshold: [0, 0.4] });
-  o.observe(chart);
+    if (e.intersectionRatio >= 0.6 || (!e.isIntersecting && e.boundingClientRect.top < 0)) { o.disconnect(); sec.classList.add('wy-go'); }
+  }, { threshold: [0, 0.6] });
+  o.observe(title);
 })();
 </script>
 
