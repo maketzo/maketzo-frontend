@@ -218,18 +218,18 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
    lib/journal-picard.js bands, lib/no-trade-day.js "Sat out" and its streak-neutral rule), then everything else as a
    compact checklist. */
 .jx { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; max-width: 1180px; margin: 0 auto; }
-.jx-card { position: relative; padding: 22px 22px 24px; background: linear-gradient(170deg, rgba(212,175,55,.07), transparent 50%), var(--mk-surface-raised); border: 1px solid rgba(212,175,55,.28); border-radius: var(--mk-radius-card); }
-.jx-view { height: 156px; margin-bottom: 20px; padding: 14px; display: flex; flex-direction: column; justify-content: center; border-radius: 12px; background: linear-gradient(180deg, rgba(255,255,255,.03), transparent 45%), var(--mk-obsidian-900); border: 1px solid rgba(255,255,255,.08); }
+.jx-card { position: relative; padding: 22px 20px 24px; background: linear-gradient(170deg, rgba(212,175,55,.07), transparent 50%), var(--mk-surface-raised); border: 1px solid rgba(212,175,55,.28); border-radius: var(--mk-radius-card); }
+.jx-view { min-height: 168px; margin-bottom: 20px; padding: 12px; display: flex; flex-direction: column; justify-content: center; border-radius: 12px; background: linear-gradient(180deg, rgba(255,255,255,.03), transparent 45%), var(--mk-obsidian-900); border: 1px solid rgba(255,255,255,.08); }
 .jx-name { margin: 0 0 8px; font-family: var(--mk-font-display); font-size: var(--mk-text-xl); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); font-weight: 400; }
 .jx-line { margin: 0; font-size: var(--mk-text-sm); color: var(--mk-text-secondary); line-height: 1.55; }
 /* Rule Check: the trader's rules with the three answers, one lit */
-.jx-rules { list-style: none; margin: 0; padding: 0; display: grid; gap: 7px; }
-.jx-rules li { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 6px 6px 6px 10px; border-radius: 8px; background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.06); }
+.jx-rules { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: 7px; }
+.jx-rules li { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 5px 8px; padding: 6px 5px 6px 9px; border-radius: 8px; background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.06); }
 .jx-rule { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--mk-text-xs); color: var(--mk-text-secondary); }
-.jx-seg { flex: none; display: inline-flex; gap: 3px; }
-.jx-seg b { padding: 3px 7px; border-radius: 5px; font-size: 11px; font-weight: 600; line-height: 1.2; color: var(--mk-text-tertiary); border: 1px solid rgba(255,255,255,.08); }
+.jx-seg { flex: none; display: inline-flex; gap: 2px; margin-left: auto; }
+.jx-seg b { padding: 3px 6px; border-radius: 5px; font-size: 11px; font-weight: 600; line-height: 1.2; color: var(--mk-text-tertiary); border: 1px solid rgba(255,255,255,.08); }
 .jx-seg b.is-f { color: var(--mk-profit-500); border-color: rgba(74,222,128,.45); background: rgba(74,222,128,.10); }
-.jx-seg b.is-na { color: var(--mk-text-primary); border-color: rgba(255,255,255,.3); background: rgba(255,255,255,.07); }
+.jx-seg b.is-b { color: var(--mk-danger-500); border-color: rgba(248,113,113,.5); background: rgba(248,113,113,.10); }
 /* Picard Score: the 0 to 10 scale, its bands at 5, 7 and 9, and today's mark */
 .jx-score { margin: 0; display: flex; align-items: baseline; gap: 6px; }
 .jx-score-v { font-family: var(--mk-font-sans); font-weight: 800; font-size: 40px; line-height: 1; color: var(--mk-gold-300); text-shadow: 0 0 18px rgba(240,200,80,.25); font-variant-numeric: tabular-nums; }
@@ -275,6 +275,15 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
   .jx-cols { gap: 0; }
   .jx-cols h3 { margin-top: 18px; }
 }
+/* Under 1180 three columns squeeze the rule names to a few letters (Ed, 2026-10-17: "N/A goes out of the border"),
+   so the three stack, and from 701 each card sets its readout beside its words. */
+@media (max-width: 1179px) { .jx { grid-template-columns: 1fr; gap: 18px; max-width: 860px; } }
+@media (min-width: 701px) and (max-width: 1179px) {
+  .jx-card { display: grid; grid-template-columns: 340px minmax(0, 1fr); column-gap: 30px; align-items: center; }
+  .jx-view { grid-row: 1 / span 2; margin: 0; }
+  .jx-name { align-self: end; }
+  .jx-line { align-self: start; }
+}
 /* In motion, once: when the three are on screen (on phones, each card as it scrolls in). They play in turn, each the
    product's own move. The rules are answered one by one. The Picard mark glides to 8.1 while the score counts with it
    (the number reads the fill's own transform, so the two share one clock), and the band name lands. The week is kept
@@ -285,7 +294,7 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
 .jx-armed .jx-card.is-live { border-color: rgba(240,200,80,.6); box-shadow: 0 0 0 1px rgba(240,200,80,.08), 0 0 36px rgba(212,175,55,.14); }
 .jx-armed .jx-seg b { transition: color .35s ease, border-color .35s ease, background-color .35s ease; }
 .jx-armed .jx-rules li:not(.is-on) .jx-seg b { color: var(--mk-text-tertiary); border-color: rgba(255,255,255,.08); background: transparent; }
-.jx-armed .jx-rules li.is-on .jx-seg :is(.is-f, .is-na) { animation: jxPick .6s cubic-bezier(.34, 1.56, .64, 1); }
+.jx-armed .jx-rules li.is-on .jx-seg :is(.is-f, .is-b) { animation: jxPick .6s cubic-bezier(.34, 1.56, .64, 1); }
 .jx-armed .jx-fill { transform: scaleX(0); }
 .jx-armed .jx-run { transform: translateX(-81%); }
 .jx-armed .is-go :is(.jx-fill, .jx-run) { transform: none; transition: transform 1.6s cubic-bezier(.33, 0, .2, 1); }
@@ -314,7 +323,7 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
 @media (prefers-reduced-motion: reduce) {
   .jx-armed :is(.jx-fill, .jx-run) { transform: none; opacity: 0; }
   .jx-armed .is-go :is(.jx-fill, .jx-run) { opacity: 1; transition: opacity 1.6s ease; }
-  .jx-armed .jx-rules li.is-on .jx-seg :is(.is-f, .is-na) { animation: none; }
+  .jx-armed .jx-rules li.is-on .jx-seg :is(.is-f, .is-b) { animation: none; }
   .jx-armed .jx-week li.is-out.is-on { animation-name: jxDay; }
   .jx-armed .jx-rest-k::after { transform: none; opacity: 0; }
   .jx-armed .jx-rest-k.is-drawn::after { opacity: 1; transition: opacity 1.4s ease; }
@@ -690,7 +699,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
           <ul class="jx-rules">
             <li><span class="jx-rule">Never average down</span><span class="jx-seg"><b class="is-f">Followed</b><b>Broke</b><b>N/A</b></span></li>
             <li><span class="jx-rule">No revenge trades</span><span class="jx-seg"><b class="is-f">Followed</b><b>Broke</b><b>N/A</b></span></li>
-            <li><span class="jx-rule">Done after 2 red trades</span><span class="jx-seg"><b>Followed</b><b>Broke</b><b class="is-na">N/A</b></span></li>
+            <li><span class="jx-rule">Done after 2 red trades</span><span class="jx-seg"><b>Followed</b><b class="is-b">Broke</b><b>N/A</b></span></li>
           </ul>
         </div>
         <h3 class="jx-name">Rule Check</h3>
@@ -726,26 +735,26 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
       <p class="jx-rest-k">PLUS EVERYTHING A SERIOUS JOURNAL NEEDS</p>
       <div class="jx-cols">
         <div><h3>Record</h3><ul>
-          <li>Trade journal &amp; session log <span>every fill and why you took it</span></li>
-          <li>Net P&amp;L by hand <span>no broker needed</span></li>
-          <li>Broker CSV import <span>DAS, Webull, TradeZero, ThinkorSwim, Lightspeed</span></li>
-          <li>Sticky Notes <span>a scratchpad over your platform</span></li>
-          <li>Journal export <span>PDF, Word, OneNote, or email</span></li>
+          <li>Trade journal &amp; session log: <span>every fill and why you took it</span></li>
+          <li>Live P&amp;L entry: <span>type your P&amp;L after each trade, whatever broker you use</span></li>
+          <li>Broker CSV import: <span>DAS, Webull, TradeZero, ThinkorSwim, Lightspeed</span></li>
+          <li>Sticky Notes: <span>a scratchpad over your platform</span></li>
+          <li>Journal export: <span>PDF, Word, OneNote, or email</span></li>
         </ul></div>
         <div><h3>Analyze</h3><ul>
-          <li>P&amp;L &amp; &cent;/share <span>by symbol, time, hold, and tag</span></li>
-          <li>Calendar &amp; streaks <span>saved as an image</span></li>
-          <li>Reports <span>equity curve and risk metrics</span></li>
-          <li>Trades blotter <span>fees split out</span></li>
-          <li>View Chart <span>entry and exit marked</span></li>
-          <li>Custom tags &amp; filters</li>
-          <li>Performance by Setup</li>
+          <li>P&amp;L &amp; &cent;/share: <span>by symbol, time, hold, and tag</span></li>
+          <li>Calendar &amp; streaks: <span>saved as an image</span></li>
+          <li>Reports: <span>equity curve and risk metrics</span></li>
+          <li>Trades blotter: <span>fees split out</span></li>
+          <li>View Chart: <span>entry and exit marked</span></li>
+          <li>Custom tags &amp; filters: <span>filter by date, symbol, side, and outcome</span></li>
+          <li>Performance by Setup: <span>which setups make you money</span></li>
         </ul></div>
         <div><h3>Review</h3><ul>
-          <li>Custom rule pills <span>pinned to every session</span></li>
-          <li>Market Context &amp; Daily Watchlist <span>today's tickers, read before the open</span></li>
-          <li>Setups &amp; Mistakes <span>marked-up chart screenshots</span></li>
-          <li>My Playbook &amp; Flash Cards <span>reviewed on a schedule</span></li>
+          <li>Custom rule pills: <span>pinned to every session</span></li>
+          <li>Market Context &amp; Daily Watchlist: <span>today's tickers, read before the open</span></li>
+          <li>Setups &amp; Mistakes: <span>marked-up chart screenshots</span></li>
+          <li>My Playbook &amp; Flash Cards: <span>reviewed on a schedule</span></li>
         </ul></div>
       </div>
     </div>
@@ -757,7 +766,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 </section>
 <script>
 /* The Journal, In Full plays once (Ed, 2026-10-17). On a wide screen the three cards play in turn once they are on
-   screen; where they stack (900px and under) each card plays as it scrolls in. The score starts where the app starts
+   screen; where they stack (1179px and under) each card plays as it scrolls in. The score starts where the app starts
    a day ("No score yet") and lands on the static frame. Classes only; the CSS is under .jx-armed. */
 (function () {
   var sec = document.getElementById('in-full'), row = sec && sec.querySelector('.jx');
@@ -814,7 +823,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
     o.observe(el);
   }
 
-  if (matchMedia('(max-width: 900px)').matches) {
+  if (matchMedia('(max-width: 1179px)').matches) {
     once(cards[0], { threshold: 0.6 }, playRules);
     once(cards[1], { threshold: 0.6 }, playScore);
     once(cards[2], { threshold: 0.6 }, playWeek);
