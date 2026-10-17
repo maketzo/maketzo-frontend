@@ -212,14 +212,113 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
   .page-hero-cta .btn-primary { width: 100%; justify-content: center; text-align: center; }
 }
 
-/* ── FOUR FEATURE PILLARS ───────────────────────────────────── */
-.jf-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; max-width: 1180px; margin: 0 auto; }
-.jf-col h3 { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); margin: 0 0 12px; }
-.jf-col ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
-.jf-col li { padding: 14px 16px; background: var(--mk-surface-raised); border: 1px solid rgba(212,175,55,.14); border-radius: var(--mk-radius-card); }
-.jf-name { display: block; color: var(--mk-text-primary); font-weight: 600; font-size: var(--mk-text-sm); margin-bottom: 3px; }
-.jf-note { display: block; font-size: var(--mk-text-sm); color: var(--mk-text-secondary); line-height: 1.5; }
-@media (max-width: 900px) { .jf-grid { grid-template-columns: 1fr; } }
+/* ── THE JOURNAL, IN FULL: three spotlights, then the checklist ─
+   Ed, 2026-10-17, on the old nineteen equal tiles: on the fence whether it sold the journal. Rebuilt as the three
+   features that grade discipline, each with a small readout in the app's own words (lib/rule-check.js answers,
+   lib/journal-picard.js bands, lib/no-trade-day.js "Sat out" and its streak-neutral rule), then everything else as a
+   compact checklist. */
+.jx { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; max-width: 1180px; margin: 0 auto; }
+.jx-card { position: relative; padding: 22px 22px 24px; background: linear-gradient(170deg, rgba(212,175,55,.07), transparent 50%), var(--mk-surface-raised); border: 1px solid rgba(212,175,55,.28); border-radius: var(--mk-radius-card); }
+.jx-view { height: 156px; margin-bottom: 20px; padding: 14px; display: flex; flex-direction: column; justify-content: center; border-radius: 12px; background: linear-gradient(180deg, rgba(255,255,255,.03), transparent 45%), var(--mk-obsidian-900); border: 1px solid rgba(255,255,255,.08); }
+.jx-name { margin: 0 0 8px; font-family: var(--mk-font-display); font-size: var(--mk-text-xl); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); font-weight: 400; }
+.jx-line { margin: 0; font-size: var(--mk-text-sm); color: var(--mk-text-secondary); line-height: 1.55; }
+/* Rule Check: the trader's rules with the three answers, one lit */
+.jx-rules { list-style: none; margin: 0; padding: 0; display: grid; gap: 7px; }
+.jx-rules li { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 6px 6px 6px 10px; border-radius: 8px; background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.06); }
+.jx-rule { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--mk-text-xs); color: var(--mk-text-secondary); }
+.jx-seg { flex: none; display: inline-flex; gap: 3px; }
+.jx-seg b { padding: 3px 7px; border-radius: 5px; font-size: 11px; font-weight: 600; line-height: 1.2; color: var(--mk-text-tertiary); border: 1px solid rgba(255,255,255,.08); }
+.jx-seg b.is-f { color: var(--mk-profit-500); border-color: rgba(74,222,128,.45); background: rgba(74,222,128,.10); }
+.jx-seg b.is-na { color: var(--mk-text-primary); border-color: rgba(255,255,255,.3); background: rgba(255,255,255,.07); }
+/* Picard Score: the 0 to 10 scale, its bands at 5, 7 and 9, and today's mark */
+.jx-score { margin: 0; display: flex; align-items: baseline; gap: 6px; }
+.jx-score-v { font-family: var(--mk-font-sans); font-weight: 800; font-size: 40px; line-height: 1; color: var(--mk-gold-300); text-shadow: 0 0 18px rgba(240,200,80,.25); font-variant-numeric: tabular-nums; }
+.jx-score small { font-size: var(--mk-text-md); color: var(--mk-text-tertiary); }
+.jx-band { margin: 4px 0 14px; font-family: var(--mk-font-display); font-size: var(--mk-text-lg); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); }
+.jx-track { position: relative; height: 8px; border-radius: 4px; background: rgba(255,255,255,.08); }
+.jx-track::before { content: ""; position: absolute; inset: 0; border-radius: inherit; background: linear-gradient(90deg, transparent 0 49.6%, var(--mk-obsidian-900) 49.6% 50.4%, transparent 50.4% 69.6%, var(--mk-obsidian-900) 69.6% 70.4%, transparent 70.4% 89.6%, var(--mk-obsidian-900) 89.6% 90.4%, transparent 90.4%); z-index: 1; }
+.jx-fill { position: absolute; top: 0; bottom: 0; left: 0; width: 81%; border-radius: inherit; transform-origin: 0 50%; background: linear-gradient(90deg, rgba(212,175,55,.35), var(--mk-gold-300)); box-shadow: 0 0 10px rgba(240,200,80,.35); }
+.jx-run { position: absolute; inset: 0; z-index: 2; }
+.jx-mark { position: absolute; top: 50%; left: 81%; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; background: #FFF1C4; box-shadow: 0 0 0 3px rgba(240,200,80,.35), 0 0 14px rgba(240,200,80,.8); }
+.jx-ticks { position: relative; height: 14px; margin-top: 6px; font-family: var(--mk-font-mono); font-size: 10px; color: var(--mk-text-tertiary); }
+.jx-ticks span { position: absolute; top: 0; transform: translateX(-50%); }
+.jx-ticks span:first-child { left: 0; transform: none; }
+.jx-ticks .jx-t5 { left: 50%; }
+.jx-ticks .jx-t7 { left: 70%; }
+.jx-ticks .jx-t9 { left: 90%; }
+.jx-ticks span:last-child { left: 100%; transform: translateX(-100%); }
+/* No-Trade Day: a week with the sat-out day kept, and the streak it does not break */
+.jx-week { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 5px; }
+.jx-week li { position: relative; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 7px 2px 8px; min-height: 66px; border-radius: 8px; background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.07); text-align: center; }
+.jx-d { font-family: var(--mk-font-mono); font-size: 9px; letter-spacing: .14em; color: var(--mk-text-tertiary); }
+.jx-v { font-size: var(--mk-text-xs); font-weight: 700; font-variant-numeric: tabular-nums; color: var(--mk-profit-500); }
+.jx-why { font-size: 9px; line-height: 1.2; color: var(--mk-text-tertiary); }
+.jx-week li.is-out { border-color: rgba(240,200,80,.55); background: rgba(212,175,55,.08); }
+.jx-week li.is-out .jx-v { color: var(--mk-gold-300); }
+.jx-week li::after { content: ""; position: absolute; bottom: -12px; left: 50%; width: 7px; height: 7px; margin-left: -3.5px; border-radius: 50%; background: var(--mk-gold-300); box-shadow: 0 0 6px rgba(240,200,80,.45); }
+.jx-week li.is-out::after { background: transparent; box-shadow: inset 0 0 0 1px rgba(240,200,80,.7); }
+.jx-streak { margin: 22px 0 0; display: flex; align-items: baseline; justify-content: center; gap: 8px; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: .16em; color: var(--mk-text-tertiary); }
+.jx-streak b { font-family: var(--mk-font-display); font-size: 26px; font-weight: 400; letter-spacing: 0; color: var(--mk-gold-300); font-variant-numeric: tabular-nums; }
+/* the checklist: everything else, names and a short hint, quiet next to the spotlights */
+.jx-rest { max-width: 1180px; margin: 48px auto 0; }
+.jx-rest-k { display: flex; align-items: center; gap: 16px; margin: 0 0 22px; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); }
+.jx-rest-k::after { content: ""; flex: 1; height: 1px; background: linear-gradient(90deg, rgba(212,175,55,.6), rgba(212,175,55,0)); transform-origin: 0 50%; }
+.jx-cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px 32px; }
+.jx-cols h3 { margin: 0 0 10px; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: .16em; text-transform: uppercase; color: var(--mk-text-tertiary); font-weight: 400; }
+.jx-cols ul { list-style: none; margin: 0; padding: 0; }
+.jx-cols li { position: relative; padding: 8px 0 8px 26px; border-bottom: 1px solid rgba(255,255,255,.06); font-size: var(--mk-text-sm); line-height: 1.45; color: var(--mk-text-primary); }
+.jx-cols li::before { content: ""; position: absolute; left: 2px; top: 13px; width: 11px; height: 6px; border-left: 2px solid var(--mk-gold-300); border-bottom: 2px solid var(--mk-gold-300); transform: rotate(-45deg); }
+.jx-cols li span { color: var(--mk-text-tertiary); }
+@media (max-width: 900px) {
+  .jx, .jx-cols { grid-template-columns: 1fr; }
+  .jx { gap: 18px; }
+  .jx-cols { gap: 0; }
+  .jx-cols h3 { margin-top: 18px; }
+}
+/* In motion, once: when the three are on screen (on phones, each card as it scrolls in). They play in turn, each the
+   product's own move. The rules are answered one by one. The Picard mark glides to 8.1 while the score counts with it
+   (the number reads the fill's own transform, so the two share one clock), and the band name lands. The week is kept
+   day by day: the streak counts each graded day and holds on the day sat out. The checklist stays still; its rule
+   draws once. The script adds .jx-armed to the section; without it nothing here applies. The end frame is the static
+   section. Reduce motion keeps the clock: things fade where they would glide or pop. */
+.jx-armed .jx-card { transition: border-color .9s ease, box-shadow 1.2s ease; }
+.jx-armed .jx-card.is-live { border-color: rgba(240,200,80,.6); box-shadow: 0 0 0 1px rgba(240,200,80,.08), 0 0 36px rgba(212,175,55,.14); }
+.jx-armed .jx-seg b { transition: color .35s ease, border-color .35s ease, background-color .35s ease; }
+.jx-armed .jx-rules li:not(.is-on) .jx-seg b { color: var(--mk-text-tertiary); border-color: rgba(255,255,255,.08); background: transparent; }
+.jx-armed .jx-rules li.is-on .jx-seg :is(.is-f, .is-na) { animation: jxPick .6s cubic-bezier(.34, 1.56, .64, 1); }
+.jx-armed .jx-fill { transform: scaleX(0); }
+.jx-armed .jx-run { transform: translateX(-81%); }
+.jx-armed .is-go :is(.jx-fill, .jx-run) { transform: none; transition: transform 1.6s cubic-bezier(.33, 0, .2, 1); }
+.jx-armed .jx-score-v { transition: color .5s ease, text-shadow .5s ease; }
+.jx-armed .jx-view--score:not(.is-go) .jx-score-v { color: var(--mk-text-tertiary); text-shadow: none; }
+.jx-armed .jx-view--score:not(.is-done) .jx-band { color: var(--mk-text-tertiary); }
+.jx-armed .jx-view--score.is-done .jx-band { animation: jxGlow 1.6s ease-out; }
+.jx-armed .jx-view--score.is-done .jx-mark { animation: jxMark 1.2s ease-out; }
+.jx-armed .jx-week li { transition: border-color .6s ease, background-color .6s ease; }
+.jx-armed .jx-week li::after { transition: background-color .4s ease, box-shadow .4s ease; }
+.jx-armed .jx-week li:not(.is-on)::after { background: transparent; box-shadow: inset 0 0 0 1px rgba(240,200,80,.3); }
+.jx-armed .jx-week li.is-out:not(.is-on) { border-color: rgba(255,255,255,.07); background: rgba(255,255,255,.03); }
+.jx-armed .jx-week li.is-out:not(.is-on) .jx-v { color: var(--mk-text-tertiary); }
+.jx-armed .jx-week li.is-on { animation: jxDay 1.2s ease-out; }
+.jx-armed .jx-week li.is-out.is-on { animation: jxOut 1.4s ease-out; }
+.jx-armed .jx-week li.is-out.is-on::after { animation: jxHold 1.4s ease-out .3s; }
+.jx-armed .jx-streak b.is-tick { animation: jxGlow .9s ease-out; }
+.jx-armed .jx-rest-k::after { transform: scaleX(0); }
+.jx-armed .jx-rest-k.is-drawn::after { transform: none; transition: transform 1.4s cubic-bezier(.22, 1, .36, 1); }
+@keyframes jxPick { 40% { transform: scale(1.12); } }
+@keyframes jxGlow { 30% { color: #FFF1C4; text-shadow: 0 0 16px rgba(240,200,80,.65); } }
+@keyframes jxMark { 35% { box-shadow: 0 0 0 6px rgba(240,200,80,.25), 0 0 26px rgba(240,200,80,1); } }
+@keyframes jxDay { 30% { border-color: rgba(240,200,80,.55); box-shadow: 0 0 18px rgba(212,175,55,.22); } }
+@keyframes jxOut { 0% { transform: scale(.94); } 30% { transform: scale(1.05); box-shadow: 0 0 26px rgba(240,200,80,.45); } 100% { transform: none; } }
+@keyframes jxHold { 40% { box-shadow: inset 0 0 0 1px rgba(240,200,80,.95), 0 0 0 4px rgba(240,200,80,.22); } }
+@media (prefers-reduced-motion: reduce) {
+  .jx-armed :is(.jx-fill, .jx-run) { transform: none; opacity: 0; }
+  .jx-armed .is-go :is(.jx-fill, .jx-run) { opacity: 1; transition: opacity 1.6s ease; }
+  .jx-armed .jx-rules li.is-on .jx-seg :is(.is-f, .is-na) { animation: none; }
+  .jx-armed .jx-week li.is-out.is-on { animation-name: jxDay; }
+  .jx-armed .jx-rest-k::after { transform: none; opacity: 0; }
+  .jx-armed .jx-rest-k.is-drawn::after { opacity: 1; transition: opacity 1.4s ease; }
+}
 
 /* ── WHERE PROFITS COME FROM (rule-followed vs rule-broken) ─── */
 .profit-source { max-width: 980px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
@@ -583,34 +682,72 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
   <div class="section-inner">
     <p class="section-eyebrow reveal">THE JOURNAL, IN FULL</p>
     <h2 class="section-title reveal">Everything you'd expect. <em>Nothing you'd settle for.</em></h2>
-    <p class="section-sub reveal">Nineteen things, every one on the Journal plan. The table stakes first, then the layer no other journal has.</p>
+    <p class="section-sub reveal">First, the three features that grade your discipline. Then everything else a serious journal needs. All of it is on the Journal plan.</p>
 
-    <div class="jf-grid reveal">
-      <div class="jf-col"><h3>Record</h3><ul>
-        <li><span class="jf-name">Trade journal &amp; daily session log</span><span class="jf-note">Every fill and the story behind it, captured before tomorrow blurs the details.</span></li>
-        <li><span class="jf-name">Net P&amp;L by hand</span><span class="jf-note">Type one number and the day exists. No broker needed.</span></li>
-        <li><span class="jf-name">Broker CSV import</span><span class="jf-note">Drop in an export and it maps the columns: DAS, Webull, TradeZero, ThinkorSwim, Lightspeed.</span></li>
-        <li><span class="jf-name">Sticky Notes</span><span class="jf-note">A scratchpad that pops out over your platform. One click sends a note to the journal.</span></li>
-        <li><span class="jf-name">No-Trade Day</span><span class="jf-note">A day you sat out, recorded as a kept decision, not a gap.</span></li>
-        <li><span class="jf-name">Journal export</span><span class="jf-note">Print, PDF, Word, OneNote, or email it to a trading partner.</span></li>
-      </ul></div>
-      <div class="jf-col"><h3>Analyze</h3><ul>
-        <li><span class="jf-name">P&amp;L &amp; &cent;/share</span><span class="jf-note">Broken out by symbol, time of day, hold time, and tag.</span></li>
-        <li><span class="jf-name">Calendar &amp; streaks</span><span class="jf-note">A month of green and red days with your streaks, downloadable as an image.</span></li>
-        <li><span class="jf-name">Reports</span><span class="jf-note">Equity curve, by price, by symbol, risk metrics.</span></li>
-        <li><span class="jf-name">Trades blotter</span><span class="jf-note">Every fill, with commission and fees split out.</span></li>
-        <li><span class="jf-name">View Chart</span><span class="jf-note">Any closed trade on its chart with the entry and exit marked, and a screenshot to share.</span></li>
-        <li><span class="jf-name">Custom tags &amp; filters</span><span class="jf-note">Your labels, filtered across date, symbol, side, hold time, and outcome.</span></li>
-        <li><span class="jf-name">Performance by Setup</span><span class="jf-note">One tally, on the Dashboard, in the Journal, and in Reports.</span></li>
-      </ul></div>
-      <div class="jf-col"><h3>Discipline, inside the journal</h3><ul>
-        <li><span class="jf-name">Picard Score</span><span class="jf-note">A daily grade on following your rules, not on the P&amp;L.</span></li>
-        <li><span class="jf-name">Rule Check</span><span class="jf-note">Your own rules, graded daily: Followed, Broke, N/A. Breaking one moves the score.</span></li>
-        <li><span class="jf-name">Custom rule pills</span><span class="jf-note">Your non-negotiables, pinned to every session.</span></li>
-        <li><span class="jf-name">Market Context &amp; Daily Watchlist</span><span class="jf-note">The morning read (Cold, Mixed, Active) and the names you looked at, kept with the day.</span></li>
-        <li><span class="jf-name">Setups &amp; Mistakes</span><span class="jf-note">Chart screenshots you mark up: tags, arrows, the decision candle, a takeaway.</span></li>
-        <li><span class="jf-name">My Playbook &amp; Flash Cards</span><span class="jf-note">Your long-form notes on setups, turned into a deck and reviewed on a schedule.</span></li>
-      </ul></div>
+    <div class="jx reveal">
+      <article class="jx-card">
+        <div class="jx-view jx-view--rules" aria-hidden="true">
+          <ul class="jx-rules">
+            <li><span class="jx-rule">Never average down</span><span class="jx-seg"><b class="is-f">Followed</b><b>Broke</b><b>N/A</b></span></li>
+            <li><span class="jx-rule">No revenge trades</span><span class="jx-seg"><b class="is-f">Followed</b><b>Broke</b><b>N/A</b></span></li>
+            <li><span class="jx-rule">Done after 2 red trades</span><span class="jx-seg"><b>Followed</b><b>Broke</b><b class="is-na">N/A</b></span></li>
+          </ul>
+        </div>
+        <h3 class="jx-name">Rule Check</h3>
+        <p class="jx-line">Write your own rules and answer them every day: Followed, Broke, or N/A. A broken rule lowers your Picard Score, so the grade stays honest.</p>
+      </article>
+      <article class="jx-card">
+        <div class="jx-view jx-view--score" aria-hidden="true">
+          <p class="jx-score"><span class="jx-score-v">8.1</span><small>/ 10</small></p>
+          <p class="jx-band">Held the line</p>
+          <div class="jx-track"><i class="jx-fill"></i><span class="jx-run"><i class="jx-mark"></i></span></div>
+          <p class="jx-ticks"><span>0</span><span class="jx-t5">5</span><span class="jx-t7">7</span><span class="jx-t9">9</span><span>10</span></p>
+        </div>
+        <h3 class="jx-name">Picard Score</h3>
+        <p class="jx-line">One grade from 0 to 10 for how well you followed your plan, not for what the day paid. Aim for 7 or better.</p>
+      </article>
+      <article class="jx-card">
+        <div class="jx-view jx-view--week" aria-hidden="true">
+          <ol class="jx-week">
+            <li><span class="jx-d">MON</span><span class="jx-v">+$240</span></li>
+            <li><span class="jx-d">TUE</span><span class="jx-v">+$95</span></li>
+            <li class="is-out"><span class="jx-d">WED</span><span class="jx-v">Sat out</span><span class="jx-why">No A+ setups</span></li>
+            <li><span class="jx-d">THU</span><span class="jx-v">+$60</span></li>
+            <li><span class="jx-d">FRI</span><span class="jx-v">+$180</span></li>
+          </ol>
+          <p class="jx-streak">DAYS AT 7 OR BETTER <b>12</b></p>
+        </div>
+        <h3 class="jx-name">No-Trade Day</h3>
+        <p class="jx-line">No edge today? Sit out and log why. The day stays on your calendar as a decision you kept, and your grade streak doesn't break.</p>
+      </article>
+    </div>
+
+    <div class="jx-rest reveal">
+      <p class="jx-rest-k">PLUS EVERYTHING A SERIOUS JOURNAL NEEDS</p>
+      <div class="jx-cols">
+        <div><h3>Record</h3><ul>
+          <li>Trade journal &amp; session log <span>every fill and why you took it</span></li>
+          <li>Net P&amp;L by hand <span>no broker needed</span></li>
+          <li>Broker CSV import <span>DAS, Webull, TradeZero, ThinkorSwim, Lightspeed</span></li>
+          <li>Sticky Notes <span>a scratchpad over your platform</span></li>
+          <li>Journal export <span>PDF, Word, OneNote, or email</span></li>
+        </ul></div>
+        <div><h3>Analyze</h3><ul>
+          <li>P&amp;L &amp; &cent;/share <span>by symbol, time, hold, and tag</span></li>
+          <li>Calendar &amp; streaks <span>saved as an image</span></li>
+          <li>Reports <span>equity curve and risk metrics</span></li>
+          <li>Trades blotter <span>fees split out</span></li>
+          <li>View Chart <span>entry and exit marked</span></li>
+          <li>Custom tags &amp; filters</li>
+          <li>Performance by Setup</li>
+        </ul></div>
+        <div><h3>Review</h3><ul>
+          <li>Custom rule pills <span>pinned to every session</span></li>
+          <li>Market Context &amp; Daily Watchlist <span>today's tickers, read before the open</span></li>
+          <li>Setups &amp; Mistakes <span>marked-up chart screenshots</span></li>
+          <li>My Playbook &amp; Flash Cards <span>reviewed on a schedule</span></li>
+        </ul></div>
+      </div>
     </div>
 
     <div class="mk-cta-repeat">
@@ -618,6 +755,80 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
     </div>
   </div>
 </section>
+<script>
+/* The Journal, In Full plays once (Ed, 2026-10-17). On a wide screen the three cards play in turn once they are on
+   screen; where they stack (900px and under) each card plays as it scrolls in. The score starts where the app starts
+   a day ("No score yet") and lands on the static frame. Classes only; the CSS is under .jx-armed. */
+(function () {
+  var sec = document.getElementById('in-full'), row = sec && sec.querySelector('.jx');
+  if (!row || !('IntersectionObserver' in window) || !window.matchMedia) return;
+  var still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var cards = [].slice.call(row.querySelectorAll('.jx-card'));
+  if (cards.length !== 3) return;
+  var rules = [].slice.call(cards[0].querySelectorAll('.jx-rules li'));
+  var view = cards[1].querySelector('.jx-view--score'), num = view.querySelector('.jx-score-v'), band = view.querySelector('.jx-band'), fill = view.querySelector('.jx-fill');
+  var days = [].slice.call(cards[2].querySelectorAll('.jx-week li')), streak = cards[2].querySelector('.jx-streak b');
+  var kick = sec.querySelector('.jx-rest-k');
+  var SCORE = 8.1, BAND = band.textContent, STREAK = +streak.textContent, GRADED = days.filter(function (d) { return !d.classList.contains('is-out'); }).length;
+  num.textContent = '0.0'; band.textContent = 'No score yet'; streak.textContent = String(STREAK - GRADED);
+  sec.classList.add('jx-armed');
+  var left = 4;
+  function finished() { if (--left === 0) setTimeout(function () { sec.setAttribute('data-anim', 'done'); }, 1500); }
+  function live(c, ms) { c.classList.add('is-live'); setTimeout(function () { c.classList.remove('is-live'); finished(); }, ms); }
+  function after(ms, fn) { setTimeout(fn, ms); }
+
+  function playRules() {
+    live(cards[0], 2500);
+    rules.forEach(function (li, i) { after(450 + i * 600, function () { li.classList.add('is-on'); }); });
+  }
+  function playScore() {
+    live(cards[1], 2600);
+    after(150, function () {
+      view.classList.add('is-go');
+      var t0 = performance.now();
+      (function step(now) {
+        var u = 1, m;
+        if (still) { u = Math.min(1, (now - t0) / 1600); u = 1 - Math.pow(1 - u, 3); }
+        else { m = getComputedStyle(fill).transform.match(/matrix\(([^,]+)/); u = m ? Math.min(1, +m[1]) : 1; }
+        num.textContent = (SCORE * u).toFixed(1);
+        if (now - t0 < 1650) requestAnimationFrame(step);
+        else { num.textContent = SCORE.toFixed(1); band.textContent = BAND; view.classList.add('is-done'); }
+      })(t0);
+    });
+  }
+  function playWeek() {
+    live(cards[2], 3300);
+    var n = STREAK - GRADED;
+    days.forEach(function (d, i) {
+      after(300 + i * 500 + (i > 2 ? 200 : 0), function () {
+        d.classList.add('is-on');
+        if (d.classList.contains('is-out')) return;
+        streak.textContent = String(++n);
+        streak.classList.remove('is-tick'); void streak.offsetWidth; streak.classList.add('is-tick');
+      });
+    });
+  }
+  function drawRule() { kick.classList.add('is-drawn'); finished(); }
+  function once(el, opts, fn) {
+    var o = new IntersectionObserver(function (es) { if (es[0].isIntersecting) { o.disconnect(); fn(); } }, opts);
+    o.observe(el);
+  }
+
+  if (matchMedia('(max-width: 900px)').matches) {
+    once(cards[0], { threshold: 0.6 }, playRules);
+    once(cards[1], { threshold: 0.6 }, playScore);
+    once(cards[2], { threshold: 0.6 }, playWeek);
+    once(kick, { threshold: 1 }, drawRule);
+  } else {
+    once(row, { rootMargin: '0px 0px -15% 0px', threshold: 0.5 }, function () {
+      playRules();
+      after(2400, playScore);
+      after(4900, playWeek);
+      after(8300, drawRule);
+    });
+  }
+})();
+</script>
 
 <!-- WHERE PROFITS COME FROM -->
 <hr class="mk-rule-gold">
