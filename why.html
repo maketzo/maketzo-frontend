@@ -112,20 +112,71 @@ hr.mk-rule-gold, hr.mk-rule-gold--bold { margin: 0 auto; max-width: 1180px; }
 .prose-wrap p { font-size: var(--mk-text-md); color: var(--mk-text-secondary); line-height: var(--mk-lead-body); margin-bottom: 18px; }
 .prose-wrap p strong { color: var(--mk-text-primary); }
 .prose-wrap p:last-child { margin-bottom: 0; }
-.pull-quote {
-  margin: 56px 0;
-  padding: 40px 44px;
-  background: linear-gradient(135deg, rgba(212,175,55,.06), transparent 60%), var(--mk-surface-raised);
-  border-left: 3px solid var(--mk-brand);
-  border-radius: var(--mk-radius-card);
-  font-family: var(--mk-font-display);
-  font-size: clamp(1.4rem, 2.6vw, 1.8rem);
-  line-height: 1.18;
-  letter-spacing: var(--mk-track-display);
-  text-transform: uppercase;
-  color: var(--mk-text-primary);
+/* ── THE PATTERN, built to Ed's mock (tools/site-preview/mock-why-pattern.png, 1672 wide, 2026-10-17) ──
+   Measured, not eyeballed: a dome of light (a circle, centre 830,768 r 713 at 1672, brightest at the crest with a
+   highlight on each shoulder and a warm haze under the crest), the body as wide as the card, and a glass card whose
+   gold left edge glows and fades along the top and bottom into a silver hairline, standing in a warm floor light.
+   The eyebrow and title keep the page's own section header (Ed's one exception). Sizes run in vw against the mock's
+   width, so the section keeps its proportions at every desktop width. */
+.wp { --wp-bg: #07090e; position: relative; overflow: hidden; padding: clamp(88px, 9.6vw, 170px) 0 clamp(88px, 7.6vw, 140px); background: linear-gradient(180deg, #080a10 0%, var(--wp-bg) 45%, #0a0c0f 82%, #08090d 100%); }
+.wp-sky { position: absolute; left: 0; top: 0; width: 100%; aspect-ratio: 1672 / 300; pointer-events: none; }
+.wp-dome { display: block; width: 100%; height: 100%; }
+.wp-dome-fill { fill: url(#wpDomeFill); }
+.wp-dome-haze { fill: url(#wpHaze); }
+.wp-arc, .wp-arc-glow { fill: none; stroke: url(#wpArc); }
+.wp-arc { stroke-width: 1.7; }
+.wp-arc-glow { stroke-width: 6; opacity: .55; }
+.wp .section-inner { position: relative; max-width: none; }
+.wp-body { max-width: min(72.67vw, 1215px); margin: clamp(18px, 2.3vw, 40px) auto 0; text-align: center; font-size: clamp(1.0625rem, 1.6vw, 1.7rem); font-weight: 300; line-height: 1.68; letter-spacing: .02em; color: #e6e7ea; }
+.wp-card { position: relative; width: min(72.67vw, 1215px); margin: clamp(36px, 3.9vw, 66px) auto 0; padding: clamp(28px, 3.38vw, 57px) clamp(28px, 4.8vw, 80px) clamp(28px, 2.77vw, 47px); border: 1.5px solid transparent; border-radius: clamp(16px, 1.32vw, 22px);
+  background:
+    radial-gradient(28% 70% at 0% 50%, rgba(240,190,90,.1), transparent 70%) padding-box,
+    radial-gradient(30% 60% at 100% 100%, rgba(200,170,110,.13), transparent 70%) padding-box,
+    linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,0) 45%) padding-box,
+    linear-gradient(90deg, #0f1115, #0f1218 70%, #10141a) padding-box,
+    linear-gradient(180deg, rgba(0,0,0,0) 30%, rgba(0,0,0,.38)) border-box,
+    linear-gradient(90deg, #fff6c4 0%, #f6dc76 8%, #dcae55 17%, #a88747 26%, #725e3b 34%, #574d3b 42%, #4c4639 50%, #46443e 72%, #45453f 100%) border-box;
+  box-shadow: -12px 0 44px -6px rgba(236,184,72,.42), -2px 0 14px rgba(255,214,110,.3), 0 24px 60px rgba(0,0,0,.45); }
+/* the lit left edge: brighter and wider than the border, hot at the top, deeper gold at the foot */
+.wp-edge { position: absolute; left: -2px; top: clamp(14px, 1.2vw, 20px); bottom: clamp(14px, 1.2vw, 20px); width: 3px; border-radius: 3px; background: linear-gradient(180deg, #fffbd8, #ffe46e 40%, #e9b844 72%, #b88f36); box-shadow: 0 0 12px 2px rgba(255,214,110,.7), 0 0 34px 6px rgba(226,170,60,.34); pointer-events: none; }
+/* the floor light the card stands in */
+.wp-card::after { content: ""; position: absolute; left: -2%; right: -2%; top: calc(100% + 6px); height: clamp(30px, 2.6vw, 44px); background: radial-gradient(50% 50% at 46% 50%, rgba(220,160,62,.5), rgba(214,158,62,.16) 55%, transparent 82%); filter: blur(6px); pointer-events: none; }
+.wp-quote { margin: 0; font-family: var(--mk-font-display); font-size: clamp(1.6rem, 3.4vw, 3.6rem); line-height: 1.055; letter-spacing: .01em; text-transform: uppercase; color: var(--mk-text-primary); text-align: left; }
+.wp-quote em { font-style: normal; background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+/* The pattern in motion (Ed: "Create a beautiful and engaging animation for this section"): the gap between knowing
+   and doing, crossed by light. A glint travels the dome shoulder to shoulder (it rides a box the size of the arc's own
+   circle, rotated about its centre, so it stays on the line and runs on the compositor) and the crest's haze swells
+   as it passes; then the card's gold edge flares, a light runs the top border carrying the gold across the grey, the
+   floor light swells, and the light passes through the quote's gold words. Once per visit; nothing is ever hidden or
+   dimmed, and every added light ends at zero, so the end frame is the mock. */
+.wp-glint-orbit { position: absolute; left: 6.995%; top: 18.33%; width: 85.29%; aspect-ratio: 1; border-radius: 50%; transform: rotate(-38deg); opacity: 0; }
+.wp-glint { position: absolute; left: 50%; top: 0; width: 9%; height: 7px; transform: translate(-50%, -50%); border-radius: 50%; background: radial-gradient(closest-side, rgba(255,246,214,.95), rgba(246,214,140,.55) 45%, rgba(246,214,140,0)); }
+.wp-glint::after { content: ""; position: absolute; left: 30%; right: 30%; top: -10px; bottom: -10px; border-radius: 50%; background: radial-gradient(closest-side, rgba(246,214,140,.35), rgba(246,214,140,0)); }
+.wp-sky::after { content: ""; position: absolute; left: 30%; width: 44%; top: 4%; height: 40%; border-radius: 50%; background: radial-gradient(closest-side, rgba(230,190,110,.2), rgba(230,190,110,0)); opacity: 0; }
+.wp-edge::after { content: ""; position: absolute; inset: -6px -8px; border-radius: 8px; box-shadow: 0 0 22px 6px rgba(255,214,110,.6), 0 0 60px 14px rgba(226,170,60,.3); opacity: 0; }
+.wp-run { position: absolute; top: -1.5px; left: clamp(14px, 1.2vw, 20px); right: clamp(14px, 1.2vw, 20px); height: 2px; overflow: hidden; pointer-events: none; }
+.wp-run::before { content: ""; position: absolute; left: 0; top: 0; width: 24%; height: 100%; background: linear-gradient(90deg, rgba(255,236,170,0), rgba(255,244,205,.95) 55%, rgba(255,236,170,0)); transform: translateX(-100%); }
+.wp-card::before { content: ""; position: absolute; left: -2%; right: -2%; top: calc(100% + 2px); height: clamp(40px, 3.4vw, 58px); background: radial-gradient(50% 50% at 46% 50%, rgba(232,172,70,.5), rgba(232,172,70,0) 80%); filter: blur(8px); opacity: 0; pointer-events: none; }
+.wp-quote em { background-image: linear-gradient(100deg, rgba(255,250,235,0) 38%, rgba(255,250,235,.9) 50%, rgba(255,250,235,0) 62%), var(--mk-gold-gradient); background-size: 300% 100%, 100% 100%; background-position: 150% 0, 0 0; background-repeat: no-repeat; }
+.wp-sky-go .wp-glint-orbit { animation: wpOrbit 2.6s cubic-bezier(.45, .05, .4, 1) .2s both; }
+.wp-sky-go .wp-sky::after { animation: wpSwell 1.8s ease-in-out .9s; }
+.wp-go .wp-edge::after { animation: wpSwell 1.2s ease-in-out; }
+.wp-go .wp-run::before { animation: wpRun 1.5s cubic-bezier(.45, 0, .35, 1) .35s; }
+.wp-go.wp-card::before { animation: wpSwell 1.8s ease-in-out .9s; }
+.wp-go .wp-quote em { animation: wpShine 1.3s ease-in-out 1.7s; }
+@keyframes wpOrbit { 0% { opacity: 0; transform: rotate(-38deg); } 14% { opacity: 1; } 86% { opacity: 1; } 100% { opacity: 0; transform: rotate(38deg); } }
+@keyframes wpSwell { 0%, 100% { opacity: 0; } 45% { opacity: 1; } }
+@keyframes wpRun { from { transform: translateX(-100%); } to { transform: translateX(420%); } }
+@keyframes wpShine { from { background-position: 150% 0, 0 0; } to { background-position: -50% 0, 0 0; } }
+/* reduce motion: the same clock, nothing travels; the crest, the edge and the floor glow in place, the quote's light stays */
+@media (prefers-reduced-motion: reduce) {
+  .wp-sky-go .wp-glint-orbit, .wp-go .wp-run::before { animation: none; }
 }
-.pull-quote em { font-style: normal; background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+@media (max-width: 900px) {
+  .wp-sky { width: 190%; left: -45%; }
+  .wp-body { max-width: none; padding: 0 4px; }
+  .wp-card { width: auto; }
+}
 
 /* ── ASYMMETRIC SPLIT (title left · prose right) ─────────────── */
 .section-split {
@@ -520,15 +571,38 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 <hr class="mk-rule-gold">
 
 <!-- THE PATTERN -->
-<section class="section">
+<section class="section wp">
+  <div class="wp-sky" aria-hidden="true">
+  <svg class="wp-dome" viewBox="0 0 1672 300" preserveAspectRatio="xMidYMin meet">
+    <defs>
+      <clipPath id="wpDomeClip"><circle cx="830" cy="768" r="713"/></clipPath>
+      <linearGradient id="wpDomeFill" x1="0" y1="55" x2="0" y2="300" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#fff" stop-opacity=".03"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+      <radialGradient id="wpHaze" cx="870" cy="70" r="430" gradientTransform="translate(0 61) scale(1 .27) translate(0 -61)" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#d9b06a" stop-opacity=".22"/><stop offset=".45" stop-color="#c9a060" stop-opacity=".08"/><stop offset="1" stop-color="#c9a060" stop-opacity="0"/></radialGradient>
+      <linearGradient id="wpArc" x1="360" y1="0" x2="1300" y2="0" gradientUnits="userSpaceOnUse">
+        <stop offset="0" stop-color="#efcf8c" stop-opacity="0"/><stop offset=".085" stop-color="#efcf8c" stop-opacity=".38"/><stop offset=".13" stop-color="#efcf8c" stop-opacity=".46"/><stop offset=".17" stop-color="#efcf8c" stop-opacity=".42"/>
+        <stop offset=".255" stop-color="#efcf8c" stop-opacity=".24"/><stop offset=".34" stop-color="#efcf8c" stop-opacity=".2"/><stop offset=".426" stop-color="#efcf8c" stop-opacity=".44"/><stop offset=".511" stop-color="#f6dc9c" stop-opacity="1"/>
+        <stop offset=".574" stop-color="#efcf8c" stop-opacity=".62"/><stop offset=".638" stop-color="#efcf8c" stop-opacity=".46"/><stop offset=".723" stop-color="#efcf8c" stop-opacity=".33"/><stop offset=".809" stop-color="#efcf8c" stop-opacity=".33"/>
+        <stop offset=".851" stop-color="#efcf8c" stop-opacity=".4"/><stop offset=".894" stop-color="#efcf8c" stop-opacity=".26"/><stop offset="1" stop-color="#efcf8c" stop-opacity="0"/>
+      </linearGradient>
+      <filter id="wpArcGlow" x="-5%" y="-50%" width="110%" height="200%"><feGaussianBlur stdDeviation="3"/></filter>
+    </defs>
+    <circle class="wp-dome-fill" cx="830" cy="768" r="713"/>
+    <ellipse class="wp-dome-haze" cx="870" cy="70" rx="440" ry="120" clip-path="url(#wpDomeClip)"/>
+    <circle class="wp-arc-glow" cx="830" cy="768" r="713" filter="url(#wpArcGlow)"/>
+    <circle class="wp-arc" cx="830" cy="768" r="713"/>
+  </svg>
+  <span class="wp-glint-orbit"><span class="wp-glint"></span></span>
+  </div>
   <div class="section-inner">
     <p class="section-eyebrow reveal">THE PATTERN</p>
     <h2 class="section-title reveal">Knowledge is rarely <em>the problem.</em></h2>
 
-    <div class="prose-wrap">
-      <p class="reveal">By the time most traders search for a solution, they've already studied the strategies, developed the rules, and know what disciplined trading looks like. The gap is enacting it, when real money meets real emotion.</p>
+    <p class="wp-body reveal">By the time most traders search for a solution, they've already studied the strategies, developed the rules, and know what disciplined trading looks like. The gap is enacting it, when real money meets real emotion.</p>
 
-      <div class="pull-quote reveal">That gap between knowing and doing <em>is where performance breaks down.</em></div>
+    <div class="wp-card reveal">
+      <span class="wp-edge" aria-hidden="true"></span>
+      <span class="wp-run" aria-hidden="true"></span>
+      <p class="wp-quote">That gap between knowing and doing <em>is where performance breaks down.</em></p>
     </div>
 
     <div class="mk-cta-repeat">
@@ -536,6 +610,25 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
     </div>
   </div>
 </section>
+<script>
+/* THE PATTERN in motion, once per visit: the dome's glint when the title is on screen, then the card's light when the
+   card is (never before the glint has crossed, so on a tall screen the two play in order) */
+(function () {
+  var sec = document.querySelector('.section.wp'), card = sec && sec.querySelector('.wp-card'), title = sec && sec.querySelector('.section-title');
+  if (!card || !title || !('IntersectionObserver' in window)) return;
+  var skyAt = 0, cardSeen = false;
+  function seen(el, ratio, fn) {
+    var o = new IntersectionObserver(function (es) {
+      var e = es[0];
+      if (e.intersectionRatio >= ratio || (!e.isIntersecting && e.boundingClientRect.top < 0)) { o.disconnect(); fn(); }
+    }, { threshold: [0, ratio] });
+    o.observe(el);
+  }
+  function lightCard() { setTimeout(function () { card.classList.add('wp-go'); }, Math.max(0, skyAt + 2400 - Date.now())); }
+  seen(title, 1, function () { skyAt = Date.now(); sec.classList.add('wp-sky-go'); if (cardSeen) lightCard(); });
+  seen(card, 0.6, function () { cardSeen = true; if (skyAt) lightCard(); });
+})();
+</script>
 
 <hr class="mk-rule-gold">
 
