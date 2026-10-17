@@ -24,7 +24,7 @@
 (function () {
   'use strict';
 
-  var SRC = 'assets/see-it-work/maketzo-see-how-it-works.mp4?v=2';
+  var SRC = 'assets/see-it-work/maketzo-see-how-it-works.mp4?v=3';
   var CARD_LEAD = 5.7;   // the end card is the last 5.8s of the cut, dissolving in over 0.8s
   var POSTER = 'assets/see-it-work/maketzo-see-how-it-works-poster.jpg?v=1';
   var MUTE_KEY = 'mk_shiw_muted';
