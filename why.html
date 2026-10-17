@@ -407,13 +407,18 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 .dm-title::after { content: ""; display: block; width: clamp(34px, 2.7vw, 50px); height: 2px; margin-top: clamp(14px, 1.35vw, 26px); background: var(--mk-gold-gradient); }
 /* The three moments in motion (Ed: "a beautiful and engaging animation that fires after the previous section animation
    is done - or if the user mouses to WHEN DISCIPLINE CRACKS"). The P&L draws left to right in one glide that slows
-   through each moment; as it reaches one, the marker lands with a pulse, its gold stake drops into the card, and the
-   card's gold edge flares while its title rule draws. Red, green, red, in the order the week goes. The cards' words
-   are never hidden; the end frame is the static design (line, markers and stakes all on). Nothing is armed without
-   the script. Reduce motion keeps the clock: the line fades in whole, the markers and stakes fade in at their moments. */
+   through each moment; as it reaches one, the marker lands with a pulse, its gold stake drops, and the card rises in
+   under it as its gold edge flares and its title rule draws. Red, green, red, in the order the week goes. The end
+   frame is the static design (line, markers, stakes and cards all on). Nothing is armed without the script. Reduce
+   motion keeps the clock: the line fades in whole, the markers, stakes and cards fade in at their moments. */
 .dm-armed .dm-reveal { stroke-dashoffset: 1; }
 .dm-armed .dm-pin { transform: scale(0); }
 .dm-armed .dm-stake { transform: scaleY(0); }
+/* Ed: "The cards should come in one by one with each checkpoint - they shouldn't be viewable on entry". Each card waits
+   unseen until the line reaches its marker, then rises in with its edge flare. With no script they simply show. */
+.dm-armed .dm-card { opacity: 0; transform: translateY(18px); }
+.dm-armed .dm-card.is-hit { animation: dmCardIn .8s cubic-bezier(.2, .8, .3, 1) forwards; }
+@keyframes dmCardIn { to { opacity: 1; transform: none; } }
 .dm-halo { transform-box: fill-box; transform-origin: center; }
 .dm-go .dm-reveal { animation: dmDraw 6.6s ease-in-out forwards; }
 .dm-go .dm-mark--1 .dm-pin { animation: dmPop .5s cubic-bezier(.3, 1.6, .5, 1) 1.2s forwards; }
@@ -438,6 +443,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
   .dm-armed .dm-line { opacity: 0; }
   .dm-armed .dm-pin, .dm-armed .dm-stake { transform: none; opacity: 0; }
   .dm-go .dm-reveal, .dm-go .dm-halo, .dm-card.is-hit .dm-title::after { animation: none; }
+  .dm-armed .dm-card { transform: none; }
   .dm-go .dm-line { animation: wpFadeIn 1.4s ease forwards; }
   .dm-go .dm-mark--1 .dm-pin, .dm-go .dm-mark--1 .dm-stake { animation: wpFadeIn .6s ease 1.2s forwards; }
   .dm-go .dm-mark--2 .dm-pin, .dm-go .dm-mark--2 .dm-stake { animation: wpFadeIn .6s ease 3.1s forwards; }
@@ -737,19 +743,19 @@ window.mkAfter = function (prev, trigger, fn, here) {
       <g class="dm-mark dm-mark--r dm-mark--3"><rect class="dm-stake" x="1474.25" y="393" width="1.5" height="40" fill="url(#dmStake)"/><g class="dm-pin"><circle class="dm-halo" cx="1475" cy="382" r="15" filter="url(#dmBlur)"/><circle class="dm-ring" cx="1475" cy="382" r="11"/><circle class="dm-dot" cx="1475" cy="382" r="6.5"/></g></g>
     </svg>
     <div class="dm-grid">
-      <div class="dm-card reveal">
+      <div class="dm-card">
         <span class="lit-edge" aria-hidden="true"></span>
         <p class="dm-num">01</p>
         <h3 class="dm-title"><span>One loss lands harder</span> <span>than the math says it should.</span></h3>
         <p class="dm-body">So you re-enter the same setup to "earn it back," and the third loss is the one that empties the day.</p>
       </div>
-      <div class="dm-card reveal">
+      <div class="dm-card">
         <span class="lit-edge" aria-hidden="true"></span>
         <p class="dm-num">02</p>
         <h3 class="dm-title"><span>Four green days</span> <span>in a row.</span></h3>
         <p class="dm-body">The fifth trade goes in at 2&times; size, and quietly gives back the entire week. The green trade wasn't the reward. It was the setup.</p>
       </div>
-      <div class="dm-card reveal">
+      <div class="dm-card">
         <span class="lit-edge" aria-hidden="true"></span>
         <p class="dm-num">03</p>
         <h3 class="dm-title"><span>The trade goes</span> <span>against you.</span></h3>
@@ -778,7 +784,7 @@ window.mkAfter = function (prev, trigger, fn, here) {
   function play() {
     mkMark(sec, 'playing'); sec.classList.add('dm-go');
     if (!stacked) {
-      [1700, 3600, 5500].forEach(function (t, i) { setTimeout(function () { hit(cards[i]); }, t); });
+      [1550, 3450, 5350].forEach(function (t, i) { setTimeout(function () { hit(cards[i]); }, t); });
       setTimeout(function () { mkMark(sec, 'done'); }, 6800);
       return;
     }
