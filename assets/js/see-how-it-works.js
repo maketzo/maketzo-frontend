@@ -14,13 +14,18 @@
    center it pauses, but should show the pause sign"; no separate button).
 
    Closes on the X, Escape, or a click outside the frame; closing pauses and
-   rewinds. When the video ends, its last card gets real buttons: the trial and
-   Watch Again. Pairs with assets/css/see-how-it-works.css.
+   rewinds. The last card's trial button is real (Ed, 2026-10-17: the painted
+   one "is NOT clickable"): the video paints the card with that spot empty, and
+   the real button and the line under it arrive on it with the card, CARD_LEAD
+   seconds from the end. While the card is up a click on the picture does not
+   pause it. Watch Again joins when the video ends. Pairs with
+   assets/css/see-how-it-works.css.
    ═══════════════════════════════════════════════════════════════════════════ */
 (function () {
   'use strict';
 
   var SRC = 'assets/see-it-work/maketzo-see-how-it-works.mp4?v=1';
+  var CARD_LEAD = 5.7;   // the end card is the last 5.8s of the cut, dissolving in over 0.8s
   var POSTER = 'assets/see-it-work/maketzo-see-how-it-works-poster.jpg?v=1';
   var MUTE_KEY = 'mk_shiw_muted';
   var ICON_ON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a10 10 0 0 1 0 14"/></svg>';
@@ -51,8 +56,11 @@
         '<div class="shiw-paused" aria-hidden="true"><span>' + ICON_PAUSE + '</span></div>' +
         '<button type="button" class="shiw-btn shiw-mute"></button>' +
         '<button type="button" class="shiw-btn shiw-close" aria-label="Close the video">' + ICON_X + '</button>' +
+        '<div class="shiw-card">' +
+          '<button type="button" class="btn-primary" data-shiw-trial tabindex="-1">Start 7-Day Free Trial &rarr;</button>' +
+          '<p class="shiw-fine">No charge until day 8. Cancel in one click.</p>' +
+        '</div>' +
         '<div class="shiw-end" hidden>' +
-          '<button type="button" class="btn-primary" data-shiw-trial>Start 7-Day Free Trial &rarr;</button>' +
           '<button type="button" class="btn-secondary" data-shiw-again>Watch Again</button>' +
         '</div>' +
         '<div class="shiw-bar"><i></i></div>' +
@@ -68,23 +76,36 @@
     root.querySelector('.shiw-close').addEventListener('click', close);
     root.addEventListener('click', function (e) { if (e.target === root) close(); });
     video.addEventListener('click', function () {
+      if (root.classList.contains('is-card')) return;   // the end card is up: its button is the thing to press
       if (video.paused) video.play().catch(function () {}); else video.pause();
       track('see_how_it_works_pause', { paused: video.paused, at_s: Math.round(video.currentTime) });
     });
     // The pause sign shows only for a pause the viewer chose: not at the end (the end card takes over) and not on close.
     video.addEventListener('pause', function () { if (!video.ended && !root.hidden) root.classList.add('is-paused'); });
     video.addEventListener('play', function () { root.classList.remove('is-paused'); endBox.hidden = true; });
-    video.addEventListener('timeupdate', function () { if (video.duration) bar.style.width = (100 * video.currentTime / video.duration) + '%'; });
-    video.addEventListener('ended', function () { endBox.hidden = false; track('see_how_it_works_complete', {}); });
+    video.addEventListener('timeupdate', function () {
+      if (!video.duration) return;
+      bar.style.width = (100 * video.currentTime / video.duration) + '%';
+      showCard(video.duration - video.currentTime <= CARD_LEAD);
+    });
+    video.addEventListener('ended', function () { showCard(true); endBox.hidden = false; track('see_how_it_works_complete', {}); });
     root.querySelector('[data-shiw-again]').addEventListener('click', function () {
-      endBox.hidden = true; video.currentTime = 0; video.play().catch(function () {}); track('see_how_it_works_replay', {});
+      endBox.hidden = true; showCard(false); video.currentTime = 0; video.play().catch(function () {}); track('see_how_it_works_replay', {});
     });
     root.querySelector('[data-shiw-trial]').addEventListener('click', function (e) {
-      track('see_how_it_works_trial_click', {});
+      track('see_how_it_works_trial_click', { ended: video.ended });
       close();
       if (typeof window.handleCheckout === 'function') window.handleCheckout('pro', e);
     });
     document.addEventListener('keydown', function (e) { if (!root.hidden && e.key === 'Escape') close(); });
+  }
+
+  // the end card's real button and line: on with the card, off again if the video goes back before it
+  function showCard(on) {
+    if (root.classList.contains('is-card') === on) return;
+    root.classList.toggle('is-card', on);
+    root.querySelector('[data-shiw-trial]').tabIndex = on ? 0 : -1;
+    if (on) root.classList.remove('is-paused');
   }
 
   function open(e) {
@@ -93,7 +114,7 @@
     opener = document.activeElement;
     if (!video.getAttribute('src')) video.setAttribute('src', SRC);
     video.muted = savedMuted(); paintMute();
-    endBox.hidden = true; video.currentTime = 0; bar.style.width = '0'; root.classList.remove('is-paused');
+    endBox.hidden = true; showCard(false); video.currentTime = 0; bar.style.width = '0'; root.classList.remove('is-paused');
     root.hidden = false; document.documentElement.style.overflow = 'hidden';
     requestAnimationFrame(function () { root.classList.add('is-open'); });
     // Opened by a click, so sound is allowed; if the browser still refuses, start muted rather than not at all.
