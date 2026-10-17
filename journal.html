@@ -309,6 +309,31 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
 .tier-mini-price { font-family: var(--mk-font-mono); font-size: var(--mk-mono-md); color: var(--mk-text-secondary); margin-bottom: 14px; }
 .tier-mini-note { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); color: var(--mk-text-tertiary); letter-spacing: 0.04em; }
 @media (max-width: 760px) { .tier-strip { grid-template-columns: 1fr; } }
+.tier-strip-more { text-align: center; margin-top: 36px; }
+/* The layers are laid once, in order (Ed, 2026-10-17: "Create a beautiful and elegant animation for this section").
+   As each plan is reached a gold hairline draws across its top and what it covers lights item by item; the
+   "Everything in ..." line lights together with the plan it carries, so Pro reads as Journal plus the rest and
+   Elite as Pro plus more. The light comes to rest on Pro: its border glows, its price warms and a light passes
+   across its button. Every word is on screen from the first frame; the animation only adds light and ends on the
+   static section. Nothing here applies without .pl-armed (the script after the section). Nothing moves except a
+   line drawing in, so reduce motion plays the same. */
+.tier-mini { position: relative; }
+.tier-mini::before { content: ""; position: absolute; top: -1.5px; left: 18px; right: 18px; height: 2px; border-radius: 2px; background: linear-gradient(90deg, transparent, var(--mk-gold-300) 25%, #FFF1C9 50%, var(--mk-gold-300) 75%, transparent); box-shadow: 0 0 12px rgba(255,214,120,.55); transform: scaleX(0); transform-origin: left center; opacity: 0; pointer-events: none; }
+.pl-armed .tier-mini::before { transition: transform .9s cubic-bezier(.4, 0, .2, 1), opacity .9s ease; }
+.pl-armed .tier-mini.is-laid::before { transform: scaleX(1); opacity: 1; }
+.pl-armed .tier-mini.is-laid.is-set::before { opacity: 0; transition: opacity 1.4s ease; }
+.pl-armed .tier-mini { transition: border-color .9s ease, box-shadow 1.2s ease; }
+.pl-armed .tier-mini.is-live { border-color: rgba(240,200,80,.6); box-shadow: 0 0 0 1px rgba(240,200,80,.08), 0 0 36px rgba(212,175,55,.14); }
+.pl-armed .tier-mini.featured.is-live { border-color: rgba(240,200,80,.9); box-shadow: 0 0 0 1px rgba(240,200,80,.14), 0 0 48px rgba(212,175,55,.22); }
+.pl-armed .pl-i.is-lit { animation: plLit 1.8s ease-out both; }
+.pl-armed .pl-i.pl-carry.is-lit { animation-name: plCarry; animation-duration: 2.2s; }
+@keyframes plLit { 22% { color: #F1E2B8; text-shadow: 0 0 12px rgba(240,200,80,.55); } 100% { text-shadow: none; } }
+@keyframes plCarry { 20% { color: var(--mk-gold-300); text-shadow: 0 0 14px rgba(240,200,80,.75); } 100% { text-shadow: none; } }
+.pl-armed .tier-mini-price.is-lit { animation: plPrice 2s ease-out both; }
+@keyframes plPrice { 25% { color: #F6E7BF; text-shadow: 0 0 16px rgba(240,200,80,.6); } 100% { text-shadow: none; } }
+.pl-armed .tier-mini .btn-primary { background: linear-gradient(100deg, transparent 40%, rgba(255,250,235,.75) 50%, transparent 60%) 160% 0 / 250% 100% no-repeat, var(--mk-gold-gradient); }
+.pl-armed .tier-mini .btn-primary.is-shine { animation: plShine 1.8s cubic-bezier(.45, 0, .25, 1) both; }
+@keyframes plShine { from { background-position: 160% 0, 0 0; } to { background-position: -60% 0, 0 0; } }
 
 /* ── FINAL CTA ──────────────────────────────────────────────── */
 .final-cta-section { padding: 96px 0; background: var(--mk-obsidian-950); text-align: center; border-top: var(--mk-border-hairline); }
@@ -786,7 +811,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 
 <!-- PRICING REMINDER STRIP -->
 <hr class="mk-rule-gold">
-<section class="section">
+<section class="section" id="pick-your-layer">
   <div class="section-inner">
     <p class="section-eyebrow reveal">PICK YOUR LAYER</p>
     <h2 class="section-title reveal">Journal alone. <em>Or journal plus the rest.</em></h2>
@@ -813,11 +838,87 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
       </div>
     </div>
 
-    <div style="text-align:center;margin-top:36px;">
+    <div class="tier-strip-more">
       <a href="pricing.html" class="btn-secondary">See full plan comparison&nbsp;&rarr;</a>
     </div>
   </div>
 </section>
+<script>
+/* The layers are laid once, in order (Ed, 2026-10-17). The CSS is under .pl-armed, which only this adds, so no
+   script means the finished section. Wide, the plans run back to back once the strip is on screen; stacked, each
+   waits for its own card, and the closing light on Pro plays only if Pro is still on screen. */
+(function () {
+  var sec = document.getElementById('pick-your-layer');
+  if (!sec || !('IntersectionObserver' in window)) return;
+  var cards = Array.prototype.slice.call(sec.querySelectorAll('.tier-mini'));
+  if (cards.length !== 3) return;
+  var pro = cards[1], price = pro.querySelector('.tier-mini-price'), btn = pro.querySelector('.btn-primary');
+  if (!price || !btn) return;
+  // Each note becomes its items, the separators left as they were.
+  var items = cards.map(function (c) {
+    var note = c.querySelector('.tier-mini-note');
+    if (!note) return [];
+    var parts = note.textContent.split(' · '), out = [];
+    note.textContent = '';
+    parts.forEach(function (p, i) {
+      if (i) note.appendChild(document.createTextNode(' · '));
+      var s = document.createElement('span');
+      s.className = 'pl-i' + (/^Everything in /.test(p) ? ' pl-carry' : '');
+      s.textContent = p; note.appendChild(s); out.push(s);
+    });
+    return out;
+  });
+  if (items[0].length < 2 || items[1].length < 2 || items[2].length < 2) return;
+  function restart(el, cls) { el.classList.remove(cls); void el.getBoundingClientRect(); el.classList.add(cls); }
+  function later(ms, fn) { setTimeout(fn, ms); }
+  // One plan: its line draws, it glows, and what it covers lights item by item. A carried line lights first, with
+  // the plan it carries glowing beside it.
+  function lay(i, done) {
+    var c = cards[i], list = items[i], t = 300;
+    c.classList.add('is-laid', 'is-live');
+    list.forEach(function (it) {
+      if (it.classList.contains('pl-carry')) {
+        later(100, function () { restart(it, 'is-lit'); cards[i - 1].classList.add('is-live'); });
+        later(1300, function () { cards[i - 1].classList.remove('is-live'); });
+        t = 600;
+        return;
+      }
+      later(t, function () { restart(it, 'is-lit'); });
+      t += 170;
+    });
+    later(t + 500, function () { c.classList.add('is-set'); });
+    later(t + 900, function () { c.classList.remove('is-live'); done(); });
+  }
+  function onScreen(el) { var r = el.getBoundingClientRect(); return r.top >= 0 && r.bottom <= innerHeight; }
+  var beats = [
+    function (done) { lay(0, done); },
+    function (done) { lay(1, done); },
+    function (done) { lay(2, done); },
+    function (done) {
+      if (!onScreen(pro)) { done(); return; }
+      pro.classList.add('is-live'); restart(price, 'is-lit');
+      later(300, function () { restart(btn, 'is-shine'); });
+      later(2000, function () { pro.classList.remove('is-live'); done(); });
+    }
+  ];
+  sec.classList.add('pl-armed');
+  var next = 0, running = false, seen = 0;
+  function pump() {
+    if (running || next >= beats.length || next >= seen) return;
+    running = true;
+    beats[next++](function () { running = false; pump(); });
+  }
+  cards.forEach(function (c, i) {
+    var o = new IntersectionObserver(function (es) {
+      if (!es[0].isIntersecting) return;
+      o.disconnect();
+      seen = Math.max(seen, i + 1, i === 2 ? 4 : 0);
+      setTimeout(pump, 450);
+    }, { threshold: 0.6 });
+    o.observe(c);
+  });
+})();
+</script>
 
 <!-- FINAL CTA -->
 <hr class="mk-rule-gold mk-rule-gold--bold" aria-hidden="true">
