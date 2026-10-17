@@ -2278,8 +2278,7 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
 /* free tools: four tools, each a gold icon, a name, what it does and one line that sells it; each lands on its own
    explanation (index section 05, Ed 2026-10-15) */
 .wyg { list-style: none; max-width: 1100px; margin: 40px auto 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
-.wyg > li > a, .wyg-card { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; height: 100%; box-sizing: border-box; padding: 24px 22px 22px; border-radius: 16px; background: rgba(255,255,255,.025); border: 1px solid rgba(255,255,255,.07); text-decoration: none; color: inherit; transition: transform var(--mk-dur-snap) var(--mk-ease-out), border-color var(--mk-dur-snap), background var(--mk-dur-snap); }
-.wyg > li > a:hover { transform: translateY(-3px); border-color: rgba(240,200,80,.45); background: rgba(212,175,55,.06); }
+.wyg-card { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; height: 100%; box-sizing: border-box; padding: 24px 22px 22px; border-radius: 16px; background: rgba(255,255,255,.025); border: 1px solid rgba(255,255,255,.07); text-decoration: none; color: inherit; transition: transform var(--mk-dur-snap) var(--mk-ease-out), border-color var(--mk-dur-snap), background var(--mk-dur-snap); }
 .wyg-icon { flex: none; width: 48px; height: 48px; margin-bottom: 6px; display: grid; place-items: center; border-radius: 50%; color: var(--mk-gold-300); background: radial-gradient(circle at 35% 30%, rgba(240,200,80,.22), rgba(212,175,55,.05)); border: 1px solid rgba(240,200,80,.35); box-shadow: 0 0 16px rgba(240,200,80,.12); }
 .wyg-icon svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .wyg-name { display: block; font-family: var(--mk-font-display); font-size: 1.5rem; letter-spacing: var(--mk-track-display); text-transform: uppercase; line-height: 1.05; color: var(--mk-text-primary); }
@@ -2376,15 +2375,15 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
 
 /* Then the three below, one at a time (about 1.8 s a stop): the card lights, and its icon does its job once. The
    clock's hand goes round, the book opens a little, the note writes its lines. */
-.wyg li:not(.wyg-feat) a.is-lit { animation: wygLit 1.8s ease; }
-.wyg a.is-lit .wyg-icon { animation: wygIcon 1.8s ease; }
+.wyg li:not(.wyg-feat) .wyg-card.is-lit { animation: wygLit 1.8s ease; }
+.wyg .is-lit .wyg-icon { animation: wygIcon 1.8s ease; }
 .wyg-hand, .wyg-pg { transform-box: view-box; }
 .wyg-hand { transform-origin: 12px 12px; }
 .wyg-pg { transform-origin: 12px 20px; }
-.wyg a.is-lit .wyg-hand { animation: wygHand 1.4s cubic-bezier(.45,0,.2,1) .15s; }
-.wyg a.is-lit .wyg-pg--l { animation: wygPgL 1.3s ease .15s; }
-.wyg a.is-lit .wyg-pg--r { animation: wygPgR 1.3s ease .15s; }
-.wyg a.is-lit .wyg-ln { stroke-dasharray: 1 1; animation: wygWrite 1s ease .15s both; }
+.wyg .is-lit .wyg-hand { animation: wygHand 1.4s cubic-bezier(.45,0,.2,1) .15s; }
+.wyg .is-lit .wyg-pg--l { animation: wygPgL 1.3s ease .15s; }
+.wyg .is-lit .wyg-pg--r { animation: wygPgR 1.3s ease .15s; }
+.wyg .is-lit .wyg-ln { stroke-dasharray: 1 1; animation: wygWrite 1s ease .15s both; }
 @keyframes wygLit { 35% { border-color: rgba(240,200,80,.55); box-shadow: 0 0 26px rgba(240,200,80,.12); } }
 @keyframes wygIcon { 35% { box-shadow: 0 0 26px rgba(240,200,80,.4); } }
 @keyframes wygHand { to { rotate: 360deg; } }
@@ -2400,8 +2399,8 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
   .tk-go .trp-run :is(.trp-mk--buy, .trp-mk--sell, .trp-mk--was) circle { animation-name: trpIn; animation-timing-function: ease; }
   .tk-go .trp-mk--add > circle:not(.trp-ring) { animation-name: trpIn; animation-timing-function: ease; }
   .tk-go .trp-ring { animation: none; }
-  .wyg a.is-lit :is(.wyg-hand, .wyg-pg) { animation: none; }
-  .wyg a.is-lit .wyg-ln { animation: none; stroke-dasharray: none; }
+  .wyg .is-lit :is(.wyg-hand, .wyg-pg) { animation: none; }
+  .wyg .is-lit .wyg-ln { animation: none; stroke-dasharray: none; }
 }
 /* the soundtrack (index section 06), built to Ed's graphic (tools/site-preview/mock-section-06.png): copy at left;
    at right a glass player slab in perspective, a satin vinyl record and two equaliser groups behind it, a glossy floor
@@ -3121,9 +3120,9 @@ document.addEventListener("DOMContentLoaded", function() {
           <span class="trp-note">Same shares. Adding 63&cent; lower made $630 more.</span>
         </span>
       </div></li>
-      <li><a href="tools.html#halt-clock" data-cta-source="what-you-get" data-cta-target="halt-clock"><span class="wyg-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path class="wyg-hand" d="M12 7v5l3 2"/></svg></span><span class="wyg-name">Halt Clock</span><span class="wyg-t">Estimates when a halted stock reopens.</span><span class="wyg-w">Know when it reopens while everyone else is guessing.</span></a></li>
-      <li><a href="tools.html#knowledge-center" data-cta-source="what-you-get" data-cta-target="knowledge-center"><span class="wyg-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="wyg-pg wyg-pg--l" d="M2 5h6a4 4 0 0 1 4 4v11a3 3 0 0 0-3-3H2z"/><path class="wyg-pg wyg-pg--r" d="M22 5h-6a4 4 0 0 0-4 4v11a3 3 0 0 1 3-3h7z"/></svg></span><span class="wyg-name">Knowledge Center</span><span class="wyg-t">The library, your playbook, and flash cards from your own rules.</span><span class="wyg-w">Learn what most traders only learn by losing money.</span></a></li>
-      <li><a href="tools.html#sticky-notes" data-cta-source="what-you-get" data-cta-target="sticky-notes"><span class="wyg-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10z"/><path d="M15 21v-6h6"/><path class="wyg-ln" pathLength="1" d="M7 8h10M7 12h6"/></svg></span><span class="wyg-name">Sticky Notes</span><span class="wyg-t">Jot it mid-trade. One click sends it to your journal.</span><span class="wyg-w">Mid-trade ideas vanish by the close. Not anymore.</span></a></li>
+      <li><div class="wyg-card"><span class="wyg-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path class="wyg-hand" d="M12 7v5l3 2"/></svg></span><span class="wyg-name">Halt Clock</span><span class="wyg-t">Estimates when a halted stock reopens.</span><span class="wyg-w">Know when it reopens while everyone else is guessing.</span></div></li>
+      <li><div class="wyg-card"><span class="wyg-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="wyg-pg wyg-pg--l" d="M2 5h6a4 4 0 0 1 4 4v11a3 3 0 0 0-3-3H2z"/><path class="wyg-pg wyg-pg--r" d="M22 5h-6a4 4 0 0 0-4 4v11a3 3 0 0 1 3-3h7z"/></svg></span><span class="wyg-name">Knowledge Center</span><span class="wyg-t">The library, your playbook, and flash cards from your own rules.</span><span class="wyg-w">Learn what most traders only learn by losing money.</span></div></li>
+      <li><div class="wyg-card"><span class="wyg-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10z"/><path d="M15 21v-6h6"/><path class="wyg-ln" pathLength="1" d="M7 8h10M7 12h6"/></svg></span><span class="wyg-name">Sticky Notes</span><span class="wyg-t">Jot it mid-trade. One click sends it to your journal.</span><span class="wyg-w">Mid-trade ideas vanish by the close. Not anymore.</span></div></li>
     </ul>
     <p class="wyg-line reveal"><a href="tools.html" data-cta-source="what-you-get" data-cta-target="tools">See Free Tools&nbsp;&rarr;</a></p>
   </div>
@@ -3141,7 +3140,7 @@ document.addEventListener("DOMContentLoaded", function() {
   var trp = sec && sec.querySelector('.trp');
   if (!trp || !('IntersectionObserver' in window) || !window.matchMedia) return;
   var vals = trp.querySelectorAll('[data-trp-to]');
-  var minis = Array.prototype.slice.call(sec.querySelectorAll('.wyg > li:not(.wyg-feat) > a'));
+  var minis = Array.prototype.slice.call(sec.querySelectorAll('.wyg > li:not(.wyg-feat) > .wyg-card'));
   vals.forEach(function (v) { v.textContent = '+$0'; });
   sec.classList.add('tk-armed');
 
