@@ -2000,7 +2000,7 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
   .fs-end-line { display: block; font-size: var(--mk-text-md); }
   .fs-end-line::before, .fs-end-line::after { display: none; }
 }
-@media (prefers-reduced-motion: reduce) { .fs-dust { display: none; } }
+
 
 /* The morning plays once when the section comes into view (Ed, 2026-10-16: draw the eye to the boxes, "elegant and
    appropriate to the section"). The script after the section adds .fs-armed, then .fs-s1/2/3 on the chart as the
@@ -2619,10 +2619,12 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
 </section>
 <script>
 /* The gold dust under section 02 (Ed's mock): dots on two slow swells, high at the sides, low behind the call to
-   action. Draws only while the section is on screen and the tab is visible; reduced motion hides it in CSS. */
+   action. Draws only while the section is on screen and the tab is visible. Under reduce motion it draws one still frame (Ed, 2026-10-16: the dust used to be hidden there, which is
+   why his desktop looked plainer than his iPad). */
 (function () {
   var c = document.querySelector('.fs-dust');
-  if (!c || !c.getContext || (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) return;
+  if (!c || !c.getContext) return;
+  var still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   var ctx = c.getContext('2d'), w = 0, h = 0, t = 0, raf = 0, last = 0, visible = false;
   var gold = (getComputedStyle(document.documentElement).getPropertyValue('--mk-gold-300') || '').trim() || 'rgb(240,200,80)';
   function size() {
@@ -2649,7 +2651,7 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
     if (now - last > 33) { t += .033; last = now; draw(); }
     raf = requestAnimationFrame(frame);
   }
-  function go() { if (!raf && visible && !document.hidden) raf = requestAnimationFrame(frame); }
+  function go() { if (!still && !raf && visible && !document.hidden) raf = requestAnimationFrame(frame); }
   size(); draw();
   window.addEventListener('resize', function () { size(); draw(); });
   document.addEventListener('visibilitychange', go);
