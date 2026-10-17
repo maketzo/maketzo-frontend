@@ -615,13 +615,56 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 .df-icon svg { width: 2.4cqw; min-width: 22px; height: auto; aspect-ratio: 1; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
 .df-icon .df-fill { fill: currentColor; stroke: none; }
 .df-row em { font-weight: 400; }
-.df-streak { position: absolute; left: 42.76cqw; top: -4.07cqw; width: 15.79cqw; height: 38.88cqw; mix-blend-mode: plus-lighter; pointer-events: none; }
+/* the light sits in a window a fifth taller than it, so the window's soft lower edge never touches it at rest */
+.df-light { position: absolute; left: 42.76cqw; top: -4.07cqw; width: 15.79cqw; height: 46.66cqw; overflow: hidden; mix-blend-mode: plus-lighter; pointer-events: none;
+  -webkit-mask-image: linear-gradient(#000 83.33%, transparent); mask-image: linear-gradient(#000 83.33%, transparent); }
+.df-move { position: absolute; inset: 0; }
+.df-streak { display: block; width: 100%; height: 83.33%; }
 .df-rule { display: none; }
+/* In motion (Ed, 2026-10-17: "did you create a beautiful and elegant animation?"), once, after the gap band has had
+   its turn. Only MAKETZO moves: the light draws down between the columns (its window slides down while the light
+   inside slides up, so it stays put and is uncovered from the top), THE DAMAGE catches it, then each gold ring lights
+   in turn and the light passes over its gold words. The journal side stays still. The end frame is the static
+   section. Reduce motion keeps the clock: the light fades in, the rings glow in turn, nothing travels. */
+.df-icon { position: relative; }
+.df-icon::after { content: ""; position: absolute; inset: -1px; border-radius: 50%; box-shadow: 0 0 22px 4px rgba(255,214,110,.5), inset 0 0 14px rgba(255,214,110,.32); opacity: 0; pointer-events: none; }
+.df-armed .df-col--us em { background-image: linear-gradient(100deg, rgba(255,250,235,0) 38%, rgba(255,250,235,.85) 50%, rgba(255,250,235,0) 62%), var(--mk-gold-gradient);
+  background-size: 300% 100%, 100% 100%; background-position: 150% 0, 0 0; background-repeat: no-repeat; }
+.df-armed .df-light { transform: translateY(-100%); }
+.df-armed .df-move { transform: translateY(100%); }
+.df-armed .df-rule { transform: scaleX(0); }
+.df-go .df-light, .df-go .df-move { animation: dfDraw 1.5s cubic-bezier(.45, 0, .25, 1) .2s forwards; }
+.df-go .df-rule { animation: dfDraw .9s cubic-bezier(.2, .8, .3, 1) .2s forwards; }
+.df-go .df-col--us .df-title em { animation: wyShine 1.2s ease-in-out .7s; }
+.df-go .df-row .df-icon { animation: dfRing 1.2s ease-in-out both; }
+.df-go .df-row .df-icon::after { animation: wpSwell 1.4s ease-in-out both; }
+.df-go .df-col--us .df-row em { animation: wyShine 1.1s ease-in-out; }
+.df-go .df-row:nth-child(1) .df-icon, .df-go .df-row:nth-child(1) .df-icon::after { animation-delay: 1.3s; }
+.df-go .df-row:nth-child(2) .df-icon, .df-go .df-row:nth-child(2) .df-icon::after { animation-delay: 2.05s; }
+.df-go .df-row:nth-child(3) .df-icon, .df-go .df-row:nth-child(3) .df-icon::after { animation-delay: 2.8s; }
+.df-go .df-row:nth-child(4) .df-icon, .df-go .df-row:nth-child(4) .df-icon::after { animation-delay: 3.55s; }
+.df-go .df-row:nth-child(5) .df-icon, .df-go .df-row:nth-child(5) .df-icon::after { animation-delay: 4.3s; }
+.df-go .df-row:nth-child(1) em { animation-delay: 1.45s; }
+.df-go .df-row:nth-child(2) em { animation-delay: 2.2s; }
+.df-go .df-row:nth-child(3) em { animation-delay: 2.95s; }
+.df-go .df-row:nth-child(4) em { animation-delay: 3.7s; }
+.df-go .df-row:nth-child(5) em { animation-delay: 4.45s; }
+@keyframes dfDraw { to { transform: none; } }
+@keyframes dfRing { 0%, 100% { transform: none; color: var(--mk-gold-400); } 40% { transform: scale(1.07); color: #fff1c4; } }
+@media (prefers-reduced-motion: reduce) {
+  .df-armed .df-light, .df-armed .df-move, .df-armed .df-rule { transform: none; }
+  .df-armed .df-light, .df-armed .df-rule { opacity: 0; }
+  .df-go .df-light { animation: wpFadeIn 1.5s ease .2s forwards; }
+  .df-go .df-move, .df-go .df-col--us em, .df-go .df-col--us .df-title em { animation: none; }
+  .df-go .df-rule { animation: wpFadeIn .9s ease .2s forwards; }
+  .df-go .df-row .df-icon { animation-name: dfRingStill; }
+  @keyframes dfRingStill { 0%, 100% { color: var(--mk-gold-400); } 40% { color: #fff1c4; } }
+}
 /* phones: one column, the journal side first; the slanted light becomes a level one between the two */
 @media (max-width: 800px) {
   .df-grid { grid-template-columns: 1fr; width: auto; margin: 0 20px; }
   .df-col--them, .df-col--us { grid-column: 1; }
-  .df-streak { display: none; }
+  .df-light { display: none; }
   .df-rule { display: block; height: 1px; margin: 28px 0 30px; background: linear-gradient(90deg, rgba(229,197,114,0), #f3d27e 50%, rgba(229,197,114,0)); box-shadow: 0 0 12px 1px rgba(226,170,60,.45); }
   .df-eyebrow { margin-bottom: 12px; }
   .df-title { margin-bottom: 8px; font-size: 1.9rem; }
@@ -999,7 +1042,7 @@ window.mkAfter = function (prev, trigger, fn, here) {
     <p class="section-sub reveal">If a journal could fix discipline, you'd already be fixed.</p>
   </div>
   <div class="df-stage">
-    <img class="df-streak reveal" src="assets/why/streak.jpg" alt="" width="264" height="650" loading="lazy" decoding="async">
+    <div class="df-light" aria-hidden="true"><div class="df-move"><img class="df-streak" src="assets/why/streak.jpg" alt="" width="264" height="650" loading="lazy" decoding="async"></div></div>
     <div class="df-grid reveal">
       <div class="df-col df-col--them">
         <p class="df-eyebrow">TRADITIONAL JOURNALS</p>
@@ -1032,6 +1075,26 @@ window.mkAfter = function (prev, trigger, fn, here) {
     </div>
   </div>
 </section>
+<script>
+/* THE DIFFERENCE plays once per visit, when the comparison is on screen and the gap band has had its turn (mkAfter):
+   CSS under .df-armed / .df-go draws the light between the columns, then lights MAKETZO's rings one by one with their
+   gold words; done at 5.8s. On phones the columns stack, so it waits for the MAKETZO column to be on screen. */
+(function () {
+  var sec = document.querySelector('.section.df'), grid = sec && sec.querySelector('.df-grid');
+  if (!grid || !('IntersectionObserver' in window) || !window.mkAfter) return;
+  var spot = window.matchMedia('(max-width: 800px)').matches ? sec.querySelector('.df-col--us') : grid;
+  var prev = document.querySelector('.gap-band.gp'), prevSpot = prev && prev.querySelector('.gp-light');
+  sec.classList.add('df-armed');
+  function play() { mkMark(sec, 'playing'); sec.classList.add('df-go'); setTimeout(function () { mkMark(sec, 'done'); }, 5800); }
+  var o = new IntersectionObserver(function (es) {
+    var e = es[0];
+    if (!(e.intersectionRatio >= 0.5 || (!e.isIntersecting && e.boundingClientRect.top < 0))) return;
+    o.disconnect(); mkMark(sec, 'waiting');
+    mkAfter(prev, prevSpot, play, sec);
+  }, { threshold: [0, 0.5] });
+  o.observe(spot);
+})();
+</script>
 
 <hr class="mk-rule-gold">
 
@@ -1092,13 +1155,13 @@ window.mkAfter = function (prev, trigger, fn, here) {
   </div>
 </section>
 <script>
-/* the note is read once per visit, when the card is on screen and the gap band has had its turn (mkAfter): CSS under
+/* the note is read once per visit, when the card is on screen and THE DIFFERENCE has had its turn (mkAfter): CSS under
    .ft-armed / .ft-go lights the two bold lines and then the signature; the photo's warm light (.ft-lit) comes with the
    signature, or when the photo scrolls in if it is not on screen yet (on phones it sits below the card) */
 (function () {
   var sec = document.querySelector('.section.ft'), card = sec && sec.querySelector('.founder-card'), photo = sec && sec.querySelector('.founder-team-image');
   if (!card || !photo || !('IntersectionObserver' in window) || !window.mkAfter) return;
-  var prev = document.querySelector('.gap-band.gp'), prevSpot = prev && prev.querySelector('.gp-light');
+  var prev = document.querySelector('.section.df'), prevSpot = prev && prev.querySelector('.df-grid');
   sec.classList.add('ft-armed');
   function lightPhoto() {
     var o = new IntersectionObserver(function (es) { if (!es[0].isIntersecting) return; o.disconnect(); photo.classList.add('ft-lit'); }, { threshold: 0.5 });
