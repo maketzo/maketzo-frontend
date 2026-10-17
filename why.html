@@ -289,6 +289,46 @@ hr.mk-rule-gold, hr.mk-rule-gold--bold { margin: 0 auto; max-width: 1180px; }
 .founder-team-image { margin: 0; border-radius: var(--mk-radius-card); overflow: hidden; border: var(--mk-border-gold-soft); }
 .founder-team-image img { width: 100%; height: auto; display: block; }
 @media (max-width: 800px) { .founder-with-image { grid-template-columns: 1fr; gap: 24px; } .founder-card { padding: 32px 24px; } }
+/* The note in motion (Ed, 2026-10-17: "Create a beautiful and elegant animation for this section"). It is read once,
+   after the gap band has had its turn: a gold light passes through the two bold lines in reading order (the gap that
+   empties accounts, then what MAKETZO is; on a wrapped line the light runs line by line, as a reader does), then the
+   team signs: a gold rule draws over the signature line, the light passes over THE MAKETZO TEAM, and the photo of the
+   team catches a warm light along its gold frame. Nothing is hidden or dimmed; the light only adds, and the card's
+   warmth belongs to the reading, so the end frame is the static section. Nothing is armed without the script. Reduce
+   motion keeps the clock: the bold lines and the signature warm to gold and back in place, and the rule fades in. */
+.ft .founder-card { position: relative; isolation: isolate; }
+.ft .founder-card::before { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; pointer-events: none; opacity: 0;
+  background: radial-gradient(ellipse 70% 55% at 22% 0%, rgba(229,197,114,.11), rgba(229,197,114,0)); box-shadow: inset 0 0 0 1px rgba(229,197,114,.28); }
+.ft .founder-sign { position: relative; }
+.ft .founder-sign::before { content: ""; position: absolute; left: 0; right: 0; top: -1px; height: 1px; background: var(--mk-gold-gradient); opacity: 0; transform-origin: left; pointer-events: none; }
+.ft .founder-team-image { position: relative; }
+.ft .founder-team-image::before, .ft .founder-team-image::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; }
+.ft .founder-team-image::before { z-index: 1; box-shadow: inset 0 0 0 1px rgba(229,197,114,.85), inset 0 0 28px rgba(229,197,114,.3); }
+.ft .founder-team-image::after { z-index: 1; background: linear-gradient(105deg, rgba(255,226,160,0) 30%, rgba(255,226,160,.22) 50%, rgba(255,226,160,0) 70%); mix-blend-mode: screen; transform: translateX(-100%); }
+.ft-armed .ft-beat, .ft-armed .founder-sign span { color: transparent; -webkit-background-clip: text; background-clip: text; background-repeat: no-repeat;
+  background-image: linear-gradient(100deg, rgba(229,197,114,0) calc(50% - 90px), rgba(236,203,122,.96) 50%, rgba(229,197,114,0) calc(50% + 90px)), linear-gradient(var(--mk-text-primary), var(--mk-text-primary));
+  background-size: 200% 100%, 100% 100%; background-position: calc(100% - 90px) 0, 0 0; }
+.ft-go .founder-card::before { animation: ftWarm 6.6s ease-in-out .2s; }
+.ft-go .ft-beat--1 { animation: ftRead 1.1s ease-in-out .5s; }
+.ft-go .ft-beat--2 { animation: ftRead 2.6s cubic-bezier(.45, 0, .55, 1) 1.9s; }
+.ft-go .founder-sign::before { animation: ftRule 2.4s cubic-bezier(.2, .8, .3, 1) 4.4s; }
+.ft-go .founder-sign span { animation: ftRead 1.1s ease-in-out 4.8s; }
+.ft-lit::before { animation: wpSwell 2.2s ease-in-out; }
+.ft-lit::after { animation: ftSheen 1.8s cubic-bezier(.45, 0, .55, 1); }
+@keyframes ftWarm { 0%, 100% { opacity: 0; } 18%, 78% { opacity: 1; } }
+@keyframes ftRead { from { background-position: calc(100% - 90px) 0, 0 0; } to { background-position: 90px 0, 0 0; } }
+@keyframes ftRule { 0% { opacity: 1; transform: scaleX(0); } 40% { opacity: 1; transform: none; } 100% { opacity: 0; transform: none; } }
+@keyframes ftSheen { 0% { opacity: 1; transform: translateX(-100%); } 100% { opacity: 1; transform: translateX(100%); } }
+@media (prefers-reduced-motion: reduce) {
+  .ft-armed .ft-beat, .ft-armed .founder-sign span { color: var(--mk-text-primary); background: none; }
+  .ft-go .ft-beat--1 { animation: ftTint 1.4s ease-in-out .5s; }
+  .ft-go .ft-beat--2 { animation: ftTint 2.6s ease-in-out 1.9s; }
+  .ft-go .founder-sign span { animation: ftTint 1.4s ease-in-out 4.8s; }
+  .ft-go .founder-sign::before { animation: ftRuleStill 2.4s ease-in-out 4.4s; }
+  .ft-lit::after { animation: none; }
+  @keyframes ftTint { 0%, 100% { color: var(--mk-text-primary); } 45% { color: var(--mk-gold-400); } }
+  @keyframes ftRuleStill { 0%, 100% { opacity: 0; } 40% { opacity: 1; } }
+}
 
 /* ── FINAL CTA ───────────────────────────────────────────────── */
 .final-cta-section { padding: 96px 0; background: var(--mk-obsidian-950); text-align: center; border-top: var(--mk-border-hairline); }
@@ -1010,7 +1050,7 @@ window.mkAfter = function (prev, trigger, fn, here) {
 <hr class="mk-rule-gold">
 
 <!-- A NOTE FROM THE TEAM -->
-<section class="section section-dark">
+<section class="section section-dark ft">
   <div class="section-inner">
     <p class="section-eyebrow reveal">A NOTE FROM THE TEAM</p>
     <h2 class="section-title reveal">Why we built <em>MAKETZO.</em></h2>
@@ -1018,9 +1058,9 @@ window.mkAfter = function (prev, trigger, fn, here) {
     <div class="founder-with-image">
       <div class="founder-card reveal">
         <p>We've all been on the wrong side of our own trades. The setup was right. The size was right. The rule was clear. And somehow the trade we took wasn't the one we wrote down.</p>
-        <p>We built MAKETZO because the gap between what a trader knows and what a trader does is the only gap that actually empties accounts. Everything else, strategy, indicators, market structure, is solvable with study. <strong>This one isn't.</strong></p>
-        <p>So we built a system that holds the line for you. Not a journal that reviews the damage. Not a course that explains the theory. <strong>A real-time enforcement layer between the rules you set and the rules you follow.</strong></p>
-        <div class="founder-sign">The MAKETZO Team</div>
+        <p>We built MAKETZO because the gap between what a trader knows and what a trader does is the only gap that actually empties accounts. Everything else, strategy, indicators, market structure, is solvable with study. <strong class="ft-beat ft-beat--1">This one isn't.</strong></p>
+        <p>So we built a system that holds the line for you. Not a journal that reviews the damage. Not a course that explains the theory. <strong class="ft-beat ft-beat--2">A real-time enforcement layer between the rules you set and the rules you follow.</strong></p>
+        <div class="founder-sign"><span>The MAKETZO Team</span></div>
       </div>
       <figure class="founder-team-image reveal">
         <picture>
@@ -1036,6 +1076,33 @@ window.mkAfter = function (prev, trigger, fn, here) {
     </div>
   </div>
 </section>
+<script>
+/* the note is read once per visit, when the card is on screen and the gap band has had its turn (mkAfter): CSS under
+   .ft-armed / .ft-go lights the two bold lines and then the signature; the photo's warm light (.ft-lit) comes with the
+   signature, or when the photo scrolls in if it is not on screen yet (on phones it sits below the card) */
+(function () {
+  var sec = document.querySelector('.section.ft'), card = sec && sec.querySelector('.founder-card'), photo = sec && sec.querySelector('.founder-team-image');
+  if (!card || !photo || !('IntersectionObserver' in window) || !window.mkAfter) return;
+  var prev = document.querySelector('.gap-band.gp'), prevSpot = prev && prev.querySelector('.gp-light');
+  sec.classList.add('ft-armed');
+  function lightPhoto() {
+    var o = new IntersectionObserver(function (es) { if (!es[0].isIntersecting) return; o.disconnect(); photo.classList.add('ft-lit'); }, { threshold: 0.5 });
+    o.observe(photo);
+  }
+  function play() {
+    mkMark(sec, 'playing'); sec.classList.add('ft-go');
+    setTimeout(lightPhoto, 4800);
+    setTimeout(function () { mkMark(sec, 'done'); }, 7000);
+  }
+  var o = new IntersectionObserver(function (es) {
+    var e = es[0];
+    if (!(e.intersectionRatio >= 0.5 || (!e.isIntersecting && e.boundingClientRect.top < 0))) return;
+    o.disconnect(); mkMark(sec, 'waiting');
+    mkAfter(prev, prevSpot, play, sec);
+  }, { threshold: [0, 0.5] });
+  o.observe(card);
+})();
+</script>
 
 <!-- FINAL CTA -->
 <hr class="mk-rule-gold mk-rule-gold--bold" aria-hidden="true">
