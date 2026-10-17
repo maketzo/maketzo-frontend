@@ -77,6 +77,7 @@ html.mkt-auth .nav-login-btn:hover{color:var(--mk-text-on-gold);background:var(-
 .btn-primary, .btn-secondary, .btn-ghost { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-family: var(--mk-font-sans); font-size: var(--mk-text-sm); font-weight: 600; letter-spacing: var(--mk-track-cap); text-transform: uppercase; padding: 12px 22px; border-radius: var(--mk-radius-button); border: 1px solid transparent; cursor: pointer; text-decoration: none; white-space: nowrap; transition: transform var(--mk-dur-snap), box-shadow var(--mk-dur-snap), background var(--mk-dur-snap), border-color var(--mk-dur-snap), color var(--mk-dur-snap); }
 .btn-primary { background: var(--mk-gold-gradient); color: var(--mk-text-on-gold); border-color: rgba(0,0,0,.18); }
 .btn-primary:hover { transform: translateY(-1px); box-shadow: var(--mk-glow-gold-md); color: var(--mk-text-on-gold); }
+.btn-primary--lg { padding: 18px 44px; font-size: var(--mk-text-md); }
 .btn-secondary { background: transparent; color: var(--mk-text-primary); border: var(--mk-border-gold); }
 .btn-secondary:hover { color: var(--mk-brand); border-color: var(--mk-brand); background: rgba(212,175,55,.06); }
 .btn-ghost { background: transparent; color: var(--mk-text-secondary); border-color: var(--mk-smoke-700); padding: 10px 18px; font-size: var(--mk-text-xs); }
@@ -608,6 +609,19 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
     <p class="mkr-how-note reveal">One honest caveat: you already know how the chart ends, so it can flatter your timing. Use it to learn how each add moves your average and how partials bank a win, not to prove you would have called the top.</p>
   </div>
 </section>
+<hr class="mk-rule-gold">
+
+<!-- FINAL CTA (the site's, as on focus.html) -->
+<section class="final-cta-section">
+  <p class="final-cta-eyebrow reveal">7-DAY FREE TRIAL &middot; NO CHARGE UNTIL DAY 8</p>
+  <h2 class="final-cta-title reveal">Practice the scale-in here. <em>MAKETZO holds you to it live.</em></h2>
+  <div class="final-cta-btn-wrap reveal">
+    <button class="btn-primary btn-primary--lg" data-cta-source="final" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial</button>
+    <p class="final-cta-note">Pro &middot; $49/mo &middot; Trade Replay, the discipline system, and your journal &middot; Cancel in one click</p>
+  </div>
+</section>
+
+<hr class="mk-rule-gold">
 <footer>
   <div class="footer-inner">
     <div class="footer-grid">
@@ -621,7 +635,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
         <p class="footer-tagline"><strong>Stop the trade you'd regret.</strong>Discipline in every session. Edge in every trade. Accountability when it counts.</p>
       </div>
       <div><div class="footer-col-title">Product</div><ul class="footer-links"><li><a href="system.html">The System</a></li><li><a href="journal.html">Journal</a></li><li><a href="indicators.html">Indicators</a></li><li><a href="focus.html">Focus Room</a></li><li><a href="tools.html">Free Tools</a></li><li><a href="dilution-check.html">Dilution Check</a></li><li><a href="pricing.html" data-cta-source="footer-product" data-cta-target="pricing">Pricing</a></li></ul></div>
-      <div><div class="footer-col-title">Explore</div><ul class="footer-links"><li><a href="trader-type.html" data-cta-source="footer-explore" data-cta-target="trader-type">Trader Type</a></li><li><a href="why.html" data-cta-source="footer-explore" data-cta-target="why">Why MAKETZO</a></li><li><a href="soundtrack.html" data-cta-source="footer-explore" data-cta-target="soundtrack">Soundtrack</a></li><li><a href="contact.html" data-cta-source="footer-explore" data-cta-target="contact">Contact Us</a></li></ul></div>
+      <div><div class="footer-col-title">Explore</div><ul class="footer-links"><li><a href="trader-type.html" data-cta-source="footer-explore" data-cta-target="trader-type">Trader Type</a></li><li><a href="trade-replay.html" data-cta-source="footer-explore" data-cta-target="trade-replay">Trade Replay</a></li><li><a href="trading-os.html" data-cta-source="footer-explore" data-cta-target="trading-os">Trading OS</a></li><li><a href="why.html" data-cta-source="footer-explore" data-cta-target="why">Why MAKETZO</a></li><li><a href="soundtrack.html" data-cta-source="footer-explore" data-cta-target="soundtrack">Soundtrack</a></li><li><a href="contact.html" data-cta-source="footer-explore" data-cta-target="contact">Contact Us</a></li></ul></div>
       <div><div class="footer-col-title">Legal</div><ul class="footer-links"><li><a href="privacy.html">Privacy Policy</a></li><li><a href="terms.html">Terms of Service</a></li><li><a href="disclaimer.html">Risk Disclaimer</a></li></ul></div>
     </div>
     <div class="footer-bottom">

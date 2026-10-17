@@ -139,6 +139,16 @@ hr.mk-rule-gold, hr.mk-rule-gold--bold { margin: 0 auto; max-width: 1180px; }
 /* ── Buttons + sticky email bar (shared marketing chrome) ─────────────── */
 .btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-family: var(--mk-font-sans); font-size: var(--mk-text-sm); font-weight: 600; letter-spacing: var(--mk-track-cap); text-transform: uppercase; padding: 12px 22px; border-radius: var(--mk-radius-button); border: 1px solid rgba(0,0,0,.18); cursor: pointer; text-decoration: none; white-space: nowrap; background: var(--mk-gold-gradient); color: var(--mk-text-on-gold); transition: transform var(--mk-dur-snap), box-shadow var(--mk-dur-snap); }
 .btn-primary:hover { transform: translateY(-1px); box-shadow: var(--mk-glow-gold-md); color: var(--mk-text-on-gold); }
+.btn-primary--lg { padding: 18px 44px; font-size: var(--mk-text-md); }
+/* the site's final call to action (as on focus.html) */
+.final-cta-section { padding: 96px 0; background: var(--mk-obsidian-950); text-align: center; border-top: var(--mk-border-hairline); }
+.final-cta-eyebrow { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); margin-bottom: 18px; }
+.final-cta-title { font-family: var(--mk-font-display); font-size: clamp(2.2rem, 4.6vw, 3.2rem); letter-spacing: var(--mk-track-display); line-height: 1.04; text-transform: uppercase; font-weight: 400; margin-bottom: 20px; max-width: 700px; margin-left: auto; margin-right: auto; }
+.final-cta-title em { font-style: normal; background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.final-cta-sub { font-size: var(--mk-text-lg); color: var(--mk-text-secondary); max-width: 600px; margin: 0 auto 12px; line-height: var(--mk-lead-body); }
+.final-cta-sub:last-of-type { margin-bottom: 36px; }
+.final-cta-btn-wrap { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.final-cta-note { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: 0.04em; color: var(--mk-text-tertiary); }
 .sticky-bar { position: fixed; bottom: 0; left: 0; right: 0; z-index: 55; display: flex; align-items: center; justify-content: center; gap: 14px; padding: 10px 64px 10px 24px; background: rgba(13,15,20,.62); -webkit-backdrop-filter: blur(20px) saturate(140%); backdrop-filter: blur(20px) saturate(140%); border-top: 1px solid rgba(212,175,55,.35); transform: translateY(100%); transition: transform var(--mk-dur-med) var(--mk-ease-out); }
 .sticky-bar.visible { transform: translateY(0); }
 body:has(.sticky-bar.visible) { padding-bottom: 80px; }
@@ -263,6 +273,18 @@ body:has(.sticky-bar.visible) { padding-bottom: 80px; }
 </main>
 
 <hr class="mk-rule-gold">
+
+<!-- FINAL CTA (the site's, as on focus.html; this page has no reveal, so no reveal classes) -->
+<section class="final-cta-section">
+  <p class="final-cta-eyebrow">7-DAY FREE TRIAL &middot; NO CHARGE UNTIL DAY 8</p>
+  <h2 class="final-cta-title">Now you know your type. <em>MAKETZO keeps it in check.</em></h2>
+  <div class="final-cta-btn-wrap">
+    <button class="btn-primary btn-primary--lg" data-cta-source="final" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial</button>
+    <p class="final-cta-note">Pro &middot; $49/mo &middot; Focus Room, the discipline system, and your journal &middot; Cancel in one click</p>
+  </div>
+</section>
+
+<hr class="mk-rule-gold">
 <footer>
   <div class="footer-inner">
     <div class="footer-grid">
@@ -276,7 +298,7 @@ body:has(.sticky-bar.visible) { padding-bottom: 80px; }
         <p class="footer-tagline"><strong>Stop the trade you'd regret.</strong>Discipline in every session. Edge in every trade. Accountability when it counts.</p>
       </div>
       <div><div class="footer-col-title">Product</div><ul class="footer-links"><li><a href="system.html">The System</a></li><li><a href="journal.html">Journal</a></li><li><a href="indicators.html">Indicators</a></li><li><a href="focus.html">Focus Room</a></li><li><a href="tools.html">Free Tools</a></li><li><a href="dilution-check.html">Dilution Check</a></li><li><a href="pricing.html">Pricing</a></li></ul></div>
-      <div><div class="footer-col-title">Explore</div><ul class="footer-links"><li><a href="trader-type.html" data-cta-source="footer-explore" data-cta-target="trader-type">Trader Type</a></li><li><a href="why.html">Why MAKETZO</a></li><li><a href="soundtrack.html">Soundtrack</a></li><li><a href="contact.html">Contact Us</a></li></ul></div>
+      <div><div class="footer-col-title">Explore</div><ul class="footer-links"><li><a href="trader-type.html" data-cta-source="footer-explore" data-cta-target="trader-type">Trader Type</a></li><li><a href="trade-replay.html" data-cta-source="footer-explore" data-cta-target="trade-replay">Trade Replay</a></li><li><a href="trading-os.html" data-cta-source="footer-explore" data-cta-target="trading-os">Trading OS</a></li><li><a href="why.html" data-cta-source="footer-explore" data-cta-target="why">Why MAKETZO</a></li><li><a href="soundtrack.html" data-cta-source="footer-explore" data-cta-target="soundtrack">Soundtrack</a></li><li><a href="contact.html" data-cta-source="footer-explore" data-cta-target="contact">Contact Us</a></li></ul></div>
       <div><div class="footer-col-title">Legal</div><ul class="footer-links"><li><a href="privacy.html">Privacy Policy</a></li><li><a href="terms.html">Terms of Service</a></li><li><a href="disclaimer.html">Risk Disclaimer</a></li></ul></div>
     </div>
     <div class="footer-bottom">
