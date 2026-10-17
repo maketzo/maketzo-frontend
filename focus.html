@@ -484,9 +484,13 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
    applies without .sx-armed (the script after the section); reduce motion keeps every light and the playheads and
    only holds the bars still. */
 .lib-card::after { content: ""; position: absolute; inset: 6px; z-index: -1; border-radius: 14px; background: radial-gradient(circle at var(--sx-icon, 57px 60px), rgba(var(--lib), .2), transparent 300px); opacity: 0; pointer-events: none; }
-.sx-play { position: absolute; left: 16px; right: 16px; bottom: 1px; height: 2px; --p: 0; pointer-events: none; opacity: 0;
-  background: linear-gradient(90deg, transparent calc(var(--p) * 100% - 120px), rgba(var(--lib), .85) calc(var(--p) * 100% - 6px), #FFF6DC calc(var(--p) * 100%), transparent calc(var(--p) * 100% + 1px)); }
-.sx-play::after { content: ""; position: absolute; top: 50%; left: calc(var(--p) * 100%); width: 6px; height: 6px; border-radius: 50%; background: #FFF6DC; box-shadow: 0 0 10px 3px rgba(var(--lib), .75); transform: translate(-50%, -50%); }
+/* The playhead glides at one steady speed, like a progress bar, on a transform the compositor runs: Ed (2026-10-17)
+   saw it stall at each third when it was moved by script, because each beat of the icon beside it briefly held the
+   page. The comet is a track-wide strip with the dot at its right end, slid from -100% to 0 and clipped to the
+   track's width (the clip leaves room above and below for the glow). */
+.sx-play { position: absolute; left: 16px; right: 16px; bottom: 1px; height: 2px; pointer-events: none; opacity: 0; clip-path: inset(-12px 0 -12px 0); }
+.sx-play i { position: absolute; inset: 0; transform: translateX(-100%); background: linear-gradient(90deg, transparent calc(100% - 120px), rgba(var(--lib), .85) calc(100% - 6px), #FFF6DC); will-change: transform; }
+.sx-play i::after { content: ""; position: absolute; top: 50%; right: -3px; width: 6px; height: 6px; border-radius: 50%; background: #FFF6DC; box-shadow: 0 0 10px 3px rgba(var(--lib), .75); transform: translateY(-50%); }
 .lib-icon rect { transform-box: fill-box; transform-origin: 50% 100%; }
 .lib-icon .sx-blip { fill: none; stroke: #FFF6D8; stroke-width: 3.4; stroke-linecap: round; stroke-dasharray: .2 1.3; stroke-dashoffset: .2; opacity: 0; }
 .sx-armed .lib-card::after { transition: opacity 1s ease; }
@@ -495,8 +499,10 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
 .sx-armed .lib-card.is-on .lib-icon { box-shadow: 0 0 26px rgba(var(--lib), .5), inset 0 0 18px rgba(var(--lib), .16); }
 .sx-armed .lib-icon svg { transition: filter .9s ease; }
 .sx-armed .lib-card.is-on .lib-icon svg { filter: drop-shadow(0 0 7px rgba(var(--lib), .95)); }
-.sx-armed .sx-play { transition: opacity .6s ease; }
-.sx-armed .lib-card.is-playing .sx-play { opacity: 1; }
+.sx-armed .lib-card.is-playing .sx-play { animation: sxFade 3.3s linear both; }
+.sx-armed .lib-card.is-playing .sx-play i { animation: sxRun 2.9s linear both; }
+@keyframes sxFade { 0% { opacity: 0; } 9% { opacity: 1; } 86% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes sxRun { from { transform: translateX(-100%); } to { transform: translateX(0); } }
 .sx-armed .lib-icon.is-trend .sx-blip { animation: sxBlip 1.1s cubic-bezier(.45, 0, .25, 1) both; }
 @keyframes sxBlip { 0% { stroke-dashoffset: .2; opacity: 1; } 85% { opacity: 1; } 100% { stroke-dashoffset: -1.1; opacity: 0; } }
 .sx-armed .lib-icon svg :is(.sx-l, .sx-r, .sx-c) { transition: stroke .6s ease; }
@@ -506,12 +512,6 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
 .sx-armed .st-art { transition: filter 1.8s ease; }
 .sx-armed .st-art.is-sun { filter: brightness(.98) saturate(1.08); }
 @media (max-width: 420px) { .lib-card { --sx-icon: 44px 46px; } }
-
-/* Hear it for yourself: fine gold dust drifting on a slow breeze through the side light (Ed, 2026-10-17: "just make
-   the background dust subtly blowing around"). The canvas is added by the script after the section and sits under
-   the content; under reduce motion it draws one still frame. */
-.st-dust { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
-.st-listen > .section-inner { position: relative; z-index: 1; }
 
 /* ── MEDITATION ZONE — breathing orb + reset copy ─────────────────────── */
 .med-wrap {
@@ -1436,23 +1436,14 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
   var blip = trend.cloneNode(false);
   blip.setAttribute('class', 'sx-blip'); blip.setAttribute('pathLength', '1');
   trend.parentNode.appendChild(blip);
-  var plays = cards.map(function (c) {
-    var s = document.createElement('span'); s.className = 'sx-play'; s.setAttribute('aria-hidden', 'true'); c.appendChild(s); return s;
+  cards.forEach(function (c) {
+    var s = document.createElement('span'); s.className = 'sx-play'; s.setAttribute('aria-hidden', 'true');
+    s.appendChild(document.createElement('i')); c.appendChild(s);
   });
   function later(ms, fn) { setTimeout(fn, ms); }
-  // The playhead runs the card's lit bottom edge, like the player's progress bar.
-  function run(i, dur) {
-    var c = cards[i], t0 = null;
-    c.classList.add('is-playing');
-    function step(t) {
-      if (t0 === null) t0 = t;
-      var p = Math.min(1, (t - t0) / dur);
-      plays[i].style.setProperty('--p', (0.5 - 0.5 * Math.cos(Math.PI * p)).toFixed(4));
-      if (p < 1) { requestAnimationFrame(step); return; }
-      c.classList.remove('is-playing');
-    }
-    requestAnimationFrame(step);
-  }
+  // The playhead runs the card's lit bottom edge, like the player's progress bar; the CSS animation carries it, so
+  // nothing here can make it stutter.
+  function run(i) { cards[i].classList.add('is-playing'); }
   // The bars move like a meter on the beat, swelling in and settling back to their drawn heights.
   function meter(dur) {
     if (gentle) return;
@@ -1472,15 +1463,15 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
       var c = cards[0], icon = c.querySelector('.lib-icon');
       c.classList.add('is-on');
       if (art) art.classList.add('is-sun');
-      later(150, function () { meter(2600); run(0, 2800); });
-      later(1700, function () { icon.classList.remove('is-trend'); void icon.getBoundingClientRect(); icon.classList.add('is-trend'); });
+      later(150, function () { meter(2600); run(0); });
+      later(1700, function () { icon.classList.add('is-trend'); });
       later(2600, function () { if (art) art.classList.remove('is-sun'); });
       later(3100, function () { c.classList.remove('is-on'); done(); });
     },
     function (done) {
       var c = cards[1];
       c.classList.add('is-on');
-      later(150, function () { run(1, 2800); });
+      later(150, function () { run(1); });
       later(300, function () { brain.classList.add('lit-l'); });
       later(1100, function () { brain.classList.remove('lit-l'); brain.classList.add('lit-r'); });
       later(1900, function () { brain.classList.remove('lit-r'); brain.classList.add('lit-c'); });
@@ -1604,90 +1595,6 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
     </div>
   </div>
 </section>
-<script>
-/* Fine gold dust drifting on a slow breeze through the side light of Hear it for yourself (Ed, 2026-10-17: "just make
-   the background dust subtly blowing around"). Most of it lives in the two side glows and thins toward the middle,
-   where the words and the player sit; each mote fades in, drifts and fades out, and is born again at a side, so the
-   light keeps its dust. The breeze turns slowly over about a minute. It runs only while the section is on screen and
-   the tab is visible; under reduce motion it draws one still frame instead of vanishing. */
-(function () {
-  var sec = document.getElementById('hear-it');
-  if (!sec) return;
-  var c = document.createElement('canvas');
-  if (!c.getContext) return;
-  c.className = 'st-dust'; c.setAttribute('aria-hidden', 'true');
-  sec.insertBefore(c, sec.firstChild);
-  var g = c.getContext('2d'), still = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
-  var W = 0, H = 0, dpr = 1, motes = [], raf = 0, visible = false, last = 0;
-  // One soft round sprite in the section's gold, drawn at every size.
-  var spr = document.createElement('canvas'); spr.width = spr.height = 32;
-  var sg = spr.getContext('2d'), grd = sg.createRadialGradient(16, 16, 0, 16, 16, 16);
-  grd.addColorStop(0, 'rgba(255,236,186,1)'); grd.addColorStop(0.35, 'rgba(240,200,110,.55)'); grd.addColorStop(1, 'rgba(212,175,55,0)');
-  sg.fillStyle = grd; sg.fillRect(0, 0, 32, 32);
-  function spawn(m, fresh) {
-    var r = Math.random(), u = Math.pow(Math.random(), 1.5) * 0.34 * W, bokeh = Math.random() < 0.1;
-    m.x = r < 0.45 ? u : r < 0.9 ? W - u : Math.random() * W;
-    m.y = Math.random() * H;
-    m.r = bokeh ? 4 + Math.random() * 5 : 0.7 + Math.random() * 1.6;
-    m.a = bokeh ? 0.05 + Math.random() * 0.08 : 0.25 + Math.random() * 0.45;
-    m.z = bokeh ? 0.45 : 0.6 + Math.random() * 0.5;
-    m.life = 9000 + Math.random() * 12000; m.age = fresh ? Math.random() * m.life : 0;
-    m.tw = Math.random() * 6.28; m.ts = 0.0008 + Math.random() * 0.0016; m.seed = (Math.random() - 0.5) * 0.8;
-    return m;
-  }
-  function draw(t, dt) {
-    var f = dt / 16.67, breeze = 0.07 * Math.sin(t * 0.00009);
-    g.setTransform(dpr, 0, 0, dpr, 0, 0);
-    g.globalCompositeOperation = 'source-over'; g.clearRect(0, 0, W, H);
-    g.globalCompositeOperation = 'lighter';
-    for (var i = 0; i < motes.length; i++) {
-      var m = motes[i];
-      if (f) {
-        m.age += dt;
-        if (m.age > m.life) spawn(m, false);
-        var ang = Math.sin(m.y * 0.0035 + t * 0.00018) * 1.3 + Math.cos(m.x * 0.0028 - t * 0.00013) * 1.1 + m.seed, sp = 0.2 * m.z * f;
-        m.x += Math.cos(ang) * sp + breeze * f; m.y += Math.sin(ang) * sp * 0.7 - 0.03 * f;
-        if (m.x < -12) m.x = W + 12; else if (m.x > W + 12) m.x = -12;
-        if (m.y < -12) m.y = H + 12; else if (m.y > H + 12) m.y = -12;
-      }
-      var n = m.x / W, edge = Math.max(0, 1 - n / 0.32, (n - 0.68) / 0.32);
-      var al = m.a * Math.sin(Math.PI * Math.min(1, m.age / m.life)) * (0.65 + 0.35 * Math.sin(m.tw + t * m.ts)) * (0.12 + 0.88 * edge);
-      if (al < 0.01) continue;
-      var s = m.r * 2.4;
-      g.globalAlpha = al; g.drawImage(spr, m.x - s, m.y - s, s * 2, s * 2);
-    }
-    g.globalAlpha = 1;
-  }
-  function size() {
-    dpr = Math.min(2, window.devicePixelRatio || 1);
-    W = sec.clientWidth; H = sec.clientHeight;
-    if (!W || !H) return;
-    c.width = Math.round(W * dpr); c.height = Math.round(H * dpr);
-    var n = Math.max(40, Math.min(170, Math.round(W * H / 9000)));
-    while (motes.length < n) motes.push(spawn({}, true));
-    motes.length = n;
-    if (!raf) draw(performance.now(), 0);
-  }
-  function frame(t) {
-    raf = 0;
-    var dt = last ? Math.min(50, t - last) : 16.67; last = t;
-    draw(t, dt);
-    go();
-  }
-  function go() {
-    if (!still && !raf && visible && !document.hidden) raf = requestAnimationFrame(frame);
-    else if (!visible || document.hidden) last = 0;
-  }
-  size();
-  var queued = 0;
-  function resize() { if (!queued) queued = requestAnimationFrame(function () { queued = 0; size(); }); }
-  window.addEventListener('resize', resize);
-  if ('ResizeObserver' in window) new ResizeObserver(resize).observe(sec);
-  document.addEventListener('visibilitychange', go);
-  if ('IntersectionObserver' in window) new IntersectionObserver(function (e) { visible = e[0].isIntersecting; go(); }).observe(sec);
-  else { visible = true; go(); }
-})();
-</script>
 
 <hr class="mk-rule-gold">
 
