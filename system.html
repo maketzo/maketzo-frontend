@@ -349,6 +349,39 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
   .coach-banner p { font-size: 1.5rem; }
   .coach-banner p em { display: block; }
 }
+/* The prompt lands once, in the order the app makes it (Ed, 2026-10-17: "Create a beautiful and elegant animation
+   for this section"). The pulse in the ring beats, the live read passes along the bars and lifts them, and the read
+   catches the turn: the line is said word by word in light, the P&L and strikes behind it glow, then the three
+   moments it speaks light one after another and the closing line last. Every word and number is on screen from the
+   first frame and never changes; the animation only adds light. Afterwards a quiet read passes every few seconds
+   while the card is on screen ("then stays quiet otherwise"). The script after the section adds .cs-armed; nothing
+   here applies without it, and reduce motion (.cs-gentle) keeps the light but drops the lift, the rings and the
+   quiet read. */
+.coach-ring { position: relative; }
+.coach-ring::after { content: ""; position: absolute; inset: -2.5px; border-radius: 50%; border: 2px solid var(--mk-gold-500); opacity: 0; pointer-events: none; }
+.coach-wave path.cs-hi { stroke: url(#coachWaveHi); stroke-width: 2.4; }
+.coach-ring .cs-blip { stroke: #FFF3C4; stroke-width: 2.6; stroke-dasharray: .26 1.3; stroke-dashoffset: .26; opacity: 0; }
+.cs-armed .coach-card { transition: border-color .9s ease, box-shadow 1.2s ease; }
+.cs-armed .coach-card.is-live { border-color: rgba(240,200,80,.9); box-shadow: 0 18px 44px rgba(0,0,0,.55), 0 0 0 1px rgba(240,200,80,.12), 0 0 44px rgba(212,175,55,.2), inset 0 1px 0 rgba(255,255,255,.04); }
+.cs-armed .coach-ring { transition: box-shadow .8s ease; }
+.cs-armed .coach-ring.is-glow { box-shadow: 0 0 28px rgba(240,200,80,.6), inset 0 0 14px rgba(212,175,55,.28); }
+.cs-armed .coach-ring.is-beat .cs-blip { animation: csBlip 1s cubic-bezier(.45, 0, .25, 1) both; }
+@keyframes csBlip { 0% { stroke-dashoffset: .26; opacity: 1; } 85% { opacity: 1; } 100% { stroke-dashoffset: -1.04; opacity: 0; } }
+.cs-armed .coach-ring.is-ring::after { animation: csRing 1.4s ease-out both; }
+@keyframes csRing { from { opacity: .8; transform: scale(1); } to { opacity: 0; transform: scale(1.9); } }
+.cs-armed .is-said { animation: csSay 1.7s ease-out both; }
+@keyframes csSay { 0% { text-shadow: none; } 22% { text-shadow: 0 0 24px rgba(240,200,80,.9), 0 0 3px rgba(255,240,200,.75); } 100% { text-shadow: none; } }
+.cs-armed .coach-stat-v.is-tick { animation: csStat 1.9s ease-out both; }
+@keyframes csStat { 0% { text-shadow: none; } 25% { text-shadow: 0 0 22px currentColor; } 100% { text-shadow: none; } }
+.cs-armed :is(.coach-trig-k, .coach-trig-d) { transition: border-color .8s ease, box-shadow .8s ease, color .8s ease, text-shadow .8s ease; }
+.cs-armed .coach-triggers li.is-lit .coach-ring { box-shadow: 0 0 26px rgba(240,200,80,.55), inset 0 0 14px rgba(212,175,55,.25); }
+.cs-armed .coach-triggers li.is-lit .coach-trig-k { border-color: rgba(240,200,80,.55); box-shadow: 0 0 22px rgba(212,175,55,.14), inset 0 0 20px rgba(212,175,55,.09); text-shadow: 0 0 16px rgba(240,200,80,.55); }
+.cs-armed .coach-triggers li.is-lit .coach-trig-d { border-color: rgba(240,200,80,.3); box-shadow: inset 0 0 24px rgba(212,175,55,.05); color: #CDD3DC; }
+.cs-armed .coach-banner { transition: border-color 1s ease, box-shadow 1.2s ease; }
+.cs-armed .coach-banner.is-lit { border-color: rgba(240,200,80,.9); box-shadow: 0 0 36px rgba(212,175,55,.18); }
+.cs-armed .coach-banner svg { transition: filter 1s ease; }
+.cs-armed .coach-banner.is-lit svg { filter: drop-shadow(0 0 12px rgba(240,200,80,.85)); }
+.cs-armed.cs-gentle .coach-ring.is-ring::after { animation: none; }
 
 /* ── STRIKE SYSTEM ──────────────────────────────────────────── */
 .strikes-wrap { max-width: 880px; margin: 0 auto; }
@@ -1251,6 +1284,155 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
     </div>
   </div>
 </section>
+<script>
+/* COACH SAYS lands once, in the order the app makes it (Ed, 2026-10-17: "Create a beautiful and elegant animation
+   for this section"). The CSS is under .cs-armed, which only this adds, so no script means the finished section.
+   Wide, the beats chain once the card is on screen; stacked, the triggers wait for their list and the banner for
+   itself, so the story keeps its order. Words and numbers never change; only light is added. */
+(function () {
+  var sec = document.getElementById('coach-says');
+  if (!sec || !('IntersectionObserver' in window) || !window.matchMedia || !window.requestAnimationFrame) return;
+  var card = sec.querySelector('.coach-card'), ring = sec.querySelector('.coach-read .coach-ring'), wave = sec.querySelector('.coach-wave');
+  var bars = wave && wave.querySelector('path'), defs = wave && wave.querySelector('defs'), quote = sec.querySelector('.coach-quote');
+  var stats = Array.prototype.slice.call(sec.querySelectorAll('.coach-stat-v'));
+  var rows = Array.prototype.slice.call(sec.querySelectorAll('.coach-triggers li'));
+  var list = sec.querySelector('.coach-triggers'), banner = sec.querySelector('.coach-banner');
+  var phrases = banner ? Array.prototype.slice.call(banner.querySelectorAll('p > span, p > em')) : [];
+  if (!card || !ring || !bars || !defs || !quote || stats.length !== 3 || rows.length !== 3 || !banner || phrases.length !== 3) return;
+  var gentle = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var NS = 'http://www.w3.org/2000/svg';
+
+  // The bars as drawn: each is a stroke centred on y=40. The read lifts the ones it passes and then hands back the
+  // drawn path itself, so the end state is the static wave to the character.
+  var drawn = bars.getAttribute('d'), cols = [], m, re = /M([\d.]+) ([\d.]+)V([\d.]+)/g;
+  while ((m = re.exec(drawn))) cols.push({ x: Number(m[1]), h: 40 - Number(m[2]) });
+  if (cols.length < 20) return;
+  var hiGrad = document.createElementNS(NS, 'linearGradient');
+  hiGrad.id = 'coachWaveHi'; hiGrad.setAttribute('gradientUnits', 'userSpaceOnUse'); hiGrad.setAttribute('y1', '0'); hiGrad.setAttribute('y2', '0');
+  [['0', '0'], ['.5', '1'], ['1', '0']].forEach(function (s) {
+    var st = document.createElementNS(NS, 'stop'); st.setAttribute('offset', s[0]); st.setAttribute('stop-color', '#FFF4D6'); st.setAttribute('stop-opacity', s[1]); hiGrad.appendChild(st);
+  });
+  defs.appendChild(hiGrad);
+  var hi = document.createElementNS(NS, 'path'); hi.setAttribute('class', 'cs-hi'); hi.setAttribute('d', drawn); hi.style.opacity = '0';
+  wave.appendChild(hi);
+  var trace = ring.querySelector('path'), blip = trace.cloneNode(false);
+  blip.setAttribute('class', 'cs-blip'); blip.setAttribute('pathLength', '1');
+  trace.parentNode.appendChild(blip);
+
+  function shape(head, lift) {
+    if (!lift) return drawn;
+    var d = '';
+    for (var i = 0; i < cols.length; i++) {
+      var c = cols[i], h = c.h * (1 + lift * Math.exp(-Math.pow((c.x - head) / 52, 2)));
+      if (h > 37) h = 37 + (h - 37) * 0.15;
+      d += 'M' + c.x.toFixed(1) + ' ' + (40 - h).toFixed(1) + 'V' + (40 + h).toFixed(1);
+    }
+    return d;
+  }
+  var reading = false;
+  function read(dur, lift, glow) {
+    reading = true;
+    var t0 = null;
+    function step(t) {
+      if (t0 === null) t0 = t;
+      var p = Math.min(1, (t - t0) / dur), e = p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;
+      var head = -70 + e * 620, fade = Math.max(0, Math.min(1, p / 0.12, (1 - p) / 0.12));
+      var d = shape(head, gentle ? 0 : lift * fade);
+      bars.setAttribute('d', d); hi.setAttribute('d', d);
+      hiGrad.setAttribute('x1', (head - 75).toFixed(1)); hiGrad.setAttribute('x2', (head + 75).toFixed(1));
+      hi.style.opacity = (glow * fade).toFixed(3);
+      if (p < 1) { requestAnimationFrame(step); return; }
+      bars.setAttribute('d', drawn); hi.setAttribute('d', drawn); hi.style.opacity = '0';
+      reading = false;
+    }
+    requestAnimationFrame(step);
+  }
+  function restart(el, cls) { el.classList.remove(cls); void el.getBoundingClientRect(); el.classList.add(cls); }
+  function pulse(withRing) {
+    restart(ring, 'is-beat'); ring.classList.add('is-glow');
+    if (withRing) restart(ring, 'is-ring');
+    setTimeout(function () { ring.classList.remove('is-glow'); }, 900);
+  }
+  // The card's line is said word by word in light; a full stop goes with its word.
+  function words(el) {
+    var out = [];
+    Array.prototype.slice.call(el.childNodes).forEach(function (n) {
+      if (n.nodeType === 1) { out = out.concat(words(n)); return; }
+      if (n.nodeType !== 3) return;
+      var frag = document.createDocumentFragment();
+      n.textContent.split(/(\s+)/).forEach(function (part) {
+        if (!part) return;
+        if (/^\s+$/.test(part)) { frag.appendChild(document.createTextNode(part)); return; }
+        var s = document.createElement('span'); s.textContent = part; frag.appendChild(s); out.push(s);
+      });
+      el.replaceChild(frag, n);
+    });
+    return out;
+  }
+  function say(list, gap) {
+    var k = 0;
+    list.forEach(function (w) {
+      if (!/^[.,!?]+$/.test(w.textContent)) k++;
+      setTimeout(function () { restart(w, 'is-said'); }, Math.max(0, k - 1) * gap);
+    });
+  }
+  var line = words(quote);
+
+  // Afterwards, while the card is on screen, a quiet read passes every few seconds.
+  var onScreen = false;
+  new IntersectionObserver(function (es) { onScreen = es[0].isIntersecting; }, { threshold: 0.3 }).observe(card);
+  function quiet() {
+    if (gentle) return;
+    setTimeout(function tick() {
+      if (onScreen && !document.hidden && !reading) { pulse(false); setTimeout(function () { read(2600, 0.2, 0.5); }, 150); }
+      setTimeout(tick, 8000);
+    }, 6000);
+  }
+
+  var STOP = 1800;
+  var beats = [
+    function (done) {
+      setTimeout(function () { pulse(true); }, 150);
+      setTimeout(function () { read(2200, 0.8, 1); }, 300);
+      setTimeout(function () { pulse(false); }, 1350);
+      setTimeout(function () { card.classList.add('is-live'); say(line, 150); }, 2350);
+      setTimeout(done, 2500);
+      setTimeout(function () { restart(stats[1], 'is-tick'); }, 3000);
+      setTimeout(function () { restart(stats[2], 'is-tick'); }, 3400);
+      setTimeout(function () { card.classList.remove('is-live'); quiet(); }, 4700);
+    },
+    function (done) {
+      rows.forEach(function (li, j) {
+        setTimeout(function () { li.classList.add('is-lit'); restart(li.querySelector('.coach-ring'), 'is-ring'); }, j * STOP);
+        setTimeout(function () { li.classList.remove('is-lit'); }, (j + 1) * STOP);
+      });
+      setTimeout(done, 3 * STOP - 200);
+    },
+    function (done) {
+      banner.classList.add('is-lit');
+      say(phrases, 450);
+      setTimeout(function () { banner.classList.remove('is-lit'); done(); }, 2700);
+    }
+  ];
+  sec.classList.add('cs-armed');
+  if (gentle) sec.classList.add('cs-gentle');
+  var next = 0, running = false, seen = 0;
+  function pump() {
+    if (running || next >= beats.length || next >= seen) return;
+    running = true;
+    beats[next++](function () { running = false; pump(); });
+  }
+  [card, list, banner].forEach(function (el, i) {
+    var o = new IntersectionObserver(function (es) {
+      if (!es[0].isIntersecting) return;
+      o.disconnect();
+      seen = Math.max(seen, i + 1);
+      setTimeout(pump, 300);
+    }, { threshold: 0.6 });
+    o.observe(el);
+  });
+})();
+</script>
 
 <hr class="mk-rule-gold">
 
