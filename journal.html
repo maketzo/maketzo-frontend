@@ -216,10 +216,11 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
    Ed, 2026-10-17, third pass ("It's a C- right now"): three equal spotlights put nothing forward, Market Context read
    as a scanner, the flash card's 4d/9d read as jargon, and a Picard Score fed only by Rule Check (self-reported) looked
    lame. The real score reads far more (maketzo-app lib/journal-picard.js computePicardScore): the contract, the trades,
-   the trader's own review and state, and the write-up, and gives P&L no weight. So one card: two days that both took
-   two strikes, a green day that grades 4.1 and a red day that grades 8.4, each with the lines that moved it, split
-   into what the app saw and what the trader told it. Every line is an input to its number, in the app's own label
-   where the app has one, and both days were scored by the real scorer (C:/dev/tools/site-preview/picard-days.js):
+   the trader's own review and state, and the write-up, and gives P&L no weight. So one card: a green day that grades 4.6
+   and a red day that grades 8.9, each with the lines that moved it, split into what MAKETZO saw and what the trader
+   reported. Strikes are left off: a strike on a green day needs a paragraph to make sense (Ed: "NOT EASILY
+   UNDERSTOOD!!!"). Every line is an input to its number, in plain words (Ed asked
+   what the app's compact "Winners held 8m vs losers 3m" meant, so no app shorthand here), and both days were scored by the real scorer (C:/dev/tools/site-preview/picard-days.js):
    change a line there first. No points per line, because each part is weighted before it reaches the score. The page
    explains the journal and how it differs; it names no plan. Market Context and Flash Cards moved to the checklist. */
 .jx { max-width: 1180px; margin: 0 auto; }
@@ -229,8 +230,8 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
 .jx-line { margin: 0; font-size: var(--mk-text-md); color: var(--mk-text-secondary); line-height: 1.55; }
 .jx-days { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
 /* each day carries its own tone and where its mark lands; the green day's grade is the low one */
-.jx-day { --jx-tone: var(--mk-gold-300); --jx-from: rgba(212,175,55,.35); --jx-glow: rgba(240,200,80,.35); --jx-dot: #FFF1C4; --jx-at: 84%; padding: 20px 22px 22px; border-radius: 12px; background: linear-gradient(180deg, rgba(255,255,255,.03), transparent 45%), var(--mk-obsidian-900); border: 1px solid rgba(255,255,255,.08); }
-.jx-day--low { --jx-tone: var(--mk-danger-500); --jx-from: rgba(248,113,113,.3); --jx-glow: rgba(248,113,113,.35); --jx-dot: #FFE1E1; --jx-at: 41%; }
+.jx-day { --jx-tone: var(--mk-gold-300); --jx-from: rgba(212,175,55,.35); --jx-glow: rgba(240,200,80,.35); --jx-dot: #FFF1C4; --jx-at: 89%; padding: 20px 22px 22px; border-radius: 12px; background: linear-gradient(180deg, rgba(255,255,255,.03), transparent 45%), var(--mk-obsidian-900); border: 1px solid rgba(255,255,255,.08); }
+.jx-day--low { --jx-tone: var(--mk-danger-500); --jx-from: rgba(248,113,113,.3); --jx-glow: rgba(248,113,113,.35); --jx-dot: #FFE1E1; --jx-at: 46%; }
 .jx-day-top { margin: 0 0 14px; display: flex; align-items: baseline; justify-content: space-between; gap: 12px; font-family: var(--mk-font-mono); font-size: 10px; letter-spacing: .18em; color: var(--mk-text-tertiary); }
 .jx-pnl { font-family: var(--mk-font-sans); font-size: var(--mk-text-lg); font-weight: 700; letter-spacing: 0; font-variant-numeric: tabular-nums; }
 .jx-pnl.is-up { color: var(--mk-profit-500); }
@@ -248,9 +249,6 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
 .jx-ticks { position: relative; height: 14px; margin: 6px 0 0; font-family: var(--mk-font-mono); font-size: 10px; color: var(--mk-text-tertiary); }
 .jx-ticks span { position: absolute; top: 0; transform: translateX(-50%); }
 .jx-ticks span:first-child { left: 0; transform: none; }
-.jx-ticks .jx-t5 { left: 50%; }
-.jx-ticks .jx-t7 { left: 70%; }
-.jx-ticks .jx-t9 { left: 90%; }
 .jx-ticks span:last-child { left: 100%; transform: translateX(-100%); }
 /* the lines that moved the grade: an up mark raised it, a down mark lowered it */
 .jx-sig { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
@@ -684,46 +682,44 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
       <article class="jx-card">
         <div class="jx-head">
           <h3 class="jx-name">Picard Score</h3>
-          <p class="jx-line">A grade from 0 to 10 for how you traded, not what you made. Both of these days took two strikes. What you did after them set the grade.</p>
+          <p class="jx-line">A grade from 0 to 10 for how you traded, not what you made. A green day can grade low and a red day can grade high. The lines under each day show what moved its grade.</p>
         </div>
         <div class="jx-days">
           <div class="jx-day jx-day--low">
             <p class="jx-day-top"><span>GREEN DAY</span><b class="jx-pnl is-up">+$640.00</b></p>
-            <p class="jx-score"><span class="jx-score-v">4.1</span><small>/ 10</small></p>
+            <p class="jx-score"><span class="jx-score-v">4.6</span><small>/ 10</small></p>
             <p class="jx-band">BROKE THE PLAN</p>
             <div class="jx-track" aria-hidden="true"><i class="jx-fill"></i><span class="jx-run"><i class="jx-mark"></i></span></div>
-            <p class="jx-ticks" aria-hidden="true"><span>0</span><span class="jx-t5">5</span><span class="jx-t7">7</span><span class="jx-t9">9</span><span>10</span></p>
-            <p class="jx-k">WHAT THE APP SAW</p>
+            <p class="jx-ticks" aria-hidden="true"><span>0</span><span>10</span></p>
+            <p class="jx-k">WHAT MAKETZO SAW</p>
             <ul class="jx-sig">
-              <li class="is-down"><span class="jx-sr">Lowered: </span>2 of 3 strikes taken</li>
-              <li class="is-down"><span class="jx-sr">Lowered: </span>Overtraded past your own ceiling</li>
-              <li class="is-down"><span class="jx-sr">Lowered: </span>Traded through a day your own rule closed</li>
-              <li class="is-down"><span class="jx-sr">Lowered: </span>Losers held 9m vs winners 4m</li>
+              <li class="is-down"><span class="jx-sr">Lowered: </span>Took more trades than your own limit</li>
+              <li class="is-down"><span class="jx-sr">Lowered: </span>Kept trading after your own rule ended the day</li>
+              <li class="is-down"><span class="jx-sr">Lowered: </span>Held losers 9 minutes on average, winners only 4</li>
             </ul>
-            <p class="jx-k">WHAT YOU TOLD IT</p>
+            <p class="jx-k">WHAT YOU REPORTED</p>
             <ul class="jx-sig">
-              <li class="is-down"><span class="jx-sr">Lowered: </span>Broke one of your own rules and said so</li>
-              <li class="is-down"><span class="jx-sr">Lowered: </span>Tagged 2 mistakes: Chased entry, Revenge</li>
-              <li class="is-down"><span class="jx-sr">Lowered: </span>Rated your composure 4 and patience 3</li>
+              <li class="is-down"><span class="jx-sr">Lowered: </span>Broke one of your own rules</li>
+              <li class="is-down"><span class="jx-sr">Lowered: </span>Tagged 2 mistakes: a chased entry and a revenge trade</li>
+              <li class="is-down"><span class="jx-sr">Lowered: </span>Rated your composure 4 and patience 3, out of 10</li>
             </ul>
           </div>
           <div class="jx-day">
             <p class="jx-day-top"><span>RED DAY</span><b class="jx-pnl is-down">&minus;$310.00</b></p>
-            <p class="jx-score"><span class="jx-score-v">8.4</span><small>/ 10</small></p>
+            <p class="jx-score"><span class="jx-score-v">8.9</span><small>/ 10</small></p>
             <p class="jx-band">HELD THE LINE</p>
             <div class="jx-track" aria-hidden="true"><i class="jx-fill"></i><span class="jx-run"><i class="jx-mark"></i></span></div>
-            <p class="jx-ticks" aria-hidden="true"><span>0</span><span class="jx-t5">5</span><span class="jx-t7">7</span><span class="jx-t9">9</span><span>10</span></p>
-            <p class="jx-k">WHAT THE APP SAW</p>
+            <p class="jx-ticks" aria-hidden="true"><span>0</span><span>10</span></p>
+            <p class="jx-k">WHAT MAKETZO SAW</p>
             <ul class="jx-sig">
-              <li class="is-down"><span class="jx-sr">Lowered: </span>2 of 3 strikes taken</li>
-              <li class="is-up"><span class="jx-sr">Raised: </span>Took the reset instead of trading through it</li>
-              <li class="is-up"><span class="jx-sr">Raised: </span>Let your own rule close the day</li>
-              <li class="is-up"><span class="jx-sr">Raised: </span>Winners held 8m vs losers 3m</li>
+              <li class="is-up"><span class="jx-sr">Raised: </span>Stepped away for a guided reset</li>
+              <li class="is-up"><span class="jx-sr">Raised: </span>Stopped when your own rule ended the day</li>
+              <li class="is-up"><span class="jx-sr">Raised: </span>Held winners 8 minutes on average, losers only 3</li>
             </ul>
-            <p class="jx-k">WHAT YOU TOLD IT</p>
+            <p class="jx-k">WHAT YOU REPORTED</p>
             <ul class="jx-sig">
-              <li class="is-up"><span class="jx-sr">Raised: </span>Answered the rule check with nothing broken</li>
-              <li class="is-up"><span class="jx-sr">Raised: </span>Rated your composure 8 and patience 8</li>
+              <li class="is-up"><span class="jx-sr">Raised: </span>Followed all of your own rules</li>
+              <li class="is-up"><span class="jx-sr">Raised: </span>Rated your composure 8 and patience 8, out of 10</li>
               <li class="is-up"><span class="jx-sr">Raised: </span>Wrote up what worked and what didn't</li>
             </ul>
           </div>
@@ -754,7 +750,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
         <div><h3>Review</h3><ul>
           <li>Custom rule pills: <span>pinned to every session</span></li>
           <li>Rule Check: <span>mark each of your rules Followed or Broke, every day</span></li>
-          <li>Market Context: <span>your morning read of the day, Cold, Mixed, or Active</span></li>
+          <li>Market Context: <span>MAKETZO calls the day Cold, Mixed, or Active before the open</span></li>
           <li>Daily Watchlist: <span>today's names, kept as you saw them</span></li>
           <li>Setups &amp; Mistakes: <span>marked-up chart screenshots</span></li>
           <li>My Playbook: <span>your own notes on setups</span></li>
@@ -770,8 +766,8 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 </section>
 <script>
 /* The Journal, In Full plays once (Ed, 2026-10-17). Both days start where the app starts a day ("No score yet"), their
-   lines light in turn side by side, then both marks run together and land apart: the green day on 4.1, the red day on
-   8.4. Each number reads its own fill's transform, so number and mark share one clock. Stacked (767px and under) each
+   lines light in turn side by side, then both marks run together and land apart: the green day on 4.6, the red day on
+   8.9. Each number reads its own fill's transform, so number and mark share one clock. Stacked (767px and under) each
    day plays as it scrolls in. Every value ends on the static frame. Classes only; the CSS is under .jx-armed. */
 (function () {
   var sec = document.getElementById('in-full'), card = sec && sec.querySelector('.jx-card');
