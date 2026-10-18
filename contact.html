@@ -113,7 +113,7 @@ hr.mk-rule-gold, hr.mk-rule-gold--bold { margin: 0 auto; max-width: 1180px; }
   border: 1px solid rgba(255,255,255,.06);
   border-radius: var(--mk-radius-card);
 }
-.contact-form-title { font-family: var(--mk-font-display); font-size: clamp(1.4rem, 2.4vw, 1.7rem); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); margin-bottom: 6px; line-height: 1.1; }
+.contact-form-title { font-family: var(--mk-font-display); font-weight: 400; font-size: clamp(1.4rem, 2.4vw, 1.7rem); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); margin-bottom: 6px; line-height: 1.1; }
 .contact-form-sub { font-size: var(--mk-text-sm); color: var(--mk-text-tertiary); margin-bottom: 28px; }
 
 .mk-form-field { margin-bottom: 18px; }
@@ -224,9 +224,38 @@ hr.mk-rule-gold, hr.mk-rule-gold--bold { margin: 0 auto; max-width: 1180px; }
 .trust-tile-text { font-size: var(--mk-text-sm); color: var(--mk-text-tertiary); line-height: 1.5; }
 @media (max-width: 800px) { .trust-strip { grid-template-columns: 1fr; max-width: 420px; } }
 
+/* ── the page's light (Ed, 2026-10-17: "create a beautiful and elegant animation for contact.html") ─────────────────
+   Colour and light only, once per visit, one moment at a time; nothing changes place. The headline's promise
+   ("every email.") takes a light; then the form card's edge warms and a sheen crosses Send Message, the one thing this
+   page asks for; and when the visitor reaches WHAT TO EXPECT, its three marks light one after another and "Fast
+   replies." takes the light. Every keyframe starts and ends at the element's own style, so each moment ends on the
+   static page, and nothing is armed without the script. Reduce motion keeps the glows and drops the sweeps. */
+.ct-armed .page-hero-title em, .ct-armed .section-dark .section-title em {
+  background-image: linear-gradient(100deg, rgba(255,250,235,0) 38%, rgba(255,250,235,.9) 50%, rgba(255,250,235,0) 62%), var(--mk-gold-gradient);
+  background-size: 300% 100%, 100% 100%; background-position: 150% 0, 0 0; background-repeat: no-repeat; }
+.ct-armed #contactSubmit { position: relative; overflow: hidden; }
+.ct-armed #contactSubmit::after { content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: 38%; background: linear-gradient(100deg, rgba(255,255,255,0), rgba(255,255,255,.42) 50%, rgba(255,255,255,0)); transform: translateX(-130%) skewX(-18deg); pointer-events: none; }
+.ct-hero-go .page-hero-title em { animation: ctShine 1.3s ease-in-out .5s; }
+.ct-form-go .contact-form-card { animation: ctEdge 2.2s ease-in-out; }
+.ct-form-go #contactSubmit::after { animation: ctSheen 1.1s ease-in-out .8s; }
+.ct-trust-go .trust-tile-icon { animation: ctMark 1.4s ease-in-out; }
+.ct-trust-go .trust-tile-title { animation: ctWord 1.4s ease-in-out; }
+.ct-trust-go .trust-tile:nth-child(1) :is(.trust-tile-icon, .trust-tile-title) { animation-delay: .2s; }
+.ct-trust-go .trust-tile:nth-child(2) :is(.trust-tile-icon, .trust-tile-title) { animation-delay: .95s; }
+.ct-trust-go .trust-tile:nth-child(3) :is(.trust-tile-icon, .trust-tile-title) { animation-delay: 1.7s; }
+.ct-trust-go .section-dark .section-title em { animation: ctShine 1.3s ease-in-out 2.6s; }
+@keyframes ctShine { from { background-position: 150% 0, 0 0; } to { background-position: -50% 0, 0 0; } }
+@keyframes ctSheen { from { transform: translateX(-130%) skewX(-18deg); } to { transform: translateX(320%) skewX(-18deg); } }
+@keyframes ctEdge { 40%, 60% { border-color: rgba(212,175,55,.45); box-shadow: 0 0 0 1px rgba(212,175,55,.16), 0 14px 40px rgba(212,175,55,.12); } }
+@keyframes ctMark { 35%, 60% { background-color: rgba(212,175,55,.22); border-color: rgba(240,200,80,.75); box-shadow: 0 0 18px rgba(212,175,55,.45); color: var(--mk-gold-300); } }
+@keyframes ctWord { 35%, 60% { color: var(--mk-gold-300); } }
+@media (prefers-reduced-motion: reduce) {
+  .ct-hero-go .page-hero-title em, .ct-trust-go .section-dark .section-title em, .ct-form-go #contactSubmit::after { animation: none; }
+}
+
 .final-cta-section { padding: 96px 0; background: var(--mk-obsidian-950); text-align: center; border-top: var(--mk-border-hairline); }
 .final-cta-eyebrow { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); margin-bottom: 18px; }
-.final-cta-title { font-family: var(--mk-font-display); font-size: clamp(2.2rem, 4.6vw, 3.2rem); letter-spacing: var(--mk-track-display); line-height: 1.04; text-transform: uppercase; font-weight: 400; margin-bottom: 24px; max-width: 700px; margin-left: auto; margin-right: auto; }
+.final-cta-title { font-family: var(--mk-font-display); font-size: clamp(2.2rem, 4.6vw, 3.2rem); letter-spacing: var(--mk-track-display); line-height: 1.04; text-transform: uppercase; font-weight: 400; margin-bottom: 24px; max-width: 700px; margin-left: auto; margin-right: auto; text-wrap: balance; }
 .final-cta-title em { font-style: normal; background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .final-cta-btn-wrap { display: flex; flex-direction: column; align-items: center; gap: 14px; }
 .final-cta-note { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: 0.04em; color: var(--mk-text-tertiary); }
@@ -331,7 +360,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
           <div class="mk-form-field">
             <label for="cphone">Phone <span class="mk-form-label-optional">(optional)</span></label>
             <input id="cphone" name="phone" type="tel" autocomplete="tel" maxlength="32" placeholder="+1 555 123 4567">
-            <p class="mk-form-helper">Optional — speeds up account or billing replies if we need to call.</p>
+            <p class="mk-form-helper">Speeds up account or billing replies if we need to call.</p>
           </div>
           <div class="mk-form-field">
             <label for="csubject">Subject</label>
@@ -386,7 +415,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
         <div class="contact-side-card">
           <div class="contact-side-tag">ALREADY A MEMBER?</div>
           <div class="contact-side-title">Manage billing</div>
-          <p class="contact-side-text">Cancel, switch tiers, update card. All one-click from your <a href="/app#account">account page</a>. No phone call required, ever.</p>
+          <p class="contact-side-text">Cancel, switch tiers, or update your card from your <a href="/app#account">account page</a>. No phone call required, ever.</p>
         </div>
 
       </aside>
@@ -414,7 +443,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
       <div class="trust-tile reveal">
         <div class="trust-tile-icon">★</div>
         <div class="trust-tile-title">Feedback Lands</div>
-        <div class="trust-tile-text">Feature requests go into the public roadmap. Bug reports get triaged.</div>
+        <div class="trust-tile-text">We read every feature request. Every bug report gets triaged.</div>
       </div>
     </div>
   </div>
@@ -465,6 +494,36 @@ function closeDrawer(){document.getElementById('mobileDrawer').classList.remove(
 const reveals=document.querySelectorAll('.reveal');
 const obs=new IntersectionObserver((entries)=>{let n=0;entries.forEach((e)=>{if(e.isIntersecting){const d=Math.min(n++,6)*50;setTimeout(()=>e.target.classList.add('visible'),d);obs.unobserve(e.target);}});},{threshold:0.06});
 reveals.forEach(el=>obs.observe(el));
+
+// The page's light, once per visit, one moment at a time (CSS under .ct-armed): the headline when it is on screen,
+// the form card when it is, then WHAT TO EXPECT when the visitor reaches it. A moment that comes into view while
+// another plays waits for it to end; one scrolled past without stopping never plays. Each takes its class off when it
+// ends, so the page rests as the static one.
+(function(){
+  if (!('IntersectionObserver' in window)) return;
+  var title = document.querySelector('.page-hero-title em'), card = document.querySelector('.contact-form-card'), strip = document.querySelector('.trust-strip');
+  if (!title || !card || !strip) return;
+  var root = document.documentElement, busy = false, queue = [];
+  root.classList.add('ct-armed');
+  function run(cls, ms) {
+    if (busy) { queue.push([cls, ms]); return; }
+    busy = true; root.classList.add(cls);
+    setTimeout(function(){
+      root.classList.remove(cls); busy = false;
+      var next = queue.shift(); if (next) setTimeout(function(){ run(next[0], next[1]); }, 300);
+    }, ms);
+  }
+  function when(el, ratio, cls, ms) {
+    var o = new IntersectionObserver(function(es){
+      if (es[0].intersectionRatio < ratio) return;
+      o.disconnect(); run(cls, ms);
+    }, { threshold: [0, ratio] });
+    o.observe(el);
+  }
+  when(title, 0.6, 'ct-hero-go', 1900);
+  when(card, 0.35, 'ct-form-go', 2300);
+  when(strip, 0.5, 'ct-trust-go', 4000);
+})();
 
 // PHONE auto-format. US default: (xxx) xxx-xxxx as the user types.
 // International escape hatch: if the value starts with '+', leave it alone.
