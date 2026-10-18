@@ -268,23 +268,20 @@ hr.mk-rule-gold, hr.mk-rule-gold--bold { margin: 0 auto; max-width: 1180px; }
 .outcome-affirmation em { font-style: normal; background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
 
 /* ── FOUNDER NOTE ────────────────────────────────────────────── */
-/* Built to Ed's comp (2026-10-18, "Why We Built Maketzo.png"): the head and the note on the left; on the right the team
-   photo in a lit gold frame, standing in front of the MAKETZO mark. Fonts and colors stay on the style guide, the
-   eyebrow keeps its site formatting, and the line over the signature is the standard gold rule (.mk-rule-gold). The mark
-   rises above the photo far enough to show its V and the start of the inner strokes (Ed, on staging: "make more of the M
-   logo appear on the top... not sufficient to see it's the logo"): its width is capped so that 65% of it, cut at the
-   photo's top edge, fits in the space above the photo; the section's top padding makes that space on desktop. */
+/* Built to Ed's comp (2026-10-18, "Why We Built Maketzo.png"): the note on the left; on the right the team photo in a
+   lit gold frame, standing in front of the MAKETZO mark. Fonts and colors stay on the style guide; the eyebrow and the
+   title keep the site's centered handling (Ed: "Center WHY WE BUILT MAKETZO. so it's standard handling"), and the line
+   over the signature is the standard gold rule (.mk-rule-gold). The mark rises above the photo far enough to show its V
+   and the start of the inner strokes (Ed, on staging: "make more of the M logo appear on the top... not sufficient to
+   see it's the logo"): 65% of it shows above the photo's top edge, capped at 350px wide. */
 .ft { overflow: hidden; }
-@media (min-width: 1001px) { .ft { padding-top: 120px; } }
 .ft::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
   background: radial-gradient(40% 48% at 0% 100%, rgba(212,175,55,.1), rgba(212,175,55,0) 72%),
     radial-gradient(36% 44% at 100% 100%, rgba(212,175,55,.08), rgba(212,175,55,0) 72%),
     linear-gradient(28deg, rgba(212,175,55,0) 6%, rgba(212,175,55,.06) 10%, rgba(212,175,55,0) 15%),
     linear-gradient(152deg, rgba(212,175,55,0) 74%, rgba(212,175,55,.06) 79%, rgba(212,175,55,0) 85%); }
 .ft .section-inner { max-width: 1560px; }
-.ft-grid { container-type: inline-size; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.04fr); grid-template-areas: "head ." "card media"; column-gap: clamp(36px, 4vw, 60px); row-gap: 30px; align-items: center; }
-.ft-head { grid-area: head; }
-.ft-head .section-title { text-align: left; margin-bottom: 0; }
+.ft-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.04fr); grid-template-areas: "card media"; column-gap: clamp(36px, 4vw, 60px); row-gap: 28px; align-items: start; margin-top: 30px; }
 .founder-card { grid-area: card; padding: 48px 50px 44px; border: 1px solid transparent; border-radius: var(--mk-radius-card-lg);
   background: linear-gradient(165deg, rgba(255,255,255,.04), rgba(255,255,255,0) 55%) padding-box, linear-gradient(var(--mk-surface-raised), var(--mk-surface-raised)) padding-box,
     linear-gradient(36deg, rgba(229,197,114,.8), rgba(212,175,55,.24) 30%, rgba(212,175,55,.16) 70%, rgba(229,197,114,.34)) border-box;
@@ -295,8 +292,11 @@ hr.mk-rule-gold, hr.mk-rule-gold--bold { margin: 0 auto; max-width: 1180px; }
 .ft-keep { white-space: nowrap; }
 .ft-rule { margin: 30px 0 24px; }
 .founder-sign { font-family: var(--mk-font-sans); font-weight: 300; font-size: var(--mk-text-xl); letter-spacing: .28em; line-height: 1.2; text-transform: uppercase; color: var(--mk-brand); }
-.ft-media { grid-area: media; position: relative; container-type: inline-size; }
-.ft-mark { --ft-mw: min(56cqw, 350px); position: absolute; left: 50%; top: calc(var(--ft-mw) * -.655); width: var(--ft-mw); height: auto; aspect-ratio: 435 / 438; transform: translateX(-50%); overflow: visible; pointer-events: none; }
+/* the mark's top lines up with the card's top and the photo sits under it (Ed: "Move M and photo down to not interfere
+   with WHY WE BUILT MAKETZO", his pick "Photo runs lower"): the padding is the 65% of the mark that shows above the
+   photo; a grid item's % padding reads the column width, the same width the mark is sized from */
+.ft-media { grid-area: media; position: relative; container-type: inline-size; padding-top: calc(min(56%, 350px) * .655); }
+.ft-mark { --ft-mw: min(56cqw, 350px); position: absolute; left: 50%; top: 0; width: var(--ft-mw); height: auto; aspect-ratio: 435 / 438; transform: translateX(-50%); overflow: visible; pointer-events: none; }
 .ft-mark-shape { fill: url(#ftMarkFill); stroke: rgba(229,197,114,.42); stroke-width: 1; }
 .ft-mark-lit { fill: url(#ftMarkLit); opacity: 0; }
 .ft-stop--a { stop-color: var(--mk-gold-400); stop-opacity: .56; }
@@ -312,8 +312,8 @@ hr.mk-rule-gold, hr.mk-rule-gold--bold { margin: 0 auto; max-width: 1180px; }
    time it is away is the opening, on purpose, while the mark is written */
 .founder-team-image img { width: 100%; height: auto; display: block; background: var(--mk-surface-raised); }
 @media (max-width: 1000px) {
-  .ft-grid { grid-template-columns: minmax(0, 1fr); grid-template-areas: "head" "card" "media"; row-gap: 28px; }
-  .ft-media { width: 100%; max-width: 640px; margin: calc(min(56cqw, 350px) * .655 + 8px) auto 0; }
+  .ft-grid { grid-template-columns: minmax(0, 1fr); grid-template-areas: "card" "media"; }
+  .ft-media { width: 100%; max-width: 640px; margin: 0 auto; }
 }
 @media (max-width: 600px) { .founder-card { padding: 32px 24px 30px; } .founder-card p { font-size: var(--mk-text-md); } .founder-sign { font-size: var(--mk-text-lg); letter-spacing: .2em; } }
 /* The note in motion (Ed, 2026-10-18 with the comp: "Create a beautiful and elegant animation for this section"). It
@@ -1221,11 +1221,8 @@ window.mkAfter = function (prev, trigger, fn, here) {
 <section class="section section-dark ft">
   <div class="section-inner">
     <p class="section-eyebrow reveal">A NOTE FROM THE TEAM</p>
+    <h2 class="section-title reveal">Why we built <em>MAKETZO.</em></h2>
     <div class="ft-grid">
-      <div class="ft-head">
-        <h2 class="section-title reveal">Why we built <em>MAKETZO.</em></h2>
-      </div>
-
       <div class="founder-card reveal">
         <p>We've all been on the wrong side of our own trades. The setup was right. The size was right. The rule was clear. And somehow the trade we took wasn't the one we wrote down.</p>
         <p>We built <span class="ft-brand">MAKETZO</span> because the gap between what a trader knows and what a trader does is the only gap that actually empties accounts. Everything else, strategy, indicators, market structure, is solvable with study. <strong class="ft-beat ft-beat--1">This one isn't.</strong></p>
