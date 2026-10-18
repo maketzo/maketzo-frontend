@@ -727,6 +727,31 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 @media (max-width: 600px) {
   .affirm-line { gap: 14px; }
 }
+/* THE OUTCOME in motion (Ed, 2026-10-18: "a simple elegant animation for THE OUTCOME section"). Light only, nothing
+   moves or hides: once, when the three lines are on screen and THE DIFFERENCE has had its turn, a pale gleam passes
+   through the headline's gold words, then each line in turn, 01, 02, 03, its number glows and the gleam runs through its
+   gold words (on a wrapped line it runs line by line); the third line, the payoff, keeps a soft gold glow a moment
+   longer. Every keyframe starts and ends on the element's own style, so the end frame is the static section. Nothing is
+   armed without the script. Reduce motion keeps the clock with no travel: the gold words and numbers warm and settle. */
+.oc-armed .section-title em, .oc-armed .affirm-line em { background-repeat: no-repeat;
+  background-image: linear-gradient(100deg, rgba(255,244,214,0) calc(50% - 70px), rgba(255,244,214,.95) 50%, rgba(255,244,214,0) calc(50% + 70px)), var(--mk-gold-gradient);
+  background-size: 200% 100%, 100% 100%; background-position: calc(100% - 70px) 0, 0 0; }
+.oc-go .section-title em { animation: ocGleam 1.3s ease-in-out .15s; }
+.oc-go .affirm-line:nth-child(1) .affirm-line-num { animation: ocNum 1.4s ease-in-out .9s; }
+.oc-go .affirm-line:nth-child(1) em { animation: ocGleam 1s ease-in-out 1s; }
+.oc-go .affirm-line:nth-child(2) .affirm-line-num { animation: ocNum 1.4s ease-in-out 1.7s; }
+.oc-go .affirm-line:nth-child(2) em { animation: ocGleam 1s ease-in-out 1.8s; }
+.oc-go .affirm-line:nth-child(3) .affirm-line-num { animation: ocNum 2.2s ease-in-out 2.5s; }
+.oc-go .affirm-line:nth-child(3) em { animation: ocGleam 1.3s ease-in-out 2.6s, ocGlow 2.4s ease-in-out 2.9s; }
+@keyframes ocGleam { from { background-position: calc(100% - 70px) 0, 0 0; } to { background-position: 70px 0, 0 0; } }
+@keyframes ocNum { 0%, 100% { color: var(--mk-brand); text-shadow: 0 0 0 rgba(243,215,122,0); } 40% { color: var(--mk-gold-300); text-shadow: 0 0 10px rgba(243,215,122,.7); } }
+@keyframes ocGlow { 0%, 100% { filter: drop-shadow(0 0 0 rgba(243,215,122,0)); } 45% { filter: drop-shadow(0 0 12px rgba(243,215,122,.5)); } }
+@media (prefers-reduced-motion: reduce) {
+  .oc-armed .section-title em, .oc-armed .affirm-line em { background-image: var(--mk-gold-gradient); }
+  .oc-go .section-title em, .oc-go .affirm-line:nth-child(1) em, .oc-go .affirm-line:nth-child(2) em { animation-name: ocWarm; }
+  .oc-go .affirm-line:nth-child(3) em { animation: ocGlow 2.6s ease-in-out 2.6s; }
+  @keyframes ocWarm { 0%, 100% { filter: brightness(1); } 45% { filter: brightness(1.25); } }
+}
 </style>
 <script>try{if(document.cookie.indexOf('mkt_csrf=')>-1)document.documentElement.classList.add('mkt-auth');}catch(e){}</script>
 <style id="nav-fit">/* The nav on one line at every width (Ed, 2026-10-16: it wrapped at about 1024px). The full bar fits from 1024px, so below that the menu button takes over (it was 900px, which left 901-1140 wrapping); items never break, and the bar tightens up to 1180px. Last in the head so it wins over the page's own nav rules. */
@@ -1145,7 +1170,7 @@ window.mkAfter = function (prev, trigger, fn, here) {
 <hr class="mk-rule-gold">
 
 <!-- THE OUTCOME — affirmation stack -->
-<section class="section">
+<section class="section oc">
   <div class="section-inner">
     <p class="section-eyebrow reveal">THE OUTCOME</p>
     <h2 class="section-title reveal">Trading begins <em>to feel different.</em></h2>
@@ -1170,6 +1195,25 @@ window.mkAfter = function (prev, trigger, fn, here) {
     </div>
   </div>
 </section>
+<script>
+/* THE OUTCOME plays once per visit, when the three lines are half on screen and THE DIFFERENCE has had its turn
+   (mkAfter): CSS under .oc-armed / .oc-go passes the light through the headline, then through lines 01 to 03; done at
+   5.4s. */
+(function () {
+  var sec = document.querySelector('.section.oc'), stack = sec && sec.querySelector('.affirm-stack');
+  if (!stack || !('IntersectionObserver' in window) || !window.mkAfter) return;
+  var prev = document.querySelector('.section.df'), prevSpot = prev && prev.querySelector('.df-grid');
+  sec.classList.add('oc-armed');
+  function play() { mkMark(sec, 'playing'); sec.classList.add('oc-go'); setTimeout(function () { mkMark(sec, 'done'); }, 5400); }
+  var o = new IntersectionObserver(function (es) {
+    var e = es[0];
+    if (!(e.intersectionRatio >= 0.5 || (!e.isIntersecting && e.boundingClientRect.top < 0))) return;
+    o.disconnect(); mkMark(sec, 'waiting');
+    mkAfter(prev, prevSpot, play, sec);
+  }, { threshold: [0, 0.5] });
+  o.observe(stack);
+})();
+</script>
 
 <hr class="mk-rule-gold">
 
@@ -1240,7 +1284,7 @@ window.mkAfter = function (prev, trigger, fn, here) {
   </div>
 </section>
 <script>
-/* plays once per visit, as soon as the card is a third on screen and THE DIFFERENCE has had its turn (mkAfter): CSS
+/* plays once per visit, as soon as the card is a third on screen and THE OUTCOME has had its turn (mkAfter): CSS
    under .ft-armed / .ft-go lights the two bold lines, then the gold rule and the signature; .ft-armed holds the photo
    back, .ft-sealed writes the mark in gold light at once, .ft-in settles the photo in over it at 4.4s and .ft-lit lands
    the light on its frame. The mark waits only for its spot to be on screen (on phones it sits below the card). */
@@ -1248,7 +1292,7 @@ window.mkAfter = function (prev, trigger, fn, here) {
   var sec = document.querySelector('.section.ft'), card = sec && sec.querySelector('.founder-card'), media = sec && sec.querySelector('.ft-media'),
       photo = media && media.querySelector('.founder-team-image');
   if (!card || !photo || !('IntersectionObserver' in window) || !window.mkAfter) return;
-  var prev = document.querySelector('.section.df'), prevSpot = prev && prev.querySelector('.df-grid');
+  var prev = document.querySelector('.section.oc'), prevSpot = prev && prev.querySelector('.affirm-stack');
   sec.classList.add('ft-armed');
   function seal() {
     var o = new IntersectionObserver(function (es) {
