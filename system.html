@@ -224,71 +224,74 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
   .page-hero-cta .btn-primary { width: 100%; justify-content: center; text-align: center; }
 }
 
-/* ── STATE GRID (7 states) ──────────────────────────────────── */
-.state-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 20px;
-  max-width: 1180px;
-  margin: 0 auto;
+/* ── SESSION AWARENESS (built to Ed's mock, 2026-10-18: tools/site-preview/mock-system-session-awareness.png) ───────
+   Replaces the eight state cards (Ed: "too busy - eye sore. And too much text"). The head keeps the page's own
+   eyebrow, title and sub. Each ring takes the colour the app's own status banner shows for that state (maketzo-app
+   style.css .state-banner.s-teal / .s-orange, and danger red), so the page and the product agree: teal for Protect
+   the Win, orange for Slow Down, red for Stop Trading. The --aw-rgb triplets are those same tokens, for the glows.
+   The animation is the page's breather: light only, nothing changes place. Each state takes one slow breath of light
+   in reading order and the checkpoint clock's hand turns once. Every keyframe starts and ends on the element's own
+   style, so the last frame is the static section. */
+.aw .section-title em { display: block; }
+.aw .section-title, .aw .section-sub, .aw-desc { text-wrap: balance; }
+.aw-dash { display: block; width: 56px; height: 2px; margin: 2px auto 22px; border-radius: 2px; background: var(--mk-brand); }
+.aw-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: 1116px; margin: 0 auto; }
+.aw-col { --aw-c: var(--mk-lockin-500); --aw-rgb: 45,212,191; --aw-hot: #C4F7EE; position: relative; padding: 4px 24px 6px; text-align: center; }
+.aw-col[data-state="warning"] { --aw-c: var(--mk-warning-500); --aw-rgb: 251,146,60; --aw-hot: #FFDDBE; }
+.aw-col[data-state="danger"] { --aw-c: var(--mk-danger-500); --aw-rgb: 248,113,113; --aw-hot: #FFD6D6; }
+.aw-col + .aw-col::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 1px; background: linear-gradient(180deg, rgba(212,175,55,0), rgba(212,175,55,.5) 50%, rgba(212,175,55,0)); }
+.aw-ring { position: relative; display: grid; place-items: center; width: 88px; height: 88px; margin: 0 auto 22px; border-radius: 50%; border: 2px solid var(--aw-c); color: var(--aw-c);
+  background: radial-gradient(circle, rgba(var(--aw-rgb), .07), rgba(var(--aw-rgb), 0) 70%);
+  box-shadow: 0 0 14px rgba(var(--aw-rgb), .45), 0 0 34px -8px rgba(var(--aw-rgb), .35), inset 0 0 14px -4px rgba(var(--aw-rgb), .35); }
+.aw-ring::after { content: ""; position: absolute; inset: -18px; border-radius: 50%; background: radial-gradient(circle, rgba(var(--aw-rgb), 0) 46%, rgba(var(--aw-rgb), .3) 57%, rgba(var(--aw-rgb), 0) 72%); opacity: 0; pointer-events: none; }
+.aw-ring svg { width: 42px; height: 42px; overflow: visible; filter: drop-shadow(0 0 6px rgba(var(--aw-rgb), .45)); }
+.aw-ring .ink { fill: currentColor; }
+.aw-when { margin: 0; font-family: var(--mk-font-mono); font-size: .8125rem; letter-spacing: .26em; text-transform: uppercase; color: var(--mk-text-secondary); }
+.aw-when::after { content: ""; display: block; width: 30px; height: 2px; margin: 12px auto 16px; border-radius: 2px; background: var(--mk-brand); }
+.aw-head { margin: 0 0 12px; font-family: var(--mk-font-display); font-weight: 400; font-size: clamp(2.1rem, 3.3vw, 2.9rem); line-height: .95; letter-spacing: .01em; text-transform: uppercase;
+  background: linear-gradient(180deg, var(--mk-gold-300), var(--mk-gold-500) 55%, var(--mk-gold-600)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.aw-desc { max-width: 250px; margin: 0 auto; font-size: 1.125rem; line-height: 1.55; color: var(--mk-text-secondary); }
+.aw-sched { position: relative; max-width: 1116px; margin: 52px auto 0; padding: 28px 16px 30px; text-align: center; }
+.aw-sched::before, .aw-sched::after { content: ""; position: absolute; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, rgba(212,175,55,0), rgba(212,175,55,.22) 50%, rgba(212,175,55,0)); }
+.aw-sched::before { top: 0; }
+.aw-sched::after { bottom: 0; }
+.aw-sched-t { display: inline-flex; align-items: center; gap: 14px; margin: 0 0 10px; font-family: var(--mk-font-mono); font-size: .875rem; letter-spacing: .24em; text-transform: uppercase; color: var(--mk-brand); }
+.aw-clock { width: 30px; height: 30px; flex: none; overflow: visible; }
+.aw-clock .hand { transform-box: view-box; transform-origin: 16px 16px; }
+.aw-sched-d { margin: 0; font-size: 1rem; line-height: 1.55; color: var(--mk-text-secondary); }
+/* The breath (script adds .aw-lit): the halo swells and lets go, the icon's ink brightens (the bars one after another,
+   so the climb reads), the gold dash under the label widens and the headline catches the light. */
+.aw-col.aw-lit .aw-ring::after { animation: awHalo 2.8s ease-in-out; }
+.aw-col.aw-lit .ink { animation: awInk 1.4s ease-in-out backwards; }
+.aw-col.aw-lit rect.ink:nth-of-type(2) { animation-delay: .24s; }
+.aw-col.aw-lit rect.ink:nth-of-type(3) { animation-delay: .48s; }
+.aw-col.aw-lit .aw-when::after { animation: awDash 2.4s ease-in-out .15s backwards; }
+.aw-col.aw-lit .aw-head { animation: awGlow 2.6s ease-in-out .3s backwards; }
+.aw-sched.aw-lit .aw-clock { animation: awGlow 2.6s ease-in-out; }
+.aw-sched.aw-lit .aw-clock .hand-m { animation: awSweep 2.4s cubic-bezier(.45,0,.25,1); }
+.aw-sched.aw-lit .aw-sched-t span { animation: awGlow 2.6s ease-in-out .25s backwards; }
+@keyframes awHalo { 0% { opacity: 0; transform: scale(.92); } 45% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: scale(1.05); } }
+@keyframes awInk { 0%, 100% { fill: var(--aw-c); } 40% { fill: var(--aw-hot); } }
+@keyframes awDash { 0%, 100% { transform: scaleX(1); box-shadow: 0 0 0 rgba(212,175,55,0); } 45% { transform: scaleX(1.8); box-shadow: 0 0 10px rgba(212,175,55,.6); } }
+@keyframes awGlow { 0%, 100% { filter: drop-shadow(0 0 0 rgba(212,175,55,0)) brightness(1); } 45% { filter: drop-shadow(0 0 14px rgba(212,175,55,.5)) brightness(1.14); } }
+@keyframes awSweep { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes awHaloStill { 0%, 100% { opacity: 0; } 45% { opacity: 1; } }
+/* Reduce motion: the same breaths on the same clock, light only; the halo stops growing, the dash stays its width and
+   the clock's hand stays put. */
+@media (prefers-reduced-motion: reduce) {
+  .aw-col.aw-lit .aw-ring::after { animation-name: awHaloStill; }
+  .aw-col.aw-lit .aw-when::after, .aw-sched.aw-lit .aw-clock .hand-m { animation: none; }
 }
-.state-card {
-  position: relative;
-  padding: 24px 26px 26px;
-  background: var(--mk-surface-raised);
-  border: 1px solid rgba(255,255,255,.06);
-  border-radius: var(--mk-radius-card);
-  border-left: 4px solid var(--mk-smoke-700);
-  transition: transform var(--mk-dur-med) var(--mk-ease-out);
+@media (max-width: 760px) {
+  .aw-row { grid-template-columns: minmax(0, 1fr); }
+  .aw-col { padding: 30px 8px; }
+  .aw-col:first-child { padding-top: 4px; }
+  .aw-col + .aw-col::before { left: 50%; right: auto; top: 0; bottom: auto; width: 140px; height: 1px; transform: translateX(-50%); background: linear-gradient(90deg, rgba(212,175,55,0), rgba(212,175,55,.5) 50%, rgba(212,175,55,0)); }
+  .aw-ring { width: 80px; height: 80px; margin-bottom: 18px; }
+  .aw-ring svg { width: 38px; height: 38px; }
+  .aw-sched { margin-top: 26px; }
+  .aw-sched-t { gap: 10px; font-size: .8125rem; letter-spacing: .18em; }
 }
-.state-card[data-state="open"] { border-left-color: var(--mk-text-tertiary); }
-.state-card[data-state="caution"] { border-left-color: var(--mk-caution-500); }
-.state-card[data-state="lockin"] { border-left-color: var(--mk-lockin-500); }
-.state-card[data-state="profit"] { border-left-color: var(--mk-profit-500); }
-.state-card[data-state="warning"] { border-left-color: var(--mk-warning-500); }
-.state-card[data-state="danger"] { border-left-color: var(--mk-danger-500); }
-.state-card[data-state="lockout"] { border-left-color: var(--mk-text-tertiary); background: linear-gradient(180deg, rgba(20,24,33,.6), var(--mk-surface-raised) 50%); }
-/* delight: the disciplined day flows through all seven states on scroll-in (gold pulse, box-shadow only so it never fights the reveal/hover transforms) */
-.state-grid.flow .state-card { animation: stateFlow 1.2s ease both; }
-.state-grid.flow .state-card:nth-child(1) { animation-delay: .40s; }
-.state-grid.flow .state-card:nth-child(2) { animation-delay: .58s; }
-.state-grid.flow .state-card:nth-child(3) { animation-delay: .76s; }
-.state-grid.flow .state-card:nth-child(4) { animation-delay: .94s; }
-.state-grid.flow .state-card:nth-child(5) { animation-delay: 1.12s; }
-.state-grid.flow .state-card:nth-child(6) { animation-delay: 1.30s; }
-.state-grid.flow .state-card:nth-child(7) { animation-delay: 1.48s; }
-@keyframes stateFlow { 0% { box-shadow: none; } 35% { box-shadow: 0 0 0 1.5px var(--mk-brand), 0 10px 34px -10px rgba(212,175,55,.5); } 100% { box-shadow: none; } }
-.state-step {
-  font-family: var(--mk-font-mono);
-  font-size: var(--mk-mono-xs);
-  letter-spacing: var(--mk-track-eyebrow);
-  text-transform: uppercase;
-  color: var(--mk-text-tertiary);
-  margin-bottom: 10px;
-}
-.state-name {
-  font-family: var(--mk-font-display);
-  font-size: var(--mk-display-md);
-  letter-spacing: var(--mk-track-display);
-  text-transform: uppercase;
-  color: var(--mk-text-primary);
-  margin-bottom: 8px;
-}
-.state-time { font-family: var(--mk-font-mono); font-size: var(--mk-mono-sm); color: var(--mk-brand); margin-bottom: 14px; }
-.state-desc { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); line-height: 1.55; margin-bottom: 14px; }
-.state-rule {
-  display: block;
-  padding: 10px 12px;
-  background: rgba(0,0,0,.25);
-  border: 1px solid rgba(255,255,255,.04);
-  border-radius: var(--mk-radius-sm);
-  font-family: var(--mk-font-mono);
-  font-size: var(--mk-mono-xs);
-  letter-spacing: 0.03em;
-  color: var(--mk-text-tertiary);
-}
-.state-rule strong { color: var(--mk-text-primary); }
-.state-rule + .state-rule { margin-top: 6px; }
 
 /* ── COACH SAYS (built to Ed's mock, 2026-10-16: tools/site-preview/mock-system-coach-says.png) ──────────────
    Sizes are the mock's, scaled into the 1180px section (its content is 1424 wide in the mock, ours 1116). The
@@ -954,93 +957,42 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 })();
 </script>
 <hr class="mk-rule-gold">
-<!-- SEVEN STATES -->
-<section class="section" id="checkpoints">
+<!-- SESSION AWARENESS: built to Ed's mock 2026-10-18 (tools/site-preview/mock-system-session-awareness.png), replacing
+     the eight state cards. Each line checked against maketzo-app: Day Made's band headline is "Protect the Win" (teal);
+     the slide's rungs read CAUTION, BREATHE then WARNING, SLOW DOWN (orange); a Pro day is closed by the contract at
+     the max-loss line ("Day Closed by Contract", "Closed out. See you tomorrow."); and both checkpoint times are the
+     trader's own (Settings: First and Second checkpoint time, 8:30 and 10:30 by default). -->
+<section class="section aw" id="checkpoints">
   <div class="section-inner">
-    <p class="section-eyebrow reveal">CHECKPOINTS AND SESSION STATES</p>
-    <h2 class="section-title reveal">Log your P&amp;L. <em>It knows exactly where you are.</em></h2>
-    <p class="section-sub reveal">There's no script for the day. Every time you log your P&amp;L, the system re-reads your session on the spot, on the climb or on the slide, and puts the exact guardrails you set in front of you. Automatically, before your worst impulse beats your best plan.</p>
+    <p class="section-eyebrow reveal">SESSION AWARENESS</p>
+    <h2 class="section-title reveal">Your day changes. <em>Your guidance changes with it.</em></h2>
+    <span class="aw-dash reveal" aria-hidden="true"></span>
+    <p class="section-sub reveal">Every time you log your P&amp;L, MAKETZO checks your progress against the rules you set and shows you what matters now.</p>
 
-    <div class="state-grid">
-      <div class="state-card reveal" data-state="open">
-        <div class="state-step">Pre-Market</div>
-        <div class="state-name">The Open</div>
-        <div class="state-time">Before your first fill</div>
-        <p class="state-desc">You set your max-loss and your targets while you're calm. The system holds you to those numbers all day.</p>
-        <span class="state-rule"><strong>Guardrails:</strong> A+ setups only.</span>
-        <span class="state-rule">Starter size first.</span>
-        <span class="state-rule">Wait for your setup.</span>
+    <div class="aw-row reveal">
+      <div class="aw-col" data-state="lockin">
+        <span class="aw-ring" aria-hidden="true"><svg viewBox="0 0 44 44"><rect class="ink" x="2" y="30" width="10" height="13" rx="1.2"/><rect class="ink" x="17" y="17" width="10" height="26" rx="1.2"/><rect class="ink" x="32" y="2" width="10" height="41" rx="1.2"/></svg></span>
+        <p class="aw-when">HIT YOUR TARGET</p>
+        <h3 class="aw-head">Protect the win.</h3>
+        <p class="aw-desc">Shift from making more to keeping more.</p>
       </div>
+      <div class="aw-col" data-state="warning">
+        <span class="aw-ring" aria-hidden="true"><svg viewBox="0 0 44 44"><path class="ink" d="M16.5 6.5a5.5 5.5 0 0 1 11 0L26 27.5a4 4 0 0 1-8 0Z"/><circle class="ink" cx="22" cy="38.6" r="4.6"/></svg></span>
+        <p class="aw-when">TAKING LOSSES</p>
+        <h3 class="aw-head">Slow down.</h3>
+        <p class="aw-desc">Be more selective and tighten up.</p>
+      </div>
+      <div class="aw-col" data-state="danger">
+        <span class="aw-ring" aria-hidden="true"><svg viewBox="0 0 44 44"><rect class="ink" x="6" y="6" width="32" height="32" rx="5.5"/></svg></span>
+        <p class="aw-when">REACH YOUR MAX LOSS</p>
+        <h3 class="aw-head">End the session.</h3>
+        <p class="aw-desc">Your in-app session is closed for the day.</p>
+      </div>
+    </div>
 
-      <div class="state-card reveal" data-state="open">
-        <div class="state-step">Checkpoint · Your Time</div>
-        <div class="state-name">8:30 Read</div>
-        <div class="state-time">An early read on the open</div>
-        <p class="state-desc">The system snapshots your P&amp;L and reads how the day is opening. Set the time to whatever fits your session.</p>
-        <span class="state-rule"><strong>Guardrails:</strong> Best setups only.</span>
-        <span class="state-rule">No chasing.</span>
-        <span class="state-rule">Stay selective.</span>
-      </div>
-
-      <div class="state-card reveal" data-state="profit">
-        <div class="state-step">The Climb · 1×</div>
-        <div class="state-name">Day Made</div>
-        <div class="state-time">At your daily target</div>
-        <p class="state-desc">You hit your number. The job flips from make it to protect it.</p>
-        <span class="state-rule"><strong>Guardrails:</strong> Protect the win.</span>
-        <span class="state-rule">Take profits quickly.</span>
-        <span class="state-rule">Don't force the next target.</span>
-      </div>
-
-      <div class="state-card reveal" data-state="lockin">
-        <div class="state-step">The Climb · 2×</div>
-        <div class="state-name">Lock It In</div>
-        <div class="state-time">At twice your target</div>
-        <p class="state-desc">House money now. The Give-Back Guard keeps a floor under your best P&amp;L, so a green run can't bleed back to flat.</p>
-        <span class="state-rule"><strong>Guardrails:</strong> Lock it in.</span>
-        <span class="state-rule">Preserve capital.</span>
-        <span class="state-rule">Don't give it back.</span>
-      </div>
-
-      <div class="state-card reveal" data-state="profit">
-        <div class="state-step">The Climb · 3×</div>
-        <div class="state-name">3× Hit</div>
-        <div class="state-time">At three times your target</div>
-        <p class="state-desc">You did it. The system says it plainly: protect the win, and walking away is fine.</p>
-        <span class="state-rule"><strong>Guardrails:</strong> You did it.</span>
-        <span class="state-rule">Pay yourself.</span>
-        <span class="state-rule">Walking away is fine.</span>
-      </div>
-
-      <div class="state-card reveal" data-state="open">
-        <div class="state-step">Checkpoint · Your Time</div>
-        <div class="state-name">10:30 Read</div>
-        <div class="state-time">The lock-in or wind-down read</div>
-        <p class="state-desc">Still flat, it calls a slow day: protect capital, wind down. Already green, it says protect the win.</p>
-        <span class="state-rule"><strong>Guardrails:</strong> Protect capital.</span>
-        <span class="state-rule">Starter size only.</span>
-        <span class="state-rule">Step away if off.</span>
-      </div>
-
-      <div class="state-card reveal" data-state="warning">
-        <div class="state-step">The Slide</div>
-        <div class="state-name">Caution to Walk Away</div>
-        <div class="state-time">As red deepens</div>
-        <p class="state-desc">Down and sliding? The read escalates with you: caution, slow down, walk away. Each rung tightens the rules before the next mistake.</p>
-        <span class="state-rule"><strong>Guardrails:</strong> Breathe, slow down.</span>
-        <span class="state-rule">A+ setups only.</span>
-        <span class="state-rule">No revenge trading.</span>
-      </div>
-
-      <div class="state-card reveal" data-state="danger">
-        <div class="state-step">The Floor</div>
-        <div class="state-name">Stop Trading</div>
-        <div class="state-time">At your max-loss line</div>
-        <p class="state-desc">Hit the max-loss you set this morning and new entries stop. You can journal, you can review. You can't keep digging.</p>
-        <span class="state-rule"><strong>Guardrails:</strong> Stop trading now.</span>
-        <span class="state-rule">Close all positions.</span>
-        <span class="state-rule">Walk away from the screen.</span>
-      </div>
+    <div class="aw-sched reveal">
+      <p class="aw-sched-t"><svg class="aw-clock" viewBox="0 0 32 32" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="16" cy="16" r="11"/><g fill="currentColor" stroke="none"><circle cx="16" cy="4.6" r="1.9"/><circle cx="27.4" cy="16" r="1.9"/><circle cx="16" cy="27.4" r="1.9"/><circle cx="4.6" cy="16" r="1.9"/></g><path class="hand hand-m" d="M16 16V9.2"/><path class="hand" d="M16 16l4.4 3.6"/></svg><span>PLUS SCHEDULED CHECKPOINTS.</span></p>
+      <p class="aw-sched-d">Get a read at the times you choose, even when you haven't hit a target or limit.</p>
     </div>
 
     <!-- THE PROFIT FLOOR, explained where the homepage's "How the profit floor calls the day" lands (Ed, 2026-10-15:
@@ -1105,6 +1057,33 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
     </div>
   </div>
 </section>
+<script>
+/* SESSION AWARENESS, the page's breather (Ed, 2026-10-18: "Add a beautiful and elegant animation. This will provide a
+   'breather' in an already busy page"). Light only: each state takes one slow breath of light in reading order,
+   1.8 s apart (the pace Ed's screen settled on for a moving highlight), then the checkpoint clock's hand turns once.
+   Once per visit, when the row is well in view; stacked on a phone, each state breathes as it scrolls in. The class
+   only adds light, so without IntersectionObserver (or this script) the section stands exactly as drawn. */
+(function () {
+  var sec = document.getElementById('checkpoints');
+  if (!sec || !('IntersectionObserver' in window)) return;
+  var row = sec.querySelector('.aw-row'), cols = sec.querySelectorAll('.aw-col'), sched = sec.querySelector('.aw-sched');
+  if (!row || !sched) return;
+  function lit(el) { el.classList.add('aw-lit'); }
+  function once(el, t, fn) {
+    var o = new IntersectionObserver(function (es) { if (es[0].isIntersecting) { o.disconnect(); fn(); } }, { threshold: t });
+    o.observe(el);
+  }
+  if (matchMedia('(max-width: 760px)').matches) {
+    cols.forEach(function (c) { once(c, 0.6, function () { lit(c); }); });
+    once(sched, 0.8, function () { lit(sched); });
+  } else {
+    once(row, 0.6, function () {
+      cols.forEach(function (c, i) { setTimeout(function () { lit(c); }, i * 1800); });
+      setTimeout(function () { lit(sched); }, cols.length * 1800);
+    });
+  }
+})();
+</script>
 <script>
 /* The morning, replayed as one glide (Ed, 2026-10-16: "too jaggedy. Needs to be smooth not choppy... keep monies
    spinning until it hits number"; his picks: one glide that slows at the three moments, about 8s, every number
@@ -1759,11 +1738,6 @@ requestAnimationFrame(()=>document.body.classList.add('hero-loaded'));
 const reveals=document.querySelectorAll('.reveal');
 const obs=new IntersectionObserver((entries)=>{let n=0;entries.forEach((e)=>{if(e.isIntersecting){const d=Math.min(n++,6)*50;setTimeout(()=>e.target.classList.add('visible'),d);obs.unobserve(e.target);}});},{threshold:0.06});
 reveals.forEach(el=>obs.observe(el));
-// delight: walk the disciplined day through all seven states when the grid scrolls in
-document.querySelectorAll('.state-grid').forEach(function(grid){
-  const gObs=new IntersectionObserver(function(ents){ents.forEach(function(en){if(en.isIntersecting){grid.classList.add('flow');gObs.unobserve(grid);}});},{threshold:0.25});
-  gObs.observe(grid);
-});
 // Reset Protocol visual: a LIVE countdown so it reads unmistakably as a reset timer (not a clock time). Loops to stay "active".
 (function(){
   const el=document.getElementById('resetCountdown'); if(!el) return;
