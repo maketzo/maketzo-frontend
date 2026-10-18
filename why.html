@@ -581,34 +581,22 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
   .pillar-card { padding: 28px 24px; }
 }
 
-/* ── the four systems, read in order (Ed, 2026-10-17: "create a beautiful and elegant animation for this section";
-   then, offered the choice, cards in number order rather than round a loop) ──────────────────────────────────────────
-   The light reads the grid the way the visitor does: one gold light (bright head, soft tail) runs along the top edge
-   of the first row, lighting 01 then 02 as it passes over them, and as it reaches the right edge a second runs through
-   the gap between the rows, lighting 03 then 04; each leaves a faint line. A card lights with a gold edge, the warm
-   wash, the number pill and its bold line, and stays lit until all four are on; then the lines flare, "enforced."
-   takes a light, and everything settles to the static section. The script only measures: it builds the two lines
-   across the grid, sets each card's moment from where its middle falls on its line (--lp-at), and runs the lights
-   at one steady speed; the rest is CSS on the same clock. Stacked (one column) there are no lines: each card lights
-   as it scrolls in. Reduce motion keeps the clock: the cards light in turn and each line fades in whole. */
-.lp .pillar-grid { position: relative; }
-.lp-lines { display: none; position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
-.lp-go .lp-lines { display: block; }
-.lp-lines path { fill: none; stroke-linecap: round; }
-.lp-trace { stroke: rgba(212,175,55,.45); stroke-width: 1; }
-.lp-tail { stroke: rgba(212,175,55,.3); stroke-width: 1.5; }
-.lp-halo { stroke: rgba(255,214,110,.2); stroke-width: 9; }
-.lp-body { stroke: rgba(240,200,80,.75); stroke-width: 2; }
-.lp-head { stroke: #FFF1C4; stroke-width: 2.5; }
-.lp-go .lp-trace { animation: lpFlare 1.7s ease var(--lp-end) forwards; }
+/* ── the four systems light in turn (Ed, 2026-10-17: "create a beautiful and elegant animation for this section";
+   then, after a light that ran round and along the cards: "I really don't like this snake like animation. Do
+   something much more basic") ──────────────────────────────────────────────────────────────────────────────────────
+   Once, in number order, each card lights (gold edge, the warm wash, the number pill, its bold line) and stays lit
+   until all four are on, then they settle together to the static section. Nothing moves, so reduce motion plays it
+   as it is. Stacked (one column), each card lights as it scrolls in and settles on its own. */
+.lp-go { --lp-off: 4.5s; }
+.lp-go .pillar-card:nth-child(1) { --lp-at: .3s; }
+.lp-go .pillar-card:nth-child(2) { --lp-at: 1.2s; }
+.lp-go .pillar-card:nth-child(3) { --lp-at: 2.1s; }
+.lp-go .pillar-card:nth-child(4) { --lp-at: 3s; }
 .lp-stack .pillar-card.is-hit { --lp-at: 0s; --lp-off: 2s; }
 .lp-go .pillar-card, .lp-stack .pillar-card.is-hit { animation: lpCardOn .7s ease var(--lp-at) forwards, lpCardOff 1.2s ease var(--lp-off) forwards; }
 .lp-go .pillar-card::after, .lp-stack .pillar-card.is-hit::after { animation: lpWashOn .7s ease var(--lp-at) forwards, lpWashOff 1.2s ease var(--lp-off) forwards; }
 .lp-go .pillar-card-num, .lp-stack .is-hit .pillar-card-num { animation: lpNumOn .7s ease var(--lp-at) forwards, lpNumOff 1.2s ease var(--lp-off) forwards; }
 .lp-go .pillar-card-body strong, .lp-stack .is-hit .pillar-card-body strong { animation: lpWordOn .7s ease var(--lp-at) forwards, lpWordOff 1.2s ease var(--lp-off) forwards; }
-.lp-armed .section-title em { background-image: linear-gradient(100deg, rgba(255,250,235,0) 38%, rgba(255,250,235,.9) 50%, rgba(255,250,235,0) 62%), var(--mk-gold-gradient);
-  background-size: 300% 100%, 100% 100%; background-position: 150% 0, 0 0; background-repeat: no-repeat; }
-.lp-go .section-title em { animation: wyShine 1.3s ease-in-out calc(var(--lp-end) + .1s); }
 @keyframes lpCardOn { to { border-color: rgba(212,175,55,.42); box-shadow: 0 0 0 1px rgba(212,175,55,.18), 0 10px 32px rgba(212,175,55,.14); } }
 @keyframes lpCardOff { from { border-color: rgba(212,175,55,.42); box-shadow: 0 0 0 1px rgba(212,175,55,.18), 0 10px 32px rgba(212,175,55,.14); } }
 @keyframes lpWashOn { to { opacity: 1; } }
@@ -617,13 +605,6 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 @keyframes lpNumOff { from { color: var(--mk-gold-300); background-color: rgba(212,175,55,.14); border-color: rgba(240,200,80,.6); box-shadow: 0 0 14px rgba(212,175,55,.3); } }
 @keyframes lpWordOn { to { color: var(--mk-gold-300); } }
 @keyframes lpWordOff { from { color: var(--mk-gold-300); } }
-@keyframes lpFadeIn { from { opacity: 0; } }
-@keyframes lpFlare { 25% { stroke: rgba(243,215,122,.95); stroke-width: 1.5; } to { opacity: 0; } }
-@media (prefers-reduced-motion: reduce) {
-  .lp-go .lp-comet { display: none; }
-  .lp-go .lp-trace { animation: lpFadeIn 1s ease var(--lp-t) both, lpFlare 1.7s ease var(--lp-end) forwards; }
-  .lp-go .section-title em { animation: none; }
-}
 
 /* ── THE DIFFERENCE (Ed's mock, tools/site-preview/mock-why-difference.png, 2026-10-17: "standard section formatting.
    Also use Maketzo colors and fonts. Other than that make sure the look and feel is very close to the mock") ────────
@@ -1068,7 +1049,6 @@ window.mkAfter = function (prev, trigger, fn, here) {
         <p class="pillar-card-body">A pre-market ritual, environment, and soundtrack that condition <strong>the state you trade from</strong>, not just the trades you take.</p>
         <span class="pillar-card-link">Focus Room &rarr;</span>
       </a>
-      <svg class="lp-lines" aria-hidden="true" focusable="false"><path class="lp-trace"/><path class="lp-trace"/><g class="lp-comet"><path class="lp-tail" data-l="240"/><path class="lp-halo" data-l="40"/><path class="lp-body" data-l="70"/><path class="lp-head" data-l="12"/></g><g class="lp-comet"><path class="lp-tail" data-l="240"/><path class="lp-halo" data-l="40"/><path class="lp-body" data-l="70"/><path class="lp-head" data-l="12"/></g></svg>
     </div>
 
     <div class="mk-cta-repeat">
@@ -1077,60 +1057,27 @@ window.mkAfter = function (prev, trigger, fn, here) {
   </div>
 </section>
 <script>
-/* the four systems are read once per visit, when the cards are on screen and the gap band has had its turn (mkAfter).
-   The script measures the grid and builds the two lines (the first row's top edge, then the gap between the rows),
-   sets each card's moment from where its middle falls on its line, runs each light at one steady speed (the second
-   starts as the first reaches the right edge), and takes every class off at the end, so the resting section is the
-   static one. Stacked, each card lights as it scrolls in. */
+/* the four systems light in turn once per visit, when the cards are on screen and the gap band has had its turn
+   (mkAfter). The CSS under .lp-go does all of it; the script takes the class off at the end, so the resting section
+   is the static one. Stacked, each card lights as it scrolls in, queued so cards that arrive together still go in
+   order. */
 (function () {
-  var sec = document.querySelector('.section.lp'), grid = sec && sec.querySelector('.pillar-grid'), svg = grid && grid.querySelector('.lp-lines');
-  if (!svg || !('IntersectionObserver' in window) || !window.mkAfter || !svg.animate) return;
+  var sec = document.querySelector('.section.lp'), grid = sec && sec.querySelector('.pillar-grid');
+  if (!grid || !('IntersectionObserver' in window) || !window.mkAfter) return;
   var cards = [].slice.call(grid.querySelectorAll('.pillar-card'));
-  var traces = [].slice.call(svg.querySelectorAll('.lp-trace')), comets = [].slice.call(svg.querySelectorAll('.lp-comet'));
-  if (cards.length !== 4 || traces.length !== 2 || comets.length !== 2) return;
+  if (cards.length !== 4) return;
   var prev = document.querySelector('.gap-band.gp'), prevSpot = prev && prev.querySelector('.gp-light');
-  var stacked = matchMedia('(max-width: 800px)').matches, still = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var RUN = 2300, OVER = 60, TAIL = 240, anims = [];
-  sec.classList.add('lp-armed');
+  var stacked = matchMedia('(max-width: 800px)').matches;
   function finish(ms) {
     setTimeout(function () {
-      sec.classList.remove('lp-armed', 'lp-go', 'lp-stack');
-      anims.forEach(function (a) { a.cancel(); });
+      sec.classList.remove('lp-go', 'lp-stack');
       cards.forEach(function (c) { c.classList.remove('is-hit'); });
       mkMark(sec, 'done');
     }, ms);
   }
-  function lines() {
-    var W = grid.clientWidth, v = W / RUN, P = W + 2 * OVER, next = Math.round(P / v) - Math.round(OVER / v) + 30;
-    var rows = [0, (cards[0].offsetTop + cards[0].offsetHeight + cards[2].offsetTop) / 2];
-    svg.setAttribute('viewBox', '0 0 ' + W + ' ' + grid.clientHeight);
-    rows.forEach(function (y, k) {
-      var t0 = k * next, dur = Math.round((P + TAIL) / v);
-      [cards[2 * k], cards[2 * k + 1]].forEach(function (c) {
-        c.style.setProperty('--lp-at', Math.round(t0 + (OVER + c.offsetLeft + c.offsetWidth / 2) / v) + 'ms');
-      });
-      traces[k].setAttribute('d', 'M0 ' + y + 'H' + W);
-      traces[k].style.setProperty('--lp-t', t0 + 'ms');
-      [].slice.call(comets[k].querySelectorAll('path')).forEach(function (p) {
-        var L = +p.getAttribute('data-l');
-        p.setAttribute('d', 'M' + (-OVER) + ' ' + y + 'H' + (W + OVER));
-        p.setAttribute('stroke-dasharray', L + ' ' + (P + 2 * TAIL));
-        if (!still) anims.push(p.animate([{ strokeDashoffset: L }, { strokeDashoffset: L - P - TAIL }], { duration: dur, delay: t0, easing: 'linear', fill: 'both' }));
-      });
-      if (still) return;
-      anims.push(comets[k].animate([{ opacity: 0 }, { opacity: 1, offset: .12 }, { opacity: 1, offset: .8 }, { opacity: 0 }], { duration: dur, delay: t0, fill: 'both' }));
-      traces[k].setAttribute('stroke-dasharray', W + ' ' + (W + 10));
-      anims.push(traces[k].animate([{ strokeDashoffset: W }, { strokeDashoffset: 0 }], { duration: RUN, delay: t0 + Math.round(OVER / v), easing: 'linear', fill: 'both' }));
-    });
-    var end = next + Math.round(P / v);
-    sec.style.setProperty('--lp-end', end + 'ms'); sec.style.setProperty('--lp-off', (end + 800) + 'ms');
-    sec.classList.add('lp-go');
-    finish(end + 2200);
-  }
   function stack() {
     sec.classList.add('lp-stack');
     var left = cards.length, next = 0;
-    /* cards that arrive on screen together are queued, so they still light in order */
     function hit(card) {
       var wait = Math.max(0, next - Date.now()); next = Date.now() + wait + 600;
       setTimeout(function () { card.classList.add('is-hit'); if (--left === 0) finish(3400); }, wait);
@@ -1144,7 +1091,7 @@ window.mkAfter = function (prev, trigger, fn, here) {
       o.observe(card);
     });
   }
-  function play() { mkMark(sec, 'playing'); if (stacked) stack(); else lines(); }
+  function play() { mkMark(sec, 'playing'); if (stacked) { stack(); return; } sec.classList.add('lp-go'); finish(5900); }
   var o = new IntersectionObserver(function (es) {
     var e = es[0];
     if (!(e.intersectionRatio >= 0.5 || (!e.isIntersecting && e.boundingClientRect.top < 0))) return;
