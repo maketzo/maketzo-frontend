@@ -181,6 +181,27 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 .tl-live .tl-sweep.is-on { animation: tlSweep 2.4s cubic-bezier(.45, 0, .25, 1) both; }
 @keyframes tlSweep { from { background-position: 160% 0, 0 0; } to { background-position: -60% 0, 0 0; } }
 @media (prefers-reduced-motion: reduce) { .tl-live .tl-sweep.is-on { animation: none; } }
+/* ── The doors (Ed, 2026-10-18: "make the active links here animate so the eyes are drawn to the clickable components
+   of the page", then "Subtle animations") ──
+   Only a card that opens something moves. As each link comes into view it takes one soft cue: the hero's light runs
+   through its words, its arrow leans forward twice, and its card's edge warms (the whole card is the link). One link
+   at a time, about 0.8 s apart, once per visit, after the hero's sweep. Cards without a link never move, so on this
+   page motion means "this opens". The closing trial button takes one shine the same way. Each cue ends on the
+   element's own style. Reduce motion keeps the warm edge and a still brightening of the words; the arrow stays put
+   and the light does not travel. */
+.tl-live .tool-card-cta > span { display: inline-block; color: var(--mk-brand); }
+.tl-live .tool-card-cta.is-cued { background: linear-gradient(100deg, transparent 42%, rgba(255,250,235,.95) 50%, transparent 58%) 160% 0 / 250% 100% no-repeat, linear-gradient(var(--mk-brand), var(--mk-brand)); -webkit-background-clip: text; background-clip: text; color: transparent; animation: tlSweep 1.6s cubic-bezier(.45, 0, .25, 1); }
+.tl-live .tool-card-cta.is-cued > span { animation: tlNudge 1.4s ease-in-out .35s; }
+.tl-live .tool-card.is-cued { animation: tlEdge 2.2s ease-in-out; }
+.tl-live .tools-cta .btn-primary { background: linear-gradient(100deg, transparent 40%, rgba(255,250,235,.7) 50%, transparent 60%) 160% 0 / 250% 100% no-repeat, var(--mk-gold-gradient); }
+.tl-live .tools-cta .btn-primary.is-cued { animation: tlSweep 1.8s cubic-bezier(.45, 0, .25, 1); }
+@keyframes tlNudge { 0%, 50%, 100% { transform: translateX(0); } 25%, 75% { transform: translateX(5px); } }
+@keyframes tlEdge { 40% { border-color: rgba(212,175,55,.38); box-shadow: 0 0 24px -8px rgba(240,200,80,.35); } }
+@keyframes tlGlowStill { 40% { filter: brightness(1.3); } }
+@media (prefers-reduced-motion: reduce) {
+  .tl-live .tool-card-cta.is-cued, .tl-live .tools-cta .btn-primary.is-cued { animation: tlGlowStill 1.6s ease-in-out; }
+  .tl-live .tool-card-cta.is-cued > span { animation: none; }
+}
 
 /* ── How the free works ──────────────────────────────────────────── */
 .freebox-wrap { padding: 0 24px; }
@@ -548,6 +569,43 @@ body:has(.sticky-bar.visible) { padding-bottom: 80px; }
     ol.observe(loop);
   }
 
+  // The doors: each link that opens a tool takes one soft cue as it comes well into view. One at a time, 0.8 s apart,
+  // and none before the hero's sweep has had its moment. The trial button's shine follows the closing line's sweep.
+  // A cue waiting its turn plays only if its link is still on screen; one scrolled past waits until it is seen again.
+  var doors = Array.prototype.slice.call(document.querySelectorAll('.tool-card-cta'));
+  var cue = null;
+  if (doors.length && 'IntersectionObserver' in window) {
+    var waiting = [], freeAt = performance.now() + 2600, pumping = null, od;
+    var inView = function (el) { var r = el.getBoundingClientRect(); return r.top >= innerHeight * 0.1 && r.bottom <= innerHeight * 0.82; };
+    var play = function (el) {
+      var card = el.closest('.tool-card');
+      el.classList.add('is-cued'); if (card) card.classList.add('is-cued');
+      setTimeout(function () { el.classList.remove('is-cued'); if (card) card.classList.remove('is-cued'); }, 2400);
+    };
+    var pump = function () {
+      pumping = null;
+      var wait = freeAt - performance.now();
+      if (wait > 0) { pumping = setTimeout(pump, wait); return; }
+      while (waiting.length) {
+        var el = waiting.shift();
+        if (!inView(el)) { od.observe(el); continue; }
+        play(el); freeAt = performance.now() + 800; break;
+      }
+      if (waiting.length) pumping = setTimeout(pump, 800);
+    };
+    cue = function (el) { waiting.push(el); if (!pumping) pump(); };
+    // The hold is for the hero's sweep only while the visitor is looking at it; their first scroll ends it.
+    addEventListener('scroll', function () {
+      if (freeAt <= performance.now()) return;
+      freeAt = performance.now();
+      if (pumping) { clearTimeout(pumping); pump(); }
+    }, { once: true, passive: true });
+    od = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) { od.unobserve(e.target); cue(e.target); } });
+    }, { threshold: 1, rootMargin: '0px 0px -18% 0px' });
+    doors.forEach(function (el) { od.observe(el); });
+  }
+
   // The bookends: one slow sweep of light through each gold line.
   var heroEm = document.querySelector('.tools-h1 em'), ctaEm = document.querySelector('.tools-cta h2 em');
   if (heroEm) { heroEm.classList.add('tl-sweep'); setTimeout(function () { heroEm.classList.add('is-on'); }, 900); }
@@ -557,6 +615,8 @@ body:has(.sticky-bar.visible) { padding-bottom: 80px; }
       if (!es[0].isIntersecting) return;
       oc.disconnect();
       setTimeout(function () { ctaEm.classList.add('is-on'); }, 400);
+      var trial = document.querySelector('.tools-cta .btn-primary');
+      if (trial && cue) setTimeout(function () { cue(trial); }, 2600);
     }, { threshold: 1 });
     oc.observe(ctaEm);
   }
