@@ -581,31 +581,6 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
   .pillar-card { padding: 28px 24px; }
 }
 
-/* ── the four systems light in turn (Ed, 2026-10-17: "create a beautiful and elegant animation for this section";
-   then, after a light that ran round and along the cards: "I really don't like this snake like animation. Do
-   something much more basic") ──────────────────────────────────────────────────────────────────────────────────────
-   Once, in number order, each card lights (gold edge, the warm wash, the number pill, its bold line) and stays lit
-   until all four are on, then they settle together to the static section. Nothing moves, so reduce motion plays it
-   as it is. Stacked (one column), each card lights as it scrolls in and settles on its own. */
-.lp-go { --lp-off: 4.5s; }
-.lp-go .pillar-card:nth-child(1) { --lp-at: .3s; }
-.lp-go .pillar-card:nth-child(2) { --lp-at: 1.2s; }
-.lp-go .pillar-card:nth-child(3) { --lp-at: 2.1s; }
-.lp-go .pillar-card:nth-child(4) { --lp-at: 3s; }
-.lp-stack .pillar-card.is-hit { --lp-at: 0s; --lp-off: 2s; }
-.lp-go .pillar-card, .lp-stack .pillar-card.is-hit { animation: lpCardOn .7s ease var(--lp-at) forwards, lpCardOff 1.2s ease var(--lp-off) forwards; }
-.lp-go .pillar-card::after, .lp-stack .pillar-card.is-hit::after { animation: lpWashOn .7s ease var(--lp-at) forwards, lpWashOff 1.2s ease var(--lp-off) forwards; }
-.lp-go .pillar-card-num, .lp-stack .is-hit .pillar-card-num { animation: lpNumOn .7s ease var(--lp-at) forwards, lpNumOff 1.2s ease var(--lp-off) forwards; }
-.lp-go .pillar-card-body strong, .lp-stack .is-hit .pillar-card-body strong { animation: lpWordOn .7s ease var(--lp-at) forwards, lpWordOff 1.2s ease var(--lp-off) forwards; }
-@keyframes lpCardOn { to { border-color: rgba(212,175,55,.42); box-shadow: 0 0 0 1px rgba(212,175,55,.18), 0 10px 32px rgba(212,175,55,.14); } }
-@keyframes lpCardOff { from { border-color: rgba(212,175,55,.42); box-shadow: 0 0 0 1px rgba(212,175,55,.18), 0 10px 32px rgba(212,175,55,.14); } }
-@keyframes lpWashOn { to { opacity: 1; } }
-@keyframes lpWashOff { from { opacity: 1; } }
-@keyframes lpNumOn { to { color: var(--mk-gold-300); background-color: rgba(212,175,55,.14); border-color: rgba(240,200,80,.6); box-shadow: 0 0 14px rgba(212,175,55,.3); } }
-@keyframes lpNumOff { from { color: var(--mk-gold-300); background-color: rgba(212,175,55,.14); border-color: rgba(240,200,80,.6); box-shadow: 0 0 14px rgba(212,175,55,.3); } }
-@keyframes lpWordOn { to { color: var(--mk-gold-300); } }
-@keyframes lpWordOff { from { color: var(--mk-gold-300); } }
-
 /* ── THE DIFFERENCE (Ed's mock, tools/site-preview/mock-why-difference.png, 2026-10-17: "standard section formatting.
    Also use Maketzo colors and fonts. Other than that make sure the look and feel is very close to the mock") ────────
    Two open columns split by a slanted light: the journal side muted (silver, plain rings), the MAKETZO side lit (white,
@@ -1018,7 +993,7 @@ window.mkAfter = function (prev, trigger, fn, here) {
 <hr class="mk-rule-gold">
 
 <!-- HOW MAKETZO CLOSES THE GAP — 4-pillar grid -->
-<section class="section lp">
+<section class="section">
   <div class="section-inner">
     <p class="section-eyebrow reveal">HOW MAKETZO CLOSES THE GAP</p>
     <h2 class="section-title reveal">Discipline, <em>enforced.</em></h2>
@@ -1056,51 +1031,6 @@ window.mkAfter = function (prev, trigger, fn, here) {
     </div>
   </div>
 </section>
-<script>
-/* the four systems light in turn once per visit, when the cards are on screen and the gap band has had its turn
-   (mkAfter). The CSS under .lp-go does all of it; the script takes the class off at the end, so the resting section
-   is the static one. Stacked, each card lights as it scrolls in, queued so cards that arrive together still go in
-   order. */
-(function () {
-  var sec = document.querySelector('.section.lp'), grid = sec && sec.querySelector('.pillar-grid');
-  if (!grid || !('IntersectionObserver' in window) || !window.mkAfter) return;
-  var cards = [].slice.call(grid.querySelectorAll('.pillar-card'));
-  if (cards.length !== 4) return;
-  var prev = document.querySelector('.gap-band.gp'), prevSpot = prev && prev.querySelector('.gp-light');
-  var stacked = matchMedia('(max-width: 800px)').matches;
-  function finish(ms) {
-    setTimeout(function () {
-      sec.classList.remove('lp-go', 'lp-stack');
-      cards.forEach(function (c) { c.classList.remove('is-hit'); });
-      mkMark(sec, 'done');
-    }, ms);
-  }
-  function stack() {
-    sec.classList.add('lp-stack');
-    var left = cards.length, next = 0;
-    function hit(card) {
-      var wait = Math.max(0, next - Date.now()); next = Date.now() + wait + 600;
-      setTimeout(function () { card.classList.add('is-hit'); if (--left === 0) finish(3400); }, wait);
-    }
-    cards.forEach(function (card) {
-      var o = new IntersectionObserver(function (es) {
-        var e = es[0];
-        if (!(e.isIntersecting || e.boundingClientRect.top < 0)) return;
-        o.disconnect(); hit(card);
-      }, { threshold: 0.6 });
-      o.observe(card);
-    });
-  }
-  function play() { mkMark(sec, 'playing'); if (stacked) { stack(); return; } sec.classList.add('lp-go'); finish(5900); }
-  var o = new IntersectionObserver(function (es) {
-    var e = es[0];
-    if (!(e.intersectionRatio >= 0.5 || (!e.isIntersecting && e.boundingClientRect.top < 0))) return;
-    o.disconnect(); mkMark(sec, 'waiting');
-    mkAfter(prev, prevSpot, play, sec);
-  }, { threshold: [0, 0.5] });
-  o.observe(stacked ? cards[0] : grid);
-})();
-</script>
 
 <hr class="mk-rule-gold">
 
@@ -1146,14 +1076,14 @@ window.mkAfter = function (prev, trigger, fn, here) {
   </div>
 </section>
 <script>
-/* THE DIFFERENCE plays once per visit, when the comparison is on screen and the four systems have had their turn (mkAfter):
+/* THE DIFFERENCE plays once per visit, when the comparison is on screen and the gap band has had its turn (mkAfter):
    CSS under .df-armed / .df-go draws the light between the columns, then lights MAKETZO's rings one by one with their
    gold words; done at 5.8s. On phones the columns stack, so it waits for the MAKETZO column to be on screen. */
 (function () {
   var sec = document.querySelector('.section.df'), grid = sec && sec.querySelector('.df-grid');
   if (!grid || !('IntersectionObserver' in window) || !window.mkAfter) return;
   var spot = window.matchMedia('(max-width: 800px)').matches ? sec.querySelector('.df-col--us') : grid;
-  var prev = document.querySelector('.section.lp'), prevSpot = prev && prev.querySelector('.pillar-grid');
+  var prev = document.querySelector('.gap-band.gp'), prevSpot = prev && prev.querySelector('.gp-light');
   sec.classList.add('df-armed');
   function play() { mkMark(sec, 'playing'); sec.classList.add('df-go'); setTimeout(function () { mkMark(sec, 'done'); }, 5800); }
   var o = new IntersectionObserver(function (es) {
