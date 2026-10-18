@@ -230,8 +230,8 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
 .jx-line { margin: 0; font-size: var(--mk-text-md); color: var(--mk-text-secondary); line-height: 1.55; }
 .jx-days { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
 /* each day carries its own tone and where its mark lands; the green day's grade is the low one */
-.jx-day { --jx-tone: var(--mk-gold-300); --jx-from: rgba(212,175,55,.35); --jx-glow: rgba(240,200,80,.35); --jx-dot: #FFF1C4; --jx-at: 89%; position: relative; padding: 20px 22px 22px; border-radius: 12px; background: linear-gradient(180deg, rgba(255,255,255,.03), transparent 45%), var(--mk-obsidian-900); border: 1px solid rgba(255,255,255,.08); }
-.jx-day--low { --jx-tone: var(--mk-danger-500); --jx-from: rgba(248,113,113,.3); --jx-glow: rgba(248,113,113,.35); --jx-dot: #FFE1E1; --jx-at: 46%; }
+.jx-day { --jx-tone: var(--mk-gold-300); --jx-from: rgba(212,175,55,.35); --jx-glow: rgba(240,200,80,.35); --jx-dot: #FFF1C4; --jx-at: 87.8%; position: relative; padding: 20px 22px 22px; border-radius: 12px; background: linear-gradient(180deg, rgba(255,255,255,.03), transparent 45%), var(--mk-obsidian-900); border: 1px solid rgba(255,255,255,.08); }
+.jx-day--low { --jx-tone: var(--mk-danger-500); --jx-from: rgba(248,113,113,.3); --jx-glow: rgba(248,113,113,.35); --jx-dot: #FFE1E1; --jx-at: 40%; }
 .jx-day-top { margin: 0 0 14px; display: flex; align-items: baseline; justify-content: space-between; gap: 12px; font-family: var(--mk-font-mono); font-size: 10px; letter-spacing: .18em; color: var(--mk-text-tertiary); }
 /* P&L is kept, small and gray: the grade is the headline. .jx-lead is the P&L as every other journal shows a day, big;
    it is seen only while the card plays, then hands the headline over. */
@@ -252,7 +252,7 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
 .jx-score small { font-size: var(--mk-text-md); color: var(--mk-text-tertiary); }
 .jx-band { margin: 4px 0 14px; font-family: var(--mk-font-display); font-size: var(--mk-text-lg); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); }
 .jx-track { position: relative; height: 8px; border-radius: 4px; background: rgba(255,255,255,.08); }
-.jx-track::before { content: ""; position: absolute; inset: 0; border-radius: inherit; background: linear-gradient(90deg, transparent 0 49.6%, var(--mk-obsidian-900) 49.6% 50.4%, transparent 50.4% 69.6%, var(--mk-obsidian-900) 69.6% 70.4%, transparent 70.4% 89.6%, var(--mk-obsidian-900) 89.6% 90.4%, transparent 90.4%); z-index: 1; }
+.jx-track::before { content: ""; position: absolute; inset: 0; border-radius: inherit; background: linear-gradient(90deg, transparent 0 44%, var(--mk-obsidian-900) 44% 44.9%, transparent 44.9% 66.3%, var(--mk-obsidian-900) 66.3% 67.1%, transparent 67.1% 88.5%, var(--mk-obsidian-900) 88.5% 89.3%, transparent 89.3%); z-index: 1; }
 .jx-fill { position: absolute; top: 0; bottom: 0; left: 0; width: var(--jx-at); border-radius: inherit; transform-origin: 0 50%; background: linear-gradient(90deg, var(--jx-from), var(--jx-tone)); box-shadow: 0 0 10px var(--jx-glow); }
 .jx-run { position: absolute; inset: 0; z-index: 2; }
 .jx-mark { position: absolute; top: 50%; left: var(--jx-at); width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; background: var(--jx-dot); box-shadow: 0 0 0 3px var(--jx-glow), 0 0 14px var(--jx-glow); }
@@ -711,7 +711,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
       <article class="jx-card">
         <div class="jx-head">
           <h3 class="jx-name">Picard Score</h3>
-          <p class="jx-line">A grade from 0 to 10 for how you traded, not what you made. A green day can grade low and a red day can grade high. The lines under each day show what moved its grade.</p>
+          <p class="jx-line">A grade from 1 to 10 for how you traded, not what you made. A green day can grade low and a red day can grade high. The lines under each day show what moved its grade.</p>
         </div>
         <div class="jx-days">
           <div class="jx-day jx-day--low">
@@ -722,7 +722,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
               <p class="jx-lead" aria-hidden="true"><b class="is-up">+$640.00</b><span>NET P&amp;L</span></p>
             </div>
             <div class="jx-track" aria-hidden="true"><i class="jx-fill"></i><span class="jx-run"><i class="jx-mark"></i></span></div>
-            <p class="jx-ticks" aria-hidden="true"><span>0</span><span>10</span></p>
+            <p class="jx-ticks" aria-hidden="true"><span>1</span><span>10</span></p>
             <p class="jx-k">WHAT MAKETZO SAW</p>
             <ul class="jx-sig">
               <li class="is-down"><span class="jx-sr">Lowered: </span>Took more trades than your own limit</li>
@@ -745,7 +745,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
               <p class="jx-lead" aria-hidden="true"><b class="is-down">&minus;$310.00</b><span>NET P&amp;L</span></p>
             </div>
             <div class="jx-track" aria-hidden="true"><i class="jx-fill"></i><span class="jx-run"><i class="jx-mark"></i></span></div>
-            <p class="jx-ticks" aria-hidden="true"><span>0</span><span>10</span></p>
+            <p class="jx-ticks" aria-hidden="true"><span>1</span><span>10</span></p>
             <p class="jx-k">WHAT MAKETZO SAW</p>
             <ul class="jx-sig">
               <li class="is-up"><span class="jx-sr">Raised: </span>Stepped away for a guided reset</li>
@@ -817,7 +817,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
   });
   var kick = sec.querySelector('.jx-rest-k');
   if (days.length !== 2 || !kick || card.querySelectorAll('.jx-lead').length !== 2) return;
-  days.forEach(function (d) { d.num.textContent = '0.0'; });
+  days.forEach(function (d) { d.num.textContent = '1.0'; });
   sec.classList.add('jx-armed');
   var left = days.length + 1, HOLD = 900, LINE = 360, RUN = 1650;
   function finished() { if (--left === 0) setTimeout(function () { sec.setAttribute('data-anim', 'done'); }, 1500); }
@@ -833,7 +833,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
         var u = 1, m;
         if (still) { u = Math.min(1, (now - t0) / 1600); u = 1 - Math.pow(1 - u, 3); }
         else { m = getComputedStyle(d.fill).transform.match(/matrix\(([^,]+)/); u = m ? Math.min(1, +m[1]) : 1; }
-        d.num.textContent = (d.score * u).toFixed(1);
+        d.num.textContent = (1 + (d.score - 1) * u).toFixed(1);
         if (now - t0 < RUN) { requestAnimationFrame(step); return; }
         d.num.textContent = d.score.toFixed(1); d.el.classList.add('is-done');
         if (d.best) after(500, function () { d.el.classList.add('is-picked'); finished(); }); else finished();
