@@ -58,7 +58,7 @@
         '<button type="button" class="shiw-btn shiw-close" aria-label="Close the video">' + ICON_X + '</button>' +
         '<div class="shiw-card">' +
           '<button type="button" class="btn-primary" data-shiw-trial tabindex="-1">Start 7-Day Free Trial &rarr;</button>' +
-          '<p class="shiw-fine">No charge until day 8. Cancel in one click.</p>' +
+          '<p class="shiw-fine">No charge until day 8. Cancel anytime.</p>' +
         '</div>' +
         '<div class="shiw-end" hidden>' +
           '<button type="button" class="btn-secondary" data-shiw-again>Watch Again</button>' +
