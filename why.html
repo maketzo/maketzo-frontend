@@ -270,18 +270,21 @@ hr.mk-rule-gold, hr.mk-rule-gold--bold { margin: 0 auto; max-width: 1180px; }
 /* ── FOUNDER NOTE ────────────────────────────────────────────── */
 /* Built to Ed's comp (2026-10-18, "Why We Built Maketzo.png"): the head and the note on the left; on the right the team
    photo in a lit gold frame, standing in front of the MAKETZO mark. Fonts and colors stay on the style guide, the
-   eyebrow keeps its site formatting, and the line over the signature is the standard gold rule (.mk-rule-gold). */
+   eyebrow keeps its site formatting, and the line over the signature is the standard gold rule (.mk-rule-gold). The mark
+   rises above the photo far enough to show its V and the start of the inner strokes (Ed, on staging: "make more of the M
+   logo appear on the top... not sufficient to see it's the logo"): its width is capped so that 65% of it, cut at the
+   photo's top edge, fits in the space above the photo; the section's top padding makes that space on desktop. */
 .ft { overflow: hidden; }
+@media (min-width: 1001px) { .ft { padding-top: 120px; } }
 .ft::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
   background: radial-gradient(40% 48% at 0% 100%, rgba(212,175,55,.1), rgba(212,175,55,0) 72%),
     radial-gradient(36% 44% at 100% 100%, rgba(212,175,55,.08), rgba(212,175,55,0) 72%),
     linear-gradient(28deg, rgba(212,175,55,0) 6%, rgba(212,175,55,.06) 10%, rgba(212,175,55,0) 15%),
     linear-gradient(152deg, rgba(212,175,55,0) 74%, rgba(212,175,55,.06) 79%, rgba(212,175,55,0) 85%); }
 .ft .section-inner { max-width: 1560px; }
-.ft-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.04fr); grid-template-areas: "head ." "card media"; column-gap: clamp(36px, 4vw, 60px); row-gap: 30px; align-items: center; }
+.ft-grid { container-type: inline-size; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.04fr); grid-template-areas: "head ." "card media"; column-gap: clamp(36px, 4vw, 60px); row-gap: 30px; align-items: center; }
 .ft-head { grid-area: head; }
-.ft-head .section-eyebrow, .ft-head .section-title { text-align: left; }
-.ft-head .section-title { margin-bottom: 0; }
+.ft-head .section-title { text-align: left; margin-bottom: 0; }
 .founder-card { grid-area: card; padding: 48px 50px 44px; border: 1px solid transparent; border-radius: var(--mk-radius-card-lg);
   background: linear-gradient(165deg, rgba(255,255,255,.04), rgba(255,255,255,0) 55%) padding-box, linear-gradient(var(--mk-surface-raised), var(--mk-surface-raised)) padding-box,
     linear-gradient(36deg, rgba(229,197,114,.8), rgba(212,175,55,.24) 30%, rgba(212,175,55,.16) 70%, rgba(229,197,114,.34)) border-box;
@@ -291,9 +294,9 @@ hr.mk-rule-gold, hr.mk-rule-gold--bold { margin: 0 auto; max-width: 1180px; }
 .ft-brand { color: var(--mk-brand); font-weight: 600; }
 .ft-keep { white-space: nowrap; }
 .ft-rule { margin: 30px 0 24px; }
-.founder-sign { font-family: var(--mk-font-sans); font-weight: 300; font-size: var(--mk-text-xl); letter-spacing: .28em; line-height: 1.2; text-transform: uppercase; color: var(--mk-text-primary); }
-.ft-media { grid-area: media; position: relative; top: -32px; }
-.ft-mark { position: absolute; left: 4%; top: -33%; width: 92%; height: auto; aspect-ratio: 435 / 438; overflow: visible; pointer-events: none; }
+.founder-sign { font-family: var(--mk-font-sans); font-weight: 300; font-size: var(--mk-text-xl); letter-spacing: .28em; line-height: 1.2; text-transform: uppercase; color: var(--mk-brand); }
+.ft-media { grid-area: media; position: relative; container-type: inline-size; }
+.ft-mark { --ft-mw: min(56cqw, 350px); position: absolute; left: 50%; top: calc(var(--ft-mw) * -.655); width: var(--ft-mw); height: auto; aspect-ratio: 435 / 438; transform: translateX(-50%); overflow: visible; pointer-events: none; }
 .ft-mark-shape { fill: url(#ftMarkFill); stroke: rgba(229,197,114,.42); stroke-width: 1; }
 .ft-mark-lit { fill: url(#ftMarkLit); opacity: 0; }
 .ft-stop--a { stop-color: var(--mk-gold-400); stop-opacity: .56; }
@@ -307,17 +310,18 @@ hr.mk-rule-gold, hr.mk-rule-gold--bold { margin: 0 auto; max-width: 1180px; }
 .founder-team-image img { width: 100%; height: auto; display: block; }
 @media (max-width: 1000px) {
   .ft-grid { grid-template-columns: minmax(0, 1fr); grid-template-areas: "head" "card" "media"; row-gap: 28px; }
-  .ft-media { top: 0; width: 100%; max-width: 640px; margin: min(26%, 170px) auto 0; }
+  .ft-media { width: 100%; max-width: 640px; margin: calc(min(56cqw, 350px) * .655 + 8px) auto 0; }
 }
-@media (max-width: 600px) { .founder-card { padding: 32px 24px 30px; } .founder-card p { font-size: var(--mk-text-md); } }
-/* The note in motion (Ed, 2026-10-18 with the comp: "Create a beautiful and elegant animation for this section"). It is
-   read, then signed, once, after THE DIFFERENCE has had its turn: the card warms, a gold light passes through the two
-   bold lines in reading order (on a wrapped line it runs line by line, as a reader does), the gold rule lights from its
-   center out and the light passes over THE MAKETZO TEAM. Then the note is sealed: a pen of gold light writes the mark
-   behind the photo, up the left leg, down behind the photo and out up the right, the mark brightens, and the light lands
-   on the photo's gold frame. Nothing is hidden or dimmed; the light only adds, and the end frame is the static section.
-   Nothing is armed without the script. Reduce motion keeps the clock with no travel: the bold lines and the signature
-   warm to gold and back, the rule and the mark brighten and settle. */
+@media (max-width: 600px) { .founder-card { padding: 32px 24px 30px; } .founder-card p { font-size: var(--mk-text-md); } .founder-sign { font-size: var(--mk-text-lg); letter-spacing: .2em; } }
+/* The note in motion (Ed, 2026-10-18 with the comp: "Create a beautiful and elegant animation for this section"). It
+   plays once, as soon as the section is in view (Ed, on staging: "Animation delay time is too long from when things are
+   in focus"; the mark used to wait five seconds behind the reading). A pen of gold light writes the mark above the photo,
+   outer and inner edge, the mark brightens and the light lands on the photo's gold frame; meanwhile the card warms and a
+   gold light passes through the two bold lines in reading order (on a wrapped line it runs line by line, as a reader
+   does); then the gold rule lights from its center out and the light passes over THE MAKETZO TEAM. Nothing is hidden or
+   dimmed; the light only adds, and the end frame is the static section. Nothing is armed without the script. Reduce
+   motion keeps the clock with no travel: the bold lines and the signature warm to gold and back, the rule and the mark
+   brighten and settle. */
 .ft .founder-card { position: relative; isolation: isolate; }
 .ft .founder-card::before { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; pointer-events: none; opacity: 0;
   background: radial-gradient(ellipse 70% 55% at 22% 0%, rgba(229,197,114,.11), rgba(229,197,114,0)); box-shadow: inset 0 0 0 1px rgba(229,197,114,.28); }
@@ -328,16 +332,20 @@ hr.mk-rule-gold, hr.mk-rule-gold--bold { margin: 0 auto; max-width: 1180px; }
 .founder-team-image::before, .founder-team-image::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; }
 .founder-team-image::before { z-index: 1; box-shadow: inset 0 0 0 1px rgba(243,215,122,.9), inset 0 0 34px rgba(229,197,114,.34); }
 .founder-team-image::after { z-index: 1; background: linear-gradient(105deg, rgba(255,226,160,0) 30%, rgba(255,226,160,.22) 50%, rgba(255,226,160,0) 70%); mix-blend-mode: screen; transform: translateX(-100%); }
+/* the light reads in each line's own ink: gold over the white bold lines, a pale gleam over the gold signature */
+.ft-beat { --ft-ink: var(--mk-text-primary); --ft-glint: rgba(236,203,122,.96); --ft-tint: var(--mk-gold-400); }
+.founder-sign { --ft-ink: var(--mk-brand); --ft-glint: rgba(255,244,214,.98); --ft-tint: var(--mk-gold-300); }
 .ft-armed .ft-beat, .ft-armed .founder-sign span { color: transparent; -webkit-background-clip: text; background-clip: text; background-repeat: no-repeat;
-  background-image: linear-gradient(100deg, rgba(229,197,114,0) calc(50% - 90px), rgba(236,203,122,.96) 50%, rgba(229,197,114,0) calc(50% + 90px)), linear-gradient(var(--mk-text-primary), var(--mk-text-primary));
+  background-image: linear-gradient(100deg, rgba(229,197,114,0) calc(50% - 90px), var(--ft-glint) 50%, rgba(229,197,114,0) calc(50% + 90px)), linear-gradient(var(--ft-ink), var(--ft-ink));
   background-size: 200% 100%, 100% 100%; background-position: calc(100% - 90px) 0, 0 0; }
-.ft-go .founder-card::before { animation: ftWarm 6.6s ease-in-out .2s; }
-.ft-go .ft-beat--1 { animation: ftRead 1.1s ease-in-out .5s; }
-.ft-go .ft-beat--2 { animation: ftRead 2.6s cubic-bezier(.45, 0, .55, 1) 1.9s; }
-.ft-go .ft-rule::after { animation: ftRule 2.2s cubic-bezier(.2, .8, .3, 1) 4.3s; }
-.ft-go .founder-sign span { animation: ftRead 1.1s ease-in-out 4.7s; }
-.ft-sealed .ft-mark-pen { animation: ftPen 2.9s linear; }
-.ft-sealed .ft-mark-lit { animation: wpSwell 2.8s ease-in-out .5s; }
+.ft-go .founder-card::before { animation: ftWarm 5.6s ease-in-out .2s; }
+.ft-go .ft-beat--1 { animation: ftRead 1.1s ease-in-out 1.2s; }
+.ft-go .ft-beat--2 { animation: ftRead 2.4s cubic-bezier(.45, 0, .55, 1) 2.4s; }
+.ft-go .ft-rule::after { animation: ftRule 2.2s cubic-bezier(.2, .8, .3, 1) 4.5s; }
+.ft-go .founder-sign span { animation: ftRead 1.1s ease-in-out 4.9s; }
+.ft-sealed .ft-mark-pen { animation: ftPen 2.4s linear .1s; }
+.ft-sealed .ft-mark-pen--in { animation-delay: .35s; }
+.ft-sealed .ft-mark-lit { animation: wpSwell 2.6s ease-in-out .6s; }
 .ft-lit::before { animation: wpSwell 2.2s ease-in-out; }
 .ft-lit::after { animation: ftSheen 1.8s cubic-bezier(.45, 0, .55, 1); }
 @keyframes ftWarm { 0%, 100% { opacity: 0; } 18%, 78% { opacity: 1; } }
@@ -346,15 +354,15 @@ hr.mk-rule-gold, hr.mk-rule-gold--bold { margin: 0 auto; max-width: 1180px; }
 @keyframes ftPen { 0% { opacity: 1; stroke-dashoffset: 1; animation-timing-function: cubic-bezier(.45, 0, .4, 1); } 70% { opacity: 1; stroke-dashoffset: 0; animation-timing-function: ease-in; } 100% { opacity: 0; stroke-dashoffset: 0; } }
 @keyframes ftSheen { 0% { opacity: 1; transform: translateX(-100%); } 100% { opacity: 1; transform: translateX(100%); } }
 @media (prefers-reduced-motion: reduce) {
-  .ft-armed .ft-beat, .ft-armed .founder-sign span { color: var(--mk-text-primary); background: none; }
-  .ft-go .ft-beat--1 { animation: ftTint 1.4s ease-in-out .5s; }
-  .ft-go .ft-beat--2 { animation: ftTint 2.6s ease-in-out 1.9s; }
-  .ft-go .founder-sign span { animation: ftTint 1.4s ease-in-out 4.7s; }
+  .ft-armed .ft-beat, .ft-armed .founder-sign span { color: var(--ft-ink); background: none; }
+  .ft-go .ft-beat--1 { animation: ftTint 1.4s ease-in-out 1.2s; }
+  .ft-go .ft-beat--2 { animation: ftTint 2.4s ease-in-out 2.4s; }
+  .ft-go .founder-sign span { animation: ftTint 1.4s ease-in-out 4.9s; }
   .ft-rule::after { transform: none; }
-  .ft-go .ft-rule::after { animation: ftRuleStill 2.2s ease-in-out 4.3s; }
+  .ft-go .ft-rule::after { animation: ftRuleStill 2.2s ease-in-out 4.5s; }
   .ft-sealed .ft-mark-pen { animation: none; }
   .ft-lit::after { animation: none; }
-  @keyframes ftTint { 0%, 100% { color: var(--mk-text-primary); } 45% { color: var(--mk-gold-400); } }
+  @keyframes ftTint { 0%, 100% { color: var(--ft-ink); } 45% { color: var(--ft-tint); } }
   @keyframes ftRuleStill { 0%, 100% { opacity: 0; } 40% { opacity: 1; } }
 }
 
@@ -1158,9 +1166,9 @@ window.mkAfter = function (prev, trigger, fn, here) {
 <!-- A NOTE FROM THE TEAM -->
 <section class="section section-dark ft">
   <div class="section-inner">
+    <p class="section-eyebrow reveal">A NOTE FROM THE TEAM</p>
     <div class="ft-grid">
       <div class="ft-head">
-        <p class="section-eyebrow reveal">A NOTE FROM THE TEAM</p>
         <h2 class="section-title reveal">Why we built <em>MAKETZO.</em></h2>
       </div>
 
@@ -1173,8 +1181,8 @@ window.mkAfter = function (prev, trigger, fn, here) {
       </div>
 
       <div class="ft-media">
-        <!-- the MAKETZO mark (traced from assets/logo-mark.png) stands behind the photo; the pen paths write its outer
-             edge when the note is signed -->
+        <!-- the MAKETZO mark (traced from assets/logo-mark.png) rises behind the photo; the two pen paths write its outer
+             and inner edge down to where the photo covers it (y 285) -->
         <svg class="ft-mark" viewBox="0 0 435 438" aria-hidden="true" focusable="false">
           <defs>
             <linearGradient id="ftMarkFill" x1="0" y1="0" x2="0.35" y2="1">
@@ -1202,7 +1210,8 @@ window.mkAfter = function (prev, trigger, fn, here) {
             <polygon points="87,181.5 198,273 157.5,304.6 87,244"/>
             <polygon points="348,182.2 348,244 198,373 348,373 348,423 130,423 130,371"/>
           </g>
-          <path class="ft-mark-pen" pathLength="1" d="M0 160V0L217.5 184L435 0V160"/>
+          <path class="ft-mark-pen" pathLength="1" d="M0 285V0L217.5 184L435 0V285"/>
+          <path class="ft-mark-pen ft-mark-pen--in" pathLength="1" d="M48 285V105L217.5 249.5L388 105V285"/>
         </svg>
         <figure class="founder-team-image reveal">
           <picture>
@@ -1220,10 +1229,10 @@ window.mkAfter = function (prev, trigger, fn, here) {
   </div>
 </section>
 <script>
-/* the note is read once per visit, when the card is on screen and THE DIFFERENCE has had its turn (mkAfter): CSS under
-   .ft-armed / .ft-go lights the two bold lines, then the gold rule and the signature; then the note is sealed
-   (.ft-sealed): the mark behind the photo is written in gold light and the light lands on the photo's frame (.ft-lit).
-   The seal waits for the photo to be on screen (on phones it sits below the card). */
+/* plays once per visit, as soon as the card is a third on screen and THE DIFFERENCE has had its turn (mkAfter): CSS
+   under .ft-armed / .ft-go lights the two bold lines, then the gold rule and the signature; .ft-sealed writes the mark
+   above the photo in gold light at once, and .ft-lit lands the light on the photo's frame. The mark waits only for the
+   photo to be on screen (on phones it sits below the card). */
 (function () {
   var sec = document.querySelector('.section.ft'), card = sec && sec.querySelector('.founder-card'), media = sec && sec.querySelector('.ft-media'),
       photo = media && media.querySelector('.founder-team-image');
@@ -1234,21 +1243,20 @@ window.mkAfter = function (prev, trigger, fn, here) {
     var o = new IntersectionObserver(function (es) {
       if (!es[0].isIntersecting) return;
       o.disconnect(); sec.classList.add('ft-sealed');
-      setTimeout(function () { photo.classList.add('ft-lit'); }, 1700);
-    }, { threshold: 0.5 });
+      setTimeout(function () { photo.classList.add('ft-lit'); }, 1500);
+    }, { threshold: 0.4 });
     o.observe(media);
   }
   function play() {
-    mkMark(sec, 'playing'); sec.classList.add('ft-go');
-    setTimeout(seal, 5000);
-    setTimeout(function () { mkMark(sec, 'done'); }, 9000);
+    mkMark(sec, 'playing'); sec.classList.add('ft-go'); seal();
+    setTimeout(function () { mkMark(sec, 'done'); }, 6200);
   }
   var o = new IntersectionObserver(function (es) {
     var e = es[0];
-    if (!(e.intersectionRatio >= 0.5 || (!e.isIntersecting && e.boundingClientRect.top < 0))) return;
+    if (!(e.intersectionRatio >= 0.35 || (!e.isIntersecting && e.boundingClientRect.top < 0))) return;
     o.disconnect(); mkMark(sec, 'waiting');
     mkAfter(prev, prevSpot, play, sec);
-  }, { threshold: [0, 0.5] });
+  }, { threshold: [0, 0.35] });
   o.observe(card);
 })();
 </script>
