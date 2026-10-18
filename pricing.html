@@ -1108,11 +1108,11 @@ a.toolkit-card { text-decoration: none; color: inherit; }
         <div class="tier-sub" id="p1sub">or $290/yr, save 17%</div>
         <ul class="tier-features">
           <li><span class="feat"><span class="feat-name">Trade journal &amp; session log</span><span class="feat-desc">Every fill and the story behind it, captured before tomorrow blurs the details.</span></span></li>
-          <li><span class="feat"><span class="feat-name">P&amp;L &amp; analytics</span><span class="feat-desc">P&amp;L and ¢/share broken out by symbol, price band, and setup, so you see where your edge actually lives.</span></span></li>
+          <li><span class="feat"><span class="feat-name">P&amp;L &amp; analytics</span><span class="feat-desc">P&amp;L broken out by symbol, price band, and setup, so you see where your edge actually lives.</span></span></li>
           <li><span class="feat"><span class="feat-name">Calendar &amp; streaks</span><span class="feat-desc">A month-at-a-glance grid of green and red days, with your streaks front and center.</span></span></li>
-          <li><span class="feat"><span class="feat-name">Broker import</span><span class="feat-desc">Drop in a broker CSV and it auto-maps the columns. No manual entry.</span></span></li>
+          <li><span class="feat"><span class="feat-name">DAS Trader import</span><span class="feat-desc">Import your fills from DAS Trader Pro, trade by trade.</span></span></li>
           <li><span class="feat"><span class="feat-name">Picard Score</span><span class="feat-desc">One daily number that tells you the truth: did you trade your plan, or your emotions? It grades whether you followed your plan, not the P&amp;L you got.</span></span></li>
-          <li><span class="feat"><span class="feat-name">Custom rule pills</span><span class="feat-desc">Your own non-negotiables, pinned to every session where you can't ignore them.</span></span></li>
+          <li><span class="feat"><span class="feat-name">Rules checklist</span><span class="feat-desc">Your rules, written once and ticked off in every journal entry.</span></span></li>
         </ul>
         <button class="btn-secondary tier-cta" id="cta1" data-tier="journal" data-interval="month" onclick="handleCheckout(this.dataset.tier,event)">Start 7-Day Free Trial</button>
       </div>
@@ -1130,13 +1130,13 @@ a.toolkit-card { text-decoration: none; color: inherit; }
         <div class="tier-sub" id="p2sub">or $399/yr, save 32%</div>
         <ul class="tier-features">
           <li><span class="feat"><span class="feat-name">Everything in Journal</span><span class="feat-desc">Plus the system that steps in while you trade, not just after.</span></span></li>
-          <li><span class="feat"><span class="feat-name">COACH SAYS</span><span class="feat-desc">Real-time, no-excuse coaching that speaks the moment your behavior turns.</span></span></li>
-          <li><span class="feat"><span class="feat-name">Strike System</span><span class="feat-desc">Three rule breaks and the day closes, before one bad morning blows the account.</span></span></li>
+          <li><span class="feat"><span class="feat-name">COACH SAYS</span><span class="feat-desc">No-excuse coaching on your screen the moment your behavior turns.</span></span></li>
+          <li><span class="feat"><span class="feat-name">Strike System</span><span class="feat-desc">A real loss or a broken rule is a strike. Reach your limit and the day closes, before one bad morning blows the account.</span></span></li>
           <li><span class="feat"><span class="feat-name">Give-Back Guard</span><span class="feat-desc">A floor that follows your best P&amp;L of the day and calls the day if you fall back to it.</span></span></li>
           <li><span class="feat"><span class="feat-name">Focus Room</span><span class="feat-desc">The full behavioral OS: a daily contract, warm-up drills, six guided resets, and your anchors.</span></span></li>
-          <li><span class="feat"><span class="feat-name">Live State Machine</span><span class="feat-desc">Your status band reads every move in real time, so you always know exactly where the day stands.</span></span></li>
+          <li><span class="feat"><span class="feat-name">Live State Machine</span><span class="feat-desc">Your status band rereads the day every time you log a P&amp;L update, so you always know where the day stands.</span></span></li>
           <li><span class="feat"><span class="feat-name">Edge + Pulse indicators</span><span class="feat-desc">Opportunity windows and momentum confirmation on your own TradingView charts, invite within 24 hours.</span></span></li>
-          <li><span class="feat"><span class="feat-name">Dilution Check, 100 company reads a month</span><span class="feat-desc">Enter a ticker and read their SEC filings: whether they can sell stock today, whether they already have, and how long their cash lasts. Checking a company again is free.</span></span></li>
+          <li><span class="feat"><span class="feat-name">Dilution Check, 100 company reads a month</span><span class="feat-desc">Enter a ticker and read their SEC filings: whether they can sell stock today, whether they already have, and how long their cash lasts. Checking a company again is free until it files something new.</span></span></li>
         </ul>
         <button class="btn-primary tier-cta" id="cta2" data-tier="pro" data-interval="month" onclick="handleCheckout(this.dataset.tier,event)">Start 7-Day Free Trial</button>
       </div>
@@ -1153,7 +1153,7 @@ a.toolkit-card { text-decoration: none; color: inherit; }
         <div class="tier-sub" id="p3sub">or $649/yr, save 32%</div>
         <ul class="tier-features">
           <li><span class="feat"><span class="feat-name">Everything in Pro</span><span class="feat-desc">COACH SAYS, Strike System, Give-Back Guard, Focus Room, Edge + Pulse.</span></span></li>
-          <li><span class="feat"><span class="feat-name">Dilution Check, 200 company reads a month</span><span class="feat-desc">Twice Pro's 100. Checking a company again is free, and more reads come in blocks if you need them.</span></span></li>
+          <li><span class="feat"><span class="feat-name">Dilution Check, 200 company reads a month</span><span class="feat-desc">Twice Pro's 100. Checking a company again is free until it files something new, and more reads come in blocks if you need them.</span></span></li>
           <li><span class="feat"><span class="feat-name">AI Training Engine <span class="compare-soon">Coming soon</span></span><span class="feat-desc">Adaptive drills built from your own mistakes, and Elite gets first access the day it ships.</span></span></li>
         </ul>
         <button class="btn-secondary tier-cta" id="cta3" data-tier="elite" data-interval="month" onclick="handleCheckout(this.dataset.tier,event)">Start 7-Day Free Trial</button>
@@ -1198,22 +1198,23 @@ a.toolkit-card { text-decoration: none; color: inherit; }
           <tr><td>Trade journal &amp; daily session log</td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
           <tr><td>P&amp;L &amp; ¢/share metrics</td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
           <tr><td>Calendar <span class="compare-note">(daily P&amp;L + streak grid, download as image)</span></td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
-          <tr><td>Reports <span class="compare-note">(equity, by-price, by-symbol, risk metrics)</span></td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
-          <tr><td>Trades blotter <span class="compare-note">(commission/fees split)</span></td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
-          <tr><td>Broker CSV import</td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
+          <tr><td>Reports <span class="compare-note">(equity curve, by price, by symbol, profit factor, R-ratio, &cent;/share)</span></td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
+          <tr><td>Trades blotter <span class="compare-note">(commission and fees in their own columns, from your rates)</span></td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
+          <tr><td>DAS Trader import <span class="compare-note">(your DAS Trader Pro fills)</span></td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
           <tr><td>Custom tags &amp; multi-filter views</td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
-          <tr><td>View Chart <span class="compare-note">(your fills on the day's chart, with screenshot and share)</span></td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
+          <tr><td>View Chart <span class="compare-note">(your entry and exit on the day's chart, saved as an image, from the next day)</span></td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
           <tr><td>Setups &amp; Mistakes <span class="compare-note">(chart screenshots you mark up: tags, arrows, the decision candle, a takeaway)</span></td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
-          <tr><td>Performance by Setup <span class="compare-note">(one tally, on the Dashboard, in the Journal and in Reports)</span></td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
+          <tr><td>Performance by Setup <span class="compare-note">(P&amp;L per setup in Reports; how often you took each on the Dashboard and in the Journal)</span></td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
           <tr><td>My Playbook <span class="compare-note">(your own long-form notes on setups and handling, the source of the Flash Cards)</span></td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
           <tr><td>No-Trade Day <span class="compare-note">(a day you sat out, recorded as a kept decision, not a gap)</span></td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
           <tr><td>Journal export <span class="compare-note">(print, PDF, Word, OneNote, email)</span></td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
           <tr><td>Sticky Notes <span class="compare-note">(a desktop scratchpad with Send to Journal)</span></td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
           <tr><td>Picard Score <span class="compare-note">(a daily grade on following your rules)</span></td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
-          <tr><td>Custom rule pills</td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
+          <tr><td>Rules checklist <span class="compare-note">(your rules, ticked off in every journal entry)</span></td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
+          <tr><td>Rule pills <span class="compare-note">(your own reminders on screen before your first trade)</span></td><td><span class="compare-dash">—</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
           <tr><td>Rule Check <span class="compare-note">(grade your own rules: Followed, Broke, N/A)</span></td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
           <tr><td>Market Context <span class="compare-note">(your morning read: Cold, Mixed, Active)</span></td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
-          <tr><td>Daily Watchlist <span class="compare-note">(company card, Market Context and Dilution Check tabs)</span></td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
+          <tr><td>Daily Watchlist <span class="compare-note">(today's names with a company card and Market Context; the Dilution Check tab on Pro)</span></td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
 
           <tr class="group-header"><td colspan="4">WORKSPACE</td></tr>
           <tr><td>Dashboard in your order <span class="compare-note">(drag the blocks, pin the tile that matters today)</span></td><td><span class="compare-check">✓</span></td><td class="featured-col"><span class="compare-check">✓</span></td><td><span class="compare-check">✓</span></td></tr>
@@ -1382,7 +1383,7 @@ a.toolkit-card { text-decoration: none; color: inherit; }
       </details>
       <details class="faq-item reveal">
         <summary>How does MAKETZO compare to TradeZella, Tradervue or Edgewonk?</summary>
-        <div class="faq-body"><p>They record and analyze trades well, and MAKETZO does that too. The difference is what happens before the mistake: checkpoints, strikes, and a coach that speaks while the day is live. <a href="journal.html">The feature-by-feature comparison is on the Journal page</a>.</p></div>
+        <div class="faq-body"><p>They record and analyze trades well, and MAKETZO does that too. The difference is what happens before the mistake: checkpoints, strikes, and a coach that steps in while the day is live. <a href="journal.html">The feature-by-feature comparison is on the Journal page</a>.</p></div>
       </details>
       <details class="faq-item reveal">
         <summary>Do I need a credit card to start the trial?</summary>
