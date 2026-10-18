@@ -358,6 +358,27 @@
     return c === "all" || c === "essential" ? c : null;
   }
 
+  // A browser marked as the owner's at /internal (Ed, 2026-10-18: his own use
+  // shown apart from everyone's). Every event from it carries mk_internal =
+  // 'yes', which the analytics emails read to leave it out of the customer
+  // numbers (maketzo-backend lib/report-internal.js). Kept whatever the
+  // consent choice, because it is a setting, not tracking.
+  var INTERNAL_KEY = "mkt_internal";
+  function isInternal() {
+    return safeLocal("get", INTERNAL_KEY) === "1";
+  }
+  function setInternal(on) {
+    if (on) safeLocal("set", INTERNAL_KEY, "1");
+    else safeLocal("del", INTERNAL_KEY);
+    try {
+      if (window.posthog && window.posthog.register) {
+        if (on) window.posthog.register({ mk_internal: "yes" });
+        else if (window.posthog.unregister) window.posthog.unregister("mk_internal");
+      }
+    } catch (e) {}
+    return isInternal();
+  }
+
   // Replay needs an explicit "all": non-EU visitors get it set at boot, EU
   // visitors only by accepting the banner. Never on dev or staging.
   function replayAllowed() {
@@ -424,7 +445,9 @@
       // Sent raw, sanitised server-side by lib/analytics-props.js. A client-side
       // gate would be advisory: this file runs on an anonymous marketing page
       // where anything can be edited, so the PII rule is enforced where it cannot.
-      props: props || null
+      // A browser marked at /internal tags its rows so the emails can leave
+      // them out (website rows carry no user id to filter on).
+      props: isInternal() ? Object.assign({}, props, { mk_internal: "yes" }) : (props || null)
     };
     try {
       fetch(API_BASE + "/analytics/event", {
@@ -550,6 +573,10 @@
         utm_source: utm.utm_source || null,
         utm_campaign: utm.utm_campaign || null
       });
+      // The owner's own browser, marked at /internal. Unregistered otherwise,
+      // so a browser that was unmarked stops carrying it.
+      if (isInternal()) window.posthog.register({ mk_internal: "yes" });
+      else if (window.posthog.unregister) window.posthog.unregister("mk_internal");
     } catch (e) {}
   }
 
@@ -936,7 +963,9 @@
     getAnonId: getAnonId,
     getSessionId: getSessionId,
     isEuVisitor: isEuVisitor,
-    getRef: getRef
+    getRef: getRef,
+    isInternal: isInternal,
+    setInternal: setInternal
   };
 
   // Compat shim — audio-player.js still calls MaketzoAnalytics.send().

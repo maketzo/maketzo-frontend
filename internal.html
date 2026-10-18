@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<!-- internal — mark THIS browser as the owner's, so its visits leave the customer numbers in the daily and weekly
+     analytics emails and show in their "You" block instead (Ed, 2026-10-18). Linked from the admin Users panel.
+     Not in the nav or the sitemap, noindex. The flag lives in this browser's localStorage (mkt_internal) and rides on
+     every event from it as mk_internal = 'yes' (assets/js/mkt-analytics.js); maketzo-backend lib/report-internal.js
+     reads it. Harmless if anyone else opens it: it only changes how their own visits are counted. -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>This Browser · MAKETZO</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#06070A">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<script src="assets/js/mkt-analytics.js?v=10" defer></script>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--mk-surface-page); color: var(--mk-text-primary); font-family: var(--mk-font-sans); font-size: var(--mk-text-md); line-height: var(--mk-lead-body); -webkit-font-smoothing: antialiased; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 48px 16px; }
+.in-card { width: 100%; max-width: 520px; text-align: center; padding: 44px 36px 36px; background: var(--mk-surface-raised); border: var(--mk-border-gold-soft); border-radius: var(--mk-radius-card); }
+.in-logo { display: inline-flex; margin-bottom: 28px; --mk-brand-lockup-mark-h: 40px; --mk-brand-lockup-wordmark-h: 20px; --mk-brand-lockup-gap: 10px; }
+.in-eyebrow { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); margin-bottom: 14px; }
+.in-title { font-family: var(--mk-font-display); font-weight: 400; font-size: clamp(2rem, 6vw, 2.6rem); letter-spacing: var(--mk-track-display); line-height: 1.05; text-transform: uppercase; margin-bottom: 16px; }
+.in-title em { font-style: normal; background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.in-body { color: var(--mk-text-secondary); margin-bottom: 28px; }
+.in-help { margin-top: 24px; padding-top: 20px; border-top: var(--mk-border-hairline); font-size: var(--mk-text-sm); color: var(--mk-text-tertiary); }
+.in-off { display: none; }
+.in-card.is-mine .in-on { display: none; }
+.in-card.is-mine .in-off { display: block; }
+.in-card.is-mine .in-off.mk-btn { display: inline-flex; }
+</style>
+</head>
+<body>
+
+<main class="in-card" id="inCard">
+  <a href="index.html" class="in-logo mk-brand-lockup" aria-label="MAKETZO home">
+    <img class="mk-brand-lockup__mark" src="assets/logo-mark.png" alt="">
+    <img class="mk-brand-lockup__wordmark" src="assets/logo-wordmark.png" alt="MAKETZO">
+  </a>
+  <p class="in-eyebrow">REPORTS</p>
+
+  <h1 class="in-title in-on">Counted as <em>a visitor</em></h1>
+  <p class="in-body in-on">Visits from this browser count in the website numbers of the daily and weekly reports. Mark it as yours to show them in the You block instead.</p>
+  <button type="button" class="mk-btn mk-btn--primary in-on" id="inMark">Mark as Mine</button>
+
+  <h1 class="in-title in-off">Marked as <em>yours</em></h1>
+  <p class="in-body in-off">Visits from this browser are left out of the website numbers in the daily and weekly reports and show in the You block instead.</p>
+  <button type="button" class="mk-btn mk-btn--secondary in-off" id="inUnmark">Count It Again</button>
+
+  <p class="in-help">Do this once on each browser you use: laptop, phone, tablet. Clearing this site's data undoes it. Your accounts are marked in the admin Users panel.</p>
+</main>
+
+<script>
+/* The page's two states follow the flag; the buttons flip it. mkt-analytics.js is deferred, so it has run by the time
+   DOMContentLoaded fires. Without it (blocked or failed) the flag is still written, and picked up on the next visit. */
+(function () {
+  var KEY = 'mkt_internal';
+  function marked() {
+    if (window.MKT && window.MKT.isInternal) return window.MKT.isInternal();
+    try { return localStorage.getItem(KEY) === '1'; } catch (e) { return false; }
+  }
+  function set(on) {
+    if (window.MKT && window.MKT.setInternal) { window.MKT.setInternal(on); return; }
+    try { if (on) localStorage.setItem(KEY, '1'); else localStorage.removeItem(KEY); } catch (e) {}
+  }
+  function paint() { document.getElementById('inCard').classList.toggle('is-mine', marked()); }
+  document.addEventListener('DOMContentLoaded', function () {
+    paint();
+    document.getElementById('inMark').addEventListener('click', function () { set(true); paint(); });
+    document.getElementById('inUnmark').addEventListener('click', function () { set(false); paint(); });
+  });
+})();
+</script>
+</body>
+</html>
