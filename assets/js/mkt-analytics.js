@@ -358,6 +358,13 @@
     return c === "all" || c === "essential" ? c : null;
   }
 
+  // Replay needs an explicit "all": non-EU visitors get it set at boot, EU
+  // visitors only by accepting the banner. Never on dev or staging.
+  function replayAllowed() {
+    return MKT_TIERS[window.location.hostname.replace(/^www\./, "")] === "prod"
+      && getConsent() === "all";
+  }
+
   function consentAllowsPersistence() {
     // No decision yet → behave like 'all' on non-EU (consent.js sets it
     // explicitly for EU), or hold off if we know we're EU and unresolved.
@@ -468,7 +475,18 @@
       // privacy. NOTE the app deliberately does the OPPOSITE — see the comment
       // in maketzo-app/lib/app-analytics.js before "fixing" the inconsistency.
       autocapture: true,
-      disable_session_recording: true,
+      // SESSION REPLAY, the website only (Ed, 2026-10-18). The weekly email can
+      // say WHERE visitors leave the funnel; a recording is the only honest way
+      // to see WHY, so it links three. Gated three ways: prod only (dev and
+      // staging recordings are noise against a monthly quota), consent only
+      // (an EU visitor is not recorded until they accept), and every input is
+      // masked, so the signup form's name, email and password never record.
+      // The APP keeps disable_session_recording: true, because a recording
+      // there would capture journal entries and P&L. Both halves are pinned by
+      // maketzo-app/scripts/test-analytics-posthog-config.js. PostHog must
+      // also have replay switched on in its project settings to record at all.
+      disable_session_recording: !replayAllowed(),
+      session_recording: { maskAllInputs: true },
       // 'always', so anonymous visitors get person records and the unique /
       // returning visitor counts are real. Under the previous
       // 'identified_only' only newsletter, contact and signup submitters ever
@@ -900,6 +918,12 @@
       var persistence = consentAllowsPersistence() ? "localStorage+cookie" : "memory";
       try { window.posthog.set_config({ persistence: persistence }); } catch (e) {}
     }
+    // Replay follows the choice both ways: accepting starts it, choosing
+    // essential-only stops it mid-visit.
+    try {
+      if (replayAllowed()) { if (window.posthog.startSessionRecording) window.posthog.startSessionRecording(); }
+      else if (window.posthog && window.posthog.stopSessionRecording) window.posthog.stopSessionRecording();
+    } catch (e) {}
   });
 
   window.MKT = {
