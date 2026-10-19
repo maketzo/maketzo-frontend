@@ -379,6 +379,57 @@
     return isInternal();
   }
 
+  // A newsletter link carries nl=<send code> (maketzo-backend lib/newsletter-track.js), so a reader's visit
+  // can be tied to the issue that brought them (Ed, 2026-10-18: "WHO actually opened and what they did").
+  // The privacy policy's promise is the rule here: the visit is tied only with analytics consent ("all")
+  // and never under a Global Privacy Control or Do Not Track signal. The code is taken off the address bar
+  // at once, so a forwarded or copied URL cannot tie someone else's visit to the reader. While an EU
+  // visitor has not chosen yet, the code waits in this tab's session only; accepting ties it, choosing
+  // essential drops it. A tie lasts 7 days.
+  var NL_KEY = "mkt_nl", NL_PENDING = "mkt_nl_pending", NL_DAYS = 7;
+  var NL_CODE = /^[A-Za-z0-9_-]{16}$/;
+  function privacySignal() {
+    try {
+      return navigator.globalPrivacyControl === true || navigator.doNotTrack === "1"
+        || window.doNotTrack === "1" || navigator.msDoNotTrack === "1";
+    } catch (e) { return false; }
+  }
+  function nlTake() {
+    try {
+      var url = new URL(window.location.href), code = url.searchParams.get("nl");
+      if (code === null) return;
+      url.searchParams.delete("nl");
+      if (window.history && window.history.replaceState) window.history.replaceState(window.history.state, "", url.pathname + url.search + url.hash);
+      if (NL_CODE.test(code)) safeSession("set", NL_PENDING, code);
+    } catch (e) {}
+  }
+  function nlApply() {
+    window.__mktNl = null;
+    var consent = getConsent();
+    if (consent === "essential" || privacySignal()) {
+      safeLocal("del", NL_KEY);
+      try { sessionStorage.removeItem(NL_PENDING); } catch (e) {}
+    } else if (consent === "all") {
+      var pending = safeSession("get", NL_PENDING);
+      if (pending && NL_CODE.test(pending)) {
+        safeLocal("set", NL_KEY, JSON.stringify({ c: pending, t: Date.now() }));
+        try { sessionStorage.removeItem(NL_PENDING); } catch (e) {}
+        window.__mktNl = pending;
+        sendToBackend("mkt_nl_arrive", {});
+      }
+      var stored = null;
+      try { stored = JSON.parse(safeLocal("get", NL_KEY) || "null"); } catch (e) {}
+      if (stored && NL_CODE.test(stored.c) && Date.now() - stored.t < NL_DAYS * 864e5) window.__mktNl = stored.c;
+      else safeLocal("del", NL_KEY);
+    }
+    try {
+      if (window.posthog && window.posthog.register) {
+        if (window.__mktNl) window.posthog.register({ nl_send: window.__mktNl });
+        else if (window.posthog.unregister) window.posthog.unregister("nl_send");
+      }
+    } catch (e) {}
+  }
+
   // Replay needs an explicit "all": non-EU visitors get it set at boot, EU
   // visitors only by accepting the banner. Never on dev or staging.
   function replayAllowed() {
@@ -447,7 +498,11 @@
       // where anything can be edited, so the PII rule is enforced where it cannot.
       // A browser marked at /internal tags its rows so the emails can leave
       // them out (website rows carry no user id to filter on).
-      props: isInternal() ? Object.assign({}, props, { mk_internal: "yes" }) : (props || null)
+      // A visit tied to a newsletter send (nlApply) carries its code, so the issue's numbers can show what
+      // the reader did, a trial started included.
+      props: (isInternal() || window.__mktNl)
+        ? Object.assign({}, props, isInternal() ? { mk_internal: "yes" } : {}, window.__mktNl ? { nl: window.__mktNl } : {})
+        : (props || null)
     };
     try {
       fetch(API_BASE + "/analytics/event", {
@@ -577,6 +632,9 @@
       // so a browser that was unmarked stops carrying it.
       if (isInternal()) window.posthog.register({ mk_internal: "yes" });
       else if (window.posthog.unregister) window.posthog.unregister("mk_internal");
+      // A visit tied to a newsletter send (nlApply decides whether it may be).
+      if (window.__mktNl) window.posthog.register({ nl_send: window.__mktNl });
+      else if (window.posthog.unregister) window.posthog.unregister("nl_send");
     } catch (e) {}
   }
 
@@ -911,6 +969,7 @@
     // Eager IDs — first thing so any subsequent code sees them.
     getAnonId(); getSessionId();
     captureReferral();
+    nlTake();
 
     // Defer PostHog load until consent decision (or auto-decide non-EU).
     isEuVisitor().then(function (isEu) {
@@ -918,6 +977,7 @@
         // Non-EU: treat as 'all'.
         if (!getConsent()) safeLocal("set", CONSENT_KEY, "all");
       }
+      nlApply();
       loadPostHog();
       // NO trackPage() here. PostHog fires its own $pageview on init now
       // (capture_pageview: true), so calling ours as well would count every
@@ -945,6 +1005,8 @@
       var persistence = consentAllowsPersistence() ? "localStorage+cookie" : "memory";
       try { window.posthog.set_config({ persistence: persistence }); } catch (e) {}
     }
+    // A newsletter visit waiting on the choice is tied or dropped now.
+    nlApply();
     // Replay follows the choice both ways: accepting starts it, choosing
     // essential-only stops it mid-visit.
     try {
