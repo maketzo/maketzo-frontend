@@ -394,6 +394,12 @@
         || window.doNotTrack === "1" || navigator.msDoNotTrack === "1";
     } catch (e) { return false; }
   }
+  // privacy.html section 7: "We honor a recognized Global Privacy Control or Do Not Track signal as a request
+  // to opt out of non-essential analytics". Until 2026-10-18 nothing here read either signal (Ed, on being
+  // told: "Fix it"). With one set, this file sends nothing: PostHog never loads, no event reaches PostHog or
+  // the backend, and no session is linked. The referral cookie stays, because it credits a referrer rather
+  // than measuring anyone; its analytics event does not fire.
+  function analyticsOptOut() { return privacySignal(); }
   function nlTake() {
     try {
       var url = new URL(window.location.href), code = url.searchParams.get("nl");
@@ -474,6 +480,7 @@
 
   // ── Backend dispatch ─────────────────────────────────────────────────
   function sendToBackend(eventType, props) {
+    if (analyticsOptOut()) return;
     var utm = getUtm();
     var body = {
       event_type: eventType,
@@ -525,6 +532,7 @@
   var posthogQueue = [];
 
   function loadPostHog() {
+    if (analyticsOptOut()) return; // A privacy signal: PostHog never loads (see analyticsOptOut).
     var host = window.location.hostname;
     var key = POSTHOG_KEYS[host] || POSTHOG_KEYS["maketzo.co"];
     if (!key) return; // Disabled tier — silent no-op.
@@ -646,6 +654,7 @@
   }
 
   function sendToPostHog(eventType, props) {
+    if (analyticsOptOut()) return;
     var host = window.location.hostname;
     var key = POSTHOG_KEYS[host] || POSTHOG_KEYS["maketzo.co"];
     if (!key) return; // PostHog disabled for this tier.
@@ -706,7 +715,7 @@
   // is what the Stripe webhook backfill resolves against. It is a binding
   // table, not a person store, and no raw email reaches PostHog through it.
   function linkSession(email) {
-    if (!email || typeof email !== "string") return;
+    if (!email || typeof email !== "string" || analyticsOptOut()) return;
     try {
       fetch(API_BASE + "/analytics/identify", {
         method: "POST",
