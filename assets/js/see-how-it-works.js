@@ -31,6 +31,11 @@
    and the video comes back to this player when the end card arrives, so the
    trial button on the card is the real one. Leaving full screen (Done, or the
    back gesture) closes the video.
+
+   On a desktop a Full Screen button sits beside Close (Ed, 2026-10-20: "Player
+   needs a fullscreen control on desktop. Otherwise sizing is capped"). It takes
+   the whole player full screen, and leaving (the button again, or Escape)
+   returns to the frame rather than closing.
    ═══════════════════════════════════════════════════════════════════════════ */
 (function () {
   'use strict';
@@ -49,13 +54,18 @@
   var ICON_OFF = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="m23 9-6 6"/><path d="m17 9 6 6"/></svg>';
   var ICON_PAUSE = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="4.5" width="4" height="15" rx="1.2"/><rect x="14" y="4.5" width="4" height="15" rx="1.2"/></svg>';
   var ICON_X ='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>';
+  var ICON_GROW = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5"/><path d="M20 9V4h-5"/><path d="M4 15v5h5"/><path d="M20 15v5h-5"/></svg>';
+  var ICON_SHRINK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4v5H4"/><path d="M15 4v5h5"/><path d="M9 20v-5H4"/><path d="M15 20v-5h5"/></svg>';
 
   var FULL = window.MKPhoneFull || null;
   var PRIME = !!(FULL && FULL.primeVideo);
+  // A desktop's own Full Screen button (Ed, 2026-10-20: "Player needs a fullscreen control on desktop. Otherwise sizing
+  // is capped"). A phone goes full screen on the tap already, so it never shows there. Leaving it returns to the frame.
+  var DESK_FULL = !!(FULL && !FULL.phone && (document.fullscreenEnabled || document.webkitFullscreenEnabled));
   var BIG = !(FULL && FULL.phone) && Math.max(screen.width, screen.height) * (window.devicePixelRatio || 1) >= 2560;
   var SRC = BIG ? SRC_2160 : SRC_1080;
 
-  var root = null, video = null, muteBtn = null, endBox = null, bar = null, opener = null;
+  var root = null, video = null, muteBtn = null, fullBtn = null, endBox = null, bar = null, opener = null;
 
   function track(name, props) { try { if (window.MKT && window.MKT.trackEvent) window.MKT.trackEvent(name, props || {}); } catch (e) {} }
   function savedMuted() { try { return localStorage.getItem(MUTE_KEY) === '1'; } catch (e) { return false; } }
@@ -68,6 +78,21 @@
     muteBtn.setAttribute('aria-label', m ? 'Unmute the video' : 'Mute the video');
   }
 
+  function paintFull(on) {
+    if (!fullBtn) return;
+    fullBtn.innerHTML = on ? ICON_SHRINK : ICON_GROW;
+    fullBtn.setAttribute('aria-label', on ? 'Exit Full Screen' : 'Full Screen');
+    fullBtn.title = on ? 'Exit Full Screen' : 'Full Screen';
+  }
+
+  // The whole player goes full screen, so Mute, Close and the end card's real trial button come with it.
+  function toggleFull() {
+    var on = FULL.state(root, video) === 'page';
+    if (on) FULL.exit(root, video);
+    else { var p = (root.requestFullscreen || root.webkitRequestFullscreen).call(root); if (p && p.catch) p.catch(function () {}); }
+    track('see_how_it_works_fullscreen', { on: !on, at_s: Math.round(video.currentTime) });
+  }
+
   function build() {
     root = document.createElement('div');
     root.className = 'shiw'; root.hidden = true;
@@ -77,6 +102,7 @@
         '<video class="shiw-video" data-mk-full playsinline preload="' + (PRIME ? 'metadata' : 'none') + '" poster="' + POSTER + '"></video>' +
         '<div class="shiw-paused" aria-hidden="true"><span>' + ICON_PAUSE + '</span></div>' +
         '<button type="button" class="shiw-btn shiw-mute"></button>' +
+        (DESK_FULL ? '<button type="button" class="shiw-btn shiw-full"></button>' : '') +
         '<button type="button" class="shiw-btn shiw-close" aria-label="Close the video">' + ICON_X + '</button>' +
         '<div class="shiw-card">' +
           '<button type="button" class="btn-primary" data-shiw-trial tabindex="-1">Start 7-Day Free Trial &rarr;</button>' +
@@ -88,8 +114,9 @@
         '<div class="shiw-bar"><i></i></div>' +
       '</div>';
     document.body.appendChild(root);
-    video = root.querySelector('.shiw-video'); muteBtn = root.querySelector('.shiw-mute');
+    video = root.querySelector('.shiw-video'); muteBtn = root.querySelector('.shiw-mute'); fullBtn = root.querySelector('.shiw-full');
     endBox = root.querySelector('.shiw-end'); bar = root.querySelector('.shiw-bar i');
+    if (fullBtn) { paintFull(false); fullBtn.addEventListener('click', toggleFull); }
 
     muteBtn.addEventListener('click', function () {
       video.muted = !video.muted; saveMuted(video.muted); paintMute();
@@ -116,17 +143,22 @@
     });
     // The iPhone's own player has its own mute: keep this button's word true, and remember the choice the same way.
     video.addEventListener('volumechange', function () { paintMute(); if (FULL && FULL.state(null, video) === 'video') saveMuted(video.muted); });
-    // Leaving full screen closes the video, except when the iPhone player hands back at the end card.
+    // On a phone, leaving full screen closes the video, except when the iPhone player hands back at the end card. On a
+    // desktop it only returns to the frame: the viewer chose full screen with the button and chose to leave it.
     if (FULL) FULL.watch(root, video, function (now, before) {
-      root.classList.toggle('is-full', now === 'page');
-      if (!now && !root.hidden && !(before === 'video' && root.classList.contains('is-card'))) close();
+      root.classList.toggle('is-full', now === 'page'); paintFull(now === 'page');
+      if (FULL.phone && !now && !root.hidden && !(before === 'video' && root.classList.contains('is-card'))) close();
     });
     root.querySelector('[data-shiw-trial]').addEventListener('click', function (e) {
       track('see_how_it_works_trial_click', { ended: video.ended });
       close();
       if (typeof window.handleCheckout === 'function') window.handleCheckout('pro', e);
     });
-    document.addEventListener('keydown', function (e) { if (!root.hidden && e.key === 'Escape') close(); });
+    // Escape in full screen belongs to the browser (it leaves full screen); otherwise it closes the video.
+    document.addEventListener('keydown', function (e) {
+      if (root.hidden || e.key !== 'Escape' || (FULL && FULL.state(root, video) === 'page')) return;
+      close();
+    });
   }
 
   // the end card's real button and line: on with the card, off again if the video goes back before it

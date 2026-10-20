@@ -24,6 +24,8 @@
 .shiw-btn svg { width: 18px; height: 18px; flex: none; }
 .shiw-mute { left: 14px; }
 .shiw-close { right: 14px; width: 40px; padding: 0; justify-content: center; }
+/* Desktop only (a phone goes full screen on the tap): Full Screen, just left of Close. */
+.shiw-full { right: 64px; width: 40px; padding: 0; justify-content: center; }
 
 /* A click on the picture pauses it; the pause sign holds the middle of the frame until the next click (Ed,
    2026-10-16). It lets clicks through to the video, which is what plays it again. */
@@ -60,6 +62,7 @@
   .shiw-btn { top: 10px; height: 36px; padding: 0 12px; font-size: 13px; }
   .shiw-mute { left: 10px; }
   .shiw-close { right: 10px; width: 36px; padding: 0; }
+  .shiw-full { right: 56px; width: 36px; padding: 0; }
   .shiw-end { bottom: 5%; gap: 8px; }
   .shiw-paused span { width: 68px; height: 68px; }
   .shiw-paused svg { width: 28px; height: 28px; }
