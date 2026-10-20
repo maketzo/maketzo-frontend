@@ -67,3 +67,15 @@
   /* the card is small on a phone: the button keeps a size a thumb can hit, and the line under it gives way */
   .shiw-fine { display: none; }
 }
+
+/* A phone on its side, and the player full screen on a phone (Ed, 2026-10-19: "in both portrait and landscape
+   mode, the video plays full screen"): no margin and no frame, the picture as tall as the screen. dvh follows
+   Safari's bar where it is supported; the vh line before it is the fallback. */
+@media (max-height: 500px) {
+  .shiw { padding: 0; }
+  .shiw-frame { width: min(100%, calc(100vh * 16 / 9)); width: min(100%, calc(100dvh * 16 / 9));
+    border: 0; border-radius: 0; box-shadow: none; }
+}
+.shiw.is-full { padding: 0; background: #000; }
+.shiw.is-full .shiw-frame { width: min(100%, calc(100vh * 16 / 9)); width: min(100%, calc(100dvh * 16 / 9));
+  border: 0; border-radius: 0; box-shadow: none; }

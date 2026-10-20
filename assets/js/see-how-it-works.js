@@ -20,6 +20,16 @@
    seconds from the end. While the card is up a click on the picture does not
    pause it. Watch Again joins when the video ends. Pairs with
    assets/css/see-how-it-works.css.
+
+   On a phone it plays full screen, held either way up (Ed, 2026-10-19: "in
+   both portrait and landscape mode, the video plays full screen. Currently
+   it's in browser mode"). Android takes this whole player full screen, its
+   controls and the real trial button included. An iPhone can put only a video
+   full screen, in its own player, and only once the video has read its header,
+   so on an iPhone the player is built at load with the header fetched (78 KB,
+   it sits at the front of the file), and the video comes back to this player
+   when the end card arrives, so the trial button on the card is the real one.
+   Leaving full screen (Done, or the back gesture) closes the video.
    ═══════════════════════════════════════════════════════════════════════════ */
 (function () {
   'use strict';
@@ -32,6 +42,10 @@
   var ICON_OFF = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="m23 9-6 6"/><path d="m17 9 6 6"/></svg>';
   var ICON_PAUSE = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="4.5" width="4" height="15" rx="1.2"/><rect x="14" y="4.5" width="4" height="15" rx="1.2"/></svg>';
   var ICON_X ='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>';
+
+  var PHONE = !!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches) && Math.min(screen.width, screen.height) < 600;
+  var PAGE_FULL = !!(document.fullscreenEnabled || document.webkitFullscreenEnabled);   // false on an iPhone
+  var PRIME = PHONE && !PAGE_FULL;
 
   var root = null, video = null, muteBtn = null, endBox = null, bar = null, opener = null;
 
@@ -52,7 +66,7 @@
     root.setAttribute('role', 'dialog'); root.setAttribute('aria-modal', 'true'); root.setAttribute('aria-label', 'See How It Works video');
     root.innerHTML =
       '<div class="shiw-frame">' +
-        '<video class="shiw-video" playsinline preload="none" poster="' + POSTER + '"></video>' +
+        '<video class="shiw-video" playsinline preload="' + (PRIME ? 'metadata' : 'none') + '" poster="' + POSTER + '"></video>' +
         '<div class="shiw-paused" aria-hidden="true"><span>' + ICON_PAUSE + '</span></div>' +
         '<button type="button" class="shiw-btn shiw-mute"></button>' +
         '<button type="button" class="shiw-btn shiw-close" aria-label="Close the video">' + ICON_X + '</button>' +
@@ -90,7 +104,16 @@
     });
     video.addEventListener('ended', function () { showCard(true); endBox.hidden = false; track('see_how_it_works_complete', {}); });
     root.querySelector('[data-shiw-again]').addEventListener('click', function () {
-      endBox.hidden = true; showCard(false); video.currentTime = 0; video.play().catch(function () {}); track('see_how_it_works_replay', {});
+      endBox.hidden = true; showCard(false); video.currentTime = 0; video.play().catch(function () {}); goFull(); track('see_how_it_works_replay', {});
+    });
+    // The iPhone's own player has its own mute: keep this button's word true, and remember the choice the same way.
+    video.addEventListener('volumechange', function () { paintMute(); if (video.webkitDisplayingFullscreen) saveMuted(video.muted); });
+    // Leaving full screen closes the video, except when the iPhone player hands back at the end card.
+    video.addEventListener('webkitendfullscreen', function () { if (!root.classList.contains('is-card')) close(); });
+    document.addEventListener('onfullscreenchange' in document ? 'fullscreenchange' : 'webkitfullscreenchange', function () {
+      var full = pageFullElement() === root;
+      root.classList.toggle('is-full', full);
+      if (!full && !root.hidden) close();
     });
     root.querySelector('[data-shiw-trial]').addEventListener('click', function (e) {
       track('see_how_it_works_trial_click', { ended: video.ended });
@@ -106,6 +129,26 @@
     root.classList.toggle('is-card', on);
     root.querySelector('[data-shiw-trial]').tabIndex = on ? 0 : -1;
     if (on) root.classList.remove('is-paused');
+    if (on && video.webkitDisplayingFullscreen) video.webkitExitFullscreen();   // the iPhone player cannot show the real button
+  }
+
+  function pageFullElement() { return document.fullscreenElement || document.webkitFullscreenElement || null; }
+
+  // Phones only, from a tap. Says how it went, for the open event: 'page', 'video', or 'none' (stayed in the page,
+  // e.g. an iPhone tapped before the header arrived).
+  function goFull() {
+    if (!PHONE) return 'none';
+    try {
+      if (PAGE_FULL) {
+        if (pageFullElement() !== root) {
+          var p = (root.requestFullscreen || root.webkitRequestFullscreen).call(root);
+          if (p && p.catch) p.catch(function () {});
+        }
+        return 'page';
+      }
+      if (video.webkitEnterFullscreen && !video.webkitDisplayingFullscreen) { video.webkitEnterFullscreen(); return 'video'; }
+    } catch (e) {}
+    return 'none';
   }
 
   function open(e) {
@@ -119,17 +162,25 @@
     requestAnimationFrame(function () { root.classList.add('is-open'); });
     // Opened by a click, so sound is allowed; if the browser still refuses, start muted rather than not at all.
     video.play().catch(function () { video.muted = true; paintMute(); video.play().catch(function () {}); });
+    var full = goFull();
     muteBtn.focus();
-    track('see_how_it_works_open', { muted: video.muted });
+    track('see_how_it_works_open', { muted: video.muted, fullscreen: full });
   }
 
   function close() {
     if (!root || root.hidden) return;
     track('see_how_it_works_close', { at_s: Math.round(video.currentTime), ended: !endBox.hidden });
     root.hidden = true; video.pause(); video.currentTime = 0;
-    root.classList.remove('is-open', 'is-paused'); document.documentElement.style.overflow = '';
+    root.classList.remove('is-open', 'is-paused', 'is-full'); document.documentElement.style.overflow = '';
+    if (pageFullElement() === root) {
+      var p = (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+      if (p && p.catch) p.catch(function () {});
+    }
+    if (video.webkitDisplayingFullscreen) video.webkitExitFullscreen();
     if (opener && opener.focus) opener.focus();
   }
+
+  if (PRIME) { build(); video.setAttribute('src', SRC); }   // iPhone: read the header now, so the tap can go full screen
 
   document.addEventListener('click', function (e) {
     var t = e.target.closest && e.target.closest('[data-shiw]');
