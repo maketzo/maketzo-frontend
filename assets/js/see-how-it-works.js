@@ -35,7 +35,11 @@
 (function () {
   'use strict';
 
-  var SRC = 'assets/see-it-work/maketzo-see-how-it-works.mp4?v=6';
+  // v7 (2026-10-20, Ed: "Re-shoot at full 4k"): the same cut recorded at 4K, in two files. A screen with 2560 or more
+  // device pixels across that is not a phone gets 2160p; everything else gets 1080p, cut from the same 4K master. v6
+  // (maketzo-see-how-it-works.mp4?v=6) stays on the site, so going back is one line: point SRC at it again.
+  var SRC_1080 = 'assets/see-it-work/maketzo-see-how-it-works-v7-1080.mp4?v=1';
+  var SRC_2160 = 'assets/see-it-work/maketzo-see-how-it-works-v7-2160.mp4?v=1';
   var CARD_LEAD = 5.7;   // the end card is the last 5.8s of the cut, dissolving in over 0.8s
   var POSTER = 'assets/see-it-work/maketzo-see-how-it-works-poster.jpg?v=1';
   var MUTE_KEY = 'mk_shiw_muted';
@@ -46,6 +50,8 @@
 
   var FULL = window.MKPhoneFull || null;
   var PRIME = !!(FULL && FULL.primeVideo);
+  var BIG = !(FULL && FULL.phone) && Math.max(screen.width, screen.height) * (window.devicePixelRatio || 1) >= 2560;
+  var SRC = BIG ? SRC_2160 : SRC_1080;
 
   var root = null, video = null, muteBtn = null, endBox = null, bar = null, opener = null;
 
@@ -147,7 +153,7 @@
     video.play().catch(function () { video.muted = true; paintMute(); video.play().catch(function () {}); });
     var full = goFull();
     muteBtn.focus();
-    track('see_how_it_works_open', { muted: video.muted, fullscreen: full });
+    track('see_how_it_works_open', { muted: video.muted, fullscreen: full, cut: BIG ? '2160' : '1080' });
   }
 
   function close() {
