@@ -10,7 +10,8 @@
 <meta property="og:description" content="LimitP lets DAS Trader users hold a stop loss before the open and after the close. How it works, which brokers offer it, and when it fails to fill.">
 <meta property="og:url" content="https://maketzo.co/blog/limitp-premarket-after-hours-stops">
 <meta property="og:type" content="article">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="https://pub-aedb1c7ff17d48a496393b71ec4b91ee.r2.dev/blog-images/85082885-7a32-4839-bc6d-84862d0cabe1.jpg">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="canonical" href="https://maketzo.co/blog/limitp-premarket-after-hours-stops">
 <script type="application/ld+json">
 {
@@ -18,8 +19,8 @@
   "@type": "BlogPosting",
   "headline": "LimitP: Pre-Market and After-Hours Stop Losses in DAS Trader",
   "description": "LimitP lets DAS Trader users hold a stop loss before the open and after the close. How it works, which brokers offer it, and when it fails to fill.",
-  "datePublished": "2026-10-23T13:35:10.000Z",
-  "dateModified": "2026-10-23T13:35:10.000Z",
+  "datePublished": "2026-10-23T13:35:13.000Z",
+  "dateModified": "2026-10-23T13:35:13.000Z",
   "url": "https://maketzo.co/blog/limitp-premarket-after-hours-stops",
   "mainEntityOfPage": {
     "@type": "WebPage",
@@ -37,7 +38,8 @@
       "@type": "ImageObject",
       "url": "https://maketzo.co/assets/logo-mark.png"
     }
-  }
+  },
+  "image": "https://pub-aedb1c7ff17d48a496393b71ec4b91ee.r2.dev/blog-images/85082885-7a32-4839-bc6d-84862d0cabe1.jpg"
 }
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -325,70 +327,88 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 <section class="section">
   <div class="section-inner">
     <div class="prose-wrap blog-prose-clear">
-      
+      <figure class="blog-fig blog-fig-full"><img src="https://pub-aedb1c7ff17d48a496393b71ec4b91ee.r2.dev/blog-images/85082885-7a32-4839-bc6d-84862d0cabe1.jpg" alt="LimitP: Pre-Market and After-Hours Stop Losses in DAS Trader"></figure>
       <div class="prose-wrap">
   <p>If you trade gappers, you know the problem. The stock is moving at 7:30 in the morning, you are in it, and your stop does nothing. At most brokers a stop order only works between 9:30 and 4:00 Eastern. Before the open and after the close, a regular stop just waits.</p>
-  <p>LimitP is the answer DAS Trader Pro offers. It is a stop type that works in pre-market and after-hours, and some brokers, including Cobra Trading and Guardian Trading, will switch it on for your account. For a newer trader, it means a stop that actually works before the open, instead of one that waits for 9:30.</p>
+  <p><strong>LimitP</strong> is the answer DAS Trader Pro offers. It is a stop type that works in pre-market and after-hours, and some brokers, including Cobra Trading and Guardian Trading, will switch it on for your account. For a newer trader, it means a stop that actually works before the open, instead of one that waits for 9:30.</p>
   <p>It also has a catch every LimitP user needs to understand before trusting it on a thin, fast stock. This primer covers how LimitP works, how to get it, where it goes wrong, and how to use it well.</p>
-  <p>## Why a Normal Stop Does Nothing Before 9:30</p>
+</div>
+
+<div class="prose-wrap">
+  <h2>Why a Normal Stop Does Nothing Before 9:30</h2>
   <p>A standard stop order becomes a market order when it fires. Outside regular hours, brokers accept limit orders, not market orders, so a regular stop is held until the open.</p>
   <p>That means the stop you placed at 7:45 to protect a pre-market position will not fire at 7:50 when the stock drops through it. It waits for 9:30, and by then the stock can open well below your level.</p>
-  <p>## What LimitP Is</p>
+</div>
+
+<div class="prose-wrap">
+  <h2>What LimitP Is</h2>
   <p>LimitP is a stop type in DAS Trader Pro. Instead of becoming a market order when it fires, it becomes a limit order, and limit orders are allowed in pre-market and after-hours. That one change is what lets it work outside regular hours. It works during regular hours too.</p>
   <p>A LimitP stop has two prices:</p>
-  <p>- The trigger price: the level that sets the stop off.</p>
-  <p>- The limit price: the worst price you will accept once it fires.</p>
+  <ol><li>The trigger price: the level that sets the stop off.</li><li>The limit price: the worst price you will accept once it fires.</li></ol>
   <p>For a long position, the trigger sits above the limit. Say you are long at $5.20 and your stop is $4.80. You might set the trigger at $4.80 and the limit at $4.75. When the stop triggers at $4.80, DAS sends a sell order with a limit of $4.75. It fills at $4.75 or better, or it does not fill. For a short position it is the mirror image: the trigger sits below the limit, and the stop buys back at the limit or better.</p>
   <p>In the DAS orders window, a LimitP stop shows as SLP.</p>
-  <p>## Where the Order Waits</p>
+</div>
+
+<div class="prose-wrap">
+  <h2>Where the Order Waits</h2>
   <p>A LimitP stop waits on DAS's servers, not on your computer. You can close DAS or shut your computer down and the stop still fires. That matters in pre-market, when many traders step away between the early move and the open.</p>
-  <p>## What LimitP Can and Cannot Do</p>
-  <p>- Stop losses on an open position: yes.</p>
-  <p>- Stop entries, a buy above a level or a short below one: yes.</p>
-  <p>- Range OCO orders, a target and a stop linked so one cancels the other: no.</p>
-  <p>- Automatic trailing stops: no.</p>
+</div>
+
+<div class="prose-wrap">
+  <h2>What LimitP Can and Cannot Do</h2>
+  <ul><li>Stop losses on an open position: <strong>yes.</strong></li><li>Stop entries, a buy above a level or a short below one: yes.</li><li>Range OCO orders, a target and a stop linked so one cancels the other: no.</li><li>Automatic trailing stops: no.</li></ul>
   <p>The missing OCO is the one that bites. If you place a profit target and a LimitP stop as two separate orders, nothing links them. When one fills, the other is still live. Cancel it yourself, every time.</p>
-  <p>## Which Brokers Support LimitP</p>
+</div>
+
+<div class="prose-wrap">
+  <h2>Which Brokers Support LimitP</h2>
   <p>LimitP is a DAS feature, but your broker decides whether you get it. It stays off until the broker turns it on for your account.</p>
-  <p>- Cobra Trading offers it. You ask their support desk to enable it on your account.</p>
-  <p>- Guardian Trading documents it in its DAS hotkey guides, including full hotkey scripts.</p>
+  <ul><li><strong>Cobra Trading</strong> offers it. You ask their support desk to enable it on your account.</li><li><strong>Guardian Trading</strong> documents it in its DAS hotkey guides, including full hotkey scripts.</li></ul>
   <p>Other DAS brokers may offer it too, and support changes over time. If yours is not listed here, ask.</p>
-  <p>## How to Turn LimitP On</p>
+</div>
+
+<div class="prose-wrap">
+  <h2>How to Turn LimitP On</h2>
   <p>1. Open DAS and check the stop type list in your montage. If LimitP is already there, you have it.</p>
   <p>2. If it is not, email your broker's support desk. Say you trade on DAS Trader Pro and ask them to enable the LimitP stop type on your account.</p>
   <p>3. Ask them the three questions in the next section before you rely on it.</p>
   <p>4. Once they confirm, check that LimitP appears in the stop type list.</p>
   <p>5. Test it in the simulator first if your broker's simulator supports it, and confirm it shows as SLP in your orders window.</p>
-  <p>## Three Questions to Ask Your Broker</p>
-  <p>1. What does the trigger watch? Some stops fire on the last trade, others on the bid or the ask. In a thin pre-market book, one odd print or a flickering quote can set off a stop under one rule and not the other. Know which rule yours follows.</p>
-  <p>2. When does it expire? Ask whether a LimitP stop placed in pre-market carries into the regular session and after-hours, or ends with the session it was placed in.</p>
-  <p>3. What happens to a stop on shares you no longer hold? If your target fills and the stop is still live, ask what happens if that stop fires.</p>
-  <p>## Where LimitP Goes Wrong</p>
+</div>
+
+<div class="prose-wrap">
+  <h2>Three Questions to Ask Your Broker</h2>
+  <ol><li>What does the trigger watch? Some stops fire on the last trade, others on the bid or the ask. In a thin pre-market book, one odd print or a flickering quote can set off a stop under one rule and not the other. Know which rule yours follows.</li><li>When does it expire? Ask whether a LimitP stop placed in pre-market carries into the regular session and after-hours, or ends with the session it was placed in.</li><li>What happens to a stop on shares you no longer hold? If your target fills and the stop is still live, ask what happens if that stop fires.</li></ol>
+</div>
+
+<div class="prose-wrap">
+  <h2>Where LimitP Goes Wrong</h2>
   <p>Here is the catch. Once a LimitP stop fires, it is a limit order.</p>
-  <p>&gt; A limit order protects your price. It does not promise a fill.</p>
+  <blockquote class="pull-quote"><strong><em><span class="mk-gold">A limit order protects your price. It does not promise a fill.</span></em></strong></blockquote>
   <p>Picture a low float gapper at 8:10. You are long at $5.20, trigger $4.80, limit $4.75. A seller hits the stock and the bid drops from $4.95 to $4.40 in two seconds. Your stop fires at $4.80 and sends a sell at $4.75. Nobody is bidding $4.75 anymore. The order sits there unfilled while the stock keeps falling, and you are still long.</p>
   <p>That is a gap-through, and it is most likely exactly when a pre-market stop matters most:</p>
-  <p>- Wide spreads. Pre-market spreads on small caps can be 20 or 30 cents or more. Your limit has to sit where buyers are actually paying.</p>
-  <p>- Thin books. A few hundred shares on the bid can disappear in one print.</p>
-  <p>- No pauses. The limit up / limit down pauses that slow a collapse during regular hours do not run before 9:30 or after 4:00.</p>
-  <p>- News. A filing or a headline in pre-market can move a stock a long way between two quotes.</p>
+  <ul><li><strong>Wide spreads.</strong> Pre-market spreads on small caps can be 20 or 30 cents or more. Your limit has to sit where buyers are actually paying.</li><li><strong>Thin books.</strong> A few hundred shares on the bid can disappear in one print.</li><li><strong>No pauses.</strong> The limit up / limit down pauses that slow a collapse during regular hours do not run before 9:30 or after 4:00.</li><li><strong>News.</strong> A filing or a headline in pre-market can move a stock a long way between two quotes.</li></ul>
   <p>A partial fill is the quieter version of the same problem. Some of your shares sell at your limit, the rest do not, and you are holding the rest while the price keeps falling.</p>
-  <p>## Keys to Using LimitP Well</p>
-  <p>- Give the limit room. A limit one cent under the trigger rarely fills in a fast pre-market drop. Common hotkey setups put it about 0.5% away, and Guardian notes that fast movers and stocks under $1 need more room than that. Look at the spread before you set it.</p>
-  <p>- Know your worst case before you enter. The limit is the worst price you accept. A gap-through is the price you might actually get. If you could not live with the stock trading below your limit, that is a decision about the entry, not the stop.</p>
-  <p>- Stay close. LimitP lets you step away, but a stop that fired and did not fill needs you. From that moment you are managing the position by hand.</p>
-  <p>- Check the orders window. After you place it, confirm the stop shows as SLP with the prices you meant.</p>
-  <p>- Mind the decimals under $1. Stocks under a dollar can be quoted to four decimal places. Check what your broker accepts before you set a limit like $0.4875.</p>
-  <p>- Cancel the other side. With no OCO, a filled target leaves a live stop, and a filled stop leaves a live target.</p>
-  <p>## LimitP Questions Traders Ask</p>
-  <p>**Does LimitP work after hours?** Yes. It works in pre-market, after-hours and during regular hours.</p>
-  <p>**Is LimitP the same as a stop limit order?** It has the same two prices, a trigger and a limit. The difference is that a LimitP stop works outside regular hours, where an ordinary stop limit order usually does not, and it waits on DAS's servers until it fires.</p>
-  <p>**Will my LimitP stop fire if my computer is off?** Yes. It waits at DAS, so your computer does not need to be on.</p>
-  <p>**Can a LimitP stop fail?** It can fail to fill. If the price moves past your limit before your order fills, the order stays open and you stay in the trade.</p>
-  <p>**Can I use LimitP for OCO orders or trailing stops?** No. It works for stop losses and stop entries.</p>
-  <p>**What does SLP mean in DAS?** It is how a LimitP stop is labeled in the orders window.</p>
-  <p>**Which brokers offer LimitP?** Cobra Trading and Guardian Trading are two. Ask your broker to enable it on your account.</p>
-  <p>## Where This Fits</p>
+</div>
+
+<div class="prose-wrap">
+  <h2>Keys to Using LimitP Well</h2>
+  <ul><li><strong>Give the limit room.</strong>A limit one cent under the trigger rarely fills in a fast pre-market drop. Common hotkey setups put it about 0.5% away, and Guardian notes that fast movers and stocks under $1 need more room than that. Look at the spread before you set it.</li><li><strong>Know your worst case before you enter.</strong>The limit is the worst price you accept. A gap-through is the price you might actually get. If you could not live with the stock trading below your limit, that is a decision about the entry, not the stop.</li><li><strong>Stay close.</strong>LimitP lets you step away, but a stop that fired and did not fill needs you. From that moment you are managing the position by hand.</li><li><strong>Check the orders window.</strong>After you place it, confirm the stop shows as SLP with the prices you meant.</li><li><strong>Mind the decimals under $1.</strong>Stocks under a dollar can be quoted to four decimal places. Check what your broker accepts before you set a limit like $0.4875.</li><li><strong>Cancel the other side.</strong>With no OCO, a filled target leaves a live stop, and a filled stop leaves a live target.</li></ul>
+</div>
+
+<div class="prose-wrap">
+  <h2>LimitP Questions Traders Ask</h2>
+  <p><strong>**Does LimitP work after hours?**</strong> Yes. It works in pre-market, after-hours and during regular hours.</p>
+  <p><strong>**Is LimitP the same as a stop limit order?**</strong> It has the same two prices, a trigger and a limit. The difference is that a LimitP stop works outside regular hours, where an ordinary stop limit order usually does not, and it waits on DAS's servers until it fires.</p>
+  <p><strong>**Will my LimitP stop fire if my computer is off?**</strong> Yes. It waits at DAS, so your computer does not need to be on.</p>
+  <p><strong>**Can a LimitP stop fail?**</strong> It can fail to fill. If the price moves past your limit before your order fills, the order stays open and you stay in the trade.</p>
+  <p><strong>**Can I use LimitP for OCO orders or trailing stops?**</strong> No. It works for stop losses and stop entries.</p>
+  <p><strong>**What does SLP mean in DAS?**</strong> It is how a LimitP stop is labeled in the orders window.</p>
+  <p><strong>**Which brokers offer LimitP?**</strong>Cobra Trading and Guardian Trading are two. Ask your broker to enable it on your account.</p>
+</div>
+
+<div class="prose-wrap">
+  <h2>Where This Fits</h2>
   <p>A pre-market stop is a decision you make before the move, not during it. MAKETZO works the same way: you set the rules for your day before the open, and the app holds you to them when the stock is moving fast. LimitP handles the order. Making the decision ahead of time is still your job.</p>
   <p>This article is education, not trading advice. Order types and broker features change, so confirm every detail with your broker before you rely on it.</p>
 </div>
