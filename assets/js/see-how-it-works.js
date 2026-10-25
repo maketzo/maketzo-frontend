@@ -44,7 +44,7 @@
   // device pixels across that is not a phone gets 2160p; everything else gets 1080p, cut from the same 4K master.
   // The files live on the CDN (Cloudflare R2, the bucket the music plays from), never in this repo (Ed: "Shouldn't
   // this be there for scalability"). v6 is there too (video/maketzo-see-how-it-works.mp4), so going back is one line.
-  var CDN = 'https://pub-aedb1c7ff17d48a496393b71ec4b91ee.r2.dev/video/';
+  var CDN = 'https://media.maketzo.co/video/';
   var SRC_1080 = CDN + 'maketzo-see-how-it-works-v7-1080.mp4';
   var SRC_2160 = CDN + 'maketzo-see-how-it-works-v7-2160.mp4';
   var CARD_LEAD = 5.7;   // the end card is the last 5.8s of the cut, dissolving in over 0.8s
