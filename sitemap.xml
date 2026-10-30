@@ -30,6 +30,7 @@
   <url><loc>https://maketzo.co/terms</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
   <url><loc>https://maketzo.co/disclaimer</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
   <!-- BLOG:START -->
+  <url><loc>https://maketzo.co/blog/nervous-system-skip-vs-loss</loc><lastmod>2026-10-30</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://maketzo.co/blog/low-float-arguments-not-levels</loc><lastmod>2026-10-29</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://maketzo.co/blog/cortisol-spike-you-didnt-disarm</loc><lastmod>2026-10-28</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://maketzo.co/blog/hour-before-bell-decides</loc><lastmod>2026-10-27</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
