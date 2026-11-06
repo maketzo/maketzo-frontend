@@ -1,3 +1,6 @@
+# Missing URLs get the branded 404.html (noindex, links back in, sends mkt_404 so broken links show in analytics) instead of Hostinger's blank page; a local path keeps the 404 status.
+ErrorDocument 404 /404.html
+
 # ──────────────────────────────────────────────────────────────────────────────
 # Host-conditional basic-auth gate. ONE file across all three branches
 # (dev / staging / main) — bit-identical, no per-branch divergence to strip

@@ -123,7 +123,12 @@
   // with NO api_key, so PostHog rejects the whole batch and ingestion silently
   // drops to zero -- which is exactly what happened on prod 2026-08-25.
   // These two names are posthog-js's own required-field list.
-  var RESERVED_PASS = { token: 1, distinct_id: 1 };
+  var RESERVED_PASS = { token: 1, distinct_id: 1,
+    // Campaign tags and ad click ids, which posthog-js copies off the URL as plain keys. Attribution, never
+    // user content: "content" in DENY_KEY was silently dropping every utm_content (found 2026-11-06 while
+    // building the analytics portal; ads need it, and the click ids, to say which ad brought a trader).
+    utm_source: 1, utm_medium: 1, utm_campaign: 1, utm_content: 1, utm_term: 1,
+    gclid: 1, gbraid: 1, wbraid: 1, msclkid: 1, dclid: 1, fbclid: 1, ttclid: 1, li_fat_id: 1, twclid: 1 };
 
   // Per-element keys inside $elements that can hold user-authored strings.
   var ELEMENT_DENY = ["text", "$el_text", "attr__value", "attr__title",
@@ -372,7 +377,10 @@
   // consent choice, because it is a setting, not tracking.
   var INTERNAL_KEY = "mkt_internal";
   function isInternal() {
-    return safeLocal("get", INTERNAL_KEY) === "1";
+    // Or a browser that signed in to the admin console: GET /admin/auth/me sets mk_internal=yes on .maketzo.co
+    // (maketzo-backend lib/analytics-team.js; Ed, 2026-11-06: "exclude myself, owners and admins from reports").
+    if (safeLocal("get", INTERNAL_KEY) === "1") return true;
+    try { return /(?:^|;\s*)mk_internal=yes(?:;|$)/.test(document.cookie); } catch (e) { return false; }
   }
   function setInternal(on) {
     if (on) safeLocal("set", INTERNAL_KEY, "1");
@@ -528,6 +536,60 @@
         mode: "cors"
       }).catch(function () {});
     } catch (e) {}
+  }
+
+  // ── Live beacon ──────────────────────────────────────────────────────
+  // Who is on the site RIGHT NOW (Ed, 2026-11-06: "what users are doing right now - e.g. LIVE"). One small
+  // POST to our own server (maketzo-backend lib/live-presence.js) when a page opens and every 30 seconds while
+  // the tab is visible, so the admin Live page is seconds old and costs none of PostHog's query budget.
+  // Same gate as sendToBackend (a privacy signal stops it), and only on our own hostnames, never a file:// or
+  // localhost preview. credentials: "include" so a signed-in visitor shows as their account.
+  var LIVE_EVERY_MS = 30000;
+  var liveTimer = null;
+  var liveFirst = true;
+  var CLICK_ID_KEYS = ["gclid", "gbraid", "wbraid", "msclkid", "dclid", "fbclid", "ttclid", "li_fat_id", "twclid"];
+  function liveDevice() {
+    try {
+      var ua = navigator.userAgent || "";
+      if (/iPad|Tablet/i.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1)) return "tablet";
+      if (/Mobi|Android|iPhone/i.test(ua)) return "mobile";
+      return "desktop";
+    } catch (e) { return ""; }
+  }
+  function liveBeat(nav) {
+    if (analyticsOptOut()) return;
+    var host = window.location.hostname.replace(/^www\./, "");
+    if (!MKT_TIERS[host]) return;
+    var body = { sf: "marketing", a: getAnonId(), s: getSessionId(), p: window.location.pathname, n: nav ? 1 : 0, d: liveDevice(), i: isInternal() ? 1 : 0 };
+    try { body.t = String(document.title || "").replace(/\s*[|·-]\s*MAKETZO\s*$/i, "").slice(0, 160); } catch (e) {}
+    if (liveFirst) {
+      // Where this visit came from rides on the first beat only.
+      try {
+        var q = new URLSearchParams(window.location.search);
+        body.r = document.referrer || "";
+        body.us = q.get("utm_source") || "";
+        body.um = q.get("utm_medium") || "";
+        for (var i = 0; i < CLICK_ID_KEYS.length; i++) { if (q.get(CLICK_ID_KEYS[i])) { body.ci = CLICK_ID_KEYS[i]; break; } }
+      } catch (e) {}
+      liveFirst = false;
+    }
+    try {
+      fetch(API_BASE + "/analytics/live", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+        keepalive: true,
+        credentials: "include",
+        mode: "cors"
+      }).catch(function () {});
+    } catch (e) {}
+  }
+  function liveStart() {
+    liveBeat(true);
+    if (liveTimer) clearInterval(liveTimer);
+    liveTimer = setInterval(function () { if (!document.hidden) liveBeat(false); }, LIVE_EVERY_MS);
+    // Coming back to the tab says "still here" at once, rather than up to 30 seconds later.
+    document.addEventListener("visibilitychange", function () { if (!document.hidden) liveBeat(false); });
   }
 
   // ── PostHog loader ───────────────────────────────────────────────────
@@ -1004,6 +1066,7 @@
 
     initCtaTracking();
     initFormStart();
+    liveStart();
     if (document.readyState === "loading") {
       document.addEventListener("DOMContentLoaded", initScrollDepth);
     } else {
