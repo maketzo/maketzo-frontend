@@ -291,7 +291,14 @@
     "dev.maketzo.co":     "phc_t4DFgxhUSgonk6g6FHBWaixHzMCnTeqTSKhZXW2rW65Q",
     "localhost":          "phc_t4DFgxhUSgonk6g6FHBWaixHzMCnTeqTSKhZXW2rW65Q"
   };
-  var POSTHOG_HOST = "https://us.i.posthog.com";
+  // PostHog's managed reverse proxy (2026-11-06), so an ad blocker that drops
+  // requests to *.posthog.com still lets the visit count. It must stay a
+  // SUBDOMAIN: the first attempt pointed maketzo.co itself at the proxy and
+  // every page of the site answered with PostHog's 404. ui_host keeps the links
+  // PostHog builds (toolbar, recordings) on its own US app. Twin of
+  // maketzo-app/lib/app-analytics.js; pinned by test-analytics-posthog-config.js.
+  var POSTHOG_HOST = "https://e.maketzo.co";
+  var POSTHOG_UI_HOST = "https://us.posthog.com";
   var MKT_TIERS = {
     "maketzo.co": "prod",
     "staging.maketzo.co": "staging",
@@ -550,6 +557,7 @@
     var persistence = consentAllowsPersistence() ? "localStorage+cookie" : "memory";
     window.posthog.init(key, {
       api_host: POSTHOG_HOST,
+      ui_host: POSTHOG_UI_HOST,
       persistence: persistence,
       // TRUE, and it must stay true. PostHog owns the pageview lifecycle: it
       // stamps $session_id, derives sessions and bounce rate, and handles
