@@ -573,10 +573,14 @@
       } catch (e) {}
       liveFirst = false;
     }
+    // text/plain on purpose: a JSON body makes the browser send a CORS preflight (OPTIONS) before every beat;
+    // text/plain is a "simple" request, so each beat is one round trip, not two. The server parses it.
+    // (Under CDP, Chrome DevTools reports these POSTs as net::ERR_ABORTED even though they arrive; a local
+    // two-server test on 2026-11-06 proved the server receives every one. Do not "fix" that reading.)
     try {
       fetch(API_BASE + "/analytics/live", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "text/plain" },
         body: JSON.stringify(body),
         keepalive: true,
         credentials: "include",
