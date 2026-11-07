@@ -25,7 +25,7 @@
   <url><loc>https://maketzo.co/zone</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://maketzo.co/soundtrack</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://maketzo.co/contact</loc><changefreq>yearly</changefreq><priority>0.5</priority></url>
-  <url><loc>https://maketzo.co/blog</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://maketzo.co/blog/</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://maketzo.co/privacy</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
   <url><loc>https://maketzo.co/terms</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
   <url><loc>https://maketzo.co/disclaimer</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
