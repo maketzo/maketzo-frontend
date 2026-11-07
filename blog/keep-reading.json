@@ -1,0 +1,505 @@
+{
+ "note": "Keep Reading picks per blog post, kept by maketzo-backend lib/blog-keep-reading.js. Do not edit by hand.",
+ "picks": {
+  "anchor-image-beats-rules": [
+   "nobody-journals-skipped-trade",
+   "overtrading-nervous-system-not-decision",
+   "the-trade-you-chased-didnt-break-you"
+  ],
+  "anchor-image-stops-you-rules-cant": [
+   "overtrade-sitting-still-feels-losing",
+   "nervous-system-skip-vs-loss",
+   "fomo-narrows-vision-missed-trade"
+  ],
+  "bad-sleep-already-red-day": [
+   "cortisol-spike-you-didnt-disarm",
+   "meditation-is-risk-management",
+   "photograph-saves-when-rules-dont"
+  ],
+  "best-trade-you-skipped": [
+   "no-trade-hardest-position",
+   "why-winning-traders-skip-trades",
+   "winning-traders-skip-more-trades"
+  ],
+  "big-winners-sit-on-small-losses": [
+   "small-loss-keeps-you-trader",
+   "hold-winners-cut-losers-clean",
+   "small-losses-keep-you-dangerous"
+  ],
+  "bigger-clip-different-trade": [
+   "small-loss-keeps-you-here",
+   "survive-by-losing-small",
+   "low-float-punishes-size-not-thesis"
+  ],
+  "blue-belt-phase-every-trader": [
+   "rules-dont-fail-discipline-does",
+   "small-account-discipline-harder",
+   "tap-skill-market-wont-teach"
+  ],
+  "build-the-zone-before-bell": [
+   "zone-is-a-sequence-not-a-mood",
+   "pre-bell-hour-trade-before-trade",
+   "pre-market-zone-routine"
+  ],
+  "cant-name-the-setup": [
+   "operating-system-is-a-pre-commitment",
+   "low-float-arguments-not-levels",
+   "hands-take-trades-brain-vetoed"
+  ],
+  "clean-entry-decided-before-setup": [
+   "random-trades-dont-feel-random",
+   "perfect-entry-before-the-click",
+   "size-that-unmakes-you"
+  ],
+  "cortisol-curve-risk-plan": [
+   "revenge-trading-neurochemistry-loop",
+   "fomo-costs-the-next-trade",
+   "the-line-you-drew-then-crossed"
+  ],
+  "cortisol-spike-you-didnt-disarm": [
+   "meditation-is-risk-management",
+   "bad-sleep-already-red-day",
+   "grief-of-becoming-boring"
+  ],
+  "defend-green-day-like-red": [
+   "green-to-red-give-back-profits",
+   "the-trade-you-dont-take-luj2",
+   "the-hardest-trade-is-no-trade"
+  ],
+  "edge-is-the-trades-you-skip": [
+   "the-trade-you-dont-take",
+   "why-winning-traders-skip-trades",
+   "the-trade-you-dont-take-gaha"
+  ],
+  "entry-you-dont-have-to-defend": [
+   "trades-share-nothing-in-common",
+   "perfect-entry-not-a-decision",
+   "low-float-stocks-break-your-rules"
+  ],
+  "float-is-small-mistakes-arent": [
+   "winning-makes-you-bigger",
+   "perfect-entry-not-about-entry",
+   "strategy-or-mood-random-trading"
+  ],
+  "fomo-bill-three-trades-later": [
+   "fomo-costs-the-next-trade",
+   "hunt-with-morning-profits",
+   "overtrade-sitting-still-feels-losing"
+  ],
+  "fomo-costs-the-next-trade": [
+   "overtrading-is-an-income-strategy",
+   "nervous-system-skip-vs-loss",
+   "fomo-narrows-vision-missed-trade"
+  ],
+  "fomo-is-a-tax-you-pay": [
+   "overtrading-is-a-boredom-problem",
+   "anchor-image-stops-you-rules-cant",
+   "overtrading-is-an-unfinished-day"
+  ],
+  "fomo-narrows-vision-missed-trade": [
+   "nobody-journals-skipped-trade",
+   "make-back-fantasy-compound-cost",
+   "cortisol-curve-risk-plan"
+  ],
+  "fomo-tax-next-three-trades": [
+   "the-line-you-drew-then-crossed",
+   "overtrading-nervous-system-not-decision",
+   "the-trade-you-chased-didnt-break-you"
+  ],
+  "getting-in-zone-sequence": [
+   "pre-market-routine-gets-you-ready",
+   "zone-is-a-sequence-not-a-mood",
+   "build-the-zone-before-bell"
+  ],
+  "good-setup-wrong-temperature": [
+   "perfect-entry-before-the-click",
+   "operating-system-is-a-pre-commitment",
+   "cant-name-the-setup"
+  ],
+  "green-streaks-get-upgraded": [
+   "winning-makes-you-bigger",
+   "trading-operating-system-not-motivation",
+   "trades-share-nothing-in-common"
+  ],
+  "green-to-red-give-back-profits": [
+   "the-trade-you-dont-take-luj2",
+   "overtrade-to-feel-something",
+   "the-chart-did-not-change-you-did"
+  ],
+  "green-to-red-is-a-second-trade": [
+   "size-that-unmakes-you",
+   "hands-take-trades-brain-vetoed",
+   "low-float-arguments-not-levels"
+  ],
+  "grief-of-becoming-boring": [
+   "low-float-trades-like-fight",
+   "prefrontal-cortex-threshold-line",
+   "photograph-saves-when-rules-dont"
+  ],
+  "hands-take-trades-brain-vetoed": [
+   "the-trade-you-dont-take-3pj6",
+   "entry-you-dont-have-to-defend",
+   "trades-share-nothing-in-common"
+  ],
+  "hardest-position-no-position": [
+   "trading-a-mood-not-system",
+   "hardest-trade-is-the-one-you-skip",
+   "journaling-honest-not-different"
+  ],
+  "hardest-trade-is-the-one-you-skip": [
+   "you-dont-lose-you-give-it-back",
+   "sunday-self-tuesday-self",
+   "tap-skill-market-wont-teach"
+  ],
+  "hold-winners-cut-losers-clean": [
+   "small-loss-complete-trade",
+   "small-accounts-die-from-frequency",
+   "bigger-clip-different-trade"
+  ],
+  "hour-before-bell-decides": [
+   "pre-market-routine-gets-you-ready",
+   "getting-in-zone-sequence",
+   "pre-market-zone-routine"
+  ],
+  "hunt-with-morning-profits": [
+   "overtrading-is-an-income-strategy",
+   "profitable-traders-are-boring",
+   "revenge-trading-neurochemistry-loop"
+  ],
+  "journaling-honest-not-different": [
+   "small-account-discipline-harder",
+   "rules-dont-fail-discipline-does",
+   "blue-belt-phase-every-trader"
+  ],
+  "limitp-premarket-after-hours-stops": [
+   "stop-trading-randomly-noise-vs-signal",
+   "trading-os-runs-whether-you-wrote-it",
+   "low-float-room-no-exits"
+  ],
+  "low-float-arguments-not-levels": [
+   "trading-operating-system-not-motivation",
+   "clean-entry-decided-before-setup",
+   "random-trades-dont-feel-random"
+  ],
+  "low-float-punishes-size-not-thesis": [
+   "small-loss-complete-trade",
+   "big-winners-sit-on-small-losses",
+   "small-losses-keep-you-dangerous"
+  ],
+  "low-float-room-no-exits": [
+   "the-trade-you-dont-take-3pj6",
+   "green-to-red-is-a-second-trade",
+   "good-setup-wrong-temperature"
+  ],
+  "low-float-stocks-break-your-rules": [
+   "perfect-entry-not-a-decision",
+   "operating-system-is-a-pre-commitment",
+   "cant-name-the-setup"
+  ],
+  "low-float-stocks-move-loud": [
+   "low-float-trades-like-fight",
+   "prefrontal-cortex-threshold-line",
+   "low-float-room-no-exits"
+  ],
+  "low-float-trades-like-fight": [
+   "low-float-stocks-move-loud",
+   "grief-of-becoming-boring",
+   "green-to-red-is-a-second-trade"
+  ],
+  "make-back-fantasy-compound-cost": [
+   "cortisol-curve-risk-plan",
+   "fomo-bill-three-trades-later",
+   "overtrade-sitting-still-feels-losing"
+  ],
+  "meditation-is-risk-management": [
+   "bad-sleep-already-red-day",
+   "cortisol-spike-you-didnt-disarm",
+   "getting-in-zone-sequence"
+  ],
+  "nervous-system-skip-vs-loss": [
+   "the-line-you-drew-then-crossed",
+   "overtrading-is-a-nervous-system-problem",
+   "anchor-image-beats-rules"
+  ],
+  "no-trade-hardest-position": [
+   "the-trade-you-dont-take",
+   "edge-is-the-trades-you-skip",
+   "the-trade-you-dont-take-gaha"
+  ],
+  "nobody-journals-skipped-trade": [
+   "make-back-fantasy-compound-cost",
+   "fomo-tax-next-three-trades",
+   "why-green-becomes-your-worst-red"
+  ],
+  "operating-system-is-a-pre-commitment": [
+   "green-streaks-get-upgraded",
+   "winning-makes-you-bigger",
+   "cant-name-the-setup"
+  ],
+  "overtrade-sitting-still-feels-losing": [
+   "fomo-bill-three-trades-later",
+   "fomo-tax-next-three-trades",
+   "why-green-becomes-your-worst-red"
+  ],
+  "overtrade-to-feel-something": [
+   "green-to-red-give-back-profits",
+   "you-gave-back-the-money",
+   "trading-a-mood-not-system"
+  ],
+  "overtrading-is-a-boredom-problem": [
+   "the-trade-you-chased-didnt-break-you",
+   "hunt-with-morning-profits",
+   "fomo-is-a-tax-you-pay"
+  ],
+  "overtrading-is-a-nervous-system-problem": [
+   "anchor-image-beats-rules",
+   "overtrading-is-a-boredom-problem",
+   "fomo-is-a-tax-you-pay"
+  ],
+  "overtrading-is-an-income-strategy": [
+   "profitable-traders-are-boring",
+   "anchor-image-beats-rules",
+   "overtrading-is-a-nervous-system-problem"
+  ],
+  "overtrading-is-an-unfinished-day": [
+   "fomo-bill-three-trades-later",
+   "hunt-with-morning-profits",
+   "fomo-costs-the-next-trade"
+  ],
+  "overtrading-nervous-system-not-decision": [
+   "why-green-becomes-your-worst-red",
+   "anchor-image-stops-you-rules-cant",
+   "overtrading-is-an-unfinished-day"
+  ],
+  "perfect-entry-before-the-click": [
+   "stop-trading-randomly-noise-vs-signal",
+   "cant-name-the-setup",
+   "size-that-unmakes-you"
+  ],
+  "perfect-entry-not-a-decision": [
+   "strategy-or-mood-random-trading",
+   "hands-take-trades-brain-vetoed",
+   "low-float-arguments-not-levels"
+  ],
+  "perfect-entry-not-about-entry": [
+   "trader-operating-system-not-setup",
+   "trading-operating-system-not-mood",
+   "stop-trading-randomly"
+  ],
+  "photograph-saves-when-rules-dont": [
+   "bad-sleep-already-red-day",
+   "small-accounts-die-from-frequency",
+   "meditation-is-risk-management"
+  ],
+  "pre-bell-hour-trade-before-trade": [
+   "build-the-zone-before-bell",
+   "hour-before-bell-decides",
+   "pre-market-zone-routine"
+  ],
+  "pre-market-routine-gets-you-ready": [
+   "getting-in-zone-sequence",
+   "pre-bell-hour-trade-before-trade",
+   "pre-market-zone-routine"
+  ],
+  "pre-market-zone-routine": [
+   "pre-bell-hour-trade-before-trade",
+   "hour-before-bell-decides",
+   "zone-is-a-sequence-not-a-mood"
+  ],
+  "prefrontal-cortex-threshold-line": [
+   "low-float-stocks-move-loud",
+   "entry-you-dont-have-to-defend",
+   "the-trade-you-dont-take-3pj6"
+  ],
+  "profitable-traders-are-boring": [
+   "revenge-trading-neurochemistry-loop",
+   "make-back-fantasy-compound-cost",
+   "nobody-journals-skipped-trade"
+  ],
+  "random-trades-dont-feel-random": [
+   "green-streaks-get-upgraded",
+   "trading-os-runs-whether-you-wrote-it",
+   "stop-trading-randomly-noise-vs-signal"
+  ],
+  "revenge-trading-neurochemistry-loop": [
+   "profitable-traders-are-boring",
+   "cortisol-curve-risk-plan",
+   "overtrading-is-an-income-strategy"
+  ],
+  "rules-dont-fail-discipline-does": [
+   "blue-belt-phase-every-trader",
+   "sunday-self-tuesday-self",
+   "the-hardest-trade-is-no-trade"
+  ],
+  "size-that-unmakes-you": [
+   "perfect-entry-before-the-click",
+   "float-is-small-mistakes-arent",
+   "trader-operating-system-not-setup"
+  ],
+  "small-account-discipline-harder": [
+   "rules-dont-fail-discipline-does",
+   "you-dont-lose-you-give-it-back",
+   "the-trade-you-dont-take-luj2"
+  ],
+  "small-accounts-die-from-frequency": [
+   "small-loss-complete-trade",
+   "low-float-punishes-size-not-thesis",
+   "survive-by-losing-small"
+  ],
+  "small-loss-complete-trade": [
+   "small-accounts-die-from-frequency",
+   "small-loss-keeps-you-here",
+   "small-loss-keeps-you-trader"
+  ],
+  "small-loss-keeps-you-here": [
+   "survive-by-losing-small",
+   "small-loss-keeps-you-trader",
+   "big-winners-sit-on-small-losses"
+  ],
+  "small-loss-keeps-you-trader": [
+   "small-loss-keeps-you-here",
+   "small-losses-keep-you-dangerous",
+   "bigger-clip-different-trade"
+  ],
+  "small-losses-keep-you-dangerous": [
+   "big-winners-sit-on-small-losses",
+   "bigger-clip-different-trade",
+   "hold-winners-cut-losers-clean"
+  ],
+  "stop-trading-randomly": [
+   "trading-operating-system-not-mood",
+   "good-setup-wrong-temperature",
+   "limitp-premarket-after-hours-stops"
+  ],
+  "stop-trading-randomly-noise-vs-signal": [
+   "trading-os-runs-whether-you-wrote-it",
+   "low-float-arguments-not-levels",
+   "operating-system-is-a-pre-commitment"
+  ],
+  "strategy-or-mood-random-trading": [
+   "perfect-entry-not-about-entry",
+   "good-setup-wrong-temperature",
+   "limitp-premarket-after-hours-stops"
+  ],
+  "sunday-self-tuesday-self": [
+   "tap-skill-market-wont-teach",
+   "the-chart-did-not-change-you-did",
+   "you-gave-back-the-money"
+  ],
+  "survive-by-losing-small": [
+   "low-float-punishes-size-not-thesis",
+   "bigger-clip-different-trade",
+   "hold-winners-cut-losers-clean"
+  ],
+  "tap-skill-market-wont-teach": [
+   "small-account-discipline-harder",
+   "green-to-red-give-back-profits",
+   "overtrade-to-feel-something"
+  ],
+  "the-chart-did-not-change-you-did": [
+   "overtrade-to-feel-something",
+   "hardest-position-no-position",
+   "defend-green-day-like-red"
+  ],
+  "the-hardest-trade-is-no-trade": [
+   "blue-belt-phase-every-trader",
+   "defend-green-day-like-red",
+   "hardest-trade-is-the-one-you-skip"
+  ],
+  "the-line-you-drew-then-crossed": [
+   "overtrading-is-a-nervous-system-problem",
+   "anchor-image-stops-you-rules-cant",
+   "overtrading-is-an-unfinished-day"
+  ],
+  "the-trade-you-chased-didnt-break-you": [
+   "overtrading-nervous-system-not-decision",
+   "nervous-system-skip-vs-loss",
+   "fomo-narrows-vision-missed-trade"
+  ],
+  "the-trade-you-dont-take": [
+   "no-trade-hardest-position",
+   "best-trade-you-skipped",
+   "winning-traders-skip-more-trades"
+  ],
+  "the-trade-you-dont-take-3pj6": [
+   "entry-you-dont-have-to-defend",
+   "trading-operating-system-not-mood",
+   "stop-trading-randomly"
+  ],
+  "the-trade-you-dont-take-gaha": [
+   "edge-is-the-trades-you-skip",
+   "why-winning-traders-skip-trades",
+   "winning-traders-skip-more-trades"
+  ],
+  "the-trade-you-dont-take-luj2": [
+   "the-hardest-trade-is-no-trade",
+   "journaling-honest-not-different",
+   "you-dont-lose-you-give-it-back"
+  ],
+  "trader-operating-system-not-setup": [
+   "float-is-small-mistakes-arent",
+   "perfect-entry-not-a-decision",
+   "low-float-stocks-break-your-rules"
+  ],
+  "trades-share-nothing-in-common": [
+   "trading-operating-system-not-motivation",
+   "perfect-entry-not-about-entry",
+   "strategy-or-mood-random-trading"
+  ],
+  "trading-a-mood-not-system": [
+   "you-gave-back-the-money",
+   "hardest-position-no-position",
+   "defend-green-day-like-red"
+  ],
+  "trading-operating-system-not-mood": [
+   "low-float-stocks-break-your-rules",
+   "stop-trading-randomly",
+   "green-to-red-is-a-second-trade"
+  ],
+  "trading-operating-system-not-motivation": [
+   "clean-entry-decided-before-setup",
+   "float-is-small-mistakes-arent",
+   "trader-operating-system-not-setup"
+  ],
+  "trading-os-runs-whether-you-wrote-it": [
+   "low-float-room-no-exits",
+   "limitp-premarket-after-hours-stops",
+   "hands-take-trades-brain-vetoed"
+  ],
+  "why-green-becomes-your-worst-red": [
+   "fomo-tax-next-three-trades",
+   "overtrading-is-a-boredom-problem",
+   "fomo-is-a-tax-you-pay"
+  ],
+  "why-winning-traders-skip-trades": [
+   "best-trade-you-skipped",
+   "no-trade-hardest-position",
+   "the-trade-you-dont-take"
+  ],
+  "winning-makes-you-bigger": [
+   "green-streaks-get-upgraded",
+   "random-trades-dont-feel-random",
+   "clean-entry-decided-before-setup"
+  ],
+  "winning-traders-skip-more-trades": [
+   "best-trade-you-skipped",
+   "edge-is-the-trades-you-skip",
+   "the-trade-you-dont-take-gaha"
+  ],
+  "you-dont-lose-you-give-it-back": [
+   "sunday-self-tuesday-self",
+   "trading-a-mood-not-system",
+   "hardest-position-no-position"
+  ],
+  "you-gave-back-the-money": [
+   "the-chart-did-not-change-you-did",
+   "hardest-trade-is-the-one-you-skip",
+   "journaling-honest-not-different"
+  ],
+  "zone-is-a-sequence-not-a-mood": [
+   "pre-market-routine-gets-you-ready",
+   "hour-before-bell-decides",
+   "build-the-zone-before-bell"
+  ]
+ }
+}
