@@ -562,6 +562,9 @@
     if (!MKT_TIERS[host]) return;
     var body = { sf: "marketing", a: getAnonId(), s: getSessionId(), p: window.location.pathname, n: nav ? 1 : 0, d: liveDevice(), i: isInternal() ? 1 : 0 };
     try { body.t = String(document.title || "").replace(/\s*[|·-]\s*MAKETZO\s*$/i, "").slice(0, 160); } catch (e) {}
+    // A browser driven by automation says so (navigator.webdriver); Live leaves it out, as Website does (Ed,
+    // 2026-11-06, "Tag them like Website"). The server also checks the browser's name.
+    try { if (navigator.webdriver) body.wd = 1; } catch (e) {}
     if (liveFirst) {
       // Where this visit came from rides on the first beat only.
       try {
