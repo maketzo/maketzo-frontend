@@ -39,7 +39,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/tokens.css">
 <link rel="stylesheet" href="assets/css/components.css">
-<script src="assets/js/mkt-analytics.js?v=14" defer></script>
+<script src="assets/js/mkt-analytics.js?v=15" defer></script>
 <script src="assets/js/newsletter.js?v=5" defer></script>
 <script src="assets/js/mkt-consent.js?v=1" defer></script>
 <script src="assets/js/checkout.js?v=10" defer></script>
@@ -1511,6 +1511,8 @@ const plans={
 };
 let isAnnual=false;
 function setPricing(annual){
+  // Which billing a visitor looks at (2026-11-06): the By Plan view needs it and nothing recorded it. Only a change.
+  if (annual !== isAnnual && window.MKT && window.MKT.trackEvent) window.MKT.trackEvent('mkt_pricing_interval', { interval: annual ? 'year' : 'month' });
   isAnnual=annual;
   document.getElementById('pricingToggle').classList.toggle('annual',annual);
   document.getElementById('labelMonthly').classList.toggle('active',!annual);

@@ -727,6 +727,19 @@
     }
   }
 
+  // "tier" on an event is the ENVIRONMENT (prod, staging, dev, local), registered once below. An event's own
+  // "tier" replaces it, and the pricing buttons, checkout and signup sent the PLAN as tier ("pro"). "pro" is not
+  // dev, so dev and staging plan clicks passed the prod filter as prod (2026-11-06: 22 dev "pro" clicks against
+  // 19 real ones). So a plan-valued tier always rides as "plan", here, for every event. Twins:
+  // maketzo-app/lib/app-analytics.js planFromTier and maketzo-backend/server.js planFromTier.
+  function planFromTier(props) {
+    if (!props || props.tier == null || /^(prod|staging|dev|local)$/.test(String(props.tier))) return props || {};
+    var out = {};
+    for (var k in props) { if (Object.prototype.hasOwnProperty.call(props, k) && k !== "tier") out[k] = props[k]; }
+    if (out.plan == null) out.plan = props.tier;
+    return out;
+  }
+
   function sendToPostHog(eventType, props) {
     if (analyticsOptOut()) return;
     var host = window.location.hostname;
@@ -736,7 +749,7 @@
     var enriched = Object.assign({
       $anon_id: getAnonId(),
       page: window.location.pathname
-    }, props || {});
+    }, planFromTier(props));
 
     if (posthogReady && window.posthog) {
       try { window.posthog.capture(eventType, enriched); } catch (e) {}
@@ -747,7 +760,7 @@
 
   // ── Public API ───────────────────────────────────────────────────────
   function trackEvent(eventType, props) {
-    props = props || {};
+    props = planFromTier(props || {});
     if (DUAL_FIRE_EVENTS[eventType] || MKT_PREFIX.test(eventType)) sendToBackend(eventType, props);
     sendToPostHog(eventType, props);
   }
