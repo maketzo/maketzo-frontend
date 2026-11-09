@@ -22,8 +22,8 @@
    "winning-traders-skip-more-trades"
   ],
   "big-winners-sit-on-small-losses": [
+   "small-account-one-engine-compounding",
    "small-loss-keeps-you-trader",
-   "hold-winners-cut-losers-clean",
    "small-losses-keep-you-dangerous"
   ],
   "bigger-clip-different-trade": [
@@ -372,7 +372,7 @@
    "bigger-clip-different-trade"
   ],
   "small-losses-keep-you-dangerous": [
-   "big-winners-sit-on-small-losses",
+   "small-account-one-engine-compounding",
    "bigger-clip-different-trade",
    "hold-winners-cut-losers-clean"
   ],
