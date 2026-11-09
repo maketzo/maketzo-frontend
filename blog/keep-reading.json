@@ -27,7 +27,7 @@
    "small-losses-keep-you-dangerous"
   ],
   "bigger-clip-different-trade": [
-   "small-loss-keeps-you-here",
+   "small-account-one-engine-compounding",
    "survive-by-losing-small",
    "low-float-punishes-size-not-thesis"
   ],
@@ -152,9 +152,9 @@
    "tap-skill-market-wont-teach"
   ],
   "hold-winners-cut-losers-clean": [
+   "small-account-one-engine-compounding",
    "small-loss-complete-trade",
-   "small-accounts-die-from-frequency",
-   "bigger-clip-different-trade"
+   "small-accounts-die-from-frequency"
   ],
   "hour-before-bell-decides": [
    "pre-market-routine-gets-you-ready",
@@ -345,6 +345,11 @@
    "rules-dont-fail-discipline-does",
    "you-dont-lose-you-give-it-back",
    "the-trade-you-dont-take-luj2"
+  ],
+  "small-account-one-engine-compounding": [
+   "hold-winners-cut-losers-clean",
+   "small-losses-keep-you-dangerous",
+   "big-winners-sit-on-small-losses"
   ],
   "small-accounts-die-from-frequency": [
    "small-loss-complete-trade",
