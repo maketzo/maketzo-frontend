@@ -19,8 +19,8 @@
   "@type": "Article",
   "headline": "Trading in Premarket: What Changes Before the Opening Bell",
   "description": "Premarket runs from 4:00 to 9:30 a.m. ET on thin quotes and different order rules. Read a small cap's gap, levels and dilution risk before the open.",
-  "datePublished": "2026-11-08T23:29:49.691Z",
-  "dateModified": "2026-11-08T23:29:49.689Z",
+  "datePublished": "2026-11-08T23:30:05.000Z",
+  "dateModified": "2026-11-09T14:39:25.953Z",
   "url": "https://maketzo.co/premarket-trading",
   "mainEntityOfPage": {
     "@type": "WebPage",
@@ -316,6 +316,8 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 .blog-article .prose-wrap, .blog-article .blog-author-card, .blog-article .blog-credit { max-width: 620px; }
 .blog-article .prose-wrap .prose-wrap > p:not(.section-eyebrow), .blog-article .prose-wrap .prose-wrap li { font-size: 17px; line-height: 1.65; }
 .blog-article .prose-wrap .prose-wrap > p:not(.section-eyebrow) { margin-bottom: 20px; }
+.blog-article .prose-wrap .prose-wrap a { color: var(--mk-brand); text-decoration: underline; text-underline-offset: 3px; }
+.blog-article .prose-wrap .prose-wrap a:hover { color: var(--mk-text-primary); }
 .blog-article .prose-wrap .section-eyebrow { text-align: left; margin: 44px 0 8px; }
 .blog-article .prose-wrap h2, .blog-article .prose-wrap h3 { text-align: left; margin: 44px 0 16px; text-wrap: balance; }
 .blog-article .prose-wrap .section-eyebrow + h2, .blog-article .prose-wrap .section-eyebrow + h3 { margin-top: 0; }
@@ -323,6 +325,18 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 .blog-article .pull-quote { margin: 32px 0; padding: 28px 32px; }
 .blog-article .blog-fig-full { max-width: 620px; margin: 32px auto; }
 .blog-article .blog-fig, .blog-article .blog-hero-figure { aspect-ratio: 16/9; }
+.blog-article .prose-wrap > .prose-wrap > h2 { clear: both; }
+/* A real screen of the app (lib/guide-shots.js). Never cropped or feathered the way a stock photo is, and no frame of its own. */
+.blog-article .blog-shot { margin: 28px 0 32px; }
+.blog-article .blog-shot a { display: block; }
+.blog-article .blog-shot img { display: block; width: 100%; height: auto; }
+.blog-article .blog-shot a:hover img { opacity: 0.92; }
+.blog-article .blog-shot figcaption { margin-top: 10px; font-size: 14px; line-height: 1.45; color: var(--mk-text-tertiary); }
+.blog-article .blog-shot-right { float: right; width: 46%; max-width: 400px; margin: 6px 0 20px 28px; }
+.blog-article .blog-shot-left { float: left; width: 46%; max-width: 400px; margin: 6px 28px 20px 0; }
+@media (max-width: 720px) {
+  .blog-article .blog-shot-right, .blog-article .blog-shot-left { float: none; width: 100%; max-width: none; margin: 20px 0 24px; }
+}
 .blog-article .blog-author-card { margin-top: 36px; padding-top: 24px; }
 .blog-share-row { max-width: 620px; margin: 24px auto 0; padding-top: 24px; border-top: var(--mk-border-hairline); display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 .blog-share-row .blog-share-row__ask { margin: 0; font-family: var(--mk-font-display); font-size: 1.5rem; line-height: 1; letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); }
@@ -450,9 +464,10 @@ body:has(.sticky-bar.visible) { padding-bottom: 80px; }
 
 <div class="prose-wrap">
   <h2>Who Can Sell Stock Into the Gap</h2>
-  <figure class="blog-fig blog-fig-left"><img src="https://media.maketzo.co/blog-images/6371eaee-a0bf-438a-98e1-bc7cd7413518.jpg" alt="Premarket trading infographic showing dilution risk, 9:30 a.m. opening price changes, and a no chase trading checklist." loading="lazy" decoding="async"></figure><p>At 6:05 a.m. a stock that closed at $2.10 is trading at $3.40 on a press release. Before you ask how far it can run, ask who gets to sell shares at $3.40.</p>
+  <p>At 6:05 a.m. a stock that closed at $2.10 is trading at $3.40 on a press release. Before you ask how far it can run, ask who gets to sell shares at $3.40.</p>
   <p>Holders are the obvious sellers. Anyone sitting on yesterday's shares can book a gain of more than 60% before most of the market is awake. The company is the seller traders forget. With an effective shelf or an at-the-market program, it can sell new shares at prices it could not get yesterday.</p>
   <p>Run the ticker through <a href="/dilution-check">Dilution Check</a> before you trust the gap. It reads the company's SEC filings and gives a supply risk from low to high, then shows whether a selling channel is open, how recently the company used one and how much cash it has against its burn. Three habits make the card worth more.</p>
+  <figure class="blog-shot blog-shot-left"><a href="/dilution-check" data-cta-source="guide-screen-dilution" data-cta-target="dilution-check"><img src="/assets/guides/dilution-check.webp?v=1" alt="Dilution Check reading on a small company: high supply risk, with gauges for whether it can sell shares and whether it does." width="1280" height="1384" loading="lazy" decoding="async"></a><figcaption>Two questions answered from the filings: can they sell shares, and do they?</figcaption></figure>
   <ul><li>Separate "can sell" from "does sell." An open channel with no recent sales is permission. Three sales this year is a pattern.</li><li>Read "unknown" as unanswered. When a filing could not confirm something, the question stays open and nothing has been ruled out.</li><li>Check the dates. Each form code links to its filing, so compare the newest one with what EDGAR shows this morning. A deal that has been negotiated and not yet filed cannot appear on the card.</li></ul>
   <p>A low reading is a statement about filings, and the stock can still fall for any other reason.</p>
 </div>
@@ -473,6 +488,7 @@ body:has(.sticky-bar.visible) { padding-bottom: 80px; }
   <p>Write rules you can answer yes or no.</p>
   <ul><li>I know the earliest time I will send an order, and I send nothing before it.</li><li>I do not trade a gap until I can name its reason, the dollars traded and the company's supply.</li><li>My daily loss limit starts with my first order, premarket included.</li><li>If I missed the run before 9:30, I do not chase it at 9:31.</li></ul>
   <p>MAKETZO is a trading discipline system for small cap day traders. You commit to your rules each morning with the Morning Lock-In, and COACH SAYS coaches you in real time when your behavior starts drifting from them. The Focus Room is where you reset before a bad morning becomes a bad day. The journal grades discipline on every trade, so a month of records will show whether your mornings before 9:30 follow your rules.</p>
+  <figure class="blog-shot blog-shot-full"><a href="/focus" data-cta-source="guide-screen-contract" data-cta-target="focus"><img src="/assets/guides/lock-in-contract.webp?v=1" alt="Signed MAKETZO Lock-In contract for an A+ Only Day, with five written rules and the trader's signature in script." width="1838" height="1452" loading="lazy" decoding="async"></a><figcaption>The Morning Lock-In: the rules you sign while you are calm, before the first order.</figcaption></figure>
   <p>If you execute on DAS Trader, MAKETZO imports your trades from there, and DAS Trader is the only import it takes. MAKETZO teaches and keeps you accountable, and it never gives stock picks or financial advice. Every plan starts with a 7-day free trial, and <a href="/pricing">the pricing page</a> lists the plans.</p>
 </div>
 

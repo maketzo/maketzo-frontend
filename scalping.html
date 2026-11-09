@@ -20,7 +20,7 @@
   "headline": "Scalping Small Caps: The Math, the Tape and the Exit",
   "description": "Scalping means taking many small gains in seconds or minutes. Work out your break-even, read the tape and learn which small caps cost too much to trade.",
   "datePublished": "2026-11-09T01:09:31.000Z",
-  "dateModified": "2026-11-09T01:31:32.364Z",
+  "dateModified": "2026-11-09T14:39:25.960Z",
   "url": "https://maketzo.co/scalping",
   "mainEntityOfPage": {
     "@type": "WebPage",
@@ -325,6 +325,18 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 .blog-article .pull-quote { margin: 32px 0; padding: 28px 32px; }
 .blog-article .blog-fig-full { max-width: 620px; margin: 32px auto; }
 .blog-article .blog-fig, .blog-article .blog-hero-figure { aspect-ratio: 16/9; }
+.blog-article .prose-wrap > .prose-wrap > h2 { clear: both; }
+/* A real screen of the app (lib/guide-shots.js). Never cropped or feathered the way a stock photo is, and no frame of its own. */
+.blog-article .blog-shot { margin: 28px 0 32px; }
+.blog-article .blog-shot a { display: block; }
+.blog-article .blog-shot img { display: block; width: 100%; height: auto; }
+.blog-article .blog-shot a:hover img { opacity: 0.92; }
+.blog-article .blog-shot figcaption { margin-top: 10px; font-size: 14px; line-height: 1.45; color: var(--mk-text-tertiary); }
+.blog-article .blog-shot-right { float: right; width: 46%; max-width: 400px; margin: 6px 0 20px 28px; }
+.blog-article .blog-shot-left { float: left; width: 46%; max-width: 400px; margin: 6px 28px 20px 0; }
+@media (max-width: 720px) {
+  .blog-article .blog-shot-right, .blog-article .blog-shot-left { float: none; width: 100%; max-width: none; margin: 20px 0 24px; }
+}
 .blog-article .blog-author-card { margin-top: 36px; padding-top: 24px; }
 .blog-share-row { max-width: 620px; margin: 24px auto 0; padding-top: 24px; border-top: var(--mk-border-hairline); display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 .blog-share-row .blog-share-row__ask { margin: 0; font-family: var(--mk-font-display); font-size: 1.5rem; line-height: 1; letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); }
@@ -440,16 +452,18 @@ body:has(.sticky-bar.visible) { padding-bottom: 80px; }
   <h2>Which Small Caps You Can Scalp</h2>
   <p>Can you get out in one or two prints? If the answer is no, the trade is not a scalp, whatever you call it. Check five things before you look at the chart.</p>
   <ul><li><strong>The spread as a percent of price.</strong> A cheap stock is no bargain on this test. A $0.80 stock with a 2-cent spread is 2.5% wide, ten times the 0.25% on a $12 stock with a 3-cent spread.</li><li><strong>The shares at the inside.</strong> Level 2 shows what is resting at each price. Compare the shares at the best bid with the shares you would need to sell. When your exit is bigger than what sits there, you become the slippage.</li><li><strong>The prints per minute.</strong> A scalp is measured in seconds, so the tape has to be busy. A stock that goes 20 seconds between prints cannot get you out on your schedule.</li><li><strong>Who can sell into the run.</strong> Run the ticker through <a href="/dilution-check">Dilution Check</a>, which reads a stock's SEC filings for dilution risk and tells you if a selling channel is open and when the company last used it. With an open channel, the company can be one of the sellers on the offer your scalp is trying to get through.</li><li><strong>How close it is to a halt.</strong> A stock running at its band can freeze in the middle of your trade, and <a href="/trading-halts">during a halt</a> a stop order has nothing to trigger against. MAKETZO's <a href="/tools#halt-clock">Halt Clock</a> estimates the reopen if you get caught in one.</li></ul>
+  <figure class="blog-shot blog-shot-left"><a href="/tools#halt-clock" data-cta-source="guide-screen-halt" data-cta-target="tools#halt-clock"><img src="/assets/guides/halt-clock.webp?v=1" alt="Halt Clock estimating when a halted stock reopens, with the prices where it could halt again on the way up or down." width="844" height="584" loading="lazy" decoding="async"></a><figcaption>Enter the resumption price and it estimates when the stock reopens.</figcaption></figure>
 </div>
 
 <div class="prose-wrap">
   <h2>Scalping Strategies That Read the Tape</h2>
-  <figure class="blog-fig blog-fig-right"><img src="https://media.maketzo.co/blog-images/ab5ef46e-1582-42cb-a6d0-b404a6058a0f.jpg" alt="Graphic on tape reading, breakout and absorption setups, order types, trading hours, and risk discipline for scalpers." loading="lazy" decoding="async"></figure><p>Believe the prints over the quotes. The book shows what traders say they will do, and the tape shows what they did.</p>
+  <p>Believe the prints over the quotes. The book shows what traders say they will do, and the tape shows what they did.</p>
   <p>Three setups cover most of what a small cap scalper does.</p>
   <ul><li><strong>The break of a level.</strong> Price has failed at the same offer twice. Now the offers at that price vanish as buyers lift them, and prints speed up on real share counts. You want in as it trades through. You are wrong if the next prints fall back under the level, so you exit there with no debate.</li><li><strong>Absorption at a level.</strong> Heavy selling hits the bid and the price refuses to drop. Someone large is buying what is offered. You are wrong the moment that bid gives way.</li><li><strong>The range between two prices.</strong> Buying near the bid and selling near the offer works in deep stocks with penny spreads and a quiet tape. On a small cap with a 4-cent spread, it gets a scalper run over when the range breaks, so treat this one as a large cap habit.</li></ul>
   <p>A big resting bid is a clue and never a floor. It can be pulled the moment price gets close, and an iceberg order can show only a sliver of what is really there. If price reaches it and it survives on the tape, then it was real.</p>
   <p>Short scalps carry two more costs. Borrowing a hard-to-borrow small cap can cost more per share than the scalp is worth, and once a stock falls 10% from the prior close, <a href="https://www.sec.gov/news/press/2010/2010-26.htm" rel="noopener" target="_blank">Rule 201</a> restricts short sales to prices over the national best bid for the rest of that day and the next.</p>
   <p>Rehearse a setup before you pay for the fills. <a href="/trade-replay">Trade Replay</a> lets you pull up any past chart, enter the buys and sells you would have made, long or short, and see whether they paid. It is free, needs no account and gives you 10 replays.</p>
+  <figure class="blog-shot blog-shot-right"><a href="/trade-replay" data-cta-source="guide-screen-replay" data-cta-target="trade-replay"><img src="/assets/guides/trade-replay.webp?v=1" alt="Trade Replay table as a trade opens, adds twice, trims three times and closes flat, with average cost on every row." width="620" height="628" loading="lazy" decoding="async"></a><figcaption>One trade, two adds and four exits. Position and average cost update with every fill.</figcaption></figure>
 </div>
 
 <div class="prose-wrap">
@@ -475,6 +489,7 @@ body:has(.sticky-bar.visible) { padding-bottom: 80px; }
   <p>Write rules you can answer yes or no before the open.</p>
   <ul><li>I know the break-even win rate of this setup.</li><li>The spread is inside my written ceiling.</li><li>After a stop-out I wait for a new setup and do not re-enter the same stock at a worse price.</li><li>I have a maximum trade count for the morning, and when I reach it I am done.</li><li>When the tape goes quiet, I go quiet too.</li></ul>
   <p>At 9:41 those rules are easy to forget, and that is the gap MAKETZO, a trading discipline system for small cap day traders, exists to close. You commit to your rules with the Morning Lock-In, and a contract such as A+ Only Day makes "no setup, no trade" a rule, with two strikes ending the day. COACH SAYS catches the urge to re-enter after a loss or chase a runner in real time. The Focus Room is where you reset before the next order, and the Waiting Room gives you something to do when nothing is there. The journal grades discipline on every trade, so you can see whether the scalps you regret broke a rule you wrote.</p>
+  <figure class="blog-shot blog-shot-full"><a href="/focus" data-cta-source="guide-screen-contract" data-cta-target="focus"><img src="/assets/guides/lock-in-contract.webp?v=1" alt="Signed MAKETZO Lock-In contract for an A+ Only Day, with five written rules and the trader's signature in script." width="1838" height="1452" loading="lazy" decoding="async"></a><figcaption>The Morning Lock-In: the rules you sign while you are calm, before the first order.</figcaption></figure>
   <p>If you trade on DAS Trader, MAKETZO imports those trades, and DAS Trader is the only import it takes. Teaching and accountability are MAKETZO's job, and stock picks and financial advice are never part of it. Plans and the 7-day free trial are on <a href="/pricing">the pricing page</a>.</p>
   <p>Scalping fast small caps is one of the hardest ways to trade, and the arithmetic is against you from the first order. Nothing here is a suggestion to scalp or financial advice, and your decisions are your own.</p>
 </div>

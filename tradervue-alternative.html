@@ -20,7 +20,7 @@
   "headline": "A Tradervue Alternative for Traders Who Break Their Own Rules",
   "description": "Tradervue shows what happened after the close. MAKETZO grades your discipline on every trade and coaches you during the session. 7-day free trial.",
   "datePublished": "2026-11-08T19:15:21.000Z",
-  "dateModified": "2026-11-08T21:46:50.359Z",
+  "dateModified": "2026-11-09T14:39:25.935Z",
   "url": "https://maketzo.co/tradervue-alternative",
   "mainEntityOfPage": {
     "@type": "WebPage",
@@ -316,6 +316,8 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 .blog-article .prose-wrap, .blog-article .blog-author-card, .blog-article .blog-credit { max-width: 620px; }
 .blog-article .prose-wrap .prose-wrap > p:not(.section-eyebrow), .blog-article .prose-wrap .prose-wrap li { font-size: 17px; line-height: 1.65; }
 .blog-article .prose-wrap .prose-wrap > p:not(.section-eyebrow) { margin-bottom: 20px; }
+.blog-article .prose-wrap .prose-wrap a { color: var(--mk-brand); text-decoration: underline; text-underline-offset: 3px; }
+.blog-article .prose-wrap .prose-wrap a:hover { color: var(--mk-text-primary); }
 .blog-article .prose-wrap .section-eyebrow { text-align: left; margin: 44px 0 8px; }
 .blog-article .prose-wrap h2, .blog-article .prose-wrap h3 { text-align: left; margin: 44px 0 16px; text-wrap: balance; }
 .blog-article .prose-wrap .section-eyebrow + h2, .blog-article .prose-wrap .section-eyebrow + h3 { margin-top: 0; }
@@ -323,6 +325,18 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 .blog-article .pull-quote { margin: 32px 0; padding: 28px 32px; }
 .blog-article .blog-fig-full { max-width: 620px; margin: 32px auto; }
 .blog-article .blog-fig, .blog-article .blog-hero-figure { aspect-ratio: 16/9; }
+.blog-article .prose-wrap > .prose-wrap > h2 { clear: both; }
+/* A real screen of the app (lib/guide-shots.js). Never cropped or feathered the way a stock photo is, and no frame of its own. */
+.blog-article .blog-shot { margin: 28px 0 32px; }
+.blog-article .blog-shot a { display: block; }
+.blog-article .blog-shot img { display: block; width: 100%; height: auto; }
+.blog-article .blog-shot a:hover img { opacity: 0.92; }
+.blog-article .blog-shot figcaption { margin-top: 10px; font-size: 14px; line-height: 1.45; color: var(--mk-text-tertiary); }
+.blog-article .blog-shot-right { float: right; width: 46%; max-width: 400px; margin: 6px 0 20px 28px; }
+.blog-article .blog-shot-left { float: left; width: 46%; max-width: 400px; margin: 6px 28px 20px 0; }
+@media (max-width: 720px) {
+  .blog-article .blog-shot-right, .blog-article .blog-shot-left { float: none; width: 100%; max-width: none; margin: 20px 0 24px; }
+}
 .blog-article .blog-author-card { margin-top: 36px; padding-top: 24px; }
 .blog-share-row { max-width: 620px; margin: 24px auto 0; padding-top: 24px; border-top: var(--mk-border-hairline); display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 .blog-share-row .blog-share-row__ask { margin: 0; font-family: var(--mk-font-display); font-size: 1.5rem; line-height: 1; letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); }
@@ -437,12 +451,13 @@ body:has(.sticky-bar.visible) { padding-bottom: 80px; }
   <h2>What MAKETZO Does Before and During the Session</h2>
   <p>MAKETZO is a trading discipline system for small cap day traders, for the trader who knows the rules and still breaks them under pressure. Set your rules when you are calm, and MAKETZO enforces them when you are not.</p>
   <ul><li><strong>Before your first trade.</strong> The Morning Lock-In is where you commit to your rules for the day, while nothing is at stake yet.</li><li><strong>When you start to drift.</strong> The Strike System and COACH SAYS catch you the moment your behavior leaves the rules you set. COACH SAYS is direct, and it comes with a specific response: two strikes in a session can open a breathing reset, and touching your drawdown line can bring up an anchor image and offer a longer reset.</li><li><strong>When you tilt.</strong> The Focus Room is where you reset instead of taking the next trade out of anger.</li><li><strong>After the close.</strong> The COACH SAYS feed keeps the day's slips and resets on record, so you review what happened instead of what you remember.</li></ul>
+  <figure class="blog-shot blog-shot-full"><a href="/focus" data-cta-source="guide-screen-reset" data-cta-target="focus"><img src="/assets/guides/loss-reset.webp?v=1" alt="Loss Reset running in the MAKETZO Focus Room with a breathing ring, a 2:50 timer and a pledge to wait before the next trade." width="2360" height="1450" loading="lazy" decoding="async"></a><figcaption>Loss Reset: three minutes of paced breathing, a photo of what you trade for, and one written promise.</figcaption></figure>
   <p>You can copy the core of this without any software. Before the bell, write down what ends your morning, in your own numbers, for your own account. MAKETZO keeps you to the line you set, and it will never tell you where that line should be. It teaches and keeps you accountable. It never gives stock picks or financial advice.</p>
 </div>
 
 <div class="prose-wrap">
   <h2>Why MAKETZO Grades Your Process, Not Your P&amp;L</h2>
-  <figure class="blog-fig blog-fig-right"><img src="https://images.unsplash.com/photo-1699430245381-ad5be3690d26?ixid=M3w5NTQxMzl8MHwxfHNlYXJjaHwxfHxwZXJzb24lMjB3cml0aW5nJTIwbm90ZWJvb2slMjBkZXNrJTIwbGFtcHxlbnwxfDB8fHwxNzk0MTY1MTQ2fDA&amp;ixlib=rb-4.1.0&amp;w=1200&amp;q=80&amp;fm=jpg&amp;fit=crop" alt="Person writing in a notebook under a desk lamp, reviewing the trading day before checking the money." loading="lazy" decoding="async"></figure><p>Most journals sort your trades by money: P&amp;L by day, by tag, by hour. That view has a flaw on any single day, because P&amp;L is mostly noise. A sloppy entry catches a squeeze. A clean setup gets stopped on a fluke. Sorted by dollars, the sloppy trade looks like the good one.</p>
+  <p>Most journals sort your trades by money: P&amp;L by day, by tag, by hour. That view has a flaw on any single day, because P&amp;L is mostly noise. A sloppy entry catches a squeeze. A clean setup gets stopped on a fluke. Sorted by dollars, the sloppy trade looks like the good one.</p>
   <p>The Picard Score is a daily grade from 1 to 10 of how well you ran your process, scored independently of your P&amp;L. The biggest part is whether you kept the rules you committed to that morning. How you traded, your discipline and your self-awareness come next. A part you skip does not count against you. It just carries no weight.</p>
   <ul><li><strong>9 to 10, Ran It Clean.</strong> The standard. Repeat it.</li><li><strong>7 to 8.9, Held the Line.</strong> Small slips with the plan intact.</li><li><strong>5 to 6.9, Drifted.</strong> One habit separates you from Held the Line.</li><li><strong>Under 5, Broke the Plan.</strong> Read the day back before tomorrow.</li></ul>
   <p>That splits two days a dollar report treats as the same. A green day full of broken rules reads as a warning, not a trophy. A red day where you kept every rule counts as a win for your account's future.</p>
@@ -471,6 +486,7 @@ body:has(.sticky-bar.visible) { padding-bottom: 80px; }
   <h2>Three Checks Before You Switch From Tradervue</h2>
   <p><strong>1. Your platform.</strong> If you trade on DAS, export one day, open Import Trades in MAKETZO, choose the DAS import and upload the file. Confirm the trades landed on the right account and date. If you trade anywhere else, expect to enter your daily numbers by hand.</p>
   <p><strong>2. Your filings.</strong> A report on past fills cannot tell you what a small cap trader most needs to know when a stock is running: can this company sell stock into the run, and has it been doing so? <a href="/dilution-check">Dilution Check</a> reads a company's SEC filings and returns a supply risk on a four-step scale from low to high, with every form code linked to the filing behind it. When a filing cannot confirm something, the card says so, because unknown never means no. It reports what companies have filed and recommends nothing.</p>
+  <figure class="blog-shot blog-shot-left"><a href="/dilution-check" data-cta-source="guide-screen-dilution" data-cta-target="dilution-check"><img src="/assets/guides/dilution-check.webp?v=1" alt="Dilution Check reading on a small company: high supply risk, with gauges for whether it can sell shares and whether it does." width="1280" height="1384" loading="lazy" decoding="async"></a><figcaption>Two questions answered from the filings: can they sell shares, and do they?</figcaption></figure>
   <p><strong>3. Your own week.</strong> Use the 7-day free trial for one full trading week. Keep Tradervue if you like its reports, and add MAKETZO for the hours when you are actually in the market. At the end of the week, compare your Picard Scores with your memory of those days. Any day you remembered as cleaner than it scored is a day worth reading back.</p>
 </div>
 
