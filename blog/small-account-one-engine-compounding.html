@@ -274,6 +274,8 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 .blog-article .blog-fig-full { max-width: 620px; margin: 32px auto; }
 .blog-article .blog-fig, .blog-article .blog-hero-figure { aspect-ratio: 16/9; }
 .blog-article .prose-wrap > .prose-wrap > h2 { clear: both; }
+/* A photo that opens its own section keeps the title beside it. Only an image from the section before gets cleared. */
+.blog-article .prose-wrap > .prose-wrap > figure + h2, .blog-article .prose-wrap > .prose-wrap > figure + .section-eyebrow + h2 { clear: none; }
 /* A real screen of the app (lib/guide-shots.js). Never cropped or feathered the way a stock photo is, and no frame of its own. */
 .blog-article .blog-shot { margin: 28px 0 32px; }
 .blog-article .blog-shot a { display: block; }
