@@ -9,8 +9,13 @@
  * (POST /offers/:code/shown) and never reset. The button counts down to it every quarter second off the wall clock,
  * corrected by the server's own time, so a slow tick never drifts it. The end time is also named in words.
  *
- * IT FOLLOWS THE VISITOR. The offer is kept in localStorage (mkt_offer) until they claim it, close it, or it ends,
- * so a visitor who reads it and opens another page still has it. The entrance plays once, on the first page.
+ * IT FOLLOWS THE VISITOR. The offer is kept in localStorage (mkt_offer) until they claim it, say No thanks, or it
+ * ends, so a visitor who reads it and opens another page still has it. The entrance plays once, on the first page.
+ *
+ * OUT OF THE WAY, NOT GONE (Ed's pick, 2026-11-10, "Minimize to a tab"). The X, and Escape, fold the card into a small
+ * gold tab at the bottom right with the clock still running, so Start Free Trial is uncovered and the offer is one tap
+ * from coming back. The tab follows them page to page. Only No thanks, or the tab's own small x, ends it for good
+ * (POST /offers/:code/dismiss). Once they have asked for the link, the X just closes it: the link is in their inbox.
  *
  * WHAT IT NEVER DOES: say it saw the visitor, name a page they read, or show to a signed-in browser.
  * The site is dark only, so there is no light-mode variant. Glass on a solid base, never a backdrop blur, so the
@@ -22,7 +27,7 @@
   var KEY = "mkt_offer";
   var M = window.MKT || {};
   var API = M.apiBase || "";
-  var st = null, root = null, tick = null;
+  var st = null, root = null, tab = null, tick = null, receiving = null, tabLift = -1;
 
   function load() { try { return JSON.parse(localStorage.getItem(KEY) || "null"); } catch (e) { return null; } }
   function save(s) { try { if (s) localStorage.setItem(KEY, JSON.stringify(s)); else localStorage.removeItem(KEY); } catch (e) {} }
@@ -56,7 +61,7 @@
     return '<span class="mk-offer__sweep" aria-hidden="true"></span>'
       + '<span class="mk-offer__grab" aria-hidden="true"></span>'
       + '<div class="mk-offer__top"><span class="mk-offer__eyebrow">24-HOUR OFFER</span>'
-      + '<button type="button" class="mk-offer__x" data-act="dismiss" aria-label="Close">' + X + '</button></div>'
+      + '<button type="button" class="mk-offer__x" data-act="close" aria-label="' + (st.stage === "sent" ? "Close" : "Minimize") + '">' + X + '</button></div>'
       + '<div class="mk-offer__body" data-stage="form"' + (st.stage === "sent" ? " hidden" : "") + '>'
       + '<h2 class="mk-offer__title" id="mkOfferTitle">Journal at Half Price</h2>'
       + '<div class="mk-offer__price"><span class="mk-offer__old">$19.95</span><span class="mk-offer__new">$9.95</span><span class="mk-offer__per">a month</span></div>'
@@ -70,7 +75,7 @@
       + '<button type="submit" class="mk-offer__cta"><span class="mk-offer__cta-txt">Claim Half Price · <span class="mk-offer__clock">' + clock(left()) + '</span> left</span></button>'
       + '</form>'
       + '<div class="mk-offer__foot"><span>We email your link. Nothing is charged until you start.</span>'
-      + '<button type="button" class="mk-offer__no" data-act="dismiss">No thanks</button></div>'
+      + '<button type="button" class="mk-offer__no" data-act="no">No thanks</button></div>'
       + '</div>'
       + '<div class="mk-offer__body" data-stage="sent"' + (st.stage === "sent" ? "" : " hidden") + '>'
       + '<h2 class="mk-offer__title">Check Your Inbox</h2>'
@@ -81,18 +86,41 @@
       + '</div>';
   }
 
+  // The tab: the offer folded out of the way. Tapping it opens the card again; its small x is No thanks.
+  function tabHtml() {
+    return '<button type="button" class="mk-offer-tab__open" data-act="open" aria-label="Show the $9.95 Journal offer">'
+      + CLOCK + '<span class="mk-offer-tab__name">$9.95 Journal</span>'
+      + '<span class="mk-offer-tab__time"><span class="mk-offer__clock">' + clock(left()) + '</span> left</span></button>'
+      + '<button type="button" class="mk-offer-tab__x" data-act="no" aria-label="No thanks" title="No thanks">' + X + '</button>';
+  }
+
   function remove() {
     if (tick) { clearInterval(tick); tick = null; }
     if (root && root.parentNode) root.parentNode.removeChild(root);
-    root = null;
+    if (tab && tab.parentNode) tab.parentNode.removeChild(tab);
+    root = null; tab = null; tabLift = -1;
     document.documentElement.classList.remove("mk-offer-open");
   }
 
-  function render(animate) {
+  function renderTab(animate) {
+    tab = document.createElement("div");
+    tab.className = "mk-offer-tab" + (animate ? " mk-offer-tab--enter" : "");
+    tab.setAttribute("role", "region");
+    tab.setAttribute("aria-label", "$9.95 Journal offer");
+    tab.innerHTML = tabHtml();
+    document.body.appendChild(tab);
+    tab.addEventListener("click", onClick);
+    tick = setInterval(update, 250);
+    update();
+  }
+
+  // how: "enter" (first time, the full entrance), "back" (reopened from the tab), or nothing (a page load).
+  function render(how) {
     remove();
     if (!st || left() <= 0 || signedIn()) { if (st && left() <= 0) save(null); st = null; return; }
+    if (st.min) return renderTab(how === "min");
     root = document.createElement("div");
-    root.className = "mk-offer" + (animate ? " mk-offer--enter" : "");
+    root.className = "mk-offer" + (how === "enter" ? " mk-offer--enter" : how === "back" ? " mk-offer--back" : "");
     root.setAttribute("role", "dialog");
     root.setAttribute("aria-modal", "false");
     root.setAttribute("aria-labelledby", "mkOfferTitle");
@@ -104,7 +132,7 @@
     if (nl && M.isEuVisitor) M.isEuVisitor().then(function (eu) { nl.checked = !eu; }).catch(function () {});
     else if (nl) nl.checked = true;
     root.addEventListener("click", onClick);
-    root.addEventListener("keydown", function (ev) { if (ev.key === "Escape") { ev.preventDefault(); dismiss(); } });
+    root.addEventListener("keydown", function (ev) { if (ev.key === "Escape") { ev.preventDefault(); close(); } });
     var form = root.querySelector(".mk-offer__form");
     if (form) form.addEventListener("submit", onSubmit);
     tick = setInterval(update, 250);
@@ -112,30 +140,64 @@
   }
 
   function update() {
-    if (!root || !st) return;
+    if ((!root && !tab) || !st) return;
     var ms = left();
     if (ms <= 0) { save(null); st = null; remove(); return; }
     var t = clock(ms);
-    var els = root.querySelectorAll(".mk-offer__clock");
+    var els = document.querySelectorAll(".mk-offer__clock");
     for (var i = 0; i < els.length; i++) if (els[i].textContent !== t) els[i].textContent = t;
+    // Many pages pin an email bar to the bottom of the screen; the tab sits just above it, never on top of it.
+    if (tab) {
+      var bar = document.querySelector(".sticky-bar.visible");
+      var lift = bar ? bar.offsetHeight : 0;
+      if (lift !== tabLift) { tabLift = lift; tab.style.setProperty("--mk-offer-lift", lift + "px"); }
+    }
   }
 
   function onClick(ev) {
     var b = ev.target.closest && ev.target.closest("[data-act]");
     if (!b) return;
     var act = b.getAttribute("data-act");
-    if (act === "dismiss") {
-      // After they asked for the link, the X only hides it here; the link in their inbox still works.
-      if (st && st.stage === "sent") hide(); else dismiss();
-    } else if (act === "hide") hide();
+    if (act === "close") close();
+    else if (act === "no") dismiss(tab ? "tab" : "card");
+    else if (act === "open") reopen(ev.detail === 0);
+    else if (act === "hide") hide();
+  }
+
+  // The X or Escape. Before they ask for the link it folds into the tab; after, the link is in their inbox, so it closes.
+  function close() {
+    if (!st) return remove();
+    if (st.stage === "sent") return hide();
+    minimize();
+  }
+
+  function minimize() {
+    st.min = true;
+    save(st);
+    track("mkt_offer_minimized", {});
+    render("min");
+    var open = tab && tab.querySelector(".mk-offer-tab__open");
+    if (open) open.focus();
+  }
+
+  function reopen(byKeyboard) {
+    if (!st) return;
+    st.min = false;
+    save(st);
+    track("mkt_offer_reopened", {});
+    render("back");
+    // A keyboard lands in the email box; a tap does not, so a phone's keyboard never jumps up uninvited.
+    var input = byKeyboard && root && root.querySelector("#mkOfferEmail");
+    if (input) input.focus();
   }
 
   function hide() { save(null); st = null; remove(); }
 
-  function dismiss() {
+  // No thanks, on the card or the tab's small x: this offer ends for good (Ed can still Send Again from LIVE).
+  function dismiss(from) {
     if (!st) return remove();
     var code = st.code;
-    track("mkt_offer_dismissed", {});
+    track("mkt_offer_dismissed", { from: from || "card" });
     post("/offers/" + encodeURIComponent(code) + "/dismiss", { a: anon() }).catch(function () {});
     hide();
   }
@@ -172,6 +234,8 @@
         if (to) to.textContent = email;
         root.querySelector('[data-stage="form"]').hidden = true;
         root.querySelector('[data-stage="sent"]').hidden = false;
+        var x = root.querySelector(".mk-offer__x");
+        if (x) x.setAttribute("aria-label", "Close");
         var close = root.querySelector(".mk-offer__close");
         if (close) close.focus();
       })
@@ -187,13 +251,16 @@
     if (!code || signedIn()) return;
     var held = load();
     if (held && held.code === code) return resume();
+    // The wait and the beat can both bring the same offer at once; it is shown once.
+    if (receiving === code) return;
+    receiving = code;
     var go = function () {
       post("/offers/" + encodeURIComponent(code) + "/shown", { a: anon() }).then(function (j) {
         st = { code: code, endsAt: Date.parse(j.endsAt), skew: Date.parse(j.now) - Date.now(), endsLabel: j.endsLabel, stage: "form" };
         save(st);
         track("mkt_offer_shown", {});
-        render(true);
-      }).catch(function () {});
+        render("enter");
+      }).catch(function () { receiving = null; });
     };
     // It is shown on a tab the visitor is looking at, never one in the background.
     if (!document.hidden) return go();
@@ -211,8 +278,18 @@
       st = null;
       return;
     }
-    render(false);
+    render();
   }
+
+  // Another tab of the site minimized it, reopened it, or ended it: this tab follows, so the two never disagree.
+  window.addEventListener("storage", function (ev) {
+    if (ev.key !== KEY) return;
+    var s = load();
+    if (!s || s.stage !== "form") { if (st && st.stage === "form") { st = null; remove(); } return; }
+    if (st && st.code === s.code && !!st.min === !!s.min) return;
+    st = s;
+    render();
+  });
 
   window.MKOffer = { receive: receive, resume: resume };
 })();

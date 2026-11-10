@@ -608,7 +608,7 @@
   // ── The $9.95 Journal offer's toast ──────────────────────────────────
   // Loaded only when an offer arrives, or when this browser already has one open (assets/js/offer-toast.js keeps
   // it in localStorage, so it follows the visitor from page to page until they claim it, close it, or it ends).
-  var OFFER_V = 1, offerLoading = null;
+  var OFFER_V = 2, offerLoading = null;
   function loadOfferToast() {
     if (window.MKOffer) return Promise.resolve(window.MKOffer);
     if (offerLoading) return offerLoading;
@@ -627,6 +627,40 @@
   function offerArrived(code) {
     loadOfferToast().then(function (t) { t.receive(code); }).catch(function () {});
   }
+  // The offer in seconds (Ed, 2026-11-10: "like 30 seconds. That's way too long"). While the tab is in view it holds
+  // one request open at POST /offers/wait (maketzo-backend routes/offers.js), and the server answers it the moment
+  // Ed sends the offer, up to 20 seconds later; then it asks again. The 30-second beat above still carries an offer,
+  // so a network that cuts held requests short only falls back to the beat. A wait that comes back fast with nothing
+  // (an error, a busy server) waits 30 seconds before the next, so this can never loop hot. A browser the server
+  // says can never be sent one (it has an account) stops asking for this page.
+  var offerT = null, offerBusy = false, offerStop = false;
+  function offerWaitLater(ms) { clearTimeout(offerT); offerT = setTimeout(offerWait, ms); }
+  function offerWait() {
+    if (offerBusy || offerStop || document.hidden) return;
+    if (analyticsOptOut() || !liveAllowed()) return;
+    if (!MKT_TIERS[window.location.hostname.replace(/^www\./, "")]) return;
+    if (document.documentElement.classList.contains("mkt-auth")) return;
+    try { if (navigator.webdriver) return; } catch (e) {}
+    offerBusy = true;
+    var t0 = Date.now();
+    fetch(API_BASE + "/offers/wait", {
+      method: "POST",
+      headers: { "Content-Type": "text/plain" },
+      body: JSON.stringify({ a: getAnonId() }),
+      credentials: "omit",
+      mode: "cors"
+    }).then(function (r) {
+      return r.status === 200 ? r.json().catch(function () { return null; }) : null;
+    }).then(function (j) {
+      offerBusy = false;
+      if (j && j.stop) { offerStop = true; return; }
+      if (j && j.offer && j.offer.code) { offerArrived(j.offer.code); return offerWaitLater(5000); }
+      offerWaitLater(Date.now() - t0 < 2000 ? 30000 : 0);
+    }, function () {
+      offerBusy = false;
+      offerWaitLater(30000);
+    });
+  }
   function offerResume() {
     var held = null;
     try { held = localStorage.getItem("mkt_offer"); } catch (e) {}
@@ -637,8 +671,9 @@
     if (liveTimer || !liveAllowed()) return;
     liveBeat(true);
     liveTimer = setInterval(function () { if (!document.hidden) liveBeat(false); }, LIVE_EVERY_MS);
-    // Coming back to the tab says "still here" at once, rather than up to 30 seconds later.
-    document.addEventListener("visibilitychange", function () { if (!document.hidden) liveBeat(false); });
+    offerWait();
+    // Coming back to the tab says "still here" at once, rather than up to 30 seconds later, and waits for an offer again.
+    document.addEventListener("visibilitychange", function () { if (!document.hidden) { liveBeat(false); offerWait(); } });
   }
 
   // ── PostHog loader ───────────────────────────────────────────────────
