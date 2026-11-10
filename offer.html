@@ -61,8 +61,9 @@
         <input id="lockedEmail" type="email" autocomplete="username" readonly tabindex="-1">
       </div>
       <div class="mk-form-field" id="nameField">
-        <label for="name">Your name</label>
-        <input id="name" name="name" type="text" autocomplete="name" maxlength="100" required>
+        <!-- First name only (Ed's pick, 2026-11-10): the one name an email relationship uses, "Hi Ed", with no extra field. -->
+        <label for="name">First name</label>
+        <input id="name" name="name" type="text" autocomplete="given-name" maxlength="60" required>
       </div>
       <div class="mk-form-field" id="passwordField">
         <label for="password" id="passwordLabel">Create a password</label>
@@ -200,7 +201,7 @@ document.getElementById('startForm').addEventListener('submit', async (e) => {
   const btn = document.getElementById('startBtn');
   const name = document.getElementById('name').value.trim();
   const password = document.getElementById('password').value;
-  if (!state.hasAccount && !name) { showBanner('Enter your name.', 'error'); return; }
+  if (!state.hasAccount && !name) { showBanner('Enter your first name.', 'error'); return; }
   if (!state.hasAccount && window.MaketzoPasswordRules) {
     const problem = MaketzoPasswordRules.firstError(password, state.email || '');
     if (problem) { showBanner(problem + '.', 'error'); return; }
