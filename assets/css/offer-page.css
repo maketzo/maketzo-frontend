@@ -12,13 +12,9 @@
 .of-was { color: var(--mk-text-tertiary); font-family: var(--mk-font-mono); text-decoration: line-through; text-decoration-color: var(--mk-gold-300); text-decoration-thickness: 2px; }
 .of-terms { font-size: var(--mk-text-sm); line-height: 1.55; color: var(--mk-text-secondary); margin-bottom: 18px; }
 
-.of-locked { margin-bottom: 16px; }
-.of-locked-k { display: block; font-size: var(--mk-text-xs); color: var(--mk-text-secondary); margin-bottom: 6px; }
-.of-locked-v {
-  padding: 12px 14px; border-radius: var(--mk-radius-input);
-  border: 1px solid rgba(255,255,255,.08); background: rgba(255,255,255,.03);
-  color: var(--mk-text-primary); font-size: var(--mk-text-md); overflow-wrap: anywhere;
-}
+/* The email the offer was sent to, shown but not editable: the account is made with exactly this address. */
+.of-locked input[readonly] { background: rgba(255,255,255,.03); border-color: rgba(255,255,255,.08); cursor: default; }
+.of-locked input[readonly]:focus { box-shadow: none; border-color: rgba(255,255,255,.08); }
 .mk-form-field[hidden] { display: none; }
 
 /* The button reads as a sentence ("Start Journal at $9.95 · 23:47:12 left"), so it is not set in capitals. */

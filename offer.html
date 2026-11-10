@@ -15,7 +15,7 @@
 <link rel="stylesheet" href="assets/css/tokens.css">
 <link rel="stylesheet" href="assets/css/components.css">
 <link rel="stylesheet" href="assets/css/auth.css?v=3">
-<link rel="stylesheet" href="assets/css/offer-page.css?v=1">
+<link rel="stylesheet" href="assets/css/offer-page.css?v=2">
 <script src="assets/js/password-rules.js?v=1"></script>
 <script src="assets/js/mkt-analytics.js?v=17" defer></script>
 <script src="assets/js/mkt-consent.js?v=1" defer></script>
@@ -56,9 +56,9 @@
     <div id="banner" class="auth-banner" hidden></div>
 
     <form id="startForm" data-form-id="offer_start" novalidate>
-      <div class="of-locked">
-        <span class="of-locked-k">Your account email</span>
-        <div class="of-locked-v" id="lockedEmail"></div>
+      <div class="mk-form-field of-locked">
+        <label for="lockedEmail">Your account email</label>
+        <input id="lockedEmail" type="email" autocomplete="username" readonly tabindex="-1">
       </div>
       <div class="mk-form-field" id="nameField">
         <label for="name">Your name</label>
@@ -68,7 +68,7 @@
         <label for="password" id="passwordLabel">Create a password</label>
         <input id="password" name="password" type="password" autocomplete="new-password" maxlength="128" required>
       </div>
-      <button class="btn-primary auth-submit of-cta" type="submit" id="startBtn">Start Journal at $9.95 · <span class="of-clock" id="clock">24:00:00</span> left</button>
+      <button class="btn-primary auth-submit of-cta" type="submit" id="startBtn"><span>Start Journal at $9.95 · <span class="of-clock" id="clock">24:00:00</span> left</span></button>
     </form>
 
     <div class="auth-divider" id="googleDivider"><span>or</span></div>
@@ -151,7 +151,7 @@ function render(s) {
   state = s;
   if (s.state === 'active') {
     skew = s.now ? Date.parse(s.now) - Date.now() : 0;
-    document.getElementById('lockedEmail').textContent = s.email || '';
+    document.getElementById('lockedEmail').value = s.email || '';
     document.getElementById('endsLine').textContent = 'This offer ends ' + s.endsLabel + '.';
     const pw = document.getElementById('password');
     if (s.hasAccount) {
