@@ -406,11 +406,14 @@ hr.mk-rule-gold, hr.mk-rule-gold--bold { margin: 0 auto; max-width: 1180px; }
   flex-direction: column;
   gap: 4px;
 }
-.price-compare-big {
+/* .pc-glow is the lit copy of "$10" / "$15" in the motion below; it must set exactly like the line. */
+.price-compare-big, .pc-glow {
   font-family: var(--mk-font-display);
   font-size: clamp(2rem, 3.2vw, 2.5rem);
   letter-spacing: var(--mk-track-display);
   line-height: 1.05;
+}
+.price-compare-big {
   background: var(--mk-gold-gradient);
   -webkit-background-clip: text;
   background-clip: text;
@@ -454,9 +457,12 @@ hr.mk-rule-gold, hr.mk-rule-gold--bold { margin: 0 auto; max-width: 1180px; }
    never do, and the line is never hidden or dimmed. Nothing here applies until
    the script arms the card, so without it the card is exactly the static one.
    Reduced motion keeps the clock and turns every sweep, drop and slide into a
-   glow or a fade. Never put a filter on .price-compare-big: Chrome cuts
-   gradient-clipped text short under a filter, so its reduced-motion glow lifts
-   the gradient through --pc-lift instead. */
+   glow or a fade. Three traps on the gradient-clipped line, all seen in real
+   renders: a filter on it cuts the line short in Chrome; a positioned child
+   inside it goes blank in Safari (so the numbers' lit copies sit beside the
+   line, placed by the script); and an animated custom colour layer escapes
+   the text clip in Safari and paints a solid gold bar (so under reduced motion
+   the line itself is left alone). */
 .pc-mark, .pc-over, .pc-tip { display: none; }
 .pc-armed .price-compare-list, .pc-armed .price-compare-track { position: relative; }
 .pc-armed .price-compare-fill--us { position: relative; overflow: hidden; }
@@ -484,20 +490,21 @@ hr.mk-rule-gold, hr.mk-rule-gold--bold { margin: 0 auto; max-width: 1180px; }
 }
 .pc-over--tv { width: calc(var(--pc-tv) - var(--pc-x)); }
 .pc-over--tz { width: calc(var(--pc-tz) - var(--pc-x)); }
-/* The lit "$10" / "$15": a bright copy laid exactly over the number (centred, so the baselines meet). */
-.pc-armed .pc-n { position: relative; }
-.pc-armed .pc-n::after {
-  content: attr(data-t); content: attr(data-t) / "";
-  position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+/* The lit "$10" / "$15": a bright copy the script lays over each number (centred on it, so the baselines meet). */
+.pc-armed .price-compare-total { position: relative; }
+.pc-glow { display: none; }
+.pc-armed .pc-glow {
+  display: block; position: absolute; transform: translateY(-50%);
   white-space: nowrap; pointer-events: none; opacity: 0;
-  color: #FFF3D1; -webkit-text-fill-color: #FFF3D1;
+  color: #FFF3D1;
   text-shadow: 0 0 14px rgba(243,215,122,.95), 0 0 34px rgba(212,175,55,.55);
 }
+.pc-glow--tv { left: var(--pc-n1x); top: var(--pc-n1y); }
+.pc-glow--tz { left: var(--pc-n2x); top: var(--pc-n2y); }
 .pc-go .price-compare-big {
   background-image: linear-gradient(100deg, rgba(255,249,232,0) 42%, rgba(255,249,232,.95) 50%, rgba(255,249,232,0) 58%), var(--mk-gold-gradient);
-  background-size: 250% 100%, 100% 100%; background-repeat: no-repeat; background-position: 130% 0, 0 0;
+  background-size: 250% 100%, 100% 100%; background-repeat: no-repeat; background-position: 100% 0, 0 0;
 }
-@property --pc-lift { syntax: '<color>'; inherits: false; initial-value: rgba(255,249,232,0); }
 @keyframes pcEdge {
   0%, 100% { border-color: rgba(212,175,55,.45); box-shadow: 0 0 0 1px rgba(212,175,55,.35), 0 8px 24px rgba(212,175,55,.18); }
   45% { border-color: rgba(243,215,122,.9); box-shadow: 0 0 0 1px rgba(243,215,122,.7), 0 12px 48px rgba(212,175,55,.4); }
@@ -515,8 +522,8 @@ hr.mk-rule-gold, hr.mk-rule-gold--bold { margin: 0 auto; max-width: 1180px; }
 @keyframes pcOut { from { opacity: 1; } to { opacity: 0; } }
 @keyframes pcNumLong { 0% { opacity: 0; } 18% { opacity: 1; } 75% { opacity: 1; } 100% { opacity: 0; } }
 @keyframes pcNumShort { 0% { opacity: 0; } 30% { opacity: 1; } 60% { opacity: 1; } 100% { opacity: 0; } }
-@keyframes pcSweep { from { background-position: 130% 0, 0 0; } to { background-position: -30% 0, 0 0; } }
-@keyframes pcLift { 0%, 100% { --pc-lift: rgba(255,249,232,0); } 45% { --pc-lift: rgba(255,249,232,.55); } }
+/* The band starts just off the line's left end and stops just past its right, so it spends the whole run on the words. */
+@keyframes pcSweep { from { background-position: 100% 0, 0 0; } to { background-position: 0% 0, 0 0; } }
 @keyframes pcYear {
   0%, 100% { color: var(--mk-text-secondary); text-shadow: 0 0 0 rgba(229,197,114,0); }
   40% { color: #EEDFB2; text-shadow: 0 0 12px rgba(229,197,114,.45); }
@@ -529,8 +536,8 @@ hr.mk-rule-gold, hr.mk-rule-gold--bold { margin: 0 auto; max-width: 1180px; }
 .pc-go .pc-mark { animation: pcDrop .7s var(--mk-ease-out) 1.3s both, pcOut 1s ease 5.4s forwards; }
 .pc-go .pc-over--tv { animation: pcGrow .9s var(--mk-ease-out) 2.1s both, pcOut 1s ease 5.4s forwards; }
 .pc-go .pc-over--tz { animation: pcGrow .9s var(--mk-ease-out) 3.2s both, pcOut 1s ease 5.4s forwards; }
-.pc-go .pc-n--tv::after { animation: pcNumLong 2.8s ease-in-out 2.6s both; }
-.pc-go .pc-n--tz::after { animation: pcNumShort 1.7s ease-in-out 3.7s both; }
+.pc-go .pc-glow--tv { animation: pcNumLong 2.8s ease-in-out 2.6s both; }
+.pc-go .pc-glow--tz { animation: pcNumShort 1.7s ease-in-out 3.7s both; }
 .pc-go .price-compare-big { animation: pcSweep 1.4s cubic-bezier(.45,0,.25,1) 4.4s both; }
 .pc-go .price-compare-year { animation: pcYear 1.6s ease-out 5s both; }
 @media (prefers-reduced-motion: reduce) {
@@ -540,11 +547,7 @@ hr.mk-rule-gold, hr.mk-rule-gold--bold { margin: 0 auto; max-width: 1180px; }
   .pc-go .pc-mark { animation: pcShow .7s ease 1.3s both, pcOut 1s ease 5.4s forwards; }
   .pc-go .pc-over--tv { animation: pcShow .9s ease 2.1s both, pcOut 1s ease 5.4s forwards; }
   .pc-go .pc-over--tz { animation: pcShow .9s ease 3.2s both, pcOut 1s ease 5.4s forwards; }
-  .pc-go .price-compare-big {
-    background-image: linear-gradient(var(--pc-lift), var(--pc-lift)), var(--mk-gold-gradient);
-    background-size: 100% 100%, 100% 100%; background-position: 0 0, 0 0;
-    animation: pcLift 1.4s ease-in-out 4.4s both;
-  }
+  .pc-go .price-compare-big { background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; animation: none; }
 }
 
 /* ── PRICING TOGGLE ──────────────────────────────────────────── */
@@ -1292,7 +1295,7 @@ a.toolkit-card { text-decoration: none; color: inherit; }
         </li>
       </ul>
       <div class="price-compare-total">
-        <p class="price-compare-big"><span class="pc-n pc-n--tv" data-t="$10">$10</span> to <span class="pc-n pc-n--tz" data-t="$15">$15</span> less every month</p>
+        <p class="price-compare-big"><span class="pc-n pc-n--tv">$10</span> to <span class="pc-n pc-n--tz">$15</span> less every month</p>
         <p class="price-compare-year">$120 to $180 less a year.</p>
       </div>
       <p class="price-compare-note">Each company's first paid plan, billed monthly, from its own pricing page, Nov 10, 2026.</p>
@@ -1307,16 +1310,32 @@ a.toolkit-card { text-decoration: none; color: inherit; }
   var list = card.querySelector('.price-compare-list');
   var tracks = card.querySelectorAll('.price-compare-track');
   var fills = card.querySelectorAll('.price-compare-fill');
-  if (!list || tracks.length !== 3 || fills.length !== 3) return;
+  var total = card.querySelector('.price-compare-total');
+  var nums = card.querySelectorAll('.pc-n');
+  if (!list || !total || tracks.length !== 3 || fills.length !== 3 || nums.length !== 2) return;
   var RUN = 6600;
-  // Where the $19.95 bar ends and where the line runs, measured from the bars, never typed.
+  // The lit copies of "$10" and "$15", made here so the page's text is unchanged without the script.
+  ['tv', 'tz'].forEach(function (k, i) {
+    var g = document.createElement('span');
+    g.className = 'pc-glow pc-glow--' + k;
+    g.setAttribute('aria-hidden', 'true');
+    g.textContent = nums[i].textContent;
+    total.appendChild(g);
+  });
+  // Where the $19.95 bar ends, where the line runs and where the two numbers sit: measured, never typed.
   function measure() {
     var lr = list.getBoundingClientRect(), t0 = tracks[0].getBoundingClientRect(), t2 = tracks[2].getBoundingClientRect();
+    var tr = total.getBoundingClientRect();
     card.style.setProperty('--pc-x', fills[0].offsetWidth + 'px');
     card.style.setProperty('--pc-tv', fills[1].offsetWidth + 'px');
     card.style.setProperty('--pc-tz', fills[2].offsetWidth + 'px');
     card.style.setProperty('--pc-top', (t0.top - lr.top + t0.height / 2) + 'px');
     card.style.setProperty('--pc-h', (t2.bottom - t0.top - t0.height / 2) + 'px');
+    for (var i = 0; i < 2; i++) {
+      var r = nums[i].getBoundingClientRect();
+      card.style.setProperty('--pc-n' + (i + 1) + 'x', (r.left - tr.left) + 'px');
+      card.style.setProperty('--pc-n' + (i + 1) + 'y', (r.top - tr.top + r.height / 2) + 'px');
+    }
   }
   var fonts = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
   card.classList.add('pc-armed');
