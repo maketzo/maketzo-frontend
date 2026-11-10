@@ -2419,12 +2419,15 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
    armed without it, so the section stands finished). AS TRADED first: its panel lights, the line draws, BUY, the
    $4.85 add and SELL land, and +$1,000 counts. Then WHAT IF: its panel lights, the same line draws, a faint ring sits
    where the $4.85 add was, the dotted arrow carries it down to the $4.22 pullback, the gold add lands at its tip, and
-   +$1,630 counts. Every end frame is the static card. */
-.tk-armed .trp-line { stroke-dasharray: 1 1; stroke-dashoffset: 1; }
+   +$1,630 counts. Every end frame is the static card.
+   The hidden lines use a gap of 2, not 1: "1 1" at offset 1 starts a zero-length dash exactly at the path's end, and a
+   round cap draws that as a dot, so WHAT IF showed two stray dots while it waited its turn (Ed, 2026-11-10: "Trade
+   Replay loads random dots initially"). A gap longer than the path starts no dash inside it; the draw is unchanged. */
+.tk-armed .trp-line { stroke-dasharray: 1 2; stroke-dashoffset: 1; }
 .tk-armed .trp-mk circle { scale: 0; }
 .tk-armed .trp-mk :is(rect, text) { opacity: 0; }
 .tk-armed :is(.trp-was, .trp-move-head, .trp-move-v) { opacity: 0; }
-.tk-armed .trp-move-reveal { stroke-dasharray: 1 1; stroke-dashoffset: 1; }
+.tk-armed .trp-move-reveal { stroke-dasharray: 1 2; stroke-dashoffset: 1; }
 .tk-go .trp-run--as { animation: trpOnAs 3.4s ease; }
 .tk-go .trp-run--as .trp-line { animation: trpDraw 2.4s linear forwards; }
 .tk-go .trp-run--as .trp-mk--buy circle { animation: trpPop .5s cubic-bezier(.3,1.5,.5,1) .38s forwards; }
@@ -2465,7 +2468,7 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
 .wyg .is-lit .wyg-hand { animation: wygHand 1.4s cubic-bezier(.45,0,.2,1) .15s; }
 .wyg .is-lit .wyg-pg--l { animation: wygPgL 1.3s ease .15s; }
 .wyg .is-lit .wyg-pg--r { animation: wygPgR 1.3s ease .15s; }
-.wyg .is-lit .wyg-ln { stroke-dasharray: 1 1; animation: wygWrite 1s ease .15s both; }
+.wyg .is-lit .wyg-ln { stroke-dasharray: 1 2; animation: wygWrite 1s ease .15s both; } /* gap 2: see .tk-armed .trp-line */
 @keyframes wygLit { 35% { border-color: rgba(240,200,80,.55); box-shadow: 0 0 26px rgba(240,200,80,.12); } }
 @keyframes wygIcon { 35% { box-shadow: 0 0 26px rgba(240,200,80,.4); } }
 @keyframes wygHand { to { rotate: 360deg; } }
