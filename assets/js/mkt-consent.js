@@ -42,8 +42,8 @@
       "box-shadow:0 24px 60px rgba(0,0,0,.55),0 0 0 1px rgba(0,0,0,.4);",
       "padding:18px 20px 16px;font-family:'DM Sans',system-ui,sans-serif;",
       "font-size:14px;line-height:1.5;opacity:0;",
-      "transition:opacity .3s ease,transform .3s ease;",
-      "backdrop-filter:blur(12px);}",
+      // No backdrop blur: at 96% opaque it showed nothing and re-blurred on every frame of a scroll (Ed's fans, 2026-11-10).
+      "transition:opacity .3s ease,transform .3s ease;}",
       ".mkt-consent.is-visible{opacity:1;}",
       ".mkt-consent__title{font-family:'Bebas Neue',sans-serif;font-size:15px;",
       "letter-spacing:.12em;color:#d4af37;text-transform:uppercase;margin-bottom:6px;}",

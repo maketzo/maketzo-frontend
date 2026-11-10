@@ -41,7 +41,7 @@
 <link rel="stylesheet" href="assets/css/components.css">
 <script src="assets/js/mkt-analytics.js?v=19" defer></script>
 <script src="assets/js/newsletter.js?v=5" defer></script>
-<script src="assets/js/mkt-consent.js?v=1" defer></script>
+<script src="assets/js/mkt-consent.js?v=2" defer></script>
 <script src="assets/js/checkout.js?v=10" defer></script>
 <style>
 /* ====================================================================
@@ -116,8 +116,7 @@ strong { color: var(--mk-text-primary); font-weight: 600; }
 /* ── NAV ─────────────────────────────────────────────────────── */
 #mainNav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 50;
-  background: rgba(6,7,10,.6);
-  backdrop-filter: blur(20px) saturate(140%);
+  background: rgba(6,7,10,.92); /* no backdrop blur: it re-blurred the bar on every frame of a scroll (Ed's fans, 2026-11-10); near solid, as the app's top bar since 2026-06-01 */
   border-bottom: 1px solid rgba(212,175,55,.12);
   transition: border-color var(--mk-dur-snap);
   display: flex; align-items: center; justify-content: space-between;
@@ -994,8 +993,7 @@ hr.mk-rule-gold, hr.mk-rule-gold--bold { margin: 0 auto; max-width: 1180px; }
   position: fixed; bottom: 0; left: 0; right: 0; z-index: 55;
   display: flex; align-items: center; justify-content: center; gap: 14px;
   padding: 10px 64px 10px 24px;
-  background: rgba(13,15,20,.62);
-  backdrop-filter: blur(20px) saturate(140%);
+  background: rgba(13,15,20,.92); /* no backdrop blur, same reason as #mainNav */
   border-top: 1px solid rgba(212,175,55,.35);
   transform: translateY(100%);
   transition: transform var(--mk-dur-med) var(--mk-ease-out);

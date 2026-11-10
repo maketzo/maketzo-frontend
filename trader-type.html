@@ -71,7 +71,7 @@
 <link rel="stylesheet" href="assets/css/capture.css?v=1">
 <script src="assets/js/mkt-analytics.js?v=19" defer></script>
 <script src="assets/js/newsletter.js?v=5" defer></script>
-<script src="assets/js/mkt-consent.js?v=1" defer></script>
+<script src="assets/js/mkt-consent.js?v=2" defer></script>
 <script src="assets/js/checkout.js?v=10" defer></script>
 <script src="assets/js/audio-player.js?v=9" defer></script>
 <!-- The game is now the SAME chunk the in-app Warm-Up card runs, loaded first-party via
@@ -97,7 +97,7 @@ strong { color: var(--mk-text-primary, #fff); font-weight: 600; }
 .mobile-drawer-cta { display: inline-flex; align-items: center; justify-content: center; background: var(--mk-gold-gradient, linear-gradient(135deg,#e5c572,#d4af37)); color: var(--mk-text-on-gold, #0d0f14); font-family: var(--mk-font-sans, sans-serif); font-weight: 600; font-size: var(--mk-text-sm, 14px); letter-spacing: var(--mk-track-cap, .06em); text-transform: uppercase; padding: 14px 22px; border: 1px solid rgba(0,0,0,.18); border-radius: var(--mk-radius-button, 10px); cursor: pointer; margin-top: auto; }
 html.mkt-auth .mobile-drawer-cta { display: none; }
 
-#mainNav { position: fixed; top: 0; left: 0; right: 0; z-index: 50; background: rgba(6,7,10,.6); backdrop-filter: blur(20px) saturate(140%); border-bottom: 1px solid rgba(212,175,55,.12); display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 14px 32px 14px 64px; }
+#mainNav { position: fixed; top: 0; left: 0; right: 0; z-index: 50; background: rgba(6,7,10,.92); /* no backdrop blur: it re-blurred the bar on every frame of a scroll (Ed's fans, 2026-11-10); near solid, as the app's top bar since 2026-06-01 */ border-bottom: 1px solid rgba(212,175,55,.12); display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 14px 32px 14px 64px; }
 .nav-logo.mk-brand-lockup { --mk-brand-lockup-mark-h: 44px; --mk-brand-lockup-wordmark-h: 22px; --mk-brand-lockup-gap: 10px; }
 .nav-links { display: flex; align-items: center; gap: 28px; margin: 0; padding: 0; }
 .nav-links > li > a:not(.nav-login-btn) { font-size: var(--mk-text-sm, 14px); color: var(--mk-text-secondary, #9aa6b3); font-weight: 500; letter-spacing: .02em; transition: color var(--mk-dur-fast, .15s); }
@@ -191,7 +191,7 @@ hr.mk-rule-gold, hr.mk-rule-gold--bold { margin: 0 auto; max-width: 1180px; }
 .final-cta-sub:last-of-type { margin-bottom: 36px; }
 .final-cta-btn-wrap { display: flex; flex-direction: column; align-items: center; gap: 14px; }
 .final-cta-note { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: 0.04em; color: var(--mk-text-tertiary); }
-.sticky-bar { position: fixed; bottom: 0; left: 0; right: 0; z-index: 55; display: flex; align-items: center; justify-content: center; gap: 14px; padding: 10px 64px 10px 24px; background: rgba(13,15,20,.62); -webkit-backdrop-filter: blur(20px) saturate(140%); backdrop-filter: blur(20px) saturate(140%); border-top: 1px solid rgba(212,175,55,.35); transform: translateY(100%); transition: transform var(--mk-dur-med) var(--mk-ease-out); }
+.sticky-bar { position: fixed; bottom: 0; left: 0; right: 0; z-index: 55; display: flex; align-items: center; justify-content: center; gap: 14px; padding: 10px 64px 10px 24px; background: rgba(13,15,20,.92); /* no backdrop blur, same reason as #mainNav */ border-top: 1px solid rgba(212,175,55,.35); transform: translateY(100%); transition: transform var(--mk-dur-med) var(--mk-ease-out); }
 .sticky-bar.visible { transform: translateY(0); }
 body:has(.sticky-bar.visible) { padding-bottom: 80px; }
 .sticky-bar-text { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); }
