@@ -198,7 +198,12 @@ if (isReferred && !(tier && tier.isIndicator)) {
 }
 
 // ── Turnstile ────────────────────────────────────────────────
-const TURNSTILE_SITE_KEY = document.querySelector('meta[name="turnstile-site-key"]').content;
+// dev-api runs Cloudflare's TEST secret so tools/site-preview/create-dev-account.js can sign up, and a test
+// secret accepts only the test widget's dummy answer: with the real widget every person failed on dev
+// ("Captcha verification failed", 2026-11-10). So dev renders Cloudflare's always-pass test widget.
+const TURNSTILE_SITE_KEY = location.hostname === 'dev.maketzo.co'
+  ? '1x00000000000000000000AA'
+  : document.querySelector('meta[name="turnstile-site-key"]').content;
 let turnstileWidgetId = null;
 window.onloadTurnstileCallback = function () {
   if (!TURNSTILE_SITE_KEY) return;
