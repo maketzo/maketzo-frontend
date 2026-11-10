@@ -97,9 +97,9 @@ strong { color: var(--mk-text-primary); font-weight: 600; }
   background: rgba(0,0,0,.6);
   backdrop-filter: blur(6px);
   opacity: 0; pointer-events: none;
-  transition: opacity var(--mk-dur-med);
+  visibility: hidden; transition: opacity var(--mk-dur-med), visibility 0s linear var(--mk-dur-med); /* closed: not drawn, so its blur never runs under the page (Ed's fans, 2026-11-10) */
 }
-.mobile-overlay.open { opacity: 1; pointer-events: auto; }
+.mobile-overlay.open { opacity: 1; pointer-events: auto; visibility: visible; transition: opacity var(--mk-dur-med); }
 .mobile-drawer {
   position: fixed; top: 0; right: 0; bottom: 0; z-index: 100;
   width: min(320px, 88%);

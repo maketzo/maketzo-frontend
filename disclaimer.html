@@ -74,8 +74,8 @@ img { display: block; max-width: 100%; }
 em, i { font-style: italic; }
 strong { color: var(--mk-text-primary); font-weight: 600; }
 
-.mobile-overlay { position: fixed; inset: 0; z-index: 90; background: rgba(0,0,0,.6); backdrop-filter: blur(6px); opacity: 0; pointer-events: none; transition: opacity var(--mk-dur-med); }
-.mobile-overlay.open { opacity: 1; pointer-events: auto; }
+.mobile-overlay { position: fixed; inset: 0; z-index: 90; background: rgba(0,0,0,.6); backdrop-filter: blur(6px); opacity: 0; pointer-events: none; visibility: hidden; transition: opacity var(--mk-dur-med), visibility 0s linear var(--mk-dur-med); /* closed: not drawn, so its blur never runs under the page (Ed's fans, 2026-11-10) */ }
+.mobile-overlay.open { opacity: 1; pointer-events: auto; visibility: visible; transition: opacity var(--mk-dur-med); }
 .mobile-drawer { position: fixed; top: 0; right: 0; bottom: 0; z-index: 100; width: min(320px, 88%); background: var(--mk-surface-base); border-left: var(--mk-border-soft); padding: 80px 28px 28px; transform: translateX(100%); transition: transform var(--mk-dur-med) var(--mk-ease-out); display: flex; flex-direction: column; gap: 20px; }
 .mobile-drawer.open { transform: translateX(0); }
 .mobile-drawer-links li { padding: 12px 0; border-bottom: var(--mk-border-hairline); }
