@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<!-- offer — the $9.95 Journal offer, opened from the email's link (board 4 on the offer canvas, Ed 2026-11-10).
+     The link's token is the authority: POST /offers/open proves the email and says what to show, POST /offers/start
+     makes the account and hands back Stripe Checkout at $9.95 with no trial (maketzo-backend lib/offers.js).
+     The same 24-hour clock as the toast, counting to the same end time. -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Journal Offer · MAKETZO</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#06070A">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/css/auth.css?v=3">
+<link rel="stylesheet" href="assets/css/offer-page.css?v=1">
+<script src="assets/js/password-rules.js?v=1"></script>
+<script src="assets/js/mkt-analytics.js?v=17" defer></script>
+<script src="assets/js/mkt-consent.js?v=1" defer></script>
+</head>
+<body class="auth-body">
+
+<div class="bg-trading" aria-hidden="true">
+  <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+    <g stroke="#C9A84C" stroke-width="0.5" opacity="0.5">
+      <line x1="0" y1="150" x2="1440" y2="150"/><line x1="0" y1="300" x2="1440" y2="300"/><line x1="0" y1="450" x2="1440" y2="450"/><line x1="0" y1="600" x2="1440" y2="600"/>
+      <line x1="180" y1="0" x2="180" y2="900"/><line x1="360" y1="0" x2="360" y2="900"/><line x1="540" y1="0" x2="540" y2="900"/><line x1="720" y1="0" x2="720" y2="900"/><line x1="900" y1="0" x2="900" y2="900"/><line x1="1080" y1="0" x2="1080" y2="900"/><line x1="1260" y1="0" x2="1260" y2="900"/>
+    </g>
+  </svg>
+</div>
+
+<main class="auth-shell">
+  <a href="/" class="auth-brand mk-brand-lockup mk-brand-lockup--stacked" aria-label="MAKETZO home">
+    <img class="mk-brand-lockup__mark" src="assets/logo-mark.png" alt="">
+    <img class="mk-brand-lockup__wordmark" src="assets/logo-wordmark.png" alt="MAKETZO">
+  </a>
+
+  <div class="auth-card of-card" id="loadingView">
+    <p class="auth-eyebrow">YOUR JOURNAL OFFER</p>
+    <p class="auth-sub">Opening your offer.</p>
+  </div>
+
+  <div class="auth-card of-card" id="activeView" hidden>
+    <p class="auth-eyebrow">YOUR JOURNAL OFFER</p>
+    <h1 class="auth-title">Journal at Half Price</h1>
+    <div class="of-sum">
+      <div class="of-row"><span>Plan</span><span class="of-v">Journal, monthly</span></div>
+      <div class="of-row"><span>Charged today</span><span class="of-v of-gold">$9.95</span></div>
+      <div class="of-row"><span>Each month after</span><span class="of-v of-gold">$9.95</span></div>
+      <div class="of-row"><span>Regular price</span><span class="of-v of-was">$19.95</span></div>
+    </div>
+    <p class="of-terms">Half price lasts for as long as you stay on Journal. Switching to Pro, or to paying yearly, ends it. Cancel any time in Account.</p>
+
+    <div id="banner" class="auth-banner" hidden></div>
+
+    <form id="startForm" data-form-id="offer_start" novalidate>
+      <div class="of-locked">
+        <span class="of-locked-k">Your account email</span>
+        <div class="of-locked-v" id="lockedEmail"></div>
+      </div>
+      <div class="mk-form-field" id="nameField">
+        <label for="name">Your name</label>
+        <input id="name" name="name" type="text" autocomplete="name" maxlength="100" required>
+      </div>
+      <div class="mk-form-field" id="passwordField">
+        <label for="password" id="passwordLabel">Create a password</label>
+        <input id="password" name="password" type="password" autocomplete="new-password" maxlength="128" required>
+      </div>
+      <button class="btn-primary auth-submit of-cta" type="submit" id="startBtn">Start Journal at $9.95 · <span class="of-clock" id="clock">24:00:00</span> left</button>
+    </form>
+
+    <div class="auth-divider" id="googleDivider"><span>or</span></div>
+    <button id="googleBtn" class="btn-google" type="button">
+      <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/><path d="M3.964 10.706A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.706V4.962H.957A8.997 8.997 0 0 0 0 9c0 1.452.348 2.827.957 4.038l3.007-2.332z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.962L3.964 7.294C4.672 5.167 6.656 3.58 9 3.58z" fill="#EA4335"/></svg>
+      <span>Continue With Google</span>
+    </button>
+    <p class="of-ends" id="endsLine"></p>
+  </div>
+
+  <div class="auth-card of-card" id="doneView" hidden>
+    <p class="auth-eyebrow">YOUR JOURNAL OFFER</p>
+    <h1 class="auth-title">Journal Is Active</h1>
+    <p class="auth-sub">You paid $9.95 today, and every month after is $9.95 too, for as long as you stay on Journal.</p>
+    <a class="btn-primary auth-submit" href="/app">Open MAKETZO</a>
+  </div>
+
+  <div class="auth-card of-card" id="endedView" hidden>
+    <p class="auth-eyebrow">YOUR JOURNAL OFFER</p>
+    <h1 class="auth-title">This Offer Has Ended</h1>
+    <p class="auth-sub" id="endedLine">Journal is $19.95 a month, with a 7-day free trial.</p>
+    <a class="btn-primary auth-submit" href="/pricing">See Pricing</a>
+  </div>
+
+  <div class="auth-card of-card" id="invalidView" hidden>
+    <p class="auth-eyebrow">YOUR JOURNAL OFFER</p>
+    <h1 class="auth-title">This Link Does Not Work</h1>
+    <p class="auth-sub">Open the newest email from MAKETZO and use its button. Journal is $19.95 a month on the pricing page.</p>
+    <a class="btn-primary auth-submit" href="/pricing">See Pricing</a>
+  </div>
+</main>
+
+<script>
+// API base URL, derived from the page host so a new tier needs no change (the same rule as every auth page).
+const API = (() => {
+  const h = window.location.hostname;
+  if (h === 'localhost' || h.startsWith('127.')) return 'http://localhost:3000';
+  if (h === 'maketzo.co') return 'https://api.maketzo.co';
+  const parts = h.split('.');
+  if (parts.length >= 3) return `https://${parts[0]}-api.${parts.slice(1).join('.')}`;
+  return `https://api.${h}`;
+})();
+
+const params = new URLSearchParams(window.location.search);
+// The token rides in this tab's session too, so a return from Google or from Stripe's back button finds it.
+let t = params.get('t') || '';
+try { if (t) sessionStorage.setItem('mkt_offer_t', t); else t = sessionStorage.getItem('mkt_offer_t') || ''; } catch (e) {}
+const views = ['loadingView', 'activeView', 'doneView', 'endedView', 'invalidView'];
+function show(id) { views.forEach(v => { document.getElementById(v).hidden = v !== id; }); }
+function track(name, props) { try { if (window.MKT) window.MKT.trackEvent(name, props || {}); } catch (e) {} }
+const banner = document.getElementById('banner');
+function showBanner(text, type) {
+  banner.textContent = text;
+  banner.className = 'auth-banner auth-banner--' + (type || 'info');
+  banner.hidden = !text;
+}
+async function post(path, body) {
+  const res = await fetch(API + path, { method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body || {}) });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) { const e = new Error(data.error || 'Something went wrong. Try again in a minute.'); e.status = res.status; throw e; }
+  return data;
+}
+
+let state = null, skew = 0, tick = null;
+function clock(ms) {
+  const s = Math.max(0, Math.floor(ms / 1000));
+  const p = (n) => (n < 10 ? '0' : '') + n;
+  return p(Math.floor(s / 3600)) + ':' + p(Math.floor((s % 3600) / 60)) + ':' + p(s % 60);
+}
+function update() {
+  if (!state || state.state !== 'active') return;
+  const ms = Date.parse(state.endsAt) - (Date.now() + skew);
+  if (ms <= 0) { clearInterval(tick); render({ state: 'ended', endsLabel: state.endsLabel }); return; }
+  const el = document.getElementById('clock');
+  const txt = clock(ms);
+  if (el.textContent !== txt) el.textContent = txt;
+}
+
+function render(s) {
+  state = s;
+  if (s.state === 'active') {
+    skew = s.now ? Date.parse(s.now) - Date.now() : 0;
+    document.getElementById('lockedEmail').textContent = s.email || '';
+    document.getElementById('endsLine').textContent = 'This offer ends ' + s.endsLabel + '.';
+    const pw = document.getElementById('password');
+    if (s.hasAccount) {
+      // They made the account here already and left checkout: their password (or Google, if they used it), no
+      // name, no checklist.
+      document.getElementById('nameField').hidden = true;
+      document.getElementById('passwordLabel').textContent = 'Your password';
+      pw.setAttribute('autocomplete', 'current-password');
+    } else if (window.MaketzoPasswordRules) {
+      MaketzoPasswordRules.attach(pw, { email: () => s.email || '' });
+    }
+    show('activeView');
+    update();
+    clearInterval(tick);
+    tick = setInterval(update, 250);
+  } else if (s.state === 'done') show('doneView');
+  else if (s.state === 'ended') {
+    if (s.endsLabel) document.getElementById('endedLine').textContent = 'It ended ' + s.endsLabel + '. Journal is $19.95 a month, with a 7-day free trial.';
+    show('endedView');
+  } else show('invalidView');
+  track('mkt_offer_page', { state: s.state });
+}
+
+// Back from Google: the server says why it could not start checkout there.
+const GOOGLE_WHY = {
+  mismatch: 'That Google account uses a different email. Make a password below, or pick the Google account for this email.',
+  has_account: 'That email already has a MAKETZO account. Sign in to it instead.',
+  failed: 'Google sign-in did not finish. Make a password below instead.'
+};
+
+(async () => {
+  if (!t) return render({ state: 'invalid' });
+  try {
+    const s = await post('/offers/open', { t });
+    render(s);
+    const g = params.get('google');
+    if (g && GOOGLE_WHY[g] && s.state === 'active') showBanner(GOOGLE_WHY[g], 'error');
+  } catch (e) {
+    render({ state: 'invalid' });
+  }
+})();
+
+document.getElementById('startForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  if (!state || state.state !== 'active') return;
+  const btn = document.getElementById('startBtn');
+  const name = document.getElementById('name').value.trim();
+  const password = document.getElementById('password').value;
+  if (!state.hasAccount && !name) { showBanner('Enter your name.', 'error'); return; }
+  if (!state.hasAccount && window.MaketzoPasswordRules) {
+    const problem = MaketzoPasswordRules.firstError(password, state.email || '');
+    if (problem) { showBanner(problem + '.', 'error'); return; }
+  }
+  if (!password) { showBanner('Enter your password.', 'error'); return; }
+  showBanner('');
+  btn.disabled = true;
+  track('mkt_offer_start', { returning: state.hasAccount ? 'yes' : 'no' });
+  try {
+    const out = await post('/offers/start', { t, name, password });
+    if (out.url) { window.location.href = out.url; return; }
+    throw new Error('Checkout did not open. Try again in a minute.');
+  } catch (err) {
+    btn.disabled = false;
+    if (err.status === 410) return render({ state: 'ended', endsLabel: state.endsLabel });
+    showBanner(err.message, 'error');
+  }
+});
+
+document.getElementById('googleBtn').addEventListener('click', () => {
+  if (!state || state.state !== 'active' || !state.code) return;
+  track('mkt_offer_google', {});
+  let aid = '';
+  try { aid = window.MKT ? window.MKT.getAnonId() : ''; } catch (e) {}
+  window.location.href = API + '/auth/google?offer=' + encodeURIComponent(state.code) + (aid ? '&aid=' + encodeURIComponent(aid) : '');
+});
+</script>
+</body>
+</html>

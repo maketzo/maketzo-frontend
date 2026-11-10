@@ -459,11 +459,13 @@
   }
 
   function consentAllowsPersistence() {
-    // No decision yet → behave like 'all' on non-EU (consent.js sets it
-    // explicitly for EU), or hold off if we know we're EU and unresolved.
+    // No decision yet: nothing is kept until we know the visitor is outside the EU (boot then records "all"), and
+    // an EU visitor keeps nothing until they choose. Until 2026-11-10 this answered yes before the EU lookup had
+    // returned, so an EU visitor's first page stored mkt_aid before they had seen the banner.
     var c = getConsent();
     if (c === "essential") return false;
-    return true;
+    if (c === "all") return true;
+    return euResolved === false;
   }
 
   function getAnonId() {
@@ -474,7 +476,8 @@
     }
     var existing = safeLocal("get", ANON_KEY);
     if (existing) return existing;
-    return safeLocal("set", ANON_KEY, uuid());
+    // The id this page used while the choice was unknown carries on, so its first events stay this visitor's.
+    return safeLocal("set", ANON_KEY, window.__mktVolatileAid || uuid());
   }
 
   function getSessionId() {
@@ -556,8 +559,15 @@
       return "desktop";
     } catch (e) { return ""; }
   }
+  // The beacon follows the consent choice (fixed 2026-11-10; it used to send before an EU visitor had chosen): a
+  // visitor outside the EU, or one who accepted. An EU visitor who has not chosen, or chose essential only, sends
+  // none, so every person on the admin Live page is one who may be shown an offer.
+  function liveAllowed() {
+    var c = getConsent();
+    return c === "all" || (c === null && euResolved === false);
+  }
   function liveBeat(nav) {
-    if (analyticsOptOut()) return;
+    if (analyticsOptOut() || !liveAllowed()) return;
     var host = window.location.hostname.replace(/^www\./, "");
     if (!MKT_TIERS[host]) return;
     var body = { sf: "marketing", a: getAnonId(), s: getSessionId(), p: window.location.pathname, n: nav ? 1 : 0, d: liveDevice(), i: isInternal() ? 1 : 0 };
@@ -588,12 +598,44 @@
         keepalive: true,
         credentials: "include",
         mode: "cors"
+      }).then(function (r) {
+        // 204 nearly always. A 200 carries an offer Ed sent this visitor from Live (maketzo-backend lib/offers.js).
+        if (!r || r.status !== 200) return;
+        return r.json().then(function (j) { if (j && j.offer && j.offer.code) offerArrived(j.offer.code); });
       }).catch(function () {});
     } catch (e) {}
   }
+  // ── The $9.95 Journal offer's toast ──────────────────────────────────
+  // Loaded only when an offer arrives, or when this browser already has one open (assets/js/offer-toast.js keeps
+  // it in localStorage, so it follows the visitor from page to page until they claim it, close it, or it ends).
+  var OFFER_V = 1, offerLoading = null;
+  function loadOfferToast() {
+    if (window.MKOffer) return Promise.resolve(window.MKOffer);
+    if (offerLoading) return offerLoading;
+    offerLoading = new Promise(function (resolve, reject) {
+      var css = document.createElement("link");
+      css.rel = "stylesheet"; css.href = "/assets/css/offer-toast.css?v=" + OFFER_V;
+      document.head.appendChild(css);
+      var s = document.createElement("script");
+      s.src = "/assets/js/offer-toast.js?v=" + OFFER_V; s.async = true;
+      s.onload = function () { window.MKOffer ? resolve(window.MKOffer) : reject(new Error("no toast")); };
+      s.onerror = reject;
+      document.head.appendChild(s);
+    });
+    return offerLoading;
+  }
+  function offerArrived(code) {
+    loadOfferToast().then(function (t) { t.receive(code); }).catch(function () {});
+  }
+  function offerResume() {
+    var held = null;
+    try { held = localStorage.getItem("mkt_offer"); } catch (e) {}
+    if (held) loadOfferToast().then(function (t) { t.resume(); }).catch(function () {});
+  }
+  // Started once the EU lookup has answered (boot), or when an EU visitor accepts (mkt:consent-changed). Once only.
   function liveStart() {
+    if (liveTimer || !liveAllowed()) return;
     liveBeat(true);
-    if (liveTimer) clearInterval(liveTimer);
     liveTimer = setInterval(function () { if (!document.hidden) liveBeat(false); }, LIVE_EVERY_MS);
     // Coming back to the tab says "still here" at once, rather than up to 30 seconds later.
     document.addEventListener("visibilitychange", function () { if (!document.hidden) liveBeat(false); });
@@ -1078,6 +1120,9 @@
       }
       nlApply();
       loadPostHog();
+      // Live waits for the lookup, so an EU visitor who has not chosen sends nothing (2026-11-10).
+      liveStart();
+      offerResume();
       // NO trackPage() here. PostHog fires its own $pageview on init now
       // (capture_pageview: true), so calling ours as well would count every
       // visit twice. This line used to send the custom `page_view` that Web
@@ -1086,7 +1131,6 @@
 
     initCtaTracking();
     initFormStart();
-    liveStart();
     if (document.readyState === "loading") {
       document.addEventListener("DOMContentLoaded", initScrollDepth);
     } else {
@@ -1107,6 +1151,8 @@
     }
     // A newsletter visit waiting on the choice is tied or dropped now.
     nlApply();
+    // Accepting starts the Live beacon; choosing essential leaves it off.
+    liveStart();
     // Replay follows the choice both ways: accepting starts it, choosing
     // essential-only stops it mid-visit.
     try {
@@ -1127,7 +1173,9 @@
     isEuVisitor: isEuVisitor,
     getRef: getRef,
     isInternal: isInternal,
-    setInternal: setInternal
+    setInternal: setInternal,
+    // This tier's API (offer-toast.js posts to it).
+    apiBase: API_BASE
   };
 
   // Compat shim — audio-player.js still calls MaketzoAnalytics.send().

@@ -1,0 +1,28 @@
+/* /offer, the $9.95 Journal offer page (offer.html; board 4 on the offer canvas, Ed 2026-11-10). The auth pages'
+   centred card (auth.css), plus what this card alone shows: the price summary, the locked email, the countdown on
+   the button and the end time under it. Dark only, like the rest of the site. */
+
+.of-card { max-width: 460px; }
+.of-card .auth-title { margin-bottom: 18px; }
+
+.of-sum { display: flex; flex-direction: column; border-top: 1px solid rgba(255,255,255,.08); margin-bottom: 14px; }
+.of-row { display: flex; justify-content: space-between; gap: 12px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,.08); font-size: var(--mk-text-sm); color: var(--mk-text-secondary); }
+.of-v { color: var(--mk-text-primary); font-weight: 600; }
+.of-gold { color: var(--mk-gold-300); font-family: var(--mk-font-mono); }
+.of-was { color: var(--mk-text-tertiary); font-family: var(--mk-font-mono); text-decoration: line-through; text-decoration-color: var(--mk-gold-300); text-decoration-thickness: 2px; }
+.of-terms { font-size: var(--mk-text-sm); line-height: 1.55; color: var(--mk-text-secondary); margin-bottom: 18px; }
+
+.of-locked { margin-bottom: 16px; }
+.of-locked-k { display: block; font-size: var(--mk-text-xs); color: var(--mk-text-secondary); margin-bottom: 6px; }
+.of-locked-v {
+  padding: 12px 14px; border-radius: var(--mk-radius-input);
+  border: 1px solid rgba(255,255,255,.08); background: rgba(255,255,255,.03);
+  color: var(--mk-text-primary); font-size: var(--mk-text-md); overflow-wrap: anywhere;
+}
+.mk-form-field[hidden] { display: none; }
+
+/* The button reads as a sentence ("Start Journal at $9.95 · 23:47:12 left"), so it is not set in capitals. */
+.of-cta { text-transform: none; letter-spacing: 0.01em; font-size: var(--mk-text-md); font-weight: 700; }
+.of-clock { font-family: var(--mk-font-mono); font-weight: 500; font-variant-numeric: tabular-nums; }
+.btn-google[hidden], .auth-divider[hidden] { display: none; }
+.of-ends { margin-top: 16px; text-align: center; font-size: var(--mk-text-sm); color: var(--mk-gold-300); }

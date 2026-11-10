@@ -1,0 +1,147 @@
+/* The $9.95 Journal offer toast (assets/js/offer-toast.js; Ed's boards, 2026-11-10). Loaded only when an offer
+   arrives. A card over the nav's Start Free Trial on a computer, a sheet from the bottom on a phone.
+
+   GLASS ON A SOLID BASE. The gold tint and the sheen are layered over an opaque obsidian, so the button it covers
+   never shows through (Ed: "If the Start Free Trial can be seen through the translucent background then
+   disregard"). No backdrop blur anywhere. Dark only, like the rest of the site.
+
+   THE ENTRANCE, ONCE (mk-offer--enter, first page only): in at 0.4s, the old price struck at 1.1s, the new price
+   lifts at 1.45s, light crosses the glass and one halo at 1.7s. Then still. Reduced motion shows the finished
+   frame, struck price and all. */
+
+.mk-offer {
+  position: fixed; top: 12px; right: 24px; z-index: 80;
+  width: 392px; max-width: calc(100vw - 32px);
+  box-sizing: border-box; overflow: hidden;
+  display: flex; flex-direction: column; gap: 12px;
+  padding: 22px 24px 18px;
+  border-radius: 20px;
+  border: 1px solid rgba(229,197,114,.6);
+  background:
+    linear-gradient(150deg, rgba(229,197,114,.22) 0%, rgba(229,197,114,.08) 26%, rgba(229,197,114,0) 55%),
+    linear-gradient(180deg, #171B25 0%, #0F1218 100%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.16), 0 0 0 1px rgba(212,175,55,.18), 0 26px 60px rgba(0,0,0,.6);
+  color: var(--mk-text-primary);
+  font-family: var(--mk-font-sans);
+}
+.mk-offer::before {
+  content: ""; position: absolute; left: 0; right: 0; top: 0; height: 46%;
+  background: linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,0));
+  pointer-events: none;
+}
+.mk-offer > * { position: relative; }
+.mk-offer__sweep {
+  position: absolute; top: -40%; left: -60%; width: 40%; height: 180%;
+  background: linear-gradient(100deg, rgba(255,236,170,0) 0%, rgba(255,236,170,.22) 50%, rgba(255,236,170,0) 100%);
+  transform: rotate(14deg); pointer-events: none; opacity: 0;
+}
+.mk-offer__grab { display: none; }
+
+.mk-offer__top { display: flex; justify-content: space-between; align-items: center; }
+.mk-offer__eyebrow { font-family: var(--mk-font-mono); font-size: 11px; letter-spacing: .18em; color: var(--mk-gold-300); }
+.mk-offer__x {
+  width: 32px; height: 32px; padding: 0; border-radius: 8px;
+  border: 1px solid rgba(255,255,255,.12); background: rgba(6,7,10,.35);
+  color: var(--mk-text-secondary); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+.mk-offer__x:hover { color: var(--mk-text-primary); border-color: rgba(255,255,255,.24); }
+
+.mk-offer__body { display: flex; flex-direction: column; gap: 12px; }
+.mk-offer__body[hidden] { display: none; }
+.mk-offer__title { margin: 0; font-family: var(--mk-font-display); font-weight: 400; font-size: 40px; line-height: .95; letter-spacing: .03em; }
+.mk-offer__price { display: flex; align-items: baseline; gap: 12px; }
+.mk-offer__old { position: relative; font-family: var(--mk-font-mono); font-size: 20px; color: #7E8794; }
+.mk-offer__old::after {
+  content: ""; position: absolute; left: -2px; right: -2px; top: 52%; height: 2px;
+  background: var(--mk-gold-300); transform-origin: left center; transform: scaleX(1);
+}
+.mk-offer__new { font-family: var(--mk-font-display); font-size: 56px; line-height: .9; color: var(--mk-gold-300); }
+.mk-offer__per { font-family: var(--mk-font-mono); font-size: 13px; color: var(--mk-text-secondary); }
+.mk-offer__lead { margin: 0; font-size: 15px; line-height: 1.5; color: var(--mk-text-primary); }
+.mk-offer__lead--quiet { color: var(--mk-text-secondary); line-height: 1.55; }
+.mk-offer__lead b { color: var(--mk-text-primary); font-weight: 600; overflow-wrap: anywhere; }
+.mk-offer__ends { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--mk-gold-300); }
+.mk-offer__ends svg { flex: 0 0 auto; }
+
+.mk-offer__form { display: flex; flex-direction: column; gap: 12px; margin: 0; }
+.mk-offer__label { font-size: 12px; color: var(--mk-text-secondary); margin: 2px 0 -6px; }
+.mk-offer__input {
+  height: 44px; box-sizing: border-box; width: 100%;
+  border-radius: 10px; border: 1px solid rgba(255,255,255,.16); background: rgba(6,7,10,.6);
+  color: var(--mk-text-primary); padding: 0 12px; font-family: var(--mk-font-sans); font-size: 15px;
+}
+.mk-offer__input:focus { outline: none; border-color: var(--mk-gold-500); box-shadow: 0 0 0 3px rgba(212,175,55,.2); }
+.mk-offer__check { display: flex; gap: 9px; align-items: center; font-size: 13px; color: var(--mk-text-secondary); cursor: pointer; }
+.mk-offer__check input { width: 16px; height: 16px; margin: 0; accent-color: var(--mk-gold-500); }
+.mk-offer__err { margin: 0; font-size: 13px; line-height: 1.45; color: #FCA5A5; }
+.mk-offer__err[hidden] { display: none; }
+.mk-offer__cta {
+  height: 48px; border: 0; border-radius: 10px; cursor: pointer;
+  background: var(--mk-gold-gradient); color: var(--mk-text-on-gold);
+  font-family: var(--mk-font-sans); font-weight: 700; font-size: 16px;
+}
+.mk-offer__cta:hover:not(:disabled) { box-shadow: var(--mk-glow-gold-sm); }
+.mk-offer__cta:disabled { opacity: .6; cursor: default; }
+/* The countdown's digits: mono and tabular, so the button never jitters as they tick. */
+.mk-offer__clock { font-family: var(--mk-font-mono); font-weight: 500; font-variant-numeric: tabular-nums; }
+.mk-offer__clock--big { font-size: 30px; color: var(--mk-gold-300); }
+.mk-offer__left { display: flex; align-items: baseline; gap: 10px; font-size: 14px; color: var(--mk-text-secondary); }
+.mk-offer__foot { display: flex; justify-content: space-between; align-items: center; gap: 10px; font-size: 12px; color: var(--mk-text-secondary); }
+.mk-offer__no {
+  border: 0; background: none; padding: 6px 0; cursor: pointer; white-space: nowrap;
+  color: var(--mk-text-secondary); font-family: var(--mk-font-sans); font-size: 12px; text-decoration: underline;
+}
+.mk-offer__no:hover { color: var(--mk-text-primary); }
+.mk-offer__close {
+  height: 44px; border: 1px solid rgba(212,175,55,.5); border-radius: 10px; background: transparent; cursor: pointer;
+  color: var(--mk-gold-300); font-family: var(--mk-font-sans); font-weight: 600; font-size: 14px;
+}
+.mk-offer__close:hover { border-color: var(--mk-gold-500); }
+.mk-offer button:focus-visible, .mk-offer input:focus-visible { outline: 2px solid var(--mk-gold-300); outline-offset: 2px; }
+
+@keyframes mkOfferIn { 0% { opacity: 0; transform: translateX(36px) scale(.96); } 60% { opacity: 1; } 100% { opacity: 1; transform: none; } }
+@keyframes mkOfferUp { 0% { opacity: 0; transform: translateY(40px); } 100% { opacity: 1; transform: none; } }
+@keyframes mkOfferStrike { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes mkOfferLift { 0% { opacity: 0; transform: translateY(8px); text-shadow: none; } 60% { opacity: 1; text-shadow: 0 0 22px rgba(229,197,114,.7); } 100% { opacity: 1; transform: none; text-shadow: 0 0 10px rgba(229,197,114,.25); } }
+@keyframes mkOfferSweep { 0% { left: -60%; opacity: 0; } 15% { opacity: 1; } 100% { left: 130%; opacity: 0; } }
+@keyframes mkOfferHalo {
+  0% { box-shadow: inset 0 1px 0 rgba(255,255,255,.16), 0 0 0 1px rgba(212,175,55,.18), 0 26px 60px rgba(0,0,0,.6); }
+  40% { box-shadow: inset 0 1px 0 rgba(255,255,255,.16), 0 0 0 1px rgba(229,197,114,.75), 0 0 60px rgba(212,175,55,.38); }
+  100% { box-shadow: inset 0 1px 0 rgba(255,255,255,.16), 0 0 0 1px rgba(212,175,55,.22), 0 26px 60px rgba(0,0,0,.6); }
+}
+.mk-offer--enter { animation: mkOfferIn .7s cubic-bezier(.16,1,.3,1) .4s both, mkOfferHalo 1.9s ease-out 1.7s 1 both; }
+.mk-offer--enter .mk-offer__old::after { animation: mkOfferStrike .45s cubic-bezier(.65,0,.35,1) 1.1s both; }
+.mk-offer--enter .mk-offer__new { animation: mkOfferLift .7s ease-out 1.45s both; }
+.mk-offer--enter .mk-offer__sweep { animation: mkOfferSweep 1.2s ease-in-out 1.7s 1 both; }
+
+/* A phone: a sheet from the bottom, the close and the box at thumb size, the text at 16px so iOS never zooms. */
+@media (max-width: 640px) {
+  .mk-offer {
+    top: auto; right: 0; left: 0; bottom: 0; width: auto; max-width: none;
+    border-radius: 20px 20px 0 0; border-width: 1px 0 0;
+    padding: 12px 18px calc(22px + env(safe-area-inset-bottom, 0px)); gap: 11px;
+    max-height: calc(100vh - 24px); overflow-y: auto;
+    background:
+      linear-gradient(160deg, rgba(229,197,114,.22) 0%, rgba(229,197,114,.08) 26%, rgba(229,197,114,0) 55%),
+      linear-gradient(180deg, #171B25 0%, #0F1218 100%);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.16), 0 -20px 50px rgba(0,0,0,.6);
+  }
+  .mk-offer__grab { display: block; align-self: center; width: 40px; height: 4px; border-radius: 999px; background: rgba(255,255,255,.18); }
+  .mk-offer__x { width: 44px; height: 44px; border-radius: 10px; background: transparent; border-color: rgba(255,255,255,.10); }
+  .mk-offer__title { font-size: 34px; margin-top: -6px; }
+  .mk-offer__new { font-size: 48px; }
+  .mk-offer__old { font-size: 18px; }
+  .mk-offer__lead { line-height: 1.45; }
+  .mk-offer__input { height: 48px; font-size: 16px; background: #0D0F14; }
+  .mk-offer__check { font-size: 14px; min-height: 32px; gap: 10px; }
+  .mk-offer__check input { width: 18px; height: 18px; }
+  .mk-offer__cta { height: 50px; }
+  .mk-offer__foot { justify-content: center; text-align: center; flex-wrap: wrap; }
+  .mk-offer__no { display: none; }
+  .mk-offer--enter { animation: mkOfferUp .55s cubic-bezier(.16,1,.3,1) .4s both; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mk-offer--enter, .mk-offer--enter .mk-offer__old::after, .mk-offer--enter .mk-offer__new, .mk-offer--enter .mk-offer__sweep { animation: none; }
+}

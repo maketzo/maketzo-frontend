@@ -39,7 +39,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/tokens.css">
 <link rel="stylesheet" href="assets/css/components.css">
-<script src="assets/js/mkt-analytics.js?v=16" defer></script>
+<script src="assets/js/mkt-analytics.js?v=17" defer></script>
 <script src="assets/js/newsletter.js?v=5" defer></script>
 <script src="assets/js/mkt-consent.js?v=1" defer></script>
 <script src="assets/js/checkout.js?v=10" defer></script>
@@ -441,6 +441,110 @@ hr.mk-rule-gold, hr.mk-rule-gold--bold { margin: 0 auto; max-width: 1180px; }
 @media (max-width: 900px) {
   .pricing-hero-grid { grid-template-columns: minmax(0, 1fr); gap: 36px; }
   .price-compare { padding: 22px 20px 20px; }
+}
+
+/* ── THE PRICE GAP, IN MOTION (Ed's pick A, 2026-11-10, mockup
+   https://claude.ai/artifact/TaXoKNduoqXmhh87QUGhSh) ──────────────────────
+   Once, when the card is half on screen and has faded in (about 6.6s): the
+   card's edge warms, a light runs along the MAKETZO bar to $19.95, a gold line
+   drops from there through the other two bars, the part of each bar past the
+   line lights (Tradervue, then TradeZella) together with the "$10" and the
+   "$15" in the line below, a light crosses that line, and everything fades
+   back to the static card. Only MAKETZO's light moves: the competitor bars
+   never do, and the line is never hidden or dimmed. Nothing here applies until
+   the script arms the card, so without it the card is exactly the static one.
+   Reduced motion keeps the clock and turns every sweep, drop and slide into a
+   glow or a fade. Never put a filter on .price-compare-big: Chrome cuts
+   gradient-clipped text short under a filter, so its reduced-motion glow lifts
+   the gradient through --pc-lift instead. */
+.pc-mark, .pc-over, .pc-tip { display: none; }
+.pc-armed .price-compare-list, .pc-armed .price-compare-track { position: relative; }
+.pc-armed .price-compare-fill--us { position: relative; overflow: hidden; }
+.pc-armed .price-compare-fill--us::after {
+  content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: 40%;
+  background: linear-gradient(90deg, rgba(255,246,220,0), rgba(255,246,220,.9), rgba(255,246,220,0));
+  transform: translateX(-100%);
+}
+.pc-armed .pc-mark, .pc-armed .pc-over, .pc-armed .pc-tip { display: block; position: absolute; pointer-events: none; opacity: 0; }
+.pc-mark {
+  left: calc(var(--pc-x) - 1px); top: var(--pc-top); height: var(--pc-h); width: 2px; border-radius: 2px;
+  background: linear-gradient(180deg, var(--mk-gold-300), rgba(212,175,55,.45));
+  box-shadow: 0 0 10px rgba(229,197,114,.5);
+  transform-origin: top center;
+}
+.pc-tip {
+  left: var(--pc-x); top: var(--pc-top); width: 26px; height: 26px; margin: -13px 0 0 -13px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,248,226,.95) 0%, rgba(243,215,122,.6) 30%, rgba(212,175,55,0) 70%);
+}
+.pc-over {
+  top: 0; bottom: 0; left: var(--pc-x); border-radius: 0 var(--mk-radius-pill) var(--mk-radius-pill) 0;
+  background: linear-gradient(90deg, rgba(212,175,55,.46), rgba(229,197,114,.28));
+  box-shadow: inset 0 0 0 1px rgba(243,215,122,.6), 0 0 16px rgba(212,175,55,.28);
+  transform-origin: left center;
+}
+.pc-over--tv { width: calc(var(--pc-tv) - var(--pc-x)); }
+.pc-over--tz { width: calc(var(--pc-tz) - var(--pc-x)); }
+/* The lit "$10" / "$15": a bright copy laid exactly over the number (centred, so the baselines meet). */
+.pc-armed .pc-n { position: relative; }
+.pc-armed .pc-n::after {
+  content: attr(data-t); content: attr(data-t) / "";
+  position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+  white-space: nowrap; pointer-events: none; opacity: 0;
+  color: #FFF3D1; -webkit-text-fill-color: #FFF3D1;
+  text-shadow: 0 0 14px rgba(243,215,122,.95), 0 0 34px rgba(212,175,55,.55);
+}
+.pc-go .price-compare-big {
+  background-image: linear-gradient(100deg, rgba(255,249,232,0) 42%, rgba(255,249,232,.95) 50%, rgba(255,249,232,0) 58%), var(--mk-gold-gradient);
+  background-size: 250% 100%, 100% 100%; background-repeat: no-repeat; background-position: 130% 0, 0 0;
+}
+@property --pc-lift { syntax: '<color>'; inherits: false; initial-value: rgba(255,249,232,0); }
+@keyframes pcEdge {
+  0%, 100% { border-color: rgba(212,175,55,.45); box-shadow: 0 0 0 1px rgba(212,175,55,.35), 0 8px 24px rgba(212,175,55,.18); }
+  45% { border-color: rgba(243,215,122,.9); box-shadow: 0 0 0 1px rgba(243,215,122,.7), 0 12px 48px rgba(212,175,55,.4); }
+}
+@keyframes pcSheen { from { transform: translateX(-100%); } to { transform: translateX(250%); } }
+@keyframes pcTip { 0% { opacity: 0; transform: scale(.4); } 35% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: scale(1.25); } }
+@keyframes pcTipSoft { 0%, 100% { opacity: 0; } 35% { opacity: 1; } }
+@keyframes pcPrice {
+  0%, 100% { color: var(--mk-gold-400); text-shadow: 0 0 0 rgba(243,215,122,0), 0 0 0 rgba(212,175,55,0); }
+  35% { color: #F8E6A8; text-shadow: 0 0 16px rgba(243,215,122,.85), 0 0 36px rgba(212,175,55,.4); }
+}
+@keyframes pcDrop { from { opacity: 1; transform: scaleY(0); } to { opacity: 1; transform: scaleY(1); } }
+@keyframes pcGrow { from { opacity: 1; transform: scaleX(0); } to { opacity: 1; transform: scaleX(1); } }
+@keyframes pcShow { from { opacity: 0; } to { opacity: 1; } }
+@keyframes pcOut { from { opacity: 1; } to { opacity: 0; } }
+@keyframes pcNumLong { 0% { opacity: 0; } 18% { opacity: 1; } 75% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes pcNumShort { 0% { opacity: 0; } 30% { opacity: 1; } 60% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes pcSweep { from { background-position: 130% 0, 0 0; } to { background-position: -30% 0, 0 0; } }
+@keyframes pcLift { 0%, 100% { --pc-lift: rgba(255,249,232,0); } 45% { --pc-lift: rgba(255,249,232,.55); } }
+@keyframes pcYear {
+  0%, 100% { color: var(--mk-text-secondary); text-shadow: 0 0 0 rgba(229,197,114,0); }
+  40% { color: #EEDFB2; text-shadow: 0 0 12px rgba(229,197,114,.45); }
+}
+@keyframes pcBright { 0%, 100% { filter: brightness(1); } 45% { filter: brightness(1.2); } }
+.pc-go { animation: pcEdge 1.6s ease-in-out both; }
+.pc-go .price-compare-fill--us::after { animation: pcSheen 1.1s cubic-bezier(.45,0,.25,1) .2s both; }
+.pc-go .pc-tip { animation: pcTip 1.2s ease-out 1.05s both; }
+.pc-go .price-compare-price--us { animation: pcPrice 1.5s ease-out 1.05s both; }
+.pc-go .pc-mark { animation: pcDrop .7s var(--mk-ease-out) 1.3s both, pcOut 1s ease 5.4s forwards; }
+.pc-go .pc-over--tv { animation: pcGrow .9s var(--mk-ease-out) 2.1s both, pcOut 1s ease 5.4s forwards; }
+.pc-go .pc-over--tz { animation: pcGrow .9s var(--mk-ease-out) 3.2s both, pcOut 1s ease 5.4s forwards; }
+.pc-go .pc-n--tv::after { animation: pcNumLong 2.8s ease-in-out 2.6s both; }
+.pc-go .pc-n--tz::after { animation: pcNumShort 1.7s ease-in-out 3.7s both; }
+.pc-go .price-compare-big { animation: pcSweep 1.4s cubic-bezier(.45,0,.25,1) 4.4s both; }
+.pc-go .price-compare-year { animation: pcYear 1.6s ease-out 5s both; }
+@media (prefers-reduced-motion: reduce) {
+  .pc-go .price-compare-fill--us::after { animation: none; opacity: 0; }
+  .pc-go .price-compare-fill--us { animation: pcBright 1.1s ease-in-out .2s both; }
+  .pc-go .pc-tip { animation: pcTipSoft 1.2s ease-out 1.05s both; }
+  .pc-go .pc-mark { animation: pcShow .7s ease 1.3s both, pcOut 1s ease 5.4s forwards; }
+  .pc-go .pc-over--tv { animation: pcShow .9s ease 2.1s both, pcOut 1s ease 5.4s forwards; }
+  .pc-go .pc-over--tz { animation: pcShow .9s ease 3.2s both, pcOut 1s ease 5.4s forwards; }
+  .pc-go .price-compare-big {
+    background-image: linear-gradient(var(--pc-lift), var(--pc-lift)), var(--mk-gold-gradient);
+    background-size: 100% 100%, 100% 100%; background-position: 0 0, 0 0;
+    animation: pcLift 1.4s ease-in-out 4.4s both;
+  }
 }
 
 /* ── PRICING TOGGLE ──────────────────────────────────────────── */
@@ -1179,21 +1283,61 @@ a.toolkit-card { text-decoration: none; color: inherit; }
         </li>
         <li class="price-compare-row">
           <div class="price-compare-head"><span class="price-compare-name">Tradervue <span class="price-compare-plan">Silver</span></span><span class="price-compare-price">$29.95</span></div>
-          <div class="price-compare-track" aria-hidden="true"><div class="price-compare-fill price-compare-fill--tv"></div></div>
+          <div class="price-compare-track" aria-hidden="true"><div class="price-compare-fill price-compare-fill--tv"></div><span class="pc-over pc-over--tv"></span></div>
         </li>
         <li class="price-compare-row">
           <div class="price-compare-head"><span class="price-compare-name">TradeZella <span class="price-compare-plan">Essential</span></span><span class="price-compare-price">$35</span></div>
-          <div class="price-compare-track" aria-hidden="true"><div class="price-compare-fill price-compare-fill--tz"></div></div>
+          <div class="price-compare-track" aria-hidden="true"><div class="price-compare-fill price-compare-fill--tz"></div><span class="pc-over pc-over--tz"></span></div>
+          <span class="pc-mark" aria-hidden="true"></span><span class="pc-tip" aria-hidden="true"></span>
         </li>
       </ul>
       <div class="price-compare-total">
-        <p class="price-compare-big">$10 to $15 less every month</p>
+        <p class="price-compare-big"><span class="pc-n pc-n--tv" data-t="$10">$10</span> to <span class="pc-n pc-n--tz" data-t="$15">$15</span> less every month</p>
         <p class="price-compare-year">$120 to $180 less a year.</p>
       </div>
       <p class="price-compare-note">Each company's first paid plan, billed monthly, from its own pricing page, Nov 10, 2026.</p>
     </div>
   </div>
 </section>
+<script>
+/* The price gap in motion, once (the CSS comment above .pc-mark says what plays and why). */
+(function () {
+  var card = document.querySelector('.price-compare');
+  if (!card || !('IntersectionObserver' in window)) return;
+  var list = card.querySelector('.price-compare-list');
+  var tracks = card.querySelectorAll('.price-compare-track');
+  var fills = card.querySelectorAll('.price-compare-fill');
+  if (!list || tracks.length !== 3 || fills.length !== 3) return;
+  var RUN = 6600;
+  // Where the $19.95 bar ends and where the line runs, measured from the bars, never typed.
+  function measure() {
+    var lr = list.getBoundingClientRect(), t0 = tracks[0].getBoundingClientRect(), t2 = tracks[2].getBoundingClientRect();
+    card.style.setProperty('--pc-x', fills[0].offsetWidth + 'px');
+    card.style.setProperty('--pc-tv', fills[1].offsetWidth + 'px');
+    card.style.setProperty('--pc-tz', fills[2].offsetWidth + 'px');
+    card.style.setProperty('--pc-top', (t0.top - lr.top + t0.height / 2) + 'px');
+    card.style.setProperty('--pc-h', (t2.bottom - t0.top - t0.height / 2) + 'px');
+  }
+  var fonts = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
+  card.classList.add('pc-armed');
+  var io = new IntersectionObserver(function (es) {
+    if (!es[0].isIntersecting) return;
+    io.disconnect();
+    // Wait out the card's own fade-in (the site reveal: up to 300 ms of stagger plus 480 ms) and the web fonts,
+    // so the line is measured against the bars as they finally sit.
+    Promise.all([fonts, new Promise(function (r) { setTimeout(r, 650); })]).then(function () {
+      measure();
+      window.addEventListener('resize', measure);
+      card.classList.add('pc-go');
+      setTimeout(function () {
+        card.classList.remove('pc-go', 'pc-armed');
+        window.removeEventListener('resize', measure);
+      }, RUN);
+    });
+  }, { threshold: 0.5 });
+  io.observe(card);
+})();
+</script>
 
 <hr class="mk-rule-gold">
 
