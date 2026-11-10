@@ -65,7 +65,7 @@
       + '<div class="mk-offer__body" data-stage="form"' + (st.stage === "sent" ? " hidden" : "") + '>'
       + '<h2 class="mk-offer__title" id="mkOfferTitle">Journal at Half Price</h2>'
       + '<div class="mk-offer__price"><span class="mk-offer__old">$19.95</span><span class="mk-offer__new">$9.95</span><span class="mk-offer__per">a month</span></div>'
-      + '<p class="mk-offer__lead">Every month, for as long as you stay on Journal.</p>'
+      + '<p class="mk-offer__lead">Every month, for as long as you keep the monthly Journal plan.</p>'
       + '<div class="mk-offer__ends">' + CLOCK + '<span>Ends ' + ends + '</span></div>'
       + '<form class="mk-offer__form" novalidate>'
       + '<label class="mk-offer__label" for="mkOfferEmail">Email address</label>'

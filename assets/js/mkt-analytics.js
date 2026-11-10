@@ -608,7 +608,7 @@
   // ── The $9.95 Journal offer's toast ──────────────────────────────────
   // Loaded only when an offer arrives, or when this browser already has one open (assets/js/offer-toast.js keeps
   // it in localStorage, so it follows the visitor from page to page until they claim it, close it, or it ends).
-  var OFFER_V = 2, offerLoading = null;
+  var OFFER_V = 3, offerLoading = null;
   function loadOfferToast() {
     if (window.MKOffer) return Promise.resolve(window.MKOffer);
     if (offerLoading) return offerLoading;
