@@ -1381,6 +1381,20 @@ a.focus-feature-card { text-decoration: none; color: inherit; }
   color: var(--mk-text-tertiary);
   margin-bottom: 18px;
 }
+/* Journal against Tradervue Silver and TradeZella Essential, billed monthly (Ed, 2026-11-10),
+   the same two prices as the /pricing hero. Monthly only: the toggle hides it on Annual. */
+.price-compare-chip {
+  align-self: flex-start;
+  font-family: var(--mk-font-mono);
+  font-size: var(--mk-mono-xs);
+  letter-spacing: 0.04em;
+  color: var(--mk-gold-400);
+  border: var(--mk-border-gold-soft);
+  border-radius: var(--mk-radius-pill);
+  padding: 5px 11px;
+  margin: -8px 0 18px;
+}
+.price-compare-chip[hidden] { display: none; }
 .price-rule {
   height: 1px; margin: 0 0 18px;
   background: linear-gradient(90deg, transparent, rgba(212,175,55,.30), transparent);
@@ -3430,6 +3444,7 @@ document.addEventListener("DOMContentLoaded", function() {
         <div class="price-eyebrow">Starter</div><div class="price-name">MAKETZO Journal</div>
         <div class="price-row"><span class="price-dollar">$</span><span class="price-num" id="p1num">19.95</span><span class="price-per" id="p1per">/mo</span></div>
         <div class="price-sub" id="p1sub">or $199/yr, save 17%</div>
+        <span class="price-compare-chip" id="p1cmp">Tradervue $29.95 · TradeZella $35</span>
         <div class="price-rule"></div>
         <ul class="price-list">
           <li class="bold">Trade journal &amp; daily session log</li>
@@ -3596,6 +3611,8 @@ function setPricing(annual){
   document.getElementById('labelMonthly').classList.toggle('active',!annual);
   document.getElementById('labelAnnual').classList.toggle('active',annual);
   document.getElementById('saveBadge').style.display=annual?'inline':'none';
+  // The Journal card's competitor chip compares MONTHLY prices, so it only shows on Monthly.
+  document.getElementById('p1cmp').hidden=annual;
   const m=annual?'annual':'monthly';
   [['p1num','p1per','p1sub','cta1'],['p2num','p2per','p2sub','cta2'],['p3num','p3per','p3sub','cta3']].forEach(([n,p,s,c],i)=>{
     const pl=plans[m][i];
