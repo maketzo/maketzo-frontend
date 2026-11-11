@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <!-- offer — the $9.95 Journal offer, opened from the email's link (board 4 on the offer canvas, Ed 2026-11-10).
-     The link's token is the authority: POST /offers/open proves the email and says what to show, POST /offers/start
+     The link's token is the authority: POST /offers/open says what to show, POST /offers/confirm proves the email on
+     the first tap, click or keypress (never on load: Outlook's link scanner opens the page and runs it), POST /offers/start
      makes the account and hands back Stripe Checkout at $9.95 with no trial (maketzo-backend lib/offers.js).
      The same 24-hour clock as the toast, counting to the same end time. -->
 <html lang="en">
@@ -195,6 +196,21 @@ const GOOGLE_WHY = {
     render({ state: 'invalid' });
   }
 })();
+
+// The email counts as confirmed on a person's first tap, click or keypress, never on load (Ed's pick 2026-11-10):
+// Outlook's link scanner opened this page from a Microsoft data center, ran it for 28 seconds and touched nothing.
+// keepalive, so a first click that leaves for Google still lands.
+const CONFIRM_ON = ['pointerdown', 'keydown', 'touchstart'];
+let confirmSent = false;
+function confirmOnce(ev) {
+  if (confirmSent || !t || (ev && ev.isTrusted === false)) return;
+  confirmSent = true;
+  CONFIRM_ON.forEach(n => document.removeEventListener(n, confirmOnce, true));
+  try {
+    fetch(API + '/offers/confirm', { method: 'POST', credentials: 'include', keepalive: true, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ t }) }).catch(() => {});
+  } catch (e) {}
+}
+CONFIRM_ON.forEach(n => document.addEventListener(n, confirmOnce, { capture: true, passive: true }));
 
 document.getElementById('startForm').addEventListener('submit', async (e) => {
   e.preventDefault();
