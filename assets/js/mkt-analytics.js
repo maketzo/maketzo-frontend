@@ -575,6 +575,10 @@
     // A browser driven by automation says so (navigator.webdriver); Live leaves it out, as Website does (Ed,
     // 2026-11-06, "Tag them like Website"). The server also checks the browser's name.
     try { if (navigator.webdriver) body.wd = 1; } catch (e) {}
+    // The screen and window width, as PostHog reads them, so the server can tell a browser setup Website's rule
+    // already flagged as automated (maketzo-backend lib/automated-visits.js; Ed, 2026-11-11, "Use the Nov 6 rule
+    // live"). Three numbers, matched and never stored.
+    try { body.sw = window.screen.width; body.sh = window.screen.height; body.vw = window.innerWidth; } catch (e) {}
     if (liveFirst) {
       // Where this visit came from rides on the first beat only.
       try {
