@@ -105,8 +105,9 @@
         (DESK_FULL ? '<button type="button" class="shiw-btn shiw-full"></button>' : '') +
         '<button type="button" class="shiw-btn shiw-close" aria-label="Close the video">' + ICON_X + '</button>' +
         '<div class="shiw-card">' +
-          '<button type="button" class="btn-primary" data-shiw-trial tabindex="-1">Start 7-Day Free Trial &rarr;</button>' +
-          '<p class="shiw-fine">No charge until day 8. Cancel anytime.</p>' +
+          // Its own source, so a trial started from the video's last card is told apart from the hero button (2026-11-12).
+          '<button type="button" class="btn-primary" data-shiw-trial data-cta-source="video-end" data-cta-target="checkout" data-cta-tier="pro" data-cta-interval="month" tabindex="-1">Start Pro Free Trial &rarr;</button>' +
+          '<p class="shiw-fine">7 days free, then $49 a month. Card required. Cancel before day 8.</p>' +
         '</div>' +
         '<div class="shiw-end" hidden>' +
           '<button type="button" class="btn-secondary" data-shiw-again>Watch Again</button>' +

@@ -20,7 +20,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/tokens.css">
 <link rel="stylesheet" href="assets/css/components.css">
-<link rel="stylesheet" href="assets/css/auth.css?v=3">
+<link rel="stylesheet" href="assets/css/auth.css?v=4">
 <script src="assets/js/mkt-analytics.js?v=19" defer></script>
 <script src="assets/js/motion-rest.js?v=1" defer></script>
 <script src="assets/js/password-rules.js?v=1"></script>
@@ -53,6 +53,23 @@
     <p class="auth-eyebrow" id="eyebrow">CREATE ACCOUNT</p>
     <h1 class="auth-title" id="title">Start the <em>system.</em></h1>
     <p class="auth-sub" id="sub">Free to create. The trial starts when you pick a plan.</p>
+    <div class="su-plan" id="suPlan" hidden>
+      <p class="su-plan-name"><b id="suPlanName"></b> <span id="suPlanPrice"></span></p>
+      <button type="button" class="su-plan-change" id="suPlanChange" aria-expanded="false" aria-controls="suPicker">Change Plan</button>
+    </div>
+    <div class="su-picker" id="suPicker" hidden>
+      <div class="su-seg" role="group" aria-label="Plan">
+        <button type="button" class="su-opt" data-plan="journal"></button>
+        <button type="button" class="su-opt" data-plan="pro"></button>
+        <button type="button" class="su-opt" data-plan="elite"></button>
+      </div>
+      <div class="su-seg" role="group" aria-label="Billing">
+        <button type="button" class="su-opt" data-interval="month">Monthly</button>
+        <button type="button" class="su-opt" data-interval="year">Yearly</button>
+      </div>
+      <p class="su-picker-note"><a href="pricing.html">Compare what each plan includes</a></p>
+    </div>
+    <p class="su-terms" id="suTerms" hidden></p>
 
     <div id="refGift" class="auth-gift" hidden>
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
@@ -136,6 +153,8 @@ const TIER_INFO = {
   elite:      { name: 'Elite',        month: '$79/mo', year: '$649/yr' },
   indicators: { name: 'Edge + Pulse', month: '$29/mo', year: '$290/yr', isIndicator: true }
 };
+// The plans Change Plan offers: the three with a free trial.
+const TRIAL_PLANS = ['journal', 'pro', 'elite'];
 
 const params = new URLSearchParams(window.location.search);
 let activeTier = (params.get('tier') || '').toLowerCase();
@@ -146,8 +165,8 @@ if (!activeTier && legacyPlanId && TIER_BY_PRICE[legacyPlanId]) {
   activeInterval = TIER_BY_PRICE[legacyPlanId].interval;
 }
 const hasPlan = !!(activeTier && TIER_INFO[activeTier]);
-// `tier` = the display object the copy below renders (name/amount/isIndicator).
-const tier = hasPlan
+// `tier` = the display object the copy below renders (name/amount/isIndicator). `let`: Change Plan replaces it.
+let tier = hasPlan
   ? { name: TIER_INFO[activeTier].name, amount: TIER_INFO[activeTier][activeInterval], isIndicator: !!TIER_INFO[activeTier].isIndicator }
   : null;
 // What we POST to /billing/create-checkout (it resolves the env-configured price).
@@ -160,8 +179,8 @@ function visitBody() {
   return { mkt_anon_id: M.getAnonId ? M.getAnonId() : null, mkt_session_id: M.getSessionId ? M.getSessionId() : null, mkt_source_path: window.location.pathname };
 }
 // Carry-over token for the Google OAuth checkout hand-off + sign-in links.
-const checkoutToken = hasPlan ? (activeTier + ':' + activeInterval) : legacyPlanId;
-const planQuery = hasPlan ? ('tier=' + activeTier + '&interval=' + activeInterval) : (legacyPlanId ? ('plan=' + encodeURIComponent(legacyPlanId)) : '');
+let checkoutToken = hasPlan ? (activeTier + ':' + activeInterval) : legacyPlanId;
+let planQuery = hasPlan ? ('tier=' + activeTier + '&interval=' + activeInterval) : (legacyPlanId ? ('plan=' + encodeURIComponent(legacyPlanId)) : '');
 
 // Referred friends get the extended 14-day trial (the double-sided gift). Read
 // the mkt_ref cookie DIRECTLY — this runs at parse time, before the deferred
@@ -181,15 +200,70 @@ if (tier) {
     document.getElementById('sub').textContent = `${tier.amount} · Charged today · TradingView invite within 24 hours · Cancel anytime.`;
     document.getElementById('signupSubmit').textContent = `Subscribe, ${tier.amount}`;
   } else {
-    // Referred → 14-day trial (no charge until day 15); everyone else → 7 (day 8).
-    const days = isReferred ? 14 : 7;
-    const chargeDay = isReferred ? 15 : 8;
-    document.getElementById('eyebrow').textContent = `START ${tier.name.toUpperCase()} TRIAL`;
-    document.getElementById('title').innerHTML = `Sign up for <em>${tier.name}.</em>`;
-    document.getElementById('sub').textContent = `${tier.amount} · ${days}-day free trial · no charge until day ${chargeDay} · cancel anytime.`;
-    document.getElementById('signupSubmit').textContent = `Start ${days}-day free trial`;
+    renderTrialPlan();
+    document.getElementById('suPlanChange').hidden = !TRIAL_PLANS.includes(activeTier);
   }
 }
+
+// ── The trial plan, its terms, and Change Plan (2026-11-12) ──────
+// Signup used to name the plan and "day 8" and never the card, so the first mention of a card was Stripe's own page;
+// in the 14 days to Nov 12, 4 people opened signup and 1 reached Stripe. The plan, its price, "Card required" and the
+// real day the trial ends now sit above the form, and Change Plan switches plan or billing without going back. It
+// rewrites the same activeTier/activeInterval that all three hand-offs send (pay token, signed-in, Google).
+// Referred friends get 14 days, everyone else 7. Never offered for the indicators plan, which has no trial.
+function trialDays() { return isReferred ? 14 : 7; }
+function priceWords(amount) { return String(amount).replace('/mo', ' a month').replace('/yr', ' a year'); }
+function trialEndsOn(days) {
+  return new Date(Date.now() + days * 86400000).toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
+}
+function renderTrialPlan() {
+  const days = trialDays();
+  document.getElementById('eyebrow').textContent = `START YOUR ${tier.name.toUpperCase()} TRIAL`;
+  document.getElementById('title').innerHTML = `Try ${tier.name} <em>free for ${days} days.</em>`;
+  document.getElementById('sub').hidden = true;
+  document.getElementById('suPlan').hidden = false;
+  document.getElementById('suPlanName').textContent = tier.name;
+  document.getElementById('suPlanPrice').textContent = priceWords(tier.amount);
+  const terms = document.getElementById('suTerms');
+  terms.innerHTML = `Card required. <strong>Your trial ends ${trialEndsOn(days)}.</strong> Cancel before then in your account and you pay nothing.`;
+  terms.hidden = false;
+  document.getElementById('signupSubmit').textContent = `Start ${days}-day free trial`;
+  document.querySelectorAll('#suPicker [data-plan]').forEach((b) => {
+    const p = b.getAttribute('data-plan');
+    b.innerHTML = `<b>${TIER_INFO[p].name}</b>${TIER_INFO[p][activeInterval]}`;
+    b.setAttribute('aria-pressed', String(p === activeTier));
+  });
+  document.querySelectorAll('#suPicker [data-interval]').forEach((b) => {
+    b.setAttribute('aria-pressed', String(b.getAttribute('data-interval') === activeInterval));
+  });
+}
+function setTrialPlan(nextTier, nextInterval) {
+  if (!TRIAL_PLANS.includes(nextTier) || (nextTier === activeTier && nextInterval === activeInterval)) return;
+  activeTier = nextTier;
+  activeInterval = nextInterval;
+  tier = { name: TIER_INFO[activeTier].name, amount: TIER_INFO[activeTier][activeInterval], isIndicator: false };
+  checkoutToken = activeTier + ':' + activeInterval;
+  planQuery = 'tier=' + activeTier + '&interval=' + activeInterval;
+  try {
+    const q = new URLSearchParams(window.location.search);
+    q.set('tier', activeTier); q.set('interval', activeInterval); q.delete('plan');
+    history.replaceState(null, '', window.location.pathname + '?' + q.toString());
+  } catch (e) { /* the address bar keeps the old plan; the form sends the new one */ }
+  renderTrialPlan();
+  applyMode(mode);
+  if (window.MKT && window.MKT.trackEvent) window.MKT.trackEvent('mkt_signup_plan_change', { plan: activeTier, interval: activeInterval });
+}
+document.getElementById('suPlanChange').addEventListener('click', (e) => {
+  const picker = document.getElementById('suPicker');
+  picker.hidden = !picker.hidden;
+  e.currentTarget.setAttribute('aria-expanded', String(!picker.hidden));
+});
+document.getElementById('suPicker').addEventListener('click', (e) => {
+  const b = e.target.closest('button');
+  if (!b) return;
+  if (b.hasAttribute('data-plan')) setTrialPlan(b.getAttribute('data-plan'), activeInterval);
+  else if (b.hasAttribute('data-interval')) setTrialPlan(activeTier, b.getAttribute('data-interval'));
+});
 
 // Surface the gift banner whenever the visitor arrived via a referral link,
 // except on the no-trial indicator plan (where the gift doesn't apply).
@@ -322,7 +396,7 @@ async function checkEmailExists() {
         showBanner('Looks like you signed up with Google. Continue with Google to ' + (tier ? 'start your trial.' : 'sign in.'), 'info');
       } else {
         applyMode('login-password');
-        showBanner(tier ? 'Looks like you already have an account — sign in to start your trial.' : 'Looks like you already have an account — sign in to continue.', 'info');
+        showBanner(tier ? 'Looks like you already have an account. Sign in to start your trial.' : 'Looks like you already have an account. Sign in to continue.', 'info');
       }
     } else if (mode !== 'signup') {
       applyMode('signup');
