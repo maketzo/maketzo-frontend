@@ -275,3 +275,42 @@
   .auth-shell { padding: 32px 16px; gap: 22px; }
   .auth-card { padding: 28px 22px 24px; }
 }
+
+/* Signup: the plan, its price, the card and the day the trial ends, said here before Stripe, plus Change Plan so a
+   visitor can switch plan or billing without going back (2026-11-12 conversion review: signup never mentioned the
+   card, and 1 of 4 visitors who opened signup in 14 days reached Stripe). Each block sets display, so each carries
+   its own [hidden] guard, as .auth-gift does above. */
+.su-plan {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  margin-bottom: 10px; padding: 12px 14px;
+  border-radius: var(--mk-radius-input);
+  border: 1px solid rgba(212,175,55,.38);
+  background: rgba(212,175,55,.06);
+}
+.su-plan[hidden] { display: none; }
+.su-plan-name { margin: 0; display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.su-plan-name b { font-family: var(--mk-font-display); font-weight: 400; font-size: 1.5rem; letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); }
+.su-plan-name span { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); }
+.su-plan-change {
+  flex: 0 0 auto; background: none; border: 0; padding: 4px 0; cursor: pointer;
+  font: inherit; font-size: var(--mk-text-sm); color: var(--mk-brand);
+  border-bottom: 1px solid rgba(212,175,55,.4);
+}
+.su-plan-change:focus-visible, .su-opt:focus-visible { outline: 2px solid var(--mk-brand); outline-offset: 2px; }
+.su-picker { display: grid; gap: 8px; margin-bottom: 12px; }
+.su-picker[hidden] { display: none; }
+.su-seg { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 6px; }
+.su-opt {
+  min-height: 44px; padding: 8px 6px; cursor: pointer;
+  font: inherit; font-size: var(--mk-text-xs); line-height: 1.3; color: var(--mk-text-secondary);
+  background: rgba(255,255,255,.03);
+  border: 1px solid rgba(255,255,255,.10);
+  border-radius: var(--mk-radius-input);
+}
+.su-opt b { display: block; font-weight: 600; color: var(--mk-text-primary); }
+.su-opt[aria-pressed="true"] { border-color: rgba(212,175,55,.6); background: rgba(212,175,55,.10); color: var(--mk-text-primary); }
+.su-picker-note { margin: 2px 0 0; font-size: var(--mk-text-xs); }
+.su-picker-note a { color: var(--mk-brand); }
+.su-terms { margin: 0 0 20px; font-size: var(--mk-text-sm); line-height: 1.55; color: var(--mk-text-secondary); }
+.su-terms[hidden] { display: none; }
+.su-terms strong { color: var(--mk-text-primary); font-weight: 500; }
