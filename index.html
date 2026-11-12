@@ -46,6 +46,7 @@
   ]
 }
 </script>
+<link rel="preload" as="image" href="assets/hero-trader.avif" type="image/avif" fetchpriority="high">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/tokens.css">
@@ -55,12 +56,11 @@
 <script src="assets/js/motion-rest.js?v=1" defer></script>
 <link rel="stylesheet" href="assets/css/audio-player.css?v=11">
 <link rel="stylesheet" href="assets/css/see-how-it-works.css?v=5">
-<link rel="stylesheet" href="assets/css/offer.css?v=1">
 <script src="assets/js/checkout.js?v=10" defer></script>
 <script src="assets/js/audio-player.js?v=12" defer></script>
 <script src="assets/js/newsletter.js?v=5" defer></script>
 <script src="assets/js/phone-fullscreen.js?v=1" defer></script>
-<script src="assets/js/see-how-it-works.js?v=15" defer></script>
+<script src="assets/js/see-how-it-works.js?v=14" defer></script>
 <style>
 /* ====================================================================
    MAKETZO landing — page-specific styles.
@@ -232,28 +232,47 @@ html.mkt-auth .nav-login-btn:hover{color:var(--mk-text-on-gold);background:var(-
 }
 
 /* ── HERO ────────────────────────────────────────────────────── */
-/* Copy on the left, the real app on the right (Ed's pick A, 2026-11-12). The staged trader photo is gone: its drawn-in
-   panels ("SESSION LOCKED", "3 trades taken") suggested MAKETZO reads the broker and locks trades, which it does not.
-   In the 14 days to Nov 12, 13 of 20 homepage visitors never scrolled past this screen, so it has to say what MAKETZO
-   is, what Pro costs and what the trial asks for. The two pictures are crops of the real app on the dev demo account
-   (C:/dev/tools/site-preview/capture-floor.js), the same morning the session example tells below. */
+/* Full-bleed cinematic hero. The image IS the stage — edge to edge, behind the
+   nav. A deep obsidian gradient sinks the LEFT into shadow so the headline
+   emerges FROM the image as one continuous field: no column, no box, no gap
+   between copy and photo. object-position holds the trader + HUD in the lit
+   right half, clear of the type. */
 .hero {
   position: relative; z-index: 1;
   overflow: hidden;
   isolation: isolate;
   background: var(--mk-obsidian-950);
 }
-.hero::before {
-  content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
-  background: radial-gradient(820px 560px at 78% 42%, rgba(212,175,55,.12), transparent 64%);
+/* The image lives on the RIGHT and physically DISSOLVES into the obsidian on the
+   left via a gradient mask on the image itself — so the photo stays crisp where
+   it shows (no gray film / haze over it) and the type sits on clean obsidian.
+   Anchored right so the trader's face reads; the mask is the merge. */
+.hero-bg { position: absolute; inset: 0; z-index: 0; display: block; }
+.hero-bg img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: 52% center;
+  display: block;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, transparent 14%, rgba(0,0,0,0.45) 34%, #000 52%);
+          mask-image: linear-gradient(90deg, transparent 0%, transparent 14%, rgba(0,0,0,0.45) 34%, #000 52%);
+}
+.hero-scrim {
+  position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(90deg,
+    var(--mk-obsidian-950) 0%,
+    rgba(6,7,10,0.72) 30%,
+    rgba(6,7,10,0.12) 46%,
+    transparent 56%);
 }
 .hero-content {
   position: relative; z-index: 2;
-  width: 100%; max-width: 1280px; margin: 0 auto;
-  padding: 120px 64px 72px;
-  display: grid; grid-template-columns: 1.08fr .92fr; gap: 56px; align-items: center;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 116px 64px 76px;
+  display: flex; flex-direction: column; justify-content: flex-start;
+  align-items: flex-start;
 }
-.hero-copy { display: flex; flex-direction: column; align-items: flex-start; min-width: 0; }
 .hero-badge {
   display: inline-flex; align-items: center; gap: 8px;
   align-self: flex-start;
@@ -276,12 +295,14 @@ html.mkt-auth .nav-login-btn:hover{color:var(--mk-text-on-gold);background:var(-
 }
 .hero-headline {
   font-family: var(--mk-font-display);
-  font-size: clamp(2.6rem, 4.2vw, 4.3rem);
+  font-size: clamp(2.7rem, 5.2vw, 5rem);
   line-height: 1.02;
   letter-spacing: var(--mk-track-display);
   text-transform: uppercase;
   margin-bottom: 16px;
   font-weight: 400;
+  max-width: 16ch;
+  text-shadow: 0 2px 40px rgba(0,0,0,0.55);
 }
 .hero-headline em {
   font-style: normal;
@@ -291,76 +312,141 @@ html.mkt-auth .nav-login-btn:hover{color:var(--mk-text-on-gold);background:var(-
   color: transparent;
   display: inline-block;
 }
+.hero-stop { display: block; margin-bottom: 24px; }
+.hero-stop .power-pulse {
+  font-family: var(--mk-font-display);
+  font-size: clamp(1.4rem, 2.6vw, 1.9rem);
+  letter-spacing: var(--mk-track-display-wide);
+  text-transform: uppercase;
+  background: var(--mk-gold-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: mk-power-pulse 3s var(--mk-ease-in-out) infinite;
+}
+@keyframes mk-power-pulse {
+  0%, 100% { opacity: 1; filter: brightness(1); }
+  50%      { opacity: 0.95; filter: brightness(1.12); }
+}
 .hero-sub {
   font-size: var(--mk-text-lg);
   color: var(--mk-text-secondary);
-  max-width: 34em;
-  margin-bottom: 28px;
+  max-width: 480px;
+  margin-bottom: 34px;
   line-height: var(--mk-lead-body);
+  text-shadow: 0 1px 24px rgba(0,0,0,0.5);
 }
 .hero-sub strong { color: var(--mk-text-primary); }
 .hero-ctas {
   display: flex; gap: 14px; flex-wrap: wrap;
-  margin-bottom: 14px;
+  margin-bottom: 36px;
 }
-/* The trial's terms sit under its button, so nobody meets the card or the price for the first time at Stripe. */
-.hero-terms {
+.hero-proof {
+  display: flex; flex-direction: column; gap: 14px;
+  padding-top: 24px;
+  border-top: var(--mk-border-hairline);
+}
+.proof-row { display: flex; align-items: center; gap: 14px; }
+.proof-icon-wrap {
+  width: 36px; height: 36px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: var(--mk-radius-pill);
+  background: rgba(212,175,55,.08);
+  border: var(--mk-border-gold-soft);
+  font-size: 16px;
+  color: var(--mk-brand);
+  flex-shrink: 0;
+}
+.proof-title {
+  font-family: var(--mk-font-sans);
+  font-size: var(--mk-text-md);
+  color: var(--mk-text-primary);
+  font-weight: 500;
+}
+.proof-sub {
   font-family: var(--mk-font-mono);
   font-size: var(--mk-mono-xs);
   letter-spacing: 0.04em;
-  line-height: 1.6;
-  color: var(--mk-text-secondary);
-  margin: 0 0 26px;
-}
-.hero-note {
-  display: flex; flex-wrap: wrap; gap: 8px 22px;
-  margin: 0; padding-top: 18px;
-  border-top: var(--mk-border-hairline);
-  font-size: var(--mk-text-sm);
   color: var(--mk-text-tertiary);
+  margin-top: 2px;
 }
-.hero-note strong { color: var(--mk-text-primary); font-weight: 500; }
-.hero-note a { color: var(--mk-brand); border-bottom: 1px solid rgba(212,175,55,.4); text-decoration: none; }
-.hero-app {
-  margin: 0; min-width: 0;
-  padding: 22px 22px 18px;
-  border-radius: 20px;
-  background: linear-gradient(160deg, rgba(212,175,55,.08), transparent 50%), var(--mk-surface-raised);
-  border: 1px solid rgba(212,175,55,.32);
-  box-shadow: var(--mk-glow-gold-sm), 0 30px 80px rgba(0,0,0,.55);
+/* Wider than 1440, ultrawide included (Ed, 2026-10-16: "make sure hero images are completely responsive even at max
+   resolution"). The photo is sized to the room beside the copy, not the window: its box starts where the 1440 fade
+   starts (50% - 518px) and reaches right at most 1.75x the hero's height, so it is barely cropped (its HUD cards run
+   the photo's full height; at the full window width they were cut off at 3440). On wide windows the hero grows
+   toward that height (up to the window's height) so the photo still reaches the right edge, and the copy centres in
+   it. Wider than 2.7:1 the photo's right edge fades into the obsidian. Fade and scrim are measured from the 1440 row
+   (identical at 1440). */
+@media (min-width: 1441px) {
+  .hero-content { min-height: min(calc((50vw + 518px) / 1.75), 100vh); justify-content: center; }
+  .hero-bg { right: auto; left: calc(50% - 518px); width: auto; height: 100%; max-width: calc(50% + 518px); aspect-ratio: 7 / 4; }
+  .hero-bg img {
+    object-position: 67.5% 50%;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, rgba(0,0,0,0.45) 288px, #000 547px);
+            mask-image: linear-gradient(90deg, transparent 0, rgba(0,0,0,0.45) 288px, #000 547px);
+  }
+  .hero-scrim {
+    background: linear-gradient(90deg,
+      var(--mk-obsidian-950) calc(50% - 720px),
+      rgba(6,7,10,0.72) calc(50% - 288px),
+      rgba(6,7,10,0.12) calc(50% - 58px),
+      transparent calc(50% + 86px));
+  }
 }
-.hero-app-k {
-  font-family: var(--mk-font-mono);
-  font-size: var(--mk-mono-xs);
-  letter-spacing: var(--mk-track-eyebrow);
-  text-transform: uppercase;
-  color: var(--mk-text-tertiary);
-  margin: 0 0 8px;
+@media (min-width: 1441px) and (min-aspect-ratio: 27/10) {
+  .hero-bg img {
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, rgba(0,0,0,0.45) 288px, #000 547px, #000 calc(100% - 140px), transparent 100%);
+            mask-image: linear-gradient(90deg, transparent 0, rgba(0,0,0,0.45) 288px, #000 547px, #000 calc(100% - 140px), transparent 100%);
+  }
 }
-.hero-app-shot { display: block; width: 100%; height: auto; border-radius: 12px; margin-bottom: 18px; }
-.hero-app-shot--input { width: 88%; }
-.hero-app figcaption { font-size: var(--mk-text-xs); color: var(--mk-text-tertiary); line-height: 1.5; margin: 2px 0 0; }
-.hero-phone-shot { display: none; }
 @media (max-width: 1200px) {
-  .hero-content { padding: 116px 44px 64px; gap: 44px; }
+  .hero-content { padding: 116px 44px 64px; }
+  .hero-bg img { object-position: 50% center; }
 }
-/* Tablet and phone: one column. The real Profit Floor card leads in place of the side panel. */
-@media (max-width: 900px) {
-  .hero-content { grid-template-columns: minmax(0, 1fr); gap: 0; max-width: 640px; padding: 104px 34px 56px; }
-  .hero-headline { font-size: clamp(2.5rem, 6.6vw, 3.8rem); }
-  .hero-app { display: none; }
-  .hero-phone-shot { display: block; width: 100%; max-width: 360px; height: auto; border-radius: 12px; margin: 0 0 18px; box-shadow: var(--mk-glow-gold-sm); }
+/* Tablet + phone: a portrait frame can't hold monitors + trader + HUD across
+   the wide shot, so re-anchor to the trader and let the image sink into
+   obsidian at the BOTTOM, where the type emerges — still one merged field. */
+@media (max-width: 980px) {
+  .hero { min-height: auto; }
+  /* Image becomes a top band that dissolves into obsidian; the type flows
+     BELOW the trader, merged by the fade, never across her face. */
+  .hero-bg   { inset: 0 0 auto 0; height: 54vh; }
+  .hero-bg img { object-position: 55% 26%; -webkit-mask-image: none; mask-image: none; }
+  .hero-scrim {
+    inset: 0 0 auto 0; height: 62vh;
+    background: linear-gradient(180deg,
+      rgba(6,7,10,0.10) 0%,
+      rgba(6,7,10,0.0) 32%,
+      rgba(6,7,10,0.45) 68%,
+      rgba(6,7,10,0.90) 88%,
+      var(--mk-obsidian-950) 100%);
+  }
+  .hero-content {
+    justify-content: flex-start;
+    min-height: auto;
+    max-width: 640px;
+    padding: 47vh 34px 56px;
+  }
+  .hero-headline { font-size: clamp(2.5rem, 6.6vw, 3.8rem); max-width: 18ch; }
+  .hero-sub { max-width: 520px; }
 }
 @media (max-width: 600px) {
-  /* Phone fold rule (Ed, 2026-10-15): the trial button sits inside the first screen. Card, headline, the line that
-     says what MAKETZO is, then both buttons, the primary at about 510 of an 844px iPhone screen. */
-  .hero-content { padding: 92px 22px 40px; }
-  .hero-phone-shot { max-width: 300px; }
+  /* Phone fold rule (Ed, 2026-10-15): the trial button sits inside the first screen.
+     Shorter photo, then headline, the stop line, both buttons, THEN the paragraph.
+     Desktop keeps the reading order; only the phone reorders. */
+  .hero-bg    { height: 38vh; }
+  .hero-scrim { height: 46vh; }
+  .hero-content { padding: 32vh 22px 44px; }
+  .hero-badge    { order: 0; }
+  .hero-headline { order: 1; }
+  .hero-stop     { order: 2; margin-bottom: 18px; }
+  .hero-ctas     { order: 3; margin-bottom: 26px; }
+  .hero-sub      { order: 4; }
+  .hero-proof    { order: 5; }
   .hero-headline { font-size: clamp(2.15rem, 9vw, 3rem); }
-  .hero-sub { font-size: var(--mk-text-md); margin-bottom: 20px; }
-  .hero-badge { max-width: 100%; align-items: flex-start; line-height: 1.5; margin-bottom: 16px; }
+  .hero-badge { max-width: 100%; align-items: flex-start; line-height: 1.5; }
   .hero-badge .badge-dot { margin-top: 5px; flex-shrink: 0; }
-  .hero-ctas { gap: 12px; margin-bottom: 12px; }
+  .hero-ctas { gap: 12px; }
   .hero-ctas .btn-primary,
   .hero-ctas .btn-secondary { width: 100%; justify-content: center; text-align: center; }
 }
@@ -1748,18 +1834,41 @@ footer {
 }
 .reveal.visible { opacity: 1; transform: translateY(0); }
 
-/* ── HERO ENTRANCE ─────────────────────────────────────────────
-   CSS only, from the first frame (2026-11-12). It used to hide the hero until window.load and then stagger it in
-   over 1.5 seconds, so a slow connection showed a blank screen first, against a 49-second median visit. Nothing in
-   the hero waits for the page to load now; the rise is short and starts with the first paint. */
-@keyframes mk-hero-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
-.hero-copy > *, .hero-app { animation: mk-hero-in 520ms cubic-bezier(.16,1,.3,1) both; }
-.hero-headline { animation-delay: 40ms; }
-.hero-sub { animation-delay: 80ms; }
-.hero-ctas, .hero-terms { animation-delay: 120ms; }
-.hero-note, .hero-app { animation-delay: 160ms; }
-@media (prefers-reduced-motion: reduce) {
-  .hero-copy > *, .hero-app { animation: none; }
+/* ── HERO TEXT ENTRANCE — PARALLAX CASCADE ─────────────────────
+   JS-triggered. Each element rises at its own distance/duration to
+   create a layered, depth-feel parallax: the headline is "heavy"
+   (longest travel, slowest settle); the badge is "light" (shortest
+   travel, quickest settle). Curve is ease-out-expo for a graceful
+   slow finish (cubic-bezier(.16, 1, .3, 1)). */
+.hero-badge, .hero-headline, .hero-stop,
+.hero-sub, .hero-ctas, .hero-proof {
+  opacity: 0;
+  will-change: opacity, transform;
+}
+.hero-badge    { transform: translateY(20px); transition: opacity  700ms cubic-bezier(.16,1,.3,1), transform  700ms cubic-bezier(.16,1,.3,1); }
+.hero-headline { transform: translateY(48px); transition: opacity 1200ms cubic-bezier(.16,1,.3,1), transform 1200ms cubic-bezier(.16,1,.3,1); }
+.hero-stop     { transform: translateY(36px); transition: opacity 1000ms cubic-bezier(.16,1,.3,1), transform 1000ms cubic-bezier(.16,1,.3,1); }
+.hero-sub      { transform: translateY(28px); transition: opacity  900ms cubic-bezier(.16,1,.3,1), transform  900ms cubic-bezier(.16,1,.3,1); }
+.hero-ctas     { transform: translateY(24px); transition: opacity  800ms cubic-bezier(.16,1,.3,1), transform  800ms cubic-bezier(.16,1,.3,1); }
+.hero-proof    { transform: translateY(20px); transition: opacity  800ms cubic-bezier(.16,1,.3,1), transform  800ms cubic-bezier(.16,1,.3,1); }
+
+body.hero-loaded .hero-badge    { opacity: 1; transform: translateY(0); transition-delay:  100ms; }
+body.hero-loaded .hero-headline { opacity: 1; transform: translateY(0); transition-delay:  300ms; }
+body.hero-loaded .hero-stop     { opacity: 1; transform: translateY(0); transition-delay:  600ms; }
+body.hero-loaded .hero-sub      { opacity: 1; transform: translateY(0); transition-delay:  900ms; }
+body.hero-loaded .hero-ctas     { opacity: 1; transform: translateY(0); transition-delay: 1200ms; }
+body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transition-delay: 1500ms; }
+/* On phones the buttons sit above the paragraph, so they enter first. */
+@media (max-width: 600px) {
+  body.hero-loaded .hero-ctas { transition-delay:  900ms; }
+  body.hero-loaded .hero-sub  { transition-delay: 1200ms; }
+}
+
+@media (scripting: none) {
+  .hero-badge, .hero-headline, .hero-stop,
+  .hero-sub, .hero-ctas, .hero-proof {
+    opacity: 1; transform: none;
+  }
 }
 
 /* BEGIN journal-positioning section styles */
@@ -2513,7 +2622,7 @@ footer {
     <li><a href="pricing.html" onclick="closeDrawer()">Pricing</a></li>
     <li><a href="/app" onclick="closeDrawer()"><span class="nav-auth-out">Log In</span><span class="nav-auth-in">LAUNCH</span></a></li>
   </ul>
-  <button class="mobile-drawer-cta" data-cta-source="drawer" data-cta-target="checkout" data-cta-tier="pro" data-cta-interval="month" onclick="handleCheckout('pro',event);closeDrawer()">Start Free Trial &rarr;</button>
+  <button class="mobile-drawer-cta" onclick="handleCheckout('pro',{preventDefault:()=>{}});closeDrawer()">Start Free Trial &rarr;</button>
 </div>
 
 <!-- NAV -->
@@ -2530,34 +2639,45 @@ footer {
     <li><a href="/blog">Blog</a></li>
     <li><a href="pricing.html">Pricing</a></li>
     <li><a href="/app" class="nav-login-btn"><span class="nav-auth-out">Log In</span><span class="nav-auth-in">LAUNCH</span></a></li>
-    <li><button class="nav-cta" data-cta-source="nav" data-cta-target="checkout" data-cta-tier="pro" data-cta-interval="month" onclick="handleCheckout('pro',event)">Start Free Trial</button></li>
+    <li><button class="nav-cta" onclick="handleCheckout('pro',event)">Start Free Trial</button></li>
   </ul>
-  <button class="nav-cta nav-cta--phone" data-cta-source="nav-phone" data-cta-target="checkout" data-cta-tier="pro" data-cta-interval="month" onclick="handleCheckout('pro',event)">Free Trial</button>
+  <button class="nav-cta nav-cta--phone" onclick="handleCheckout('pro',event)">Free Trial</button>
   <button class="hamburger" id="hamburger" onclick="toggleDrawer()" aria-label="Menu"><span></span><span></span><span></span></button>
 </nav>
 
-<!-- HERO: what MAKETZO is, the Pro offer with its terms, and the real app (Ed's pick A, 2026-11-12) -->
+<!-- HERO — FULL-BLEED CINEMATIC -->
 <section class="hero">
+  <picture class="hero-bg" aria-hidden="true">
+    <source srcset="assets/hero-trader.avif" type="image/avif">
+    <source srcset="assets/hero-trader.webp" type="image/webp">
+    <img src="assets/hero-trader.png" alt="A focused trader at a multi-monitor desk with MAKETZO's real-time discipline guardrails" width="1606" height="979" fetchpriority="high" decoding="async">
+  </picture>
+  <div class="hero-scrim" aria-hidden="true"></div>
+
   <div class="hero-content">
-    <div class="hero-copy">
-      <img class="hero-phone-shot" src="assets/app/floor-176.png" width="948" height="417" alt="" aria-hidden="true" decoding="async">
-      <div class="hero-badge"><span class="badge-dot"></span>A TRADING JOURNAL FOR SMALL-CAP DAY TRADERS</div>
-      <h1 class="hero-headline">You know the rules.<br>You break them <em>anyway.</em></h1>
-      <p class="hero-sub">MAKETZO is the journal you keep open while you trade. Set your limits before the bell, type your P&amp;L after each trade, and it tells you when to call the day, <strong>before you give back the green.</strong></p>
-      <div class="hero-ctas">
-        <button class="btn-primary" data-cta-source="hero" data-cta-target="checkout" data-cta-tier="pro" data-cta-interval="month" onclick="handleCheckout('pro',event)">Start Pro Free Trial &rarr;</button>
-        <a href="#see-it-work" class="btn-secondary" data-shiw>&#9654; See How It Works</a>
-      </div>
-      <p class="hero-terms">7 days free, then $49 a month. Card required. Cancel before day 8 and pay nothing.</p>
-      <p class="hero-note"><span>&#9733; <strong>&ldquo;Stopped revenge trading in week two.&rdquo;</strong> <a href="#reviews">A real review</a></span><span>No broker connection. Your orders stay yours.</span></p>
+    <div class="hero-badge"><span class="badge-dot"></span>The accountability system retail traders actually need</div>
+    <h1 class="hero-headline">You know the rules.<br>You break them <em>anyway.</em></h1>
+    <span class="hero-stop"><span class="power-pulse">MAKETZO STOPS THAT.</span></span>
+    <p class="hero-sub">You've read the books, joined the communities, learned the setups. And yet you still lose… <strong>to yourself.</strong> MAKETZO is the external enforcement system that holds the line when willpower doesn't.</p>
+    <div class="hero-ctas">
+      <button class="btn-primary" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
+      <a href="#see-it-work" class="btn-secondary" data-shiw>&#9654; See How It Works</a>
     </div>
-    <figure class="hero-app">
-      <p class="hero-app-k">You type</p>
-      <img class="hero-app-shot hero-app-shot--input" src="assets/app/pnl-220.png" width="840" height="147" alt="The Net P&amp;L box in MAKETZO with 220 typed in, beside the Update button" fetchpriority="high" decoding="async">
-      <p class="hero-app-k">MAKETZO answers</p>
-      <img class="hero-app-shot" src="assets/app/floor-176.png" width="948" height="417" alt="The Profit Floor card: $176, from the $220 high. Your walk-away line. Hit it and the day is called." decoding="async">
-      <figcaption>The real app at 9:41 AM. The floor only moves up. Go through it and MAKETZO calls the day.</figcaption>
-    </figure>
+    <div class="hero-proof">
+      <div class="proof-row"><div class="proof-icon-wrap">&#9733;</div><div class="proof-text-wrap"><div class="proof-title">&ldquo;Stopped revenge trading in week two.&rdquo;</div><div class="proof-sub">From a real review. <a href="#reviews">Read them all &darr;</a></div></div></div>
+      <div class="proof-row">
+        <div class="proof-icon-wrap">&#9889;</div>
+        <div class="proof-text-wrap"><div class="proof-title">7 days free, full access</div><div class="proof-sub">Test everything, risk-free</div></div>
+      </div>
+      <div class="proof-row">
+        <div class="proof-icon-wrap">&#10003;</div>
+        <div class="proof-text-wrap"><div class="proof-title">Cancel anytime</div><div class="proof-sub">No commitment, no phone call</div></div>
+      </div>
+      <div class="proof-row">
+        <div class="proof-icon-wrap">&#9997;</div>
+        <div class="proof-text-wrap"><div class="proof-title">No broker connection needed</div><div class="proof-sub">Type your P&amp;L after each trade. Connect DAS when you want.</div></div>
+      </div>
+    </div>
   </div>
 </section>
 <!-- STICKY EMAIL BAR -->
@@ -2571,15 +2691,99 @@ footer {
   <button class="sticky-bar-close" onclick="closeStickyBar()" aria-label="Close">&times;</button>
 </div>
 
-<!-- 01 THE SESSION EXAMPLE (moved under the hero 2026-11-12: 13 of 20 homepage visitors never scrolled past the hero) -->
+<!-- 01 THE PROBLEM -->
+<hr class="mk-rule-gold">
+
+<section class="section" id="why">
+  <div class="section-inner">
+    <p class="section-eyebrow reveal">01 &middot; Why MAKETZO</p>
+    <h2 class="section-title reveal">You don't have a <em>strategy</em> problem.</h2>
+    <p class="section-sub vs-sub reveal">Every retail trader who keeps losing has the same diagnosis: they know exactly what to do. They just can't make themselves do it when it counts. That's not a knowledge gap. That's a <strong>discipline gap</strong>. And no journal alone fixes that.</p>
+    <!-- Without / With MAKETZO, from Ed's mock (2026-10-15); the three time-stamped pain cards read as a story that made no sense in order -->
+    <div class="vs reveal">
+      <div class="vs-card vs-card--without">
+        <span class="mk-pill mk-pill--danger vs-pill">WITHOUT MAKETZO</span>
+        <h3 class="vs-title">Good intentions. <em>Same outcome.</em></h3>
+        <ul class="vs-list">
+          <li><span class="vs-icon" aria-hidden="true">&#10005;</span>You know your rules, and break them in the moment</li>
+          <li><span class="vs-icon" aria-hidden="true">&#10005;</span>You revenge trade after a loss</li>
+          <li><span class="vs-icon" aria-hidden="true">&#10005;</span>You chase extended moves when you know you shouldn't</li>
+          <li><span class="vs-icon" aria-hidden="true">&#10005;</span>You blow up a good week in one bad afternoon</li>
+          <li><span class="vs-icon" aria-hidden="true">&#10005;</span>Your journal is a graveyard of good intentions</li>
+        </ul>
+      </div>
+      <div class="vs-card vs-card--with">
+        <svg class="vs-chart" viewBox="0 0 300 200" aria-hidden="true" focusable="false">
+          <defs>
+            <linearGradient id="vsCandle" gradientUnits="userSpaceOnUse" x1="0" y1="60" x2="0" y2="180"><stop offset="0" stop-color="#E5C572" stop-opacity=".78"/><stop offset=".5" stop-color="#D4AF37" stop-opacity=".4"/><stop offset="1" stop-color="#B8941F" stop-opacity="0"/></linearGradient>
+            <linearGradient id="vsGhost" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#D4AF37" stop-opacity="0"/><stop offset=".3" stop-color="#D4AF37" stop-opacity=".11"/><stop offset="1" stop-color="#D4AF37" stop-opacity="0"/></linearGradient>
+            <linearGradient id="vsArrow" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#D4AF37" stop-opacity=".55"/><stop offset=".5" stop-color="#E5C572"/><stop offset="1" stop-color="#FFF1B8"/></linearGradient>
+            <linearGradient id="vsRevealFade"><stop offset=".9167" stop-color="#fff"/><stop offset="1" stop-color="#000"/></linearGradient>
+            <mask id="vsReveal" maskUnits="userSpaceOnUse" x="-40" y="-40" width="380" height="280"><rect class="vs-reveal" x="-40" y="-40" width="600" height="280" fill="url(#vsRevealFade)"/></mask>
+            <radialGradient id="vsFlare"><stop offset="0" stop-color="#FFF6D6"/><stop offset=".3" stop-color="#F3D77A" stop-opacity=".55"/><stop offset="1" stop-color="#D4AF37" stop-opacity="0"/></radialGradient>
+            <filter id="vsBloom" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur in="SourceGraphic" stdDeviation="10" result="wide"/><feGaussianBlur in="SourceGraphic" stdDeviation="3" result="tight"/><feMerge><feMergeNode in="wide"/><feMergeNode in="wide"/><feMergeNode in="tight"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          </defs>
+          <!-- faint tall columns behind, for depth, as in the mock -->
+          <g class="vs-ghosts">
+            <rect x="175" y="50" width="28" height="130"/>
+            <rect x="216" y="18" width="29" height="162"/>
+          </g>
+          <!-- four wide candles cascading up, crisp, fading into the divider line; tops sit just under the arrow -->
+          <g class="vs-candles">
+            <g class="vs-candle"><path class="vs-wick" d="M148 150 V157 M148 176 V180"/><rect class="vs-body" x="134" y="157" width="28" height="19"/><path class="vs-cap" d="M134 157 H162"/></g>
+            <g class="vs-candle"><path class="vs-wick" d="M189 129 V137 M189 172 V180"/><rect class="vs-body" x="175" y="137" width="28" height="35"/><path class="vs-cap" d="M175 137 H203"/></g>
+            <g class="vs-candle"><path class="vs-wick" d="M230.5 100 V109 M230.5 166 V180"/><rect class="vs-body" x="216" y="109" width="29" height="57"/><path class="vs-cap" d="M216 109 H245"/></g>
+            <g class="vs-candle"><path class="vs-wick" d="M271 67 V77 M271 158 V180"/><rect class="vs-body" x="257" y="77" width="28" height="81"/><path class="vs-cap" d="M257 77 H285"/></g>
+          </g>
+          <g class="vs-arrow" filter="url(#vsBloom)">
+            <path class="vs-arrow-body" d="M18 172.7 L 23.9 172.6 L 29.7 172.3 L 35.6 172 L 41.4 171.5 L 47.2 170.9 L 52.9 170.2 L 58.6 169.4 L 64.3 168.5 L 70 167.4 L 75.6 166.3 L 81.2 165 L 86.8 163.6 L 92.4 162.1 L 97.9 160.5 L 103.4 158.8 L 108.8 157 L 114.2 155.1 L 119.6 153.1 L 124.9 151 L 130.2 148.8 L 135.5 146.5 L 140.7 144.1 L 145.9 141.6 L 151.1 139 L 156.2 136.3 L 161.2 133.5 L 166.3 130.6 L 171.2 127.6 L 176.2 124.6 L 181.1 121.4 L 185.9 118.2 L 190.7 114.8 L 195.5 111.4 L 200.2 107.9 L 204.9 104.3 L 209.5 100.6 L 214.1 96.9 L 218.6 93 L 223.1 89.1 L 227.5 85.1 L 231.8 81.1 L 236.2 76.9 L 240.4 72.7 L 244.6 68.4 L 248.8 64 L 252.9 59.6 L 256.9 55 L 260.9 50.4 L 255.1 45.6 L 251.3 50.2 L 247.4 54.7 L 243.5 59.1 L 239.5 63.5 L 235.4 67.8 L 231.3 72.1 L 227.2 76.2 L 223 80.3 L 218.7 84.4 L 214.4 88.3 L 210 92.2 L 205.6 96 L 201.2 99.7 L 196.7 103.3 L 192.1 106.9 L 187.5 110.4 L 182.8 113.7 L 178.1 117 L 173.4 120.3 L 168.6 123.4 L 163.7 126.4 L 158.9 129.4 L 153.9 132.2 L 148.9 135 L 143.9 137.7 L 138.9 140.3 L 133.8 142.8 L 128.6 145.2 L 123.4 147.5 L 118.2 149.7 L 112.9 151.8 L 107.6 153.8 L 102.3 155.7 L 96.9 157.5 L 91.5 159.2 L 86.1 160.8 L 80.6 162.2 L 75 163.6 L 69.5 164.9 L 63.9 166.1 L 58.3 167.1 L 52.6 168.1 L 46.9 168.9 L 41.2 169.6 L 35.4 170.2 L 29.6 170.7 L 23.8 171.1 L 18 171.3 Z"/>
+            <path class="vs-arrow-head" d="M273.4 29.6 L 265.9 57.2 L 247.5 41.8 Z"/>
+          </g>
+          <circle class="vs-flare" cx="263" cy="42" r="34" fill="url(#vsFlare)"/>
+        </svg>
+        <span class="mk-pill mk-pill--brand vs-pill">WITH MAKETZO</span>
+        <h3 class="vs-title">Discipline. <em>Real results.</em></h3>
+        <ul class="vs-list">
+          <li><span class="vs-icon" aria-hidden="true">&#10003;</span>Your rules are enforced while the day is live, not filed away</li>
+          <li><span class="vs-icon" aria-hidden="true">&#10003;</span>Strikes and checkpoints stop a bad day before it compounds</li>
+          <li><span class="vs-icon" aria-hidden="true">&#10003;</span>COACH SAYS tells you to sit down, and you listen</li>
+          <li><span class="vs-icon" aria-hidden="true">&#10003;</span>Checkpoints protect your week on autopilot</li>
+          <li><span class="vs-icon" aria-hidden="true">&#10003;</span>Your journal shows exactly why you win and lose</li>
+        </ul>
+        <a class="vs-more" href="system.html#the-moment" data-cta-source="why" data-cta-target="system-the-moment">How checkpoints and strikes work&nbsp;&rarr;</a>
+      </div>
+    </div>
+  </div>
+</section>
+<script>
+/* Section 01 plays once, when the gold card is on screen (Ed, 2026-10-17). On a screen tall enough to show it at load,
+   it waits for the hero's own entrance to finish first, so only one thing moves at a time. Without IntersectionObserver
+   nothing is armed and the section stands finished. Classes only; the CSS is under .vs-armed and .vs-go. */
+(function () {
+  var vs = document.querySelector('.vs'), card = vs && vs.querySelector('.vs-card--with');
+  if (!card || !('IntersectionObserver' in window)) return;
+  vs.classList.add('vs-armed');
+  var o = new IntersectionObserver(function (es) {
+    if (!es[0].isIntersecting) return;
+    o.disconnect();
+    setTimeout(function () {
+      vs.classList.add('vs-go');
+      setTimeout(function () { vs.setAttribute('data-anim', 'done'); }, 6900);
+    }, Math.max(350, 2600 - performance.now()));
+  }, { rootMargin: '0px 0px -15% 0px', threshold: 0.35 });
+  o.observe(card);
+})();
+</script>
+
+<!-- INTERACTIVE SESSION SIM -->
 <hr class="mk-rule-gold">
 
 <section class="section fs-section" id="see-it-work">
   <canvas class="fs-dust" aria-hidden="true"></canvas>
   <div class="section-inner">
-    <p class="section-eyebrow reveal">01 &middot; See It Work</p>
+    <p class="section-eyebrow reveal">02 &middot; See It Work</p>
     <h2 class="section-title reveal">You type your P&amp;L. <em>MAKETZO holds the line.</em></h2>
-    <p class="section-sub reveal">One real morning in the app. After each trade, the trader types the session's net P&amp;L. Every card below is the app's own response, word for word. This is Pro's profit floor. It never touches your broker.</p>
+    <p class="section-sub reveal">One real morning in the app. After each trade, the trader types the session's net P&amp;L. Every card below is the app's own response, word for word.</p>
     <div class="fs reveal">
       <div class="fs-chart" role="img" aria-label="Session P&amp;L as typed: up to $220 at 9:41, a profit floor at $176, down to $40 at 9:52 where the day is called, and the day ends green at $40 at 9:59.">
         <div class="fs-chart-head" aria-hidden="true"><span>Session P&amp;L (as typed)</span><span class="fs-legend"><i></i>MAKETZO</span></div>
@@ -2664,24 +2868,8 @@ footer {
       </ol>
     </div>
     <div class="fs-end reveal">
+      <button class="btn-primary fs-cta" data-cta-source="see-it-work" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
       <p class="fs-end-line">One bad trade, then done. <strong>The day ends green.</strong></p>
-      <div class="offer" id="offer">
-        <div class="offer-main">
-          <p class="offer-k">MAKETZO PRO</p>
-          <p class="offer-price">$49<span>/mo</span></p>
-          <ul class="offer-list">
-            <li>Give-Back Guard, the profit floor that calls the day</li>
-            <li>COACH SAYS + State Machine + Strike System</li>
-            <li>Focus Room (Lock-In, Reset, Soundtrack)</li>
-            <li>Everything in Journal</li>
-          </ul>
-        </div>
-        <div class="offer-act">
-          <button class="btn-primary" data-cta-source="offer" data-cta-target="checkout" data-cta-tier="pro" data-cta-interval="month" onclick="handleCheckout('pro',event)">Start Pro Free Trial &rarr;</button>
-          <p class="offer-terms">7 days free, then $49 a month.<br>Card required. Cancel before day 8 and pay nothing.</p>
-          <p class="offer-alt"><a href="pricing.html" data-cta-source="offer" data-cta-target="pricing">Compare plans. Journal starts at $19.95 &rarr;</a></p>
-        </div>
-      </div>
     </div>
     <p class="sec-more reveal">How the profit floor calls the day: <a href="system.html#profit-floor" data-cta-source="see-it-work" data-cta-target="system-profit-floor">The System&nbsp;&rarr;</a></p>
   </div>
@@ -2806,90 +2994,6 @@ footer {
 })();
 </script>
 <!-- SOCIAL PROOF -->
-<!-- 02 THE PROBLEM -->
-<hr class="mk-rule-gold">
-
-<section class="section" id="why">
-  <div class="section-inner">
-    <p class="section-eyebrow reveal">02 &middot; Why MAKETZO</p>
-    <h2 class="section-title reveal">You don't have a <em>strategy</em> problem.</h2>
-    <p class="section-sub vs-sub reveal">Every retail trader who keeps losing has the same diagnosis: they know exactly what to do. They just can't make themselves do it when it counts. That's not a knowledge gap. That's a <strong>discipline gap</strong>. And no journal alone fixes that.</p>
-    <!-- Without / With MAKETZO, from Ed's mock (2026-10-15); the three time-stamped pain cards read as a story that made no sense in order -->
-    <div class="vs reveal">
-      <div class="vs-card vs-card--without">
-        <span class="mk-pill mk-pill--danger vs-pill">WITHOUT MAKETZO</span>
-        <h3 class="vs-title">Good intentions. <em>Same outcome.</em></h3>
-        <ul class="vs-list">
-          <li><span class="vs-icon" aria-hidden="true">&#10005;</span>You know your rules, and break them in the moment</li>
-          <li><span class="vs-icon" aria-hidden="true">&#10005;</span>You revenge trade after a loss</li>
-          <li><span class="vs-icon" aria-hidden="true">&#10005;</span>You chase extended moves when you know you shouldn't</li>
-          <li><span class="vs-icon" aria-hidden="true">&#10005;</span>You blow up a good week in one bad afternoon</li>
-          <li><span class="vs-icon" aria-hidden="true">&#10005;</span>Your journal is a graveyard of good intentions</li>
-        </ul>
-      </div>
-      <div class="vs-card vs-card--with">
-        <svg class="vs-chart" viewBox="0 0 300 200" aria-hidden="true" focusable="false">
-          <defs>
-            <linearGradient id="vsCandle" gradientUnits="userSpaceOnUse" x1="0" y1="60" x2="0" y2="180"><stop offset="0" stop-color="#E5C572" stop-opacity=".78"/><stop offset=".5" stop-color="#D4AF37" stop-opacity=".4"/><stop offset="1" stop-color="#B8941F" stop-opacity="0"/></linearGradient>
-            <linearGradient id="vsGhost" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#D4AF37" stop-opacity="0"/><stop offset=".3" stop-color="#D4AF37" stop-opacity=".11"/><stop offset="1" stop-color="#D4AF37" stop-opacity="0"/></linearGradient>
-            <linearGradient id="vsArrow" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#D4AF37" stop-opacity=".55"/><stop offset=".5" stop-color="#E5C572"/><stop offset="1" stop-color="#FFF1B8"/></linearGradient>
-            <linearGradient id="vsRevealFade"><stop offset=".9167" stop-color="#fff"/><stop offset="1" stop-color="#000"/></linearGradient>
-            <mask id="vsReveal" maskUnits="userSpaceOnUse" x="-40" y="-40" width="380" height="280"><rect class="vs-reveal" x="-40" y="-40" width="600" height="280" fill="url(#vsRevealFade)"/></mask>
-            <radialGradient id="vsFlare"><stop offset="0" stop-color="#FFF6D6"/><stop offset=".3" stop-color="#F3D77A" stop-opacity=".55"/><stop offset="1" stop-color="#D4AF37" stop-opacity="0"/></radialGradient>
-            <filter id="vsBloom" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur in="SourceGraphic" stdDeviation="10" result="wide"/><feGaussianBlur in="SourceGraphic" stdDeviation="3" result="tight"/><feMerge><feMergeNode in="wide"/><feMergeNode in="wide"/><feMergeNode in="tight"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-          </defs>
-          <!-- faint tall columns behind, for depth, as in the mock -->
-          <g class="vs-ghosts">
-            <rect x="175" y="50" width="28" height="130"/>
-            <rect x="216" y="18" width="29" height="162"/>
-          </g>
-          <!-- four wide candles cascading up, crisp, fading into the divider line; tops sit just under the arrow -->
-          <g class="vs-candles">
-            <g class="vs-candle"><path class="vs-wick" d="M148 150 V157 M148 176 V180"/><rect class="vs-body" x="134" y="157" width="28" height="19"/><path class="vs-cap" d="M134 157 H162"/></g>
-            <g class="vs-candle"><path class="vs-wick" d="M189 129 V137 M189 172 V180"/><rect class="vs-body" x="175" y="137" width="28" height="35"/><path class="vs-cap" d="M175 137 H203"/></g>
-            <g class="vs-candle"><path class="vs-wick" d="M230.5 100 V109 M230.5 166 V180"/><rect class="vs-body" x="216" y="109" width="29" height="57"/><path class="vs-cap" d="M216 109 H245"/></g>
-            <g class="vs-candle"><path class="vs-wick" d="M271 67 V77 M271 158 V180"/><rect class="vs-body" x="257" y="77" width="28" height="81"/><path class="vs-cap" d="M257 77 H285"/></g>
-          </g>
-          <g class="vs-arrow" filter="url(#vsBloom)">
-            <path class="vs-arrow-body" d="M18 172.7 L 23.9 172.6 L 29.7 172.3 L 35.6 172 L 41.4 171.5 L 47.2 170.9 L 52.9 170.2 L 58.6 169.4 L 64.3 168.5 L 70 167.4 L 75.6 166.3 L 81.2 165 L 86.8 163.6 L 92.4 162.1 L 97.9 160.5 L 103.4 158.8 L 108.8 157 L 114.2 155.1 L 119.6 153.1 L 124.9 151 L 130.2 148.8 L 135.5 146.5 L 140.7 144.1 L 145.9 141.6 L 151.1 139 L 156.2 136.3 L 161.2 133.5 L 166.3 130.6 L 171.2 127.6 L 176.2 124.6 L 181.1 121.4 L 185.9 118.2 L 190.7 114.8 L 195.5 111.4 L 200.2 107.9 L 204.9 104.3 L 209.5 100.6 L 214.1 96.9 L 218.6 93 L 223.1 89.1 L 227.5 85.1 L 231.8 81.1 L 236.2 76.9 L 240.4 72.7 L 244.6 68.4 L 248.8 64 L 252.9 59.6 L 256.9 55 L 260.9 50.4 L 255.1 45.6 L 251.3 50.2 L 247.4 54.7 L 243.5 59.1 L 239.5 63.5 L 235.4 67.8 L 231.3 72.1 L 227.2 76.2 L 223 80.3 L 218.7 84.4 L 214.4 88.3 L 210 92.2 L 205.6 96 L 201.2 99.7 L 196.7 103.3 L 192.1 106.9 L 187.5 110.4 L 182.8 113.7 L 178.1 117 L 173.4 120.3 L 168.6 123.4 L 163.7 126.4 L 158.9 129.4 L 153.9 132.2 L 148.9 135 L 143.9 137.7 L 138.9 140.3 L 133.8 142.8 L 128.6 145.2 L 123.4 147.5 L 118.2 149.7 L 112.9 151.8 L 107.6 153.8 L 102.3 155.7 L 96.9 157.5 L 91.5 159.2 L 86.1 160.8 L 80.6 162.2 L 75 163.6 L 69.5 164.9 L 63.9 166.1 L 58.3 167.1 L 52.6 168.1 L 46.9 168.9 L 41.2 169.6 L 35.4 170.2 L 29.6 170.7 L 23.8 171.1 L 18 171.3 Z"/>
-            <path class="vs-arrow-head" d="M273.4 29.6 L 265.9 57.2 L 247.5 41.8 Z"/>
-          </g>
-          <circle class="vs-flare" cx="263" cy="42" r="34" fill="url(#vsFlare)"/>
-        </svg>
-        <span class="mk-pill mk-pill--brand vs-pill">WITH MAKETZO</span>
-        <h3 class="vs-title">Discipline. <em>Real results.</em></h3>
-        <ul class="vs-list">
-          <li><span class="vs-icon" aria-hidden="true">&#10003;</span>Your rules are enforced while the day is live, not filed away</li>
-          <li><span class="vs-icon" aria-hidden="true">&#10003;</span>Strikes and checkpoints stop a bad day before it compounds</li>
-          <li><span class="vs-icon" aria-hidden="true">&#10003;</span>COACH SAYS tells you to sit down, and you listen</li>
-          <li><span class="vs-icon" aria-hidden="true">&#10003;</span>Checkpoints protect your week on autopilot</li>
-          <li><span class="vs-icon" aria-hidden="true">&#10003;</span>Your journal shows exactly why you win and lose</li>
-        </ul>
-        <a class="vs-more" href="system.html#the-moment" data-cta-source="why" data-cta-target="system-the-moment">How checkpoints and strikes work&nbsp;&rarr;</a>
-      </div>
-    </div>
-  </div>
-</section>
-<script>
-/* Section 01 plays once, when the gold card is on screen (Ed, 2026-10-17). On a screen tall enough to show it at load,
-   it waits for the hero's own entrance to finish first, so only one thing moves at a time. Without IntersectionObserver
-   nothing is armed and the section stands finished. Classes only; the CSS is under .vs-armed and .vs-go. */
-(function () {
-  var vs = document.querySelector('.vs'), card = vs && vs.querySelector('.vs-card--with');
-  if (!card || !('IntersectionObserver' in window)) return;
-  vs.classList.add('vs-armed');
-  var o = new IntersectionObserver(function (es) {
-    if (!es[0].isIntersecting) return;
-    o.disconnect();
-    setTimeout(function () {
-      vs.classList.add('vs-go');
-      setTimeout(function () { vs.setAttribute('data-anim', 'done'); }, 6900);
-    }, Math.max(350, 2600 - performance.now()));
-  }, { rootMargin: '0px 0px -15% 0px', threshold: 0.35 });
-  o.observe(card);
-})();
-</script>
-
 <hr class="mk-rule-gold">
 
 <section class="section section-dark" id="reviews">
@@ -2953,7 +3057,7 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 </script>
     <div class="mk-cta-repeat">
-      <button class="btn-primary" data-cta-source="reviews" data-cta-target="checkout" data-cta-tier="pro" data-cta-interval="month" onclick="handleCheckout('pro',event)">Start Pro Free Trial &rarr;</button>
+      <button class="btn-primary" data-cta-source="reviews" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
     </div>
 </section>
 
@@ -3283,7 +3387,7 @@ document.addEventListener("DOMContentLoaded", function() {
       </ol>
     </div>
     <div class="mk-cta-repeat">
-      <button class="btn-primary" data-cta-source="soundtrack" data-cta-target="checkout" data-cta-tier="pro" data-cta-interval="month" onclick="handleCheckout('pro',event)">Start Pro Free Trial &rarr;</button>
+      <button class="btn-primary" data-cta-source="soundtrack" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
     </div>
   </div>
 </section>
@@ -3363,7 +3467,7 @@ document.addEventListener("DOMContentLoaded", function() {
           <li class="bold">Everything in Journal</li>
           <li class="bold">COACH SAYS + State Machine + Strike System</li>
           <li class="bold">Focus Room (Lock-In, Reset, Soundtrack)</li>
-          <li>Give-Back Guard, the profit floor that calls the day</li>
+          <li>Give-Back Guard, a floor under a green day</li>
           <li>Maketzo Edge + Pulse on TradingView (invite within 24 hrs)</li>
           <li>Dilution Check, 100 company reads a month</li>
         </ul>
@@ -3421,7 +3525,7 @@ document.addEventListener("DOMContentLoaded", function() {
     <h2 class="final-cta-headline reveal">Stop losing to <em>yourself.</em></h2>
     <p class="final-cta-sub reveal">7 days free. Full access from day one. No charge until day 8. Cancel anytime.</p>
     <div class="final-cta-btns reveal">
-      <button class="btn-primary" data-cta-source="final" data-cta-target="checkout" data-cta-tier="pro" data-cta-interval="month" onclick="handleCheckout('pro',event)">Start Pro Free Trial &rarr;</button>
+      <button class="btn-primary" onclick="handleCheckout('pro',event)">Start Free Trial &rarr;</button>
       <a href="pricing.html" class="btn-secondary">Compare All Plans</a>
     </div>
     <p class="final-cta-note reveal">Pro &middot; $49/mo or $399/yr &middot; Discipline OS, Focus Room &amp; Dilution Check &middot; Cancel anytime</p>
@@ -3458,6 +3562,16 @@ document.addEventListener("DOMContentLoaded", function() {
 
 <script>
 const API='https://api.maketzo.co';
+
+// HERO ENTRANCE — flip class on body after load to trigger the
+// staggered CSS slide+fade transition on .hero-* elements.
+(function heroEntrance(){
+  function go(){
+    requestAnimationFrame(function(){ document.body.classList.add('hero-loaded'); });
+  }
+  if (document.readyState === 'complete') { go(); }
+  else { window.addEventListener('load', go); }
+})();
 
 // MOBILE DRAWER
 function toggleDrawer(){
