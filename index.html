@@ -1254,182 +1254,97 @@ a.focus-feature-card { text-decoration: none; color: inherit; }
   color: var(--mk-text-tertiary);
 }
 
-/* ── PRICING ─────────────────────────────────────────────────── */
-.pricing-toggle-wrap {
-  display: flex; align-items: center; justify-content: center; gap: 14px;
-  margin-bottom: 48px;
-  flex-wrap: wrap;
-}
-.pricing-toggle-label {
-  font-family: var(--mk-font-mono);
-  font-size: var(--mk-mono-xs);
-  letter-spacing: var(--mk-track-eyebrow);
-  text-transform: uppercase;
-  color: var(--mk-text-tertiary);
-  cursor: pointer;
-  transition: color var(--mk-dur-fast);
-}
-.pricing-toggle-label.active { color: var(--mk-brand); }
-.pricing-toggle {
-  position: relative;
-  width: 44px; height: 24px;
-  background: var(--mk-surface-elevated);
-  border: 1px solid rgba(255,255,255,.10);
-  border-radius: var(--mk-radius-pill);
-  cursor: pointer;
-}
-.pricing-toggle-knob {
-  position: absolute; top: 2px; left: 2px;
-  width: 18px; height: 18px; border-radius: var(--mk-radius-pill);
-  background: var(--mk-gold-gradient);
-  transition: transform var(--mk-dur-snap) var(--mk-ease-out);
-}
-.pricing-toggle.annual .pricing-toggle-knob { transform: translateX(20px); }
-.save-badge {
-  font-family: var(--mk-font-mono);
-  font-size: var(--mk-mono-xs);
-  letter-spacing: var(--mk-track-eyebrow);
-  text-transform: uppercase;
-  padding: 4px 10px;
-  border-radius: var(--mk-radius-pill);
-  background: rgba(74,222,128,.10);
-  color: var(--mk-profit-500);
-  border: 1px solid rgba(74,222,128,.25);
-}
-.pricing-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-  max-width: 1100px;
-  margin: 0 auto;
-}
-.price-card {
-  position: relative;
-  background: var(--mk-surface-raised);
-  border: var(--mk-border-hairline);
-  border-radius: var(--mk-radius-card-lg);
-  padding: 32px 28px;
-  display: flex; flex-direction: column;
-}
-.price-card.featured {
-  background:
-    linear-gradient(135deg, rgba(212,175,55,.08), rgba(212,175,55,.02)),
-    var(--mk-surface-raised);
-  border: var(--mk-border-gold);
-}
-.popular-badge {
-  position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
-  font-family: var(--mk-font-mono);
-  font-size: var(--mk-mono-xs);
-  letter-spacing: var(--mk-track-eyebrow);
-  text-transform: uppercase;
-  padding: 4px 12px;
-  border-radius: var(--mk-radius-pill);
-  background: var(--mk-gold-gradient);
-  color: var(--mk-text-on-gold);
-}
-.price-eyebrow {
-  font-family: var(--mk-font-mono);
-  font-size: var(--mk-mono-xs);
-  letter-spacing: var(--mk-track-eyebrow);
-  text-transform: uppercase;
-  color: var(--mk-brand);
-  margin-bottom: 8px;
-}
-.price-name {
-  font-family: var(--mk-font-display);
-  font-size: 1.7rem;
-  letter-spacing: var(--mk-track-display);
-  text-transform: uppercase;
-  margin-bottom: 18px;
-  font-weight: 400;
-}
-.price-row {
-  display: flex; align-items: baseline; gap: 4px;
-  margin-bottom: 6px;
-}
-.price-dollar {
-  font-family: var(--mk-font-mono);
-  font-size: 1.2rem;
-  color: var(--mk-text-tertiary);
-}
-.price-num {
-  font-family: var(--mk-font-display);
-  font-size: 3.4rem;
-  letter-spacing: var(--mk-track-display);
-  color: var(--mk-text-primary);
-  line-height: 1;
-}
-.price-per {
-  font-family: var(--mk-font-mono);
-  font-size: var(--mk-mono-sm);
-  color: var(--mk-text-tertiary);
-  letter-spacing: 0.04em;
-}
-.price-sub {
-  font-size: var(--mk-text-sm);
-  color: var(--mk-text-tertiary);
-  margin-bottom: 18px;
-}
-/* Journal against Tradervue Silver and TradeZella Essential, billed monthly (Ed, 2026-11-10),
-   the same two prices as the /pricing hero. Monthly only: the toggle hides it on Annual. */
-.price-compare-chip {
-  align-self: flex-start;
-  font-family: var(--mk-font-mono);
-  font-size: var(--mk-mono-xs);
-  letter-spacing: 0.04em;
-  color: var(--mk-gold-400);
-  border: var(--mk-border-gold-soft);
-  border-radius: var(--mk-radius-pill);
-  padding: 5px 11px;
-  margin: -8px 0 18px;
-}
+/* ── PRICING (05) ───────────────────────────────────────────────
+   Rebuilt to Ed's mock 2026-11-13 ("just more visually interesting"): glass cards with a badge each, the Pro card lit
+   gold, gold checks, the billing toggle in a pill beside its savings chip, a gold ridge glow top left and a rising
+   candle run top right. The 05 eyebrow and the section title keep the site's format. Motion: the cards reveal as
+   before and the candles grow in once, left to right, when the section arrives; reduce motion shows them standing.
+   No backdrop-filter (fan cost, memory feedback-backdrop-filter-cost-scales-with-motion-behind-it); marketing pages
+   are dark only. */
+#pricing { position: relative; overflow: hidden; isolation: isolate; }
+#pricing .section-inner { position: relative; z-index: 1; }
+.pc-sky { position: absolute; z-index: 0; pointer-events: none; }
+.pc-ridge { top: 40px; left: 0; width: min(44%, 560px); height: 300px; opacity: .55;
+  -webkit-mask: radial-gradient(130% 110% at 0% 0%, #000 40%, transparent 78%); mask: radial-gradient(130% 110% at 0% 0%, #000 40%, transparent 78%); }
+.pc-ridge path { fill: none; stroke: url(#pcRidgeInk); stroke-linecap: round; }
+.pc-ridge .pc-ridge-fill { fill: url(#pcRidgeFill); stroke: none; }
+.pc-candles { top: 56px; right: 0; width: min(18%, 240px); height: 210px; opacity: .9;
+  -webkit-mask: linear-gradient(90deg, transparent 8%, rgba(0,0,0,.3) 42%, #000 82%); mask: linear-gradient(90deg, transparent 8%, rgba(0,0,0,.3) 42%, #000 82%);
+  filter: drop-shadow(0 0 6px rgba(212,175,55,.55)); }
+.pc-candles rect { fill: var(--mk-gold-500, #D4AF37); }
+.pc-candles line { stroke: var(--mk-gold-400); stroke-width: 1.4; }
+/* the run draws in once, left to right, when the section arrives */
+.pc-armed .pc-candles { clip-path: inset(-20px 100% -20px -20px); }
+.pc-armed.pc-lit .pc-candles { clip-path: inset(-20px); transition: clip-path 1.8s cubic-bezier(.3,.7,.2,1) .2s; }
+
+#pricing .section-title { margin-bottom: 16px; }
+.pc-lead { text-align: center; max-width: 760px; margin: 0 auto; font-size: var(--mk-text-xl); line-height: 1.45; color: var(--mk-text-primary); }
+.pc-terms { text-align: center; margin: 10px auto 0; font-size: var(--mk-text-lg); line-height: 1.5; color: var(--mk-text-tertiary); }
+
+/* the billing toggle in its pill, the savings chip beside it */
+.pc-billing { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 14px; margin: 34px 0 44px; }
+.pricing-toggle-wrap { display: inline-flex; align-items: center; gap: 16px; padding: 11px 22px; border-radius: var(--mk-radius-pill); border: 1px solid rgba(212,175,55,.38); background: rgba(255,255,255,.02); }
+.pricing-toggle-label { font-family: var(--mk-font-sans); font-size: var(--mk-text-lg); font-weight: 500; color: var(--mk-text-secondary); cursor: pointer; transition: color var(--mk-dur-fast); }
+.pricing-toggle-label.active { color: var(--mk-gold-400); }
+.pricing-toggle { position: relative; width: 50px; height: 26px; border-radius: var(--mk-radius-pill); cursor: pointer; background: rgba(212,175,55,.22); border: 1px solid rgba(212,175,55,.45); }
+.pricing-toggle-knob { position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: var(--mk-radius-pill); background: var(--mk-gold-gradient); box-shadow: 0 0 10px rgba(212,175,55,.6); transition: transform var(--mk-dur-snap) var(--mk-ease-out); }
+.pricing-toggle.annual .pricing-toggle-knob { transform: translateX(24px); }
+.pc-save { display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px; border-radius: var(--mk-radius-pill); border: 1px solid rgba(212,175,55,.45); color: var(--mk-text-primary); font-size: var(--mk-text-md); font-weight: 500; }
+.pc-save svg { width: 15px; height: 15px; stroke: var(--mk-gold-400); fill: none; stroke-width: 1.8; stroke-linejoin: round; }
+
+/* the cards */
+.pricing-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; max-width: 1100px; margin: 0 auto; align-items: stretch; }
+.price-card { position: relative; display: flex; flex-direction: column; padding: 30px 28px 26px; border-radius: 20px; border: 1px solid rgba(255,255,255,.11);
+  background: linear-gradient(180deg, rgba(255,255,255,.055), rgba(255,255,255,.015) 55%), var(--mk-surface-raised);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 24px 60px rgba(0,0,0,.45); }
+.price-card.featured { border: 1.5px solid var(--mk-gold-400); margin: -8px 0;
+  background: radial-gradient(120% 60% at 50% 0%, rgba(240,200,80,.22), transparent 60%), linear-gradient(180deg, rgba(212,175,55,.12), rgba(212,175,55,.03) 60%), var(--mk-surface-raised);
+  box-shadow: inset 0 1px 0 rgba(255,236,170,.25), 0 0 0 1px rgba(212,175,55,.15), 0 0 46px rgba(212,175,55,.32), 0 24px 70px rgba(0,0,0,.5); }
+.pc-badge { align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; padding: 7px 15px; border-radius: var(--mk-radius-pill); border: 1px solid rgba(212,175,55,.55); color: var(--mk-gold-300); font-size: var(--mk-text-md); font-weight: 500; margin: 0 0 20px; }
+.pc-badge svg { width: 15px; height: 15px; fill: var(--mk-gold-400); }
+.featured .pc-badge { background: var(--mk-gold-gradient); border-color: transparent; color: var(--mk-text-on-gold); box-shadow: 0 0 22px rgba(212,175,55,.45); }
+.featured .pc-badge svg { fill: var(--mk-text-on-gold); }
+.price-name { font-family: var(--mk-font-sans); font-weight: 700; font-size: 1.6rem; line-height: 1.1; letter-spacing: .02em; text-transform: uppercase; color: var(--mk-text-primary); margin: 0 0 14px; }
+.price-row { display: flex; align-items: baseline; gap: 6px; margin: 0 0 6px; }
+.price-dollar { font-family: var(--mk-font-sans); font-size: 1.9rem; font-weight: 500; color: var(--mk-text-secondary); align-self: flex-start; margin-top: 10px; }
+.price-num { font-family: var(--mk-font-sans); font-weight: 700; font-size: 3.6rem; line-height: 1; letter-spacing: -.01em; color: var(--mk-text-primary); }
+.price-per { font-size: var(--mk-text-xl); color: var(--mk-text-tertiary); }
+.price-sub { font-size: var(--mk-text-md); color: var(--mk-text-tertiary); margin: 0 0 4px; }
+.price-sub:empty { display: none; }
+/* Journal against Tradervue Silver ($29.95) and TradeZella Essential ($35), billed monthly, the same two prices as the
+   /pricing hero (Ed, 2026-11-10). Monthly only: the toggle hides it on Annual. */
+.price-compare-chip { align-self: flex-start; white-space: nowrap; margin: 12px 0 6px; padding: 7px 14px; border-radius: var(--mk-radius-pill); border: 1px solid rgba(212,175,55,.5); background: rgba(212,175,55,.06); color: var(--mk-gold-300); font-size: .875rem; }
 .price-compare-chip[hidden] { display: none; }
-.price-rule {
-  height: 1px; margin: 0 0 18px;
-  background: linear-gradient(90deg, transparent, rgba(212,175,55,.30), transparent);
+.price-rule { height: 1px; margin: 14px 0 6px; background: linear-gradient(90deg, transparent, rgba(229,197,114,.75), transparent); }
+.price-list { list-style: none; display: flex; flex-direction: column; gap: 13px; flex: 1; padding: 0; margin: 18px 0 0; }
+.price-list li { position: relative; padding-left: 28px; font-size: 1rem; line-height: 1.4; color: var(--mk-text-primary); }
+.price-list li::before { content: ""; position: absolute; left: 0; top: .2em; width: 16px; height: 16px; background: var(--mk-gold-400);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4 12.5l5 5L20 6.5' fill='none' stroke='%23000' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4 12.5l5 5L20 6.5' fill='none' stroke='%23000' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat; }
+.price-card .cta-outline, .price-card .cta-gold { width: 100%; margin-top: 30px; padding: 16px 22px; font-size: var(--mk-text-md); font-weight: 700; letter-spacing: .1em; border-radius: 8px; }
+.price-card .cta-outline { border: 1.5px solid var(--mk-gold-400); }
+.price-card .cta-gold { box-shadow: 0 0 26px rgba(212,175,55,.4); }
+.price-note { text-align: center; margin: 14px 0 0; font-size: var(--mk-text-md); letter-spacing: .06em; color: var(--mk-text-tertiary); }
+
+/* the way to the full table */
+.pricing-cta-row { display: flex; justify-content: center; margin: 44px 0 0; }
+.pc-compare { display: inline-flex; align-items: center; justify-content: center; gap: 14px; min-width: min(100%, 460px); padding: 18px 30px; border-radius: 10px; border: 1.5px solid rgba(212,175,55,.6); background: rgba(212,175,55,.04);
+  font-size: var(--mk-text-md); font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--mk-text-primary); text-decoration: none; transition: border-color var(--mk-dur-snap), background var(--mk-dur-snap), color var(--mk-dur-snap); }
+.pc-compare:hover { border-color: var(--mk-brand); background: rgba(212,175,55,.09); color: var(--mk-gold-300); }
+.pc-compare svg { width: 22px; height: 22px; fill: none; stroke: var(--mk-gold-400); stroke-width: 1.6; stroke-linejoin: round; }
+@media (max-width: 900px) {
+  .pricing-grid { grid-template-columns: minmax(0, 1fr); max-width: 520px; gap: 20px; }
+  .price-card.featured { margin: 0; }
+  .pc-ridge { width: 80%; height: 220px; opacity: .4; }
+  .pc-candles { width: 44%; height: 170px; opacity: .55; }
 }
-.price-list { display: flex; flex-direction: column; gap: 10px; flex: 1; padding: 0; }
-.price-list li {
-  display: block;
-  font-size: var(--mk-text-sm);
-  color: var(--mk-text-secondary);
-  line-height: var(--mk-lead-body);
-  padding-left: 20px;
-  position: relative;
+@media (max-width: 600px) {
+  .pc-lead { font-size: var(--mk-text-lg); }
+  .price-card { padding: 26px 22px 22px; }
+  .pricing-toggle-wrap { padding: 9px 16px; gap: 12px; }
+  .pc-compare { min-width: 0; width: 100%; padding: 16px 18px; letter-spacing: .08em; }
 }
-.price-list li::before {
-  content: "\2713";
-  position: absolute; left: 0; top: 0;
-  color: var(--mk-brand);
-  font-size: 12px;
-}
-.price-list li.bold { color: var(--mk-text-primary); font-weight: 500; }
-.price-card .cta-outline,
-.price-card .cta-gold {
-  margin-top: 22px;
-  width: 100%;
-}
-.price-note {
-  text-align: center;
-  font-family: var(--mk-font-mono);
-  font-size: var(--mk-mono-xs);
-  letter-spacing: 0.04em;
-  color: var(--mk-text-tertiary);
-  margin-top: 10px;
-}
-.pricing-cta-row {
-  margin-top: 40px;
-  text-align: center;
-  display: flex; flex-direction: column; align-items: center; gap: 14px;
-}
-.pricing-cta-sub {
-  font-family: var(--mk-font-mono);
-  font-size: var(--mk-mono-xs);
-  letter-spacing: 0.04em;
-  color: var(--mk-text-tertiary);
-}
-@media (max-width: 900px) { .pricing-grid { grid-template-columns: 1fr; } }
+@media (prefers-reduced-motion: reduce) { .pc-armed .pc-candles, .pc-armed.pc-lit .pc-candles { clip-path: none; transition: none; } }
 
 /* Compact tier reminder strip (bottom pricing section — distinct from the
    detailed cards above). Mirrors the journal.html "pricing reminder" pattern. */
@@ -2844,68 +2759,82 @@ document.addEventListener("DOMContentLoaded", function() {
 <hr class="mk-rule-gold">
 
 <section class="section" id="pricing">
+  <svg class="pc-sky pc-ridge" viewBox="0 0 560 300" preserveAspectRatio="xMinYMin slice" aria-hidden="true" focusable="false">
+    <defs>
+      <linearGradient id="pcRidgeInk" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#F3D77A" stop-opacity=".9"/><stop offset="1" stop-color="#D4AF37" stop-opacity="0"/></linearGradient>
+      <linearGradient id="pcRidgeFill" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#D4AF37" stop-opacity=".22"/><stop offset="1" stop-color="#D4AF37" stop-opacity="0"/></linearGradient>
+    </defs>
+    <path class="pc-ridge-fill" d="M0 150C40 120 80 70 130 86S205 40 250 64S330 120 380 104S470 70 560 96V300H0Z"/>
+    <path d="M0 150C40 120 80 70 130 86S205 40 250 64S330 120 380 104S470 70 560 96" stroke-width="1.6"/>
+    <path d="M0 196C50 168 95 132 150 146S240 110 290 132S370 170 430 158S510 140 560 150" stroke-width="1.1" opacity=".6"/>
+    <path d="M0 238C60 214 120 190 180 200S280 176 340 190S450 214 560 204" stroke-width=".9" opacity=".35"/>
+  </svg>
+  <svg class="pc-sky pc-candles" viewBox="0 0 300 250" preserveAspectRatio="xMaxYMin meet" aria-hidden="true" focusable="false"><g><line x1="9" y1="211" x2="9" y2="238"/><rect x="5" y="217" width="8" height="16" rx="1"/></g><g><line x1="28" y1="192" x2="28" y2="232"/><rect x="24" y="201" width="8" height="22" rx="1"/></g><g><line x1="47" y1="191" x2="47" y2="222"/><rect x="43" y="203" width="8" height="14" rx="1" opacity=".55"/></g><g><line x1="66" y1="179" x2="66" y2="220"/><rect x="62" y="185" width="8" height="26" rx="1"/></g><g><line x1="84" y1="168" x2="84" y2="202"/><rect x="80" y="177" width="8" height="20" rx="1"/></g><g><line x1="103" y1="168" x2="103" y2="201"/><rect x="99" y="180" width="8" height="12" rx="1" opacity=".55"/></g><g><line x1="122" y1="152" x2="122" y2="193"/><rect x="118" y="158" width="8" height="30" rx="1"/></g><g><line x1="141" y1="140" x2="141" y2="180"/><rect x="137" y="149" width="8" height="22" rx="1"/></g><g><line x1="159" y1="120" x2="159" y2="161"/><rect x="155" y="132" width="8" height="24" rx="1"/></g><g><line x1="178" y1="129" x2="178" y2="158"/><rect x="174" y="135" width="8" height="14" rx="1" opacity=".55"/></g><g><line x1="197" y1="105" x2="197" y2="151"/><rect x="193" y="114" width="8" height="32" rx="1"/></g><g><line x1="216" y1="91" x2="216" y2="136"/><rect x="212" y="103" width="8" height="24" rx="1"/></g><g><line x1="234" y1="70" x2="234" y2="115"/><rect x="230" y="76" width="8" height="34" rx="1"/></g><g><line x1="253" y1="61" x2="253" y2="99"/><rect x="249" y="70" width="8" height="20" rx="1"/></g><g><line x1="272" y1="37" x2="272" y2="84"/><rect x="268" y="49" width="8" height="30" rx="1"/></g><g><line x1="291" y1="14" x2="291" y2="67"/><rect x="287" y="20" width="8" height="38" rx="1"/></g></svg>
   <div class="section-inner">
     <p class="section-eyebrow reveal">05 &middot; Pricing</p>
-    <h2 class="section-title reveal">The journal you came for. <em>The discipline you stay for.</em></h2>
-    <p class="section-sub reveal">7-day free trial on all plans. Card required, not charged until day 8. Cancel anytime.</p>
-    <div class="pricing-toggle-wrap reveal">
-      <span class="pricing-toggle-label active" id="labelMonthly" onclick="setPricing(false)">Monthly</span>
-      <div class="pricing-toggle" id="pricingToggle" onclick="togglePricing()"><div class="pricing-toggle-knob"></div></div>
-      <span class="pricing-toggle-label" id="labelAnnual" onclick="setPricing(true)">Annual</span>
-      <span class="save-badge" id="saveBadge" style="display:none;">Save up to 32%</span>
+    <h2 class="section-title reveal">Start with the journal. <em>Stay for the discipline.</em></h2>
+    <p class="pc-lead reveal">Choose the plan that fits how you trade. Every plan includes a 7-day free trial.</p>
+    <p class="pc-terms reveal">Card required. You won&rsquo;t be charged until day 8. Cancel anytime.</p>
+    <div class="pc-billing reveal">
+      <div class="pricing-toggle-wrap">
+        <span class="pricing-toggle-label active" id="labelMonthly" onclick="setPricing(false)">Monthly</span>
+        <div class="pricing-toggle" id="pricingToggle" role="switch" aria-checked="false" aria-label="Annual billing" tabindex="0" onclick="togglePricing()" onkeydown="if(event.key===' '||event.key==='Enter'){event.preventDefault();togglePricing();}"><div class="pricing-toggle-knob"></div></div>
+        <span class="pricing-toggle-label" id="labelAnnual" onclick="setPricing(true)">Annual</span>
+      </div>
+      <span class="pc-save"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 12.2V4h8.2L21 13.8 13.8 21z"/><circle cx="7.6" cy="8.1" r="1.4"/></svg>Save up to 32% with Annual</span>
     </div>
     <div class="pricing-grid">
       <div class="price-card reveal">
-        <div class="price-eyebrow">The Journal</div><div class="price-name">MAKETZO Journal</div>
+        <span class="pc-badge"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z"/></svg>Best Place to Start</span>
+        <h3 class="price-name">MAKETZO Journal</h3>
         <div class="price-row"><span class="price-dollar">$</span><span class="price-num" id="p1num">19.95</span><span class="price-per" id="p1per">/mo</span></div>
-        <div class="price-sub" id="p1sub">or $199/yr, save 17%</div>
-        <span class="price-compare-chip" id="p1cmp">Tradervue $29.95 · TradeZella $35</span>
-        <div class="price-rule"></div>
+        <div class="price-sub" id="p1sub"></div>
+        <span class="price-compare-chip" id="p1cmp">Lower than TraderVue and TradeZella</span>
         <ul class="price-list">
-          <li class="bold">Trade journal &amp; daily session log</li>
-          <li class="bold">P&amp;L tracking &amp; &cent;/share metrics</li>
-          <li>Calendar &amp; streaks</li>
-          <li>Picard Score, a daily grade on following your rules</li>
+          <li>Trade journal &amp; session log</li>
+          <li>P&amp;L tracking and &cent;/share metrics</li>
+          <li>Calendar, streaks, and reports</li>
+          <li>Picard Score: measure rule&#8209;following</li>
           <li>Rules checklist in every journal entry</li>
         </ul>
         <button class="cta-outline" id="cta1" data-tier="journal" data-interval="month" data-cta-source="pricing" onclick="handleCheckout(this.dataset.tier,event)">Start Journal Trial</button>
-        <p class="price-note">7 days free &middot; No charge until day 8</p>
+        <p class="price-note">7 days free</p>
       </div>
       <div class="price-card featured reveal">
-        <div class="popular-badge">Journal + Live System</div>
-        <div class="price-eyebrow">Pro</div><div class="price-name">MAKETZO Pro</div>
+        <span class="pc-badge"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13.5 2L4.5 13.5h6.2L9.8 22l9.7-12.2h-6.3z"/></svg>Journal + Live System</span>
+        <h3 class="price-name">MAKETZO Pro</h3>
         <div class="price-row"><span class="price-dollar">$</span><span class="price-num" id="p2num">49</span><span class="price-per" id="p2per">/mo</span></div>
-        <div class="price-sub" id="p2sub">or $399/yr, save 32%</div>
+        <div class="price-sub" id="p2sub"></div>
         <div class="price-rule"></div>
         <ul class="price-list">
-          <li class="bold">Everything in Journal</li>
-          <li class="bold">COACH SAYS + State Machine + Strike System</li>
-          <li class="bold">Focus Room (Lock-In, Reset, Soundtrack)</li>
-          <li>Profit Floor, a floor under a green day</li>
-          <li>Maketzo Edge + Pulse on TradingView (invite within 24 hrs)</li>
-          <li>Dilution Check, 100 company reads a month</li>
+          <li>Everything in Journal</li>
+          <li>COACH SAYS, State Machine, and Strike System</li>
+          <li>Focus Room: Lock-In, Reset, Soundtrack</li>
+          <li>Profit Floor for protecting green days</li>
+          <li>Maketzo Edge + Pulse on TradingView</li>
+          <li>Dilution Check: 100 company reads&nbsp;/&nbsp;month</li>
         </ul>
-        <button class="cta-gold" id="cta2" data-tier="pro" data-interval="month" data-cta-source="pricing" onclick="handleCheckout(this.dataset.tier,event)">Start Pro Trial &rarr;</button>
-        <p class="price-note">7 days free &middot; No charge until day 8</p>
+        <button class="cta-gold" id="cta2" data-tier="pro" data-interval="month" data-cta-source="pricing" onclick="handleCheckout(this.dataset.tier,event)">Start Pro Trial</button>
+        <p class="price-note">7 days free</p>
       </div>
       <div class="price-card reveal">
-        <div class="price-eyebrow">Elite</div><div class="price-name">MAKETZO Elite</div>
+        <span class="pc-badge"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.5 3.5h11l4 5.5L12 21 2.5 9z"/></svg>Advanced Plan</span>
+        <h3 class="price-name">MAKETZO Elite</h3>
         <div class="price-row"><span class="price-dollar">$</span><span class="price-num" id="p3num">79</span><span class="price-per" id="p3per">/mo</span></div>
-        <div class="price-sub" id="p3sub">or $649/yr, save 32%</div>
+        <div class="price-sub" id="p3sub"></div>
         <div class="price-rule"></div>
         <ul class="price-list">
-          <li class="bold">Everything in Pro</li>
-          <li class="bold">Dilution Check, 200 company reads a month</li>
-          <li>Twice Pro's reads, for the trader who checks every gapper</li>
-          <li>AI Training Engine, first access when it ships</li>
+          <li>Everything in Pro</li>
+          <li>Dilution Check: 200 company reads&nbsp;/&nbsp;month</li>
+          <li>Twice Pro&rsquo;s reads, for the trader who checks every gapper</li>
+          <li>AI Training Engine access when available</li>
         </ul>
         <button class="cta-outline" id="cta3" data-tier="elite" data-interval="month" data-cta-source="pricing" onclick="handleCheckout(this.dataset.tier,event)">Start Elite Trial</button>
-        <p class="price-note">7 days free &middot; No charge until day 8</p>
+        <p class="price-note">7 days free</p>
       </div>
     </div>
     <div class="pricing-cta-row reveal">
-      <a href="pricing.html" class="btn-ghost">See full plan comparison&nbsp;&rarr;</a>
-      <p class="pricing-cta-sub">All plans include a 7-day free trial. No charge until day 8.</p>
+      <a href="pricing.html" class="pc-compare"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3l9 4.8-9 4.8-9-4.8z"/><path d="M3 12.2l9 4.8 9-4.8"/><path d="M3 16.4l9 4.8 9-4.8"/></svg>See Full Plan Comparison &rarr;</a>
     </div>
   </div>
 </section>
@@ -3007,9 +2936,9 @@ function closeDrawer(){
 // PRICING
 const plans={
   monthly:[
-    {num:'19.95',per:'/mo',sub:'or $199/yr, save 17%'},
-    {num:'49',per:'/mo',sub:'or $399/yr, save 32%'},
-    {num:'79',per:'/mo',sub:'or $649/yr, save 32%'}
+    {num:'19.95',per:'/mo',sub:''},
+    {num:'49',per:'/mo',sub:''},
+    {num:'79',per:'/mo',sub:''}
   ],
   annual:[
     {num:'199',per:'/yr',sub:'Billed annually, save 17%'},
@@ -3025,7 +2954,7 @@ function setPricing(annual){
   document.getElementById('pricingToggle').classList.toggle('annual',annual);
   document.getElementById('labelMonthly').classList.toggle('active',!annual);
   document.getElementById('labelAnnual').classList.toggle('active',annual);
-  document.getElementById('saveBadge').style.display=annual?'inline':'none';
+  document.getElementById('pricingToggle').setAttribute('aria-checked',String(annual));
   // The Journal card's competitor chip compares MONTHLY prices, so it only shows on Monthly.
   document.getElementById('p1cmp').hidden=annual;
   const m=annual?'annual':'monthly';
@@ -3038,6 +2967,7 @@ function setPricing(annual){
   });
 }
 function togglePricing(){setPricing(!isAnnual);}
+(function(){var s=document.getElementById('pricing');if(!s||!('IntersectionObserver' in window))return;s.classList.add('pc-armed');var o=new IntersectionObserver(function(es){if(es[0].isIntersecting){o.disconnect();s.classList.add('pc-lit');}},{threshold:0.15});o.observe(s);})();
 
 // handleCheckout moved to assets/js/checkout.js (cookie-aware, plan-routing).
 
