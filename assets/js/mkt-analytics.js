@@ -579,6 +579,10 @@
     // already flagged as automated (maketzo-backend lib/automated-visits.js; Ed, 2026-11-11, "Use the Nov 6 rule
     // live"). Three numbers, matched and never stored.
     try { body.sw = window.screen.width; body.sh = window.screen.height; body.vw = window.innerWidth; } catch (e) {}
+    // Whether this page is on screen. The page-open beat goes even from a background tab or a browser preload, and
+    // Live counts such a page apart until it is viewed (maketzo-backend lib/live-report.js; Ed, 2026-11-12, picked
+    // "Count apart" after one visitor's 8 loads of The System were each one beat, never on screen).
+    try { body.vis = (document.visibilityState === "visible" && !document.prerendering) ? 1 : 0; } catch (e) {}
     // PostHog's own id for this visit, so a Live card can open its recording (maketzo-backend lib/live-report.js;
     // Ed, 2026-11-11, picked "Add Watch buttons"). Sent only while this visit is being recorded (replayAllowed), so a
     // card with no id is a visit with no recording.
