@@ -1,5 +1,5 @@
-/* The 10:42 duel (#the-moment.duel): shared by index.html and journal.html since 2026-11-13, when the homepage took
-   the section as its slot 01. Moved out of journal.html unchanged. */
+/* The 10:42 duel (#the-moment.duel): the homepage's slot 01 since 2026-11-13, moved out of journal.html unchanged.
+   /journal's slot under the hero became Three People, One Seat the same day, so only index.html loads this now. */
 /* Only MAKETZO plays (Ed, 2026-10-16, on the first version that animated both cards: "ANY OTHER JOURNAL should be
    boring, bland, no animations. Maketzo should be more beautiful with animations. The compare and contrast should be
    easily understood"). The other journal is never touched. Once the MAKETZO card is well in view: it lights, its
