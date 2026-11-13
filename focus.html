@@ -428,10 +428,8 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
     url("assets/soundtrack/listen-right.jpg") right -7px / auto no-repeat,
     rgb(var(--st-ink));
 }
-.zone-samples { max-width: 960px; margin: 0 auto; text-align: center; }
-.zone-samples-body { font-size: 1rem; color: var(--mk-text-secondary); line-height: 1.55; max-width: 700px; margin: 0 auto 10px; }
-.zone-samples-body em { color: var(--mk-text-primary); font-style: normal; font-weight: 600; }
-.zone-samples-tagline { font-family: var(--mk-font-display); font-size: clamp(1.5rem, 2.6vw, 1.9rem); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-brand); line-height: 1.2; margin: 6px auto 26px; text-shadow: 0 0 18px rgba(var(--st-gold), .35); }
+/* The track list sits straight under the scene (Ed, 2026-11-13: the old blurb between them was one soundtrack pitch too many). */
+.zone-samples { max-width: 960px; margin: 40px auto 0; text-align: center; }
 
 /* The player, re-skinned for this section only (assets/css/audio-player.css stays the base for every other page).
    One size whatever plays (Ed: "why is it moving all over the place"): rows have a fixed height and the list keeps
@@ -1696,10 +1694,6 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
   </div>
   <div class="section-inner">
     <div class="zone-samples reveal">
-      <p class="zone-samples-body">Laugh at the damage in <em>I Paid Tuition to the Market</em>, build conviction with <em>Earn the Right</em>, and lock in with <em>Deep Focus Threshold</em>, a binaural track made for live trading.</p>
-      <p class="zone-samples-body">These are just a few selections from a growing library of music, focus tracks, and mental conditioning tools available inside the Focus Room.</p>
-      <p class="zone-samples-body">Because the best traders do not just know their rules.</p>
-      <p class="zone-samples-tagline">They condition them.</p>
       <div class="mk-audio-player zone-samples-player" data-tracks-from="api" data-surface="focus-page">
         <audio preload="metadata">
           <source src="https://media.maketzo.co/music/track-tuition.mp3" type="audio/mpeg">
