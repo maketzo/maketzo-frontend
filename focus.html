@@ -428,61 +428,22 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
     url("assets/soundtrack/listen-right.jpg") right -7px / auto no-repeat,
     rgb(var(--st-ink));
 }
-/* The track list sits straight under the scene (Ed, 2026-11-13: the old blurb between them was one soundtrack pitch too many). */
-.zone-samples { max-width: 960px; margin: 40px auto 0; text-align: center; }
-
-/* The player, re-skinned for this section only (assets/css/audio-player.css stays the base for every other page).
-   One size whatever plays (Ed: "why is it moving all over the place"): rows have a fixed height and the list keeps
-   room for the three the page ships with while it loads, growing only when the admin list holds more (Ed: "only
-   expand when there are more tracks"); the title stays on one line, the style line keeps its space when a track has
-   none, and the time has a fixed width so the bar never shifts. (The title's weight is fixed in audio-player.css.) */
-.zone-samples-player { max-width: 880px; margin: 0 auto; text-align: left; }
-.st .zone-samples-player.mk-audio-player {
-  border-radius: 22px;
-  background: linear-gradient(135deg, #f0cf68, var(--mk-gold-500) 40%, #b8941f 70%, #f0cf68);
-  box-shadow: 0 0 0 1px rgba(var(--st-gold), .25), 0 0 26px rgba(var(--st-gold), .45), 0 0 90px rgba(var(--st-gold), .16), 0 24px 60px rgba(0,0,0,.5);
-}
-.st .zone-samples-player .mk-audio-player__inner {
-  grid-template-columns: 285px 1fr; gap: 30px; align-items: start; padding: 30px 22px 22px 30px; border-radius: 20px;
-  background: radial-gradient(70% 50% at 70% 0%, rgba(var(--st-gold), .05), transparent 70%), linear-gradient(180deg, #0f1115, #0b0c10);
-}
-.st .zone-samples-player .mk-audio-player__art { width: 285px; height: 285px; border-radius: 6px; border: 1px solid rgba(255,255,255,.12); box-shadow: 0 12px 30px rgba(0,0,0,.5); }
-.st .zone-samples-player .mk-audio-player__meta { margin: -4px 0 4px; padding-left: 90px; min-width: 0; }
-.st .zone-samples-player .mk-audio-player__eyebrow { font-size: var(--mk-mono-sm); letter-spacing: .22em; color: var(--mk-text-primary); margin: 0 0 8px; }
-.st .zone-samples-player .mk-audio-player__title { font-size: clamp(1.7rem, 3vw, 2.2rem); line-height: 1.05; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* The scene's line under the song title names its style, and keeps its height when a song has none. */
 .mk-audio-player__style { height: 1.4em; line-height: 1.4; font-family: var(--mk-font-mono); font-size: .8125rem; letter-spacing: .22em; text-transform: uppercase; color: var(--mk-text-secondary); margin: 6px 0 0; }
-.st .zone-samples-player .mk-audio-player__controls { grid-template-columns: 56px 1fr auto; gap: 34px; }
-.st .zone-samples-player .mk-audio-player__play { background: radial-gradient(circle at 40% 35%, #f3d77a, var(--mk-gold-500) 60%, #b8941f); box-shadow: 0 0 18px rgba(var(--st-gold), .45); }
-.st .zone-samples-player .mk-audio-player__bar { background: rgba(255,255,255,.12); }
-.st .zone-samples-player .mk-audio-player__progress { min-width: 14px; }
-.st .zone-samples-player .mk-audio-player__time { width: 104px; min-width: 104px; font-family: var(--mk-font-sans); font-variant-numeric: tabular-nums; font-size: .875rem; letter-spacing: .06em; color: var(--mk-text-secondary); }
-.st .zone-samples-player .mk-audio-player__time-cur { color: var(--mk-text-primary); }
-.st .zone-samples-player .mk-audio-player__list { min-height: calc(3 * var(--st-row)); margin: 20px 0 0; padding: 0; border-top: 0; gap: 0; }
-.st .zone-samples-player .mk-audio-player__item { position: relative; box-sizing: border-box; height: var(--st-row); grid-template-columns: 26px 1fr auto 28px; gap: 18px; padding: 0 10px 0 16px; border-radius: 8px; color: var(--mk-text-secondary); }
-.st .zone-samples-player .mk-audio-player__item + .mk-audio-player__item::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 1px; background: rgba(255,255,255,.07); }
-.st .zone-samples-player .mk-audio-player__item.is-active::before,
-.st .zone-samples-player .mk-audio-player__item.is-active + .mk-audio-player__item::before { display: none; }
-.st .zone-samples-player .mk-audio-player__item.is-active { background: linear-gradient(90deg, rgba(var(--st-gold), .42), rgba(var(--st-gold), .16) 70%, rgba(var(--st-gold), .10)); color: var(--mk-text-primary); }
-.st .zone-samples-player .mk-audio-player__item.is-active .mk-audio-player__item-title { font-weight: 600; }
-.st .zone-samples-player .mk-audio-player__item-num,
-.st .zone-samples-player .mk-audio-player__item-dur { font-family: var(--mk-font-sans); font-variant-numeric: tabular-nums; font-size: .875rem; color: var(--mk-text-secondary); }
-.st .zone-samples-player .mk-audio-player__item-num { text-align: left; }
-.st .zone-samples-player .mk-audio-player__item-title { font-size: .9rem; }
-.st .zone-samples-player .mk-audio-player__share-trigger { opacity: .8; color: var(--mk-text-secondary); }
 
-/* Two equal outline buttons under the player. */
-.mk-zone-share-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; max-width: 640px; margin: 24px auto 0; }
+/* One player on this page (Ed, 2026-11-13: a second player under the scene was too much). The scene reads the
+   admin's Focus page list; of the old list player's buttons only Share stays (Ed: "Just include SHARE WITH TRADING FRIEND"). */
+.st-after { max-width: 960px; margin: 32px auto 0; text-align: center; }
+
+/* One outline button under the scene. */
+.mk-zone-share-row { display: grid; grid-template-columns: minmax(0, 312px); justify-content: center; margin: 0 auto; }
 .mk-zone-share-row .mk-share { display: block; }
-.mk-zone-share-row .mk-share__trigger,
-.mk-zone-share-row .mk-zone-album-cta {
+.mk-zone-share-row .mk-share__trigger {
   width: 100%; min-height: 46px; gap: 10px; padding: 10px 16px; border: 1px solid rgba(255,255,255,.3); border-radius: 6px;
   background: rgba(13,15,20,.6); color: var(--mk-text-primary); font-family: var(--mk-font-sans); font-size: .75rem; font-weight: 600; letter-spacing: .12em;
 }
-.mk-zone-share-row .mk-share__trigger:hover,
-.mk-zone-share-row .mk-zone-album-cta:hover { border-color: rgba(var(--st-gold), .6); color: var(--mk-text-primary); box-shadow: var(--mk-glow-gold-sm); }
+.mk-zone-share-row .mk-share__trigger:hover { border-color: rgba(var(--st-gold), .6); color: var(--mk-text-primary); box-shadow: var(--mk-glow-gold-sm); }
 .mk-zone-share-row .mk-share__icon { width: 17px; height: 17px; }
-.mk-zone-album-cta em { font-style: italic; }
-.mk-zone-spotify { width: 20px; height: 20px; flex-shrink: 0; fill: #1DB954; }
 
 /* Under the mock's own 981px width the side light scales with the screen, as the mock would. */
 @media (max-width: 981px) {
@@ -497,19 +458,8 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
   .st .st-head .section-sub { margin: 0 auto; }
   .lib-grid { grid-template-columns: 1fr; max-width: 480px; }
 }
-@media (max-width: 720px) {
-  .st .zone-samples-player .mk-audio-player__inner { grid-template-columns: 1fr; gap: 20px; padding: 18px; }
-  .st .zone-samples-player .mk-audio-player__art { width: 100%; max-width: 280px; height: auto; }
-  .st .zone-samples-player .mk-audio-player__meta { padding-left: 0; text-align: center; }
-  .st .zone-samples-player .mk-audio-player__controls { grid-template-columns: auto 1fr; gap: 10px 18px; }
-  .st .zone-samples-player .mk-audio-player__time { width: auto; min-width: 0; }
-  .st .zone-samples-player .mk-audio-player__item { grid-template-columns: 24px 1fr auto 28px; gap: 12px; padding: 0 6px 0 10px; }
-}
 @media (max-width: 600px) {
-  .mk-zone-share-row { grid-template-columns: minmax(0, 1fr); gap: 10px; max-width: 360px; }
-  .mk-zone-share-row .mk-share__trigger,
-  .mk-zone-share-row .mk-zone-album-cta { white-space: normal; }
-  .mk-zone-share-row .mk-zone-album-cta { letter-spacing: .08em; }
+  .mk-zone-share-row .mk-share__trigger { white-space: normal; }
 }
 @media (max-width: 420px) {
   .lib-card { grid-template-columns: 64px 1fr; gap: 16px; padding: 20px 20px 24px 18px; }
@@ -1655,7 +1605,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
       </div>
       <p class="sp-body">And the next time you&rsquo;re tempted to force a trade, the chorus may be the thing that keeps you sitting on your hands.</p>
     </div>
-    <div class="mk-audio-player sp-player reveal" data-motion-keep>
+    <div class="mk-audio-player sp-player reveal" data-motion-keep data-tracks-from="api" data-surface="focus-page" data-eyebrow="MAKETZO &middot; EARN THE RIGHT">
       <audio preload="metadata">
         <source src="https://media.maketzo.co/music/track-tuition.mp3" type="audio/mpeg">
       </audio>
@@ -1668,7 +1618,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
         <div class="sp-main">
           <p class="mk-audio-player__eyebrow sp-k">MAKETZO &middot; EARN THE RIGHT</p>
           <h3 class="mk-audio-player__title sp-name">I Paid Tuition to the Market</h3>
-          <p class="sp-sub">REAL MISTAKES. REAL LESSONS.</p>
+          <p class="mk-audio-player__style sp-sub">COMEDY RAP</p>
           <div class="mk-audio-player__bar sp-bar" role="slider" tabindex="0" aria-label="Seek"><div class="mk-audio-player__progress"></div></div>
           <div class="sp-time"><span class="mk-audio-player__time-cur">0:00</span><span class="mk-audio-player__time-dur">0:00</span></div>
           <div class="sp-controls">
@@ -1684,73 +1634,15 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
         </div>
       </div>
       <ol class="mk-audio-player__list sp-list" hidden>
-          <li class="mk-audio-player__item is-active" data-track-id="tuition" data-src="https://media.maketzo.co/music/track-tuition.mp3" data-title="I Paid Tuition to the Market">I Paid Tuition to the Market</li>
-          <li class="mk-audio-player__item" data-track-id="earn" data-src="https://media.maketzo.co/music/track-earn-the-right.mp3" data-title="Earn the Right">Earn the Right</li>
-          <li class="mk-audio-player__item" data-track-id="wait" data-src="https://media.maketzo.co/music/track-wait-for-acceptance.mp3" data-title="Wait for Acceptance">Wait for Acceptance</li>
-          <li class="mk-audio-player__item" data-track-id="stronger" data-src="https://media.maketzo.co/music/track-stronger.mp3" data-title="Stronger Than the Red">Stronger Than the Red</li>
-          <li class="mk-audio-player__item" data-track-id="cushion" data-src="https://media.maketzo.co/music/track-cushion.mp3" data-title="Build a Cushion">Build a Cushion</li>
+          <!-- Fallback only: the admin's Focus page list replaces these on load (assets/js/audio-player.js, API bootstrap). -->
+          <li class="mk-audio-player__item is-active" data-track-id="tuition" data-src="https://media.maketzo.co/music/track-tuition.mp3" data-title="I Paid Tuition to the Market" data-name="I Paid Tuition to the Market" data-style="Comedy Rap">I Paid Tuition to the Market</li>
+          <li class="mk-audio-player__item" data-track-id="earn" data-src="https://media.maketzo.co/music/track-earn-the-right.mp3" data-title="Earn the Right" data-name="Earn the Right" data-style="Original">Earn the Right</li>
+          <li class="mk-audio-player__item" data-track-id="focus" data-src="https://media.maketzo.co/music/track-deep-focus.mp3" data-title="Deep Focus Threshold" data-name="Deep Focus Threshold" data-style="">Deep Focus Threshold</li>
       </ol>
     </div>
   </div>
   <div class="section-inner">
-    <div class="zone-samples reveal">
-      <div class="mk-audio-player zone-samples-player" data-tracks-from="api" data-surface="focus-page">
-        <audio preload="metadata">
-          <source src="https://media.maketzo.co/music/track-tuition.mp3" type="audio/mpeg">
-        </audio>
-        <div class="mk-audio-player__inner">
-          <div class="mk-audio-player__art">
-            <img src="assets/album-cover.jpg" alt="Earn the Right &middot; MAKETZO" onerror="this.style.display='none'">
-          </div>
-          <div class="mk-audio-player__main">
-            <div class="mk-audio-player__meta">
-              <p class="mk-audio-player__eyebrow">MAKETZO &middot; Earn the Right</p>
-              <h3 class="mk-audio-player__title">I Paid Tuition to the Market<span class="mk-audio-player__explicit mk-audio-player__explicit--full" role="img" aria-label="Explicit lyrics" title="Explicit lyrics">EXPLICIT LYRICS</span></h3>
-              <p class="mk-audio-player__style">COMEDY RAP</p>
-            </div>
-            <div class="mk-audio-player__controls">
-              <button class="mk-audio-player__play" type="button" aria-label="Play / pause">
-                <svg class="mk-audio-player__icon mk-audio-player__icon--play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
-                <svg class="mk-audio-player__icon mk-audio-player__icon--pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg>
-              </button>
-              <div class="mk-audio-player__bar" role="slider" tabindex="0" aria-label="Seek">
-                <div class="mk-audio-player__progress"></div>
-              </div>
-              <div class="mk-audio-player__time">
-                <span class="mk-audio-player__time-cur">0:00</span>
-                <span class="mk-audio-player__time-sep">/</span>
-                <span class="mk-audio-player__time-dur">0:00</span>
-              </div>
-            </div>
-            <ol class="mk-audio-player__list">
-              <li class="mk-audio-player__item is-active" data-name="I Paid Tuition to the Market" data-style="Comedy Rap" data-track-id="tuition" data-src="https://media.maketzo.co/music/track-tuition.mp3" data-title="I Paid Tuition to the Market" data-eyebrow="MAKETZO &middot; Earn the Right">
-                <span class="mk-audio-player__item-num">01</span>
-                <span class="mk-audio-player__item-title">I Paid Tuition to the Market</span>
-                <span class="mk-audio-player__item-dur"></span>
-                <button class="mk-audio-player__share-trigger" type="button" data-share-source="track" data-track-id="tuition" data-tooltip="Share to friend" aria-label="Share I Paid Tuition to the Market" aria-expanded="false">
-                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/></svg>
-                </button>
-              </li>
-              <li class="mk-audio-player__item" data-name="Earn the Right" data-style="Original" data-track-id="earn" data-src="https://media.maketzo.co/music/track-earn-the-right.mp3" data-title="Earn the Right" data-eyebrow="MAKETZO &middot; Earn the Right">
-                <span class="mk-audio-player__item-num">02</span>
-                <span class="mk-audio-player__item-title">Earn the Right</span>
-                <span class="mk-audio-player__item-dur"></span>
-                <button class="mk-audio-player__share-trigger" type="button" data-share-source="track" data-track-id="earn" data-tooltip="Share to friend" aria-label="Share Earn the Right" aria-expanded="false">
-                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/></svg>
-                </button>
-              </li>
-              <li class="mk-audio-player__item" data-track-id="focus" data-src="https://media.maketzo.co/music/track-deep-focus.mp3" data-title="Deep Focus Threshold" data-eyebrow="MAKETZO &middot; Earn the Right">
-                <span class="mk-audio-player__item-num">03</span>
-                <span class="mk-audio-player__item-title">Deep Focus Threshold</span>
-                <span class="mk-audio-player__item-dur"></span>
-                <button class="mk-audio-player__share-trigger" type="button" data-share-source="track" data-track-id="focus" data-tooltip="Share to friend" aria-label="Share Deep Focus Threshold" aria-expanded="false">
-                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/></svg>
-                </button>
-              </li>
-            </ol>
-          </div>
-        </div>
-      </div>
+    <div class="st-after reveal">
       <div class="mk-zone-share-row">
         <div class="mk-share">
           <button class="mk-share__trigger btn-ghost" type="button" data-share-source="focus" aria-haspopup="true" aria-expanded="false">
@@ -1767,10 +1659,6 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
             <button class="mk-share__item mk-share__item--wide" type="button" data-platform="copy" role="menuitem"><svg class="mk-share__item-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg><span>Copy link</span></button>
           </div>
         </div>
-        <a class="btn-ghost mk-zone-album-cta" href="https://open.spotify.com/album/53bEF2QXarb6e27FcvS6H7" target="_blank" rel="noopener">
-          <svg class="mk-zone-spotify" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
-          <span>Open <em>Earn the Right</em> on Spotify &rarr;</span>
-        </a>
       </div>
       <div class="mk-share-toast" role="status" aria-live="polite" hidden>Link copied</div>
     </div>
