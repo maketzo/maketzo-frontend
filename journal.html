@@ -255,136 +255,17 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
   .page-hero-title { font-size: clamp(2rem, 9vw, 2.8rem); }
   .page-hero-cta .btn-primary { width: 100%; justify-content: center; text-align: center; }
 }
-
-/* ── THE JOURNAL, IN FULL: Picard Score in depth, then the checklist ─────
-   Ed, 2026-10-17, third pass ("It's a C- right now"): three equal spotlights put nothing forward, Market Context read
-   as a scanner, the flash card's 4d/9d read as jargon, and a Picard Score fed only by Rule Check (self-reported) looked
-   lame. The real score reads far more (maketzo-app lib/journal-picard.js computePicardScore): the contract, the trades,
-   the trader's own review and state, and the write-up, and gives P&L no weight. So one card: a green day that grades 4.6
-   and a red day that grades 8.9, each with the lines that moved it, split into what MAKETZO saw and what the trader
-   reported. Strikes are left off: a strike on a green day needs a paragraph to make sense (Ed: "NOT EASILY
-   UNDERSTOOD!!!"). Every line is an input to its number, in plain words (Ed asked
-   what the app's compact "Winners held 8m vs losers 3m" meant, so no app shorthand here), and both days were scored by the real scorer (C:/dev/tools/site-preview/picard-days.js):
-   change a line there first. No points per line, because each part is weighted before it reaches the score. The page
-   explains the journal and how it differs; it names no plan. Market Context and Flash Cards moved to the checklist. */
-.jx { max-width: 1180px; margin: 0 auto; }
-.jx-card { position: relative; padding: 30px 32px 32px; background: linear-gradient(170deg, rgba(212,175,55,.07), transparent 50%), var(--mk-surface-raised); border: 1px solid rgba(212,175,55,.28); border-radius: var(--mk-radius-card); }
-.jx-head { max-width: 760px; margin: 0 0 24px; }
-.jx-name { margin: 0 0 8px; font-family: var(--mk-font-display); font-size: clamp(var(--mk-text-xxl), 2.4vw, 2.1rem); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); font-weight: 400; }
-.jx-line { margin: 0; font-size: var(--mk-text-md); color: var(--mk-text-secondary); line-height: 1.55; }
-.jx-days { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
-/* each day carries its own tone and where its mark lands; the green day's grade is the low one */
-.jx-day { --jx-tone: var(--mk-gold-300); --jx-from: rgba(212,175,55,.35); --jx-glow: rgba(240,200,80,.35); --jx-dot: #FFF1C4; --jx-at: 87.8%; position: relative; padding: 20px 22px 22px; border-radius: 12px; background: linear-gradient(180deg, rgba(255,255,255,.03), transparent 45%), var(--mk-obsidian-900); border: 1px solid rgba(255,255,255,.08); }
-.jx-day--low { --jx-tone: var(--mk-danger-500); --jx-from: rgba(248,113,113,.3); --jx-glow: rgba(248,113,113,.35); --jx-dot: #FFE1E1; --jx-at: 40%; }
-.jx-day-top { margin: 0 0 14px; display: flex; align-items: baseline; justify-content: space-between; gap: 12px; font-family: var(--mk-font-mono); font-size: 10px; letter-spacing: .18em; color: var(--mk-text-tertiary); }
-/* P&L is kept, small and gray: the grade is the headline. .jx-lead is the P&L as every other journal shows a day, big;
-   it is seen only while the card plays, then hands the headline over. */
-.jx-pnl { font-family: var(--mk-font-mono); font-size: 10px; letter-spacing: .18em; color: var(--mk-text-tertiary); white-space: nowrap; }
-.jx-pnl b { margin-left: 2px; font-family: var(--mk-font-sans); font-size: var(--mk-text-sm); font-weight: 600; letter-spacing: 0; color: var(--mk-text-secondary); font-variant-numeric: tabular-nums; }
-.jx-grade { position: relative; }
-.jx-lead { display: none; margin: 0; }
-.jx-lead b { display: block; font-family: var(--mk-font-sans); font-weight: 800; font-size: 64px; line-height: 1; font-variant-numeric: tabular-nums; }
-.jx-lead b.is-up { color: var(--mk-profit-500); }
-.jx-lead b.is-down { color: var(--mk-danger-500); }
-.jx-lead span { display: block; margin-top: 4px; font-family: var(--mk-font-display); font-size: var(--mk-text-lg); letter-spacing: var(--mk-track-display); color: var(--mk-text-tertiary); }
-/* the day the grade picks: gold edge and a tag on it */
-.jx-day--best { border-color: rgba(240,200,80,.55); box-shadow: 0 0 0 1px rgba(240,200,80,.1), 0 0 32px rgba(212,175,55,.16); }
-.jx-pick { position: absolute; top: -11px; left: 20px; margin: 0; padding: 4px 10px; border-radius: 999px; font-family: var(--mk-font-mono); font-size: 10px; letter-spacing: .18em; color: var(--mk-gold-300); background: var(--mk-obsidian-900); border: 1px solid rgba(240,200,80,.6); }
-.jx-k { margin: 20px 0 9px; font-family: var(--mk-font-mono); font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: var(--mk-text-tertiary); }
-.jx-score { margin: 0; display: flex; align-items: baseline; gap: 6px; }
-.jx-score-v { font-family: var(--mk-font-sans); font-weight: 800; font-size: 64px; line-height: 1; color: var(--jx-tone); text-shadow: 0 0 18px var(--jx-glow); font-variant-numeric: tabular-nums; }
-.jx-score small { font-size: var(--mk-text-md); color: var(--mk-text-tertiary); }
-.jx-band { margin: 4px 0 14px; font-family: var(--mk-font-display); font-size: var(--mk-text-lg); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); }
-.jx-track { position: relative; height: 8px; border-radius: 4px; background: rgba(255,255,255,.08); }
-.jx-track::before { content: ""; position: absolute; inset: 0; border-radius: inherit; background: linear-gradient(90deg, transparent 0 44%, var(--mk-obsidian-900) 44% 44.9%, transparent 44.9% 66.3%, var(--mk-obsidian-900) 66.3% 67.1%, transparent 67.1% 88.5%, var(--mk-obsidian-900) 88.5% 89.3%, transparent 89.3%); z-index: 1; }
-.jx-fill { position: absolute; top: 0; bottom: 0; left: 0; width: var(--jx-at); border-radius: inherit; transform-origin: 0 50%; background: linear-gradient(90deg, var(--jx-from), var(--jx-tone)); box-shadow: 0 0 10px var(--jx-glow); }
-.jx-run { position: absolute; inset: 0; z-index: 2; }
-.jx-mark { position: absolute; top: 50%; left: var(--jx-at); width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; background: var(--jx-dot); box-shadow: 0 0 0 3px var(--jx-glow), 0 0 14px var(--jx-glow); }
-.jx-ticks { position: relative; height: 14px; margin: 6px 0 0; font-family: var(--mk-font-mono); font-size: 10px; color: var(--mk-text-tertiary); }
-.jx-ticks span { position: absolute; top: 0; transform: translateX(-50%); }
-.jx-ticks span:first-child { left: 0; transform: none; }
-.jx-ticks span:last-child { left: 100%; transform: translateX(-100%); }
-/* the lines that moved the grade: an up mark raised it, a down mark lowered it */
-.jx-sig { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
-.jx-sig li { position: relative; padding-left: 20px; font-size: var(--mk-text-sm); line-height: 1.4; color: var(--mk-text-secondary); }
-.jx-sig li::before { content: ""; position: absolute; left: 2px; top: .5em; border-left: 5px solid transparent; border-right: 5px solid transparent; }
-.jx-sig li.is-up::before { border-bottom: 7px solid var(--mk-profit-500); }
-.jx-sig li.is-down::before { border-top: 7px solid var(--mk-danger-500); }
-.jx-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 /* the checklist: everything else, names and a short hint, quiet next to the spotlight */
 .jx-rest { max-width: 1180px; margin: 48px auto 0; }
-.jx-rest-k { display: flex; align-items: center; gap: 16px; margin: 0 0 22px; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); }
-.jx-rest-k::after { content: ""; flex: 1; height: 1px; background: linear-gradient(90deg, rgba(212,175,55,.6), rgba(212,175,55,0)); transform-origin: 0 50%; }
 .jx-cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px 32px; }
 .jx-cols h3 { margin: 0 0 10px; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: .16em; text-transform: uppercase; color: var(--mk-text-tertiary); font-weight: 400; }
 .jx-cols ul { list-style: none; margin: 0; padding: 0; }
 .jx-cols li { position: relative; padding: 8px 0 8px 26px; border-bottom: 1px solid rgba(255,255,255,.06); font-size: var(--mk-text-sm); line-height: 1.45; color: var(--mk-text-primary); }
 .jx-cols li::before { content: ""; position: absolute; left: 2px; top: 13px; width: 11px; height: 6px; border-left: 2px solid var(--mk-gold-300); border-bottom: 2px solid var(--mk-gold-300); transform: rotate(-45deg); }
 .jx-cols li span { color: var(--mk-text-tertiary); }
-@media (max-width: 1179px) {
-  .jx-card { padding: 24px 22px 26px; }
-  .jx-name { font-size: var(--mk-text-xl); }
-  .jx-line { font-size: var(--mk-text-sm); }
-}
-/* under 768 the two days stack, green day first */
-@media (max-width: 767px) {
-  .jx-days { grid-template-columns: minmax(0, 1fr); gap: 14px; }
-  .jx-day { padding: 16px 16px 18px; }
-  .jx-score-v, .jx-lead b { font-size: 52px; }
-}
-/* the smallest phones: the day label and its P&L keep one line */
-@media (max-width: 374px) {
-  .jx-card { padding-left: 14px; padding-right: 14px; }
-  .jx-day { padding-left: 14px; padding-right: 14px; }
-  .jx-day-top { letter-spacing: .12em; }
-}
 @media (max-width: 900px) {
   .jx-cols { grid-template-columns: 1fr; gap: 0; }
   .jx-cols h3 { margin-top: 18px; }
-}
-/* In motion, once, when the card is on screen (stacked, each day as it scrolls in). Each day opens the way every
-   other journal shows it, P&L as the big number (.jx-lead). Its lines light in turn; then the P&L shrinks away into
-   the top corner, where it stays as a small gray line, and the grade counts up in its place with the mark (each number
-   reads its own fill's transform, one clock). Last, the red day is picked: gold edge, THE DAY TO REPEAT. The checklist
-   stays still; its rule draws once. The script adds .jx-armed to the section; without it nothing here applies. The end
-   frame is the static section. Reduce motion keeps the clock: things fade where they would glide or pop. */
-.jx-armed .jx-sig li { transition: color .4s ease; }
-.jx-armed .jx-sig li::before { transition: opacity .4s ease; }
-.jx-armed .jx-sig li:not(.is-on) { color: var(--mk-text-tertiary); }
-.jx-armed .jx-sig li:not(.is-on)::before { opacity: .2; }
-.jx-armed .jx-sig li.is-on::before { animation: jxPick .6s cubic-bezier(.34, 1.56, .64, 1); }
-.jx-armed .jx-lead { display: block; position: absolute; left: 0; right: 0; top: 0; transform-origin: 100% 0; transition: transform .9s cubic-bezier(.55, 0, .25, 1), opacity .6s ease .3s; }
-.jx-armed .jx-day.is-go .jx-lead { transform: translateY(-46px) scale(.25); opacity: 0; }
-.jx-armed .jx-score { transition: opacity .5s ease .4s; }
-.jx-armed .jx-pnl { transition: opacity .5s ease .95s; }
-.jx-armed .jx-day:not(.is-go) :is(.jx-score, .jx-pnl) { opacity: 0; }
-.jx-armed .jx-score-v { transition: color .5s ease, text-shadow .5s ease; }
-.jx-armed .jx-day:not(.is-run) .jx-score-v { color: var(--mk-text-tertiary); text-shadow: none; }
-.jx-armed .jx-day:not(.is-done) .jx-band { opacity: 0; }
-.jx-armed .jx-day.is-done .jx-band { animation: jxGlow 1.6s ease-out; }
-.jx-armed .jx-fill { transform: scaleX(0); }
-.jx-armed .jx-run { transform: translateX(calc(var(--jx-at) * -1)); }
-.jx-armed .is-run :is(.jx-fill, .jx-run) { transform: none; transition: transform 1.6s cubic-bezier(.33, 0, .2, 1); }
-.jx-armed .jx-day.is-done .jx-mark { animation: jxMark 1.2s ease-out; }
-.jx-armed .jx-day--best { transition: border-color .9s ease, box-shadow 1.2s ease; }
-.jx-armed .jx-day--best:not(.is-picked) { border-color: rgba(255,255,255,.08); box-shadow: none; }
-.jx-armed .jx-pick { transition: opacity .5s ease; }
-.jx-armed .jx-day--best:not(.is-picked) .jx-pick { opacity: 0; }
-.jx-armed .jx-day--best.is-picked .jx-pick { animation: jxChip .8s cubic-bezier(.34, 1.56, .64, 1); }
-.jx-armed .jx-rest-k::after { transform: scaleX(0); }
-.jx-armed .jx-rest-k.is-drawn::after { transform: none; transition: transform 1.4s cubic-bezier(.22, 1, .36, 1); }
-@keyframes jxPick { 40% { transform: scale(1.6); } }
-@keyframes jxGlow { 30% { color: var(--jx-tone); text-shadow: 0 0 16px var(--jx-glow); } }
-@keyframes jxMark { 35% { box-shadow: 0 0 0 6px var(--jx-glow), 0 0 26px var(--jx-tone); } }
-@keyframes jxChip { 40% { transform: scale(1.12); box-shadow: 0 0 18px rgba(240,200,80,.5); } }
-@media (prefers-reduced-motion: reduce) {
-  .jx-armed .jx-day.is-go .jx-lead { transform: none; }
-  .jx-armed :is(.jx-fill, .jx-run) { transform: none; opacity: 0; }
-  .jx-armed .is-run :is(.jx-fill, .jx-run) { opacity: 1; transition: opacity 1.6s ease; }
-  .jx-armed .jx-sig li.is-on::before { animation: none; }
-  .jx-armed .jx-day--best.is-picked .jx-pick { animation: none; }
-  .jx-armed .jx-rest-k::after { transform: none; opacity: 0; }
-  .jx-armed .jx-rest-k.is-drawn::after { opacity: 1; transition: opacity 1.4s ease; }
 }
 
 /* ── WHERE PROFITS COME FROM (rule-followed vs rule-broken) ─── */
@@ -452,17 +333,6 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
 .compare-dash { color: var(--mk-smoke-600); font-size: 1.1rem; }
 .compare-partial { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); color: var(--mk-caution-500); letter-spacing: 0.04em; }
 .compare-footnote { max-width: 1180px; margin: 14px auto 0; padding: 0 8px; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); color: var(--mk-text-tertiary); line-height: 1.55; }
-
-/* ── MIGRATION CALLOUTS ─────────────────────────────────────── */
-.migrate-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px; max-width: 1080px; margin: 0 auto; }
-.migrate-card { padding: 32px 28px; background: linear-gradient(135deg, rgba(212,175,55,.05), transparent 65%), var(--mk-surface-raised); border: 1px solid rgba(212,175,55,.18); border-radius: var(--mk-radius-card); display: flex; flex-direction: column; gap: 14px; }
-.migrate-tag { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); }
-.migrate-title { font-family: var(--mk-font-display); font-size: var(--mk-display-md); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); line-height: 1.1; }
-.migrate-title em { font-style: normal; background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
-.migrate-text { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); line-height: 1.55; }
-.migrate-text strong { color: var(--mk-text-primary); }
-.migrate-cta { align-self: flex-start; margin-top: 6px; }
-@media (max-width: 800px) { .migrate-grid { grid-template-columns: 1fr; } }
 
 /* ── PRICING REMINDER STRIP ─────────────────────────────────── */
 .tier-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; max-width: 960px; margin: 0 auto; }
@@ -575,147 +445,6 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
   .compare-check, .compare-dash { font-size: 1rem; }
   .compare-partial { display: inline-block; max-width: 100%; font-size: 0.5rem; letter-spacing: 0; line-height: 1.1; overflow-wrap: anywhere; }
   .compare-note { display: block; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: 0.02em; color: var(--mk-text-tertiary); margin-top: 3px; }
-}
-/* TOOLS NO JOURNAL HAS (moved from index.html 2026-11-13) */
-.wyg-w,
-.trp-run--if .trp-v {
-  font-style: normal;
-  background: var(--mk-gold-gradient);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-.wyg-line { text-align: center; max-width: 760px; margin: 28px auto 0; font-size: var(--mk-text-sm); color: var(--mk-text-secondary); line-height: 1.6; }
-.wyg-line a { color: var(--mk-brand); border-bottom: 1px solid rgba(212,175,55,.4); text-decoration: none; }
-/* free tools: four tools, each a gold icon, a name, what it does and one line that sells it; each lands on its own
-   explanation (index section 05, Ed 2026-10-15) */
-.wyg { list-style: none; max-width: 1100px; margin: 40px auto 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
-.wyg-card { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; height: 100%; box-sizing: border-box; padding: 24px 22px 22px; border-radius: 16px; background: rgba(255,255,255,.025); border: 1px solid rgba(255,255,255,.07); text-decoration: none; color: inherit; transition: transform var(--mk-dur-snap) var(--mk-ease-out), border-color var(--mk-dur-snap), background var(--mk-dur-snap); }
-.wyg-icon { flex: none; width: 48px; height: 48px; margin-bottom: 6px; display: grid; place-items: center; border-radius: 50%; color: var(--mk-gold-300); background: radial-gradient(circle at 35% 30%, rgba(240,200,80,.22), rgba(212,175,55,.05)); border: 1px solid rgba(240,200,80,.35); box-shadow: 0 0 16px rgba(240,200,80,.12); }
-.wyg-icon svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-.wyg-name { display: block; font-family: var(--mk-font-display); font-size: 1.5rem; letter-spacing: var(--mk-track-display); text-transform: uppercase; line-height: 1.05; color: var(--mk-text-primary); }
-.wyg-t { display: block; font-size: var(--mk-text-sm); line-height: 1.45; color: var(--mk-text-secondary); }
-.wyg-w { display: block; margin-top: auto; padding-top: 6px; font-size: var(--mk-text-md); font-weight: 600; line-height: 1.35; }
-@media (max-width: 760px) { .wyg { grid-template-columns: 1fr; } }
-/* Trade Replay leads the section (Ed, 2026-10-17: its value is learning to scale in by running what-ifs on past
-   charts, and the section must sell; "SIMPLE to understand immediately"). A wide card, copy at left and one replayed
-   trade at right: buy, add, sell, then the same trade with the add moved to the pullback. The other three below. */
-.wyg-feat { grid-column: 1 / -1; }
-.wyg-feat .wyg-card { position: relative; display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.45fr); align-items: center; gap: 36px; padding: 30px 30px 30px 32px; border-color: rgba(212,175,55,.3); isolation: isolate; background: linear-gradient(150deg, rgba(212,175,55,.06), rgba(255,255,255,.015) 55%, rgba(0,0,0,.18)); }
-/* A still gold haze behind the card (Ed: "some mist or hazy pattern"): soft pools of light, none of them moving. On its own layer, so the card's hover tint lays over it instead of replacing it. */
-.wyg-feat .wyg-card::before { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; pointer-events: none;
-  background: radial-gradient(55% 85% at 6% 0%, rgba(229,197,114,.17), transparent 62%), radial-gradient(40% 60% at 34% 92%, rgba(212,175,55,.08), transparent 70%),
-    radial-gradient(45% 60% at 66% 22%, rgba(255,250,235,.05), transparent 72%), radial-gradient(50% 75% at 98% 100%, rgba(184,148,31,.12), transparent 66%); }
-.wyg-copy { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
-.wyg-feat .wyg-name { font-size: 2rem; }
-.wyg-feat .wyg-t { font-size: var(--mk-text-md); }
-.wyg-feat .wyg-w { margin-top: 0; padding-top: 0; }
-/* The same trade twice, each chart sitting on its own result (Ed, 2026-10-17: "pinning the graph to AS TRADED so
-   it's clear what's being watched. Then pinning the new add to the WHAT IF scenario... It needs to be brainless").
-   The only difference between the two is where the add is. On WHAT IF a faint ring keeps where it was, and the
-   dotted arrow carries it over the top of the chart, clear of the line, down to the pullback. */
-.trp { display: block; }
-.trp-pair { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
-.trp-run { min-width: 0; display: flex; flex-direction: column; gap: 2px; padding: 12px 12px 14px; border-radius: 12px; background: rgba(0,0,0,.3); border: 1px solid rgba(255,255,255,.09); }
-.trp-run--if { background: rgba(212,175,55,.06); border-color: rgba(212,175,55,.4); }
-.trp-chart { display: block; width: 100%; height: auto; margin: 4px 0 6px; overflow: visible; }
-.trp-line { fill: none; stroke: rgba(232,237,233,.78); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-.trp-mk circle { fill: #E8EDE9; stroke: #0b0d0c; stroke-width: 2.2; transform-box: fill-box; transform-origin: center; }
-.trp-mk rect { fill: rgba(13,15,14,.92); stroke: rgba(232,237,233,.22); stroke-width: 1; }
-.trp-mk text { fill: #E8EDE9; font-family: var(--mk-font-mono); font-size: 10.5px; font-weight: 600; letter-spacing: .06em; text-anchor: middle; }
-.trp-mk--buy circle { fill: var(--mk-profit-500); }
-.trp-mk--sell circle { fill: var(--mk-danger-500); }
-.trp-mk--add circle { fill: var(--mk-gold-500); }
-.trp-mk--add rect { stroke: rgba(212,175,55,.6); }
-.trp-mk--add text { fill: var(--mk-gold-400); }
-.trp-mk--add .trp-ring { fill: none; stroke: var(--mk-gold-500); stroke-width: 1.5; opacity: 0; }
-.trp-was { fill: none; stroke: rgba(232,237,233,.7); stroke-width: 1.6; stroke-dasharray: 2 2.2; }
-.trp-move-path { fill: none; stroke: var(--mk-gold-500); stroke-width: 2.2; stroke-linecap: round; stroke-dasharray: 0 5.5; }
-.trp-move-reveal { fill: none; stroke: #fff; stroke-width: 8; stroke-linecap: round; stroke-linejoin: round; }
-.trp-move-head { fill: var(--mk-gold-500); }
-.trp-move-v { fill: var(--mk-gold-400); font-family: var(--mk-font-mono); font-size: 11px; font-weight: 700; letter-spacing: .06em; text-anchor: middle; }
-.trp-k { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); color: var(--mk-text-secondary); }
-.trp-run--if .trp-k { color: var(--mk-gold-400); }
-.trp-how { font-size: var(--mk-text-xs); color: var(--mk-text-secondary); }
-.trp-run--if .trp-how { color: var(--mk-gold-400); }
-.trp-v { font-family: var(--mk-font-mono); font-size: clamp(1.15rem, 5vw, 1.6rem); font-weight: 600; line-height: 1.15; color: #E8EDE9; font-variant-numeric: tabular-nums; }
-.trp-note { display: block; margin-top: 10px; text-align: center; font-size: var(--mk-text-sm); color: var(--mk-text-secondary); }
-@media (max-width: 900px) {
-  .wyg-feat .wyg-card { grid-template-columns: minmax(0, 1fr); gap: 22px; padding: 24px 18px; }
-}
-@media (max-width: 560px) { .trp-pair { grid-template-columns: minmax(0, 1fr); } }
-
-/* The replay plays once, when the charts are half on screen (classes from the script after the section; nothing is
-   armed without it, so the section stands finished). AS TRADED first: its panel lights, the line draws, BUY, the
-   $4.85 add and SELL land, and +$1,000 counts. Then WHAT IF: its panel lights, the same line draws, a faint ring sits
-   where the $4.85 add was, the dotted arrow carries it down to the $4.22 pullback, the gold add lands at its tip, and
-   +$1,630 counts. Every end frame is the static card.
-   The hidden lines use a gap of 2, not 1: "1 1" at offset 1 starts a zero-length dash exactly at the path's end, and a
-   round cap draws that as a dot, so WHAT IF showed two stray dots while it waited its turn (Ed, 2026-11-10: "Trade
-   Replay loads random dots initially"). A gap longer than the path starts no dash inside it; the draw is unchanged. */
-.tk-armed .trp-line { stroke-dasharray: 1 2; stroke-dashoffset: 1; }
-.tk-armed .trp-mk circle { scale: 0; }
-.tk-armed .trp-mk :is(rect, text) { opacity: 0; }
-.tk-armed :is(.trp-was, .trp-move-head, .trp-move-v) { opacity: 0; }
-.tk-armed .trp-move-reveal { stroke-dasharray: 1 2; stroke-dashoffset: 1; }
-.tk-go .trp-run--as { animation: trpOnAs 3.4s ease; }
-.tk-go .trp-run--as .trp-line { animation: trpDraw 2.4s linear forwards; }
-.tk-go .trp-run--as .trp-mk--buy circle { animation: trpPop .5s cubic-bezier(.3,1.5,.5,1) .38s forwards; }
-.tk-go .trp-run--as .trp-mk--buy :is(rect, text) { animation: trpIn .5s ease .5s forwards; }
-.tk-go .trp-run--as .trp-mk--was circle { animation: trpPop .5s cubic-bezier(.3,1.5,.5,1) 1.62s forwards; }
-.tk-go .trp-run--as .trp-mk--was :is(rect, text) { animation: trpIn .5s ease 1.74s forwards; }
-.tk-go .trp-run--as .trp-mk--sell circle { animation: trpPop .5s cubic-bezier(.3,1.5,.5,1) 1.83s forwards; }
-.tk-go .trp-run--as .trp-mk--sell :is(rect, text) { animation: trpIn .5s ease 1.95s forwards; }
-.tk-go .trp-run--if { animation: trpOnIf 5s ease 3.4s; }
-.tk-go .trp-run--if .trp-line { animation: trpDraw 1.6s linear 3.4s forwards; }
-.tk-go .trp-run--if .trp-mk--buy circle { animation: trpPop .5s cubic-bezier(.3,1.5,.5,1) 3.66s forwards; }
-.tk-go .trp-run--if .trp-mk--buy :is(rect, text) { animation: trpIn .5s ease 3.78s forwards; }
-.tk-go .trp-run--if .trp-mk--sell circle { animation: trpPop .5s cubic-bezier(.3,1.5,.5,1) 4.62s forwards; }
-.tk-go .trp-run--if .trp-mk--sell :is(rect, text) { animation: trpIn .5s ease 4.74s forwards; }
-.tk-go .trp-was { animation: trpIn .5s ease 4.48s forwards; }
-.tk-go .trp-move-reveal { animation: trpDraw 1.3s cubic-bezier(.65,0,.35,1) 5.2s forwards; }
-.tk-go .trp-move-head { animation: trpIn .3s ease 6.35s forwards; }
-.tk-go .trp-mk--add > circle:not(.trp-ring) { animation: trpPop .5s cubic-bezier(.3,1.5,.5,1) 6.5s forwards; }
-.tk-go .trp-mk--add :is(rect, text) { animation: trpIn .5s ease 6.65s forwards; }
-.tk-go .trp-ring { animation: trpRipple 1s ease-out 6.55s; }
-.tk-go .trp-move-v { animation: trpIn .5s ease 6.7s forwards; }
-.tk-go .trp-note { animation: trpSay 1.8s ease 7.8s; }
-@keyframes trpDraw { to { stroke-dashoffset: 0; } }
-@keyframes trpIn { to { opacity: 1; } }
-@keyframes trpPop { to { scale: 1; } }
-@keyframes trpRipple { from { opacity: .9; scale: 1; } to { opacity: 0; scale: 2.8; } }
-@keyframes trpOnAs { 12%, 80% { border-color: rgba(232,237,233,.5); box-shadow: 0 0 22px rgba(232,237,233,.08); } }
-@keyframes trpOnIf { 10%, 85% { border-color: rgba(212,175,55,.8); box-shadow: 0 0 26px rgba(212,175,55,.2); } }
-@keyframes trpSay { 40% { color: var(--mk-text-primary); text-shadow: 0 0 14px rgba(212,175,55,.45); } }
-
-/* Then the three below, one at a time (about 1.8 s a stop): the card lights, and its icon does its job once. The
-   clock's hand goes round, the book opens a little, the note writes its lines. */
-.wyg li:not(.wyg-feat) .wyg-card.is-lit { animation: wygLit 1.8s ease; }
-.wyg .is-lit .wyg-icon { animation: wygIcon 1.8s ease; }
-.wyg-hand, .wyg-pg { transform-box: view-box; }
-.wyg-hand { transform-origin: 12px 12px; }
-.wyg-pg { transform-origin: 12px 20px; }
-.wyg .is-lit .wyg-hand { animation: wygHand 1.4s cubic-bezier(.45,0,.2,1) .15s; }
-.wyg .is-lit .wyg-pg--l { animation: wygPgL 1.3s ease .15s; }
-.wyg .is-lit .wyg-pg--r { animation: wygPgR 1.3s ease .15s; }
-.wyg .is-lit .wyg-ln { stroke-dasharray: 1 2; animation: wygWrite 1s ease .15s both; } /* gap 2: see .tk-armed .trp-line */
-@keyframes wygLit { 35% { border-color: rgba(240,200,80,.55); box-shadow: 0 0 26px rgba(240,200,80,.12); } }
-@keyframes wygIcon { 35% { box-shadow: 0 0 26px rgba(240,200,80,.4); } }
-@keyframes wygHand { to { rotate: 360deg; } }
-@keyframes wygPgL { 45% { rotate: -9deg; } }
-@keyframes wygPgR { 45% { rotate: 9deg; } }
-@keyframes wygWrite { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
-
-/* Reduce motion: the same story on the same clock, without the pops, the glide or the ripple. The dots fade in, the
-   add fades out where it was and back in at the pullback, and the icons only light. */
-@media (prefers-reduced-motion: reduce) {
-  .tk-armed .trp-mk circle { scale: 1; opacity: 0; }
-  .tk-armed .trp-mk--add .trp-ring { opacity: 0; }
-  .tk-go .trp-run :is(.trp-mk--buy, .trp-mk--sell, .trp-mk--was) circle { animation-name: trpIn; animation-timing-function: ease; }
-  .tk-go .trp-mk--add > circle:not(.trp-ring) { animation-name: trpIn; animation-timing-function: ease; }
-  .tk-go .trp-ring { animation: none; }
-  .wyg .is-lit :is(.wyg-hand, .wyg-pg) { animation: none; }
-  .wyg .is-lit .wyg-ln { animation: none; stroke-dasharray: none; }
 }
 </style>
 <script>try{if(document.cookie.indexOf('mkt_csrf=')>-1)document.documentElement.classList.add('mkt-auth');}catch(e){}</script>
@@ -841,66 +570,10 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
   <div class="section-inner">
     <p class="section-eyebrow reveal">THE JOURNAL, IN FULL</p>
     <h2 class="section-title reveal">Everything you'd expect. <em>Nothing you'd settle for.</em></h2>
-    <p class="section-sub reveal">First, the score that grades how you traded. Then everything else a serious journal needs.</p>
+    <p class="section-sub reveal">The score that grades how you traded, and everything else a serious journal needs.</p>
 
-    <div class="jx reveal">
-      <article class="jx-card">
-        <div class="jx-head">
-          <h3 class="jx-name">Picard Score</h3>
-          <p class="jx-line">A grade from 1 to 10 for how you traded, not what you made. A green day can grade low and a red day can grade high. The lines under each day show what moved its grade.</p>
-        </div>
-        <div class="jx-days">
-          <div class="jx-day jx-day--low">
-            <p class="jx-day-top"><span>GREEN DAY</span><span class="jx-pnl">P&amp;L <b>+$640.00</b></span></p>
-            <div class="jx-grade">
-              <p class="jx-score"><span class="jx-score-v">4.6</span><small>/ 10</small></p>
-              <p class="jx-band">BROKE THE PLAN</p>
-              <p class="jx-lead" aria-hidden="true"><b class="is-up">+$640.00</b><span>NET P&amp;L</span></p>
-            </div>
-            <div class="jx-track" aria-hidden="true"><i class="jx-fill"></i><span class="jx-run"><i class="jx-mark"></i></span></div>
-            <p class="jx-ticks" aria-hidden="true"><span>1</span><span>10</span></p>
-            <p class="jx-k">WHAT MAKETZO SAW</p>
-            <ul class="jx-sig">
-              <li class="is-down"><span class="jx-sr">Lowered: </span>Took more trades than your own limit</li>
-              <li class="is-down"><span class="jx-sr">Lowered: </span>Kept trading after your own rule ended the day</li>
-              <li class="is-down"><span class="jx-sr">Lowered: </span>Held losers 9 minutes on average, winners only 4</li>
-            </ul>
-            <p class="jx-k">WHAT YOU REPORTED</p>
-            <ul class="jx-sig">
-              <li class="is-down"><span class="jx-sr">Lowered: </span>Broke one of your own rules</li>
-              <li class="is-down"><span class="jx-sr">Lowered: </span>Tagged 2 mistakes: a chased entry and a revenge trade</li>
-              <li class="is-down"><span class="jx-sr">Lowered: </span>Rated your composure 4 and patience 3, out of 10</li>
-            </ul>
-          </div>
-          <div class="jx-day jx-day--best">
-            <p class="jx-pick">THE DAY TO REPEAT</p>
-            <p class="jx-day-top"><span>RED DAY</span><span class="jx-pnl">P&amp;L <b>&minus;$310.00</b></span></p>
-            <div class="jx-grade">
-              <p class="jx-score"><span class="jx-score-v">8.9</span><small>/ 10</small></p>
-              <p class="jx-band">HELD THE LINE</p>
-              <p class="jx-lead" aria-hidden="true"><b class="is-down">&minus;$310.00</b><span>NET P&amp;L</span></p>
-            </div>
-            <div class="jx-track" aria-hidden="true"><i class="jx-fill"></i><span class="jx-run"><i class="jx-mark"></i></span></div>
-            <p class="jx-ticks" aria-hidden="true"><span>1</span><span>10</span></p>
-            <p class="jx-k">WHAT MAKETZO SAW</p>
-            <ul class="jx-sig">
-              <li class="is-up"><span class="jx-sr">Raised: </span>Stepped away for a guided reset</li>
-              <li class="is-up"><span class="jx-sr">Raised: </span>Stopped when your own rule ended the day</li>
-              <li class="is-up"><span class="jx-sr">Raised: </span>Held winners 8 minutes on average, losers only 3</li>
-            </ul>
-            <p class="jx-k">WHAT YOU REPORTED</p>
-            <ul class="jx-sig">
-              <li class="is-up"><span class="jx-sr">Raised: </span>Followed all of your own rules</li>
-              <li class="is-up"><span class="jx-sr">Raised: </span>Rated your composure 8 and patience 8, out of 10</li>
-              <li class="is-up"><span class="jx-sr">Raised: </span>Wrote up what worked and what didn't</li>
-            </ul>
-          </div>
-        </div>
-      </article>
-    </div>
 
     <div class="jx-rest reveal">
-      <p class="jx-rest-k">PLUS EVERYTHING A SERIOUS JOURNAL NEEDS</p>
       <div class="jx-cols">
         <div><h3>Record</h3><ul>
           <li>Daily journal: <span>your plan, what worked, what didn't, and tomorrow's focus</span></li>
@@ -909,6 +582,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
           <li>Sticky Notes: <span>a scratchpad you can pop out over your platform</span></li>
           <li>Journal export: <span>PDF, Word, OneNote, or email</span></li>
           <li>No-Trade Day: <span>a day you sat out, kept as a decision</span></li>
+          <li>Halt Clock: <span>when a halted stock is likely to reopen</span></li>
         </ul></div>
         <div><h3>Analyze</h3><ul>
           <li>P&amp;L breakdowns: <span>by symbol, time, hold, and tag</span></li>
@@ -918,8 +592,10 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
           <li>View Chart: <span>entry and exit marked</span></li>
           <li>Custom tags &amp; filters: <span>filter by date, symbol, side, and outcome</span></li>
           <li>Performance by Setup: <span>which setups make you money</span></li>
+          <li>Trade Replay: <span>trade any past chart again with a different entry or exit</span></li>
         </ul></div>
         <div><h3>Review</h3><ul>
+          <li>Picard Score: <span>a grade from 1 to 10 for how you traded, not what you made</span></li>
           <li>Rules checklist: <span>your rules, written once and ticked off in every journal entry</span></li>
           <li>Rule Check: <span>mark each of your rules Followed or Broke, every day</span></li>
           <li>Market Context: <span>name your gappers, answer five questions, get Cold, Mixed, or Active</span></li>
@@ -927,6 +603,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
           <li>Setups &amp; Mistakes: <span>marked-up chart screenshots</span></li>
           <li>My Playbook: <span>your own notes on setups</span></li>
           <li>Flash Cards: <span>your playbook as cards, and the ones you miss come back sooner</span></li>
+          <li>Knowledge Center: <span>the trading library, searchable</span></li>
         </ul></div>
       </div>
     </div>
@@ -936,183 +613,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
     </div>
   </div>
 </section>
-<script>
-/* The Journal, In Full plays once (Ed, 2026-10-17). Each day opens on its P&L as the headline, the way every other
-   journal shows a day; its lines light in turn; then the P&L shrinks away to a small gray line and the grade counts up
-   in its place with the mark (each number reads its own fill's transform, one clock); the red day is picked last,
-   THE DAY TO REPEAT. Side by side both days play together; stacked (767px and under) each plays as it scrolls in.
-   Every value ends on the static frame. Classes only; the CSS is under .jx-armed. */
-(function () {
-  var sec = document.getElementById('in-full'), card = sec && sec.querySelector('.jx-card');
-  if (!card || !('IntersectionObserver' in window) || !window.matchMedia) return;
-  var still = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var days = [].slice.call(card.querySelectorAll('.jx-day')).map(function (el) {
-    var num = el.querySelector('.jx-score-v');
-    return { el: el, lines: [].slice.call(el.querySelectorAll('.jx-sig li')), num: num, fill: el.querySelector('.jx-fill'),
-             score: parseFloat(num.textContent), best: el.classList.contains('jx-day--best') };
-  });
-  var kick = sec.querySelector('.jx-rest-k');
-  if (days.length !== 2 || !kick || card.querySelectorAll('.jx-lead').length !== 2) return;
-  days.forEach(function (d) { d.num.textContent = '1.0'; });
-  sec.classList.add('jx-armed');
-  var left = days.length + 1, HOLD = 900, LINE = 360, RUN = 1650;
-  function finished() { if (--left === 0) setTimeout(function () { sec.setAttribute('data-anim', 'done'); }, 1500); }
-  function after(ms, fn) { setTimeout(fn, ms); }
-  function play(d) {
-    d.lines.forEach(function (li, i) { after(HOLD + i * LINE, function () { li.classList.add('is-on'); }); });
-    var hand = HOLD + d.lines.length * LINE + 200;
-    after(hand, function () { d.el.classList.add('is-go'); });
-    after(hand + 450, function () {
-      d.el.classList.add('is-run');
-      var t0 = performance.now();
-      (function step(now) {
-        var u = 1, m;
-        if (still) { u = Math.min(1, (now - t0) / 1600); u = 1 - Math.pow(1 - u, 3); }
-        else { m = getComputedStyle(d.fill).transform.match(/matrix\(([^,]+)/); u = m ? Math.min(1, +m[1]) : 1; }
-        d.num.textContent = (1 + (d.score - 1) * u).toFixed(1);
-        if (now - t0 < RUN) { requestAnimationFrame(step); return; }
-        d.num.textContent = d.score.toFixed(1); d.el.classList.add('is-done');
-        if (d.best) after(500, function () { d.el.classList.add('is-picked'); finished(); }); else finished();
-      })(t0);
-    });
-  }
-  function drawRule() { kick.classList.add('is-drawn'); finished(); }
-  function once(el, opts, fn) {
-    var o = new IntersectionObserver(function (es) { if (es[0].isIntersecting) { o.disconnect(); fn(); } }, opts);
-    o.observe(el);
-  }
 
-  if (matchMedia('(max-width: 767px)').matches) {
-    days.forEach(function (d) { once(d.el, { threshold: 0.5 }, function () { play(d); }); });
-    once(kick, { threshold: 1 }, drawRule);
-  } else {
-    once(card, { rootMargin: '0px 0px -15% 0px', threshold: 0.5 }, function () {
-      days.forEach(play);
-      after(HOLD + days[0].lines.length * LINE + 200 + 450 + RUN + 500, function () { once(kick, { threshold: 1 }, drawRule); });
-    });
-  }
-})();
-</script>
-
-<!-- TOOLS NO JOURNAL HAS: moved here from the homepage 2026-11-13 -->
-<hr class="mk-rule-gold">
-<section class="section" id="toolkit">
-  <div class="section-inner">
-    <p class="section-eyebrow reveal">BEYOND THE JOURNAL</p>
-    <h2 class="section-title reveal">The tools no journal has, <em>for the small-cap day trader.</em></h2>
-    <p class="section-sub reveal">Included on every plan.</p>
-    <ul class="wyg reveal">
-      <li class="wyg-feat"><div class="wyg-card">
-        <span class="wyg-copy">
-          <span class="wyg-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/><path d="M10.5 9.5v5l4-2.5z"/></svg></span>
-          <span class="wyg-name">Trade Replay</span>
-          <span class="wyg-t">Pull up any past chart and trade it again. Move an entry, an add or an exit, and see what it does to your P&amp;L.</span>
-          <span class="wyg-w">Practice scaling in and out, the hardest skill in trading, with no money at risk.</span>
-        </span>
-        <!-- The same trade twice, average cost as the tool computes it: buy 1,000 at 4.25, add 1,000 more, sell all
-             2,000 at 5.05. AS TRADED adds at 4.85 (+$1,000); WHAT IF adds at the 4.22 pullback (+$1,630). -->
-        <span class="trp" aria-hidden="true">
-          <span class="trp-pair">
-            <span class="trp-run trp-run--as">
-              <span class="trp-k">AS TRADED</span>
-              <svg class="trp-chart" viewBox="0 4 260 118">
-                <path class="trp-line" pathLength="1" d="M12 108.8 C15.3 107.8 25.1 105.2 31.7 102.5 C38.2 99.9 44.8 96.4 51.3 93.1 C57.9 89.7 64.4 83.1 71 82.4 C77.6 81.6 84.1 86.6 90.7 88.7 C97.2 90.8 103.8 95.4 110.3 95 C116.9 94.5 123.4 90.3 130 86.1 C136.6 81.9 143.1 74.9 149.7 69.7 C156.2 64.6 162.8 59.8 169.3 55.2 C175.9 50.7 182.4 46.1 189 42.6 C195.6 39.1 202.1 34.7 208.7 34.4 C215.2 34.1 221.8 38.4 228.3 40.7 C234.9 43 244.7 47 248 48.3"/>
-                <g transform="translate(51.3 93.1)"><g class="trp-mk trp-mk--buy"><circle r="5"/><rect x="-44" y="-24" width="38" height="16" rx="8"/><text x="-25" y="-12.5">BUY</text></g></g>
-                <g transform="translate(169.3 55.2)"><g class="trp-mk trp-mk--was"><circle r="5"/><rect x="-82" y="-24" width="76" height="16" rx="8"/><text x="-44" y="-12.5">ADD $4.85</text></g></g>
-                <g transform="translate(189 42.6)"><g class="trp-mk trp-mk--sell"><circle r="5"/><rect x="8" y="6" width="42" height="16" rx="8"/><text x="29" y="17.5">SELL</text></g></g>
-              </svg>
-              <span class="trp-how">Add at $4.85</span>
-              <span class="trp-v" data-trp-to="1000">+$1,000</span>
-            </span>
-            <span class="trp-run trp-run--if">
-              <span class="trp-k">WHAT IF</span>
-              <svg class="trp-chart" viewBox="0 4 260 118">
-                <defs><mask id="trpMoveMask" maskUnits="userSpaceOnUse" x="0" y="4" width="260" height="118"><path class="trp-move-reveal" pathLength="1" d="M169.3 47 V20 Q169.3 14 163.3 14 H116.3 Q110.3 14 110.3 20 V82"/></mask></defs>
-                <path class="trp-line" pathLength="1" d="M12 108.8 C15.3 107.8 25.1 105.2 31.7 102.5 C38.2 99.9 44.8 96.4 51.3 93.1 C57.9 89.7 64.4 83.1 71 82.4 C77.6 81.6 84.1 86.6 90.7 88.7 C97.2 90.8 103.8 95.4 110.3 95 C116.9 94.5 123.4 90.3 130 86.1 C136.6 81.9 143.1 74.9 149.7 69.7 C156.2 64.6 162.8 59.8 169.3 55.2 C175.9 50.7 182.4 46.1 189 42.6 C195.6 39.1 202.1 34.7 208.7 34.4 C215.2 34.1 221.8 38.4 228.3 40.7 C234.9 43 244.7 47 248 48.3"/>
-                <circle class="trp-was" cx="169.3" cy="55.2" r="5"/>
-                <g class="trp-move"><path class="trp-move-path" mask="url(#trpMoveMask)" d="M169.3 47 V20 Q169.3 14 163.3 14 H116.3 Q110.3 14 110.3 20 V82"/><path class="trp-move-head" d="M110.3 88.5 L105.6 81 L115 81 Z"/><text class="trp-move-v" x="139.8" y="29">+$630</text></g>
-                <g transform="translate(51.3 93.1)"><g class="trp-mk trp-mk--buy"><circle r="5"/><rect x="-44" y="-24" width="38" height="16" rx="8"/><text x="-25" y="-12.5">BUY</text></g></g>
-                <g transform="translate(189 42.6)"><g class="trp-mk trp-mk--sell"><circle r="5"/><rect x="8" y="6" width="42" height="16" rx="8"/><text x="29" y="17.5">SELL</text></g></g>
-                <g transform="translate(110.3 95)"><g class="trp-mk trp-mk--add"><circle class="trp-ring" r="5"/><circle r="5"/><rect x="8" y="6" width="76" height="16" rx="8"/><text x="46" y="17.5">ADD $4.22</text></g></g>
-              </svg>
-              <span class="trp-how">Add at $4.22</span>
-              <span class="trp-v" data-trp-to="1630">+$1,630</span>
-            </span>
-          </span>
-          <span class="trp-note">Same shares. Adding 63&cent; lower made $630 more.</span>
-        </span>
-      </div></li>
-      <li><div class="wyg-card"><span class="wyg-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path class="wyg-hand" d="M12 7v5l3 2"/></svg></span><span class="wyg-name">Halt Clock</span><span class="wyg-t">Estimates when a halted stock reopens.</span><span class="wyg-w">Know when it reopens while everyone else is guessing.</span></div></li>
-      <li><div class="wyg-card"><span class="wyg-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="wyg-pg wyg-pg--l" d="M2 5h6a4 4 0 0 1 4 4v11a3 3 0 0 0-3-3H2z"/><path class="wyg-pg wyg-pg--r" d="M22 5h-6a4 4 0 0 0-4 4v11a3 3 0 0 1 3-3h7z"/></svg></span><span class="wyg-name">Knowledge Center</span><span class="wyg-t">The library, your playbook, and flash cards from your own rules.</span><span class="wyg-w">Learn what most traders only learn by losing money.</span></div></li>
-      <li><div class="wyg-card"><span class="wyg-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10z"/><path d="M15 21v-6h6"/><path class="wyg-ln" pathLength="1" d="M7 8h10M7 12h6"/></svg></span><span class="wyg-name">Sticky Notes</span><span class="wyg-t">Jot it mid-trade. One click sends it to your journal.</span><span class="wyg-w">Mid-trade ideas vanish by the close. Not anymore.</span></div></li>
-    </ul>
-    <p class="wyg-line reveal"><a href="tools.html" data-cta-source="what-you-get" data-cta-target="tools">See Free Tools&nbsp;&rarr;</a></p>
-  </div>
-</section>
-
-<script>
-/* Free Tools plays once (Ed, 2026-10-17: "an elegant and beautiful animation", "SIMPLE to understand immediately").
-   When the replay chart is half on screen: the trade draws and AS TRADED counts to +$1,000 as the sale lands; the add
-   glides down to the pullback and WHAT IF counts to +$1,630. Then the three tools below light one at a time (about
-   1.8 s a stop), each once it is on screen. A visitor who scrolls past the chart gets it finished. Reduce motion gets
-   the gentle version in CSS. Without IntersectionObserver nothing is armed and the section stands finished. Classes
-   only; the CSS is under .tk-armed. */
-(function () {
-  var sec = document.getElementById('toolkit');
-  var trp = sec && sec.querySelector('.trp');
-  if (!trp || !('IntersectionObserver' in window) || !window.matchMedia) return;
-  var vals = trp.querySelectorAll('[data-trp-to]');
-  var minis = Array.prototype.slice.call(sec.querySelectorAll('.wyg > li:not(.wyg-feat) > .wyg-card'));
-  vals.forEach(function (v) { v.textContent = '+$0'; });
-  sec.classList.add('tk-armed');
-
-  function money(n) { return '+$' + Math.round(n).toLocaleString('en-US'); }
-  function count(el) {
-    var to = +el.getAttribute('data-trp-to'), t0 = null;
-    function step(now) {
-      if (t0 === null) t0 = now;
-      var u = Math.min(1, (now - t0) / 900), e = 1 - Math.pow(1 - u, 3);
-      el.textContent = money(to * e);
-      if (u < 1) requestAnimationFrame(step);
-    }
-    requestAnimationFrame(step);
-  }
-
-  // The tools below light in turn, never before the replay has finished, and each only once it is on screen.
-  var started = false, busy = false, freeAt = 0, queue = [];
-  function next() {
-    if (busy || !started || !queue.length) return;
-    busy = true;
-    setTimeout(function () {
-      queue.shift().classList.add('is-lit');
-      setTimeout(function () { busy = false; next(); }, 1800);
-    }, Math.max(0, freeAt - Date.now()));
-  }
-  minis.forEach(function (a) {
-    var o = new IntersectionObserver(function (es) {
-      if (!es[0].isIntersecting) return;
-      o.disconnect(); queue.push(a);
-      queue.sort(function (p, q) { return minis.indexOf(p) - minis.indexOf(q); });   // left to right, however they arrive
-      next();
-    }, { threshold: 0.6 });
-    o.observe(a);
-  });
-
-  function play() {
-    started = true;
-    freeAt = Date.now() + 8600;
-    sec.classList.add('tk-go');
-    setTimeout(function () { count(vals[0]); }, 2000);
-    setTimeout(function () { count(vals[1]); }, 6700);
-    next();
-  }
-  var o = new IntersectionObserver(function (es) {
-    var e = es[0];
-    if (e.intersectionRatio >= 0.5 || (!e.isIntersecting && e.boundingClientRect.top < 0)) { o.disconnect(); play(); }
-  }, { threshold: [0, 0.5] });
-  o.observe(trp);
-})();
-</script>
 
 <!-- WHERE PROFITS COME FROM -->
 <hr class="mk-rule-gold">
@@ -1261,9 +762,6 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
           <tr class="group-header"><td colspan="6">Focus</td></tr>
           <tr><td>Focus Room <span class="compare-note">(train your state of mind)</span></td><td class="us-col"><span class="compare-check">&#10003;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td></tr>
 
-          <tr class="group-header"><td colspan="6">Trade intelligence</td></tr>
-          <tr><td>Maketzo Edge <span class="compare-note">(opportunity windows)</span></td><td class="us-col"><span class="compare-check">&#10003;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td></tr>
-          <tr><td>Maketzo Pulse <span class="compare-note">(momentum confirmation)</span></td><td class="us-col"><span class="compare-check">&#10003;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td></tr>
 
           <tr class="group-header"><td colspan="6">Journal &amp; tracking</td></tr>
           <tr><td>P&amp;L analytics by symbol &amp; setup</td><td class="us-col"><span class="compare-check">&#10003;</span></td><td><span class="compare-check">&#10003;</span></td><td><span class="compare-check">&#10003;</span></td><td><span class="compare-check">&#10003;</span></td><td><span class="compare-check">&#10003;</span></td></tr>
@@ -1273,6 +771,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
         </tbody>
       </table>
     </div>
+    <p class="compare-switch reveal">Coming from another journal? Your history there stays where it is. MAKETZO starts with your next session: type your P&amp;L as you trade, with any broker, or import your fills from DAS Trader Pro.</p>
     <p class="compare-footnote reveal">Comparisons based on each vendor's own pages and help docs as of 2026-10-17; TradeZella, TraderVue and TraderSync prices checked 2026-11-10. Vendor offerings and pricing change, so verify current details with each tool before subscribing. Competitor names are trademarks of their respective owners; referenced here for honest comparison only.</p>
 
     <div class="mk-cta-repeat">
@@ -1281,31 +780,6 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
   </div>
 </section>
 
-<!-- MIGRATION CALLOUTS -->
-<hr class="mk-rule-gold">
-<section class="section section-dark">
-  <div class="section-inner">
-    <p class="section-eyebrow reveal">COMING FROM ANOTHER JOURNAL?</p>
-    <h2 class="section-title reveal">Switch today. <em>Start with your next session.</em></h2>
-    <p class="section-sub reveal">Your old journal's history stays where it is. MAKETZO works from your next session: type your P&amp;L as you trade, with any broker, or import your fills from DAS Trader Pro.</p>
-
-    <div class="migrate-grid">
-      <div class="migrate-card reveal">
-        <div class="migrate-tag">FROM TRADEZELLA</div>
-        <div class="migrate-title">Already on TradeZella? <em>Add what it can't do.</em></div>
-        <p class="migrate-text">TradeZella's AI reviews your trades and warns you about risk. <strong>What you add:</strong> the Strike System, a day that closes when your own rules say so, timed checkpoints you set, and the Focus Room.</p>
-        <button class="btn-primary migrate-cta" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
-      </div>
-
-      <div class="migrate-card reveal">
-        <div class="migrate-tag">FROM TRADERVUE</div>
-        <div class="migrate-title">Already on TraderVue? <em>Add the live layer.</em></div>
-        <p class="migrate-text">TraderVue's strength is the review after the close. <strong>What you add:</strong> rule pills, two timed checkpoints you set yourself, real-time enforcement, and the Focus Room soundtrack for every part of the day.</p>
-        <button class="btn-primary migrate-cta" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
-      </div>
-    </div>
-  </div>
-</section>
 
 <!-- PRICING REMINDER STRIP -->
 <hr class="mk-rule-gold">
