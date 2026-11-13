@@ -1653,6 +1653,22 @@ a.focus-feature-card { text-decoration: none; color: inherit; }
   letter-spacing: 0.04em;
   color: var(--mk-text-tertiary);
 }
+/* The three reassurances under the closing call to action, from Ed's image (2026-11-13): a gold icon, a title and
+   one line each, split by faint vertical rules that fade at both ends. No boxes. Each item reveals with the page's
+   usual fade, one after another; nothing else moves. Marketing pages are dark only. */
+.trust-strip { list-style: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: 1140px; margin: 64px auto 0; padding: 0; text-align: left; }
+.trust-strip li { position: relative; display: flex; align-items: flex-start; gap: 18px; padding: 8px 34px; }
+.trust-strip li + li::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 1px; background: linear-gradient(180deg, transparent, rgba(255,255,255,.16) 30%, rgba(255,255,255,.16) 70%, transparent); }
+.trust-ic { flex: none; width: 32px; height: 32px; margin-top: 2px; }
+.trust-ic--line { fill: none; stroke: var(--mk-gold-400); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.trust-ic--fill { fill: var(--mk-gold-400); }
+.trust-title { margin: 0 0 5px; font-size: var(--mk-text-lg); font-weight: 600; line-height: 1.3; color: var(--mk-text-primary); }
+.trust-sub { margin: 0; font-size: var(--mk-text-md); line-height: 1.5; color: var(--mk-text-secondary); }
+@media (max-width: 860px) {
+  .trust-strip { grid-template-columns: minmax(0, 1fr); max-width: 420px; margin-top: 48px; }
+  .trust-strip li { padding: 18px 4px; }
+  .trust-strip li + li::before { top: 0; bottom: auto; left: 0; right: 0; width: auto; height: 1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,.16) 25%, rgba(255,255,255,.16) 75%, transparent); }
+}
 
 /* ── FOOTER ──────────────────────────────────────────────────── */
 footer {
@@ -2880,6 +2896,11 @@ document.addEventListener("DOMContentLoaded", function() {
       <a href="pricing.html" class="btn-secondary">Compare All Plans</a>
     </div>
     <p class="final-cta-note reveal">Pro &middot; $49/mo or $399/yr &middot; Discipline OS, Focus Room &amp; Dilution Check &middot; Cancel anytime</p>
+    <ul class="trust-strip">
+      <li class="reveal"><svg class="trust-ic trust-ic--line" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><path d="M16 3.5l10 4v7.2c0 6.3-4.2 11.4-10 13.8C10.2 26.1 6 21 6 14.7V7.5z"/><path d="M11.5 16.2l3.2 3.2 6-6.4"/></svg><div><p class="trust-title">Cancel Anytime</p><p class="trust-sub">No long-term commitment.</p></div></li>
+      <li class="reveal"><svg class="trust-ic trust-ic--fill" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><rect x="5" y="20" width="3.4" height="7" rx="1"/><rect x="11" y="15.5" width="3.4" height="11.5" rx="1"/><rect x="17" y="10.5" width="3.4" height="16.5" rx="1"/><rect x="23" y="5" width="3.4" height="22" rx="1"/></svg><div><p class="trust-title">Built for Small-Cap Traders</p><p class="trust-sub">Tools, structure, and accountability for every session.</p></div></li>
+      <li class="reveal"><svg class="trust-ic trust-ic--fill" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><path d="M18.4 3L6.5 18.2h8.3L13.4 29l12.1-15.6h-8.4z"/></svg><div><p class="trust-title">DAS-Friendly Workflow</p><p class="trust-sub">Import your fills from DAS Trader Pro, or type your P&amp;L as you trade.</p></div></li>
+    </ul>
   </div>
 </section>
 
