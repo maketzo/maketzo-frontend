@@ -46,7 +46,7 @@
   ]
 }
 </script>
-<link rel="preload" as="image" href="assets/hero-trader.avif" type="image/avif" fetchpriority="high">
+<link rel="preload" as="image" href="assets/hero-trader-clean.avif" type="image/avif" fetchpriority="high">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/tokens.css">
@@ -54,13 +54,13 @@
 <script src="assets/js/mkt-analytics.js?v=19" defer></script>
 <script src="assets/js/mkt-consent.js?v=2" defer></script>
 <script src="assets/js/motion-rest.js?v=1" defer></script>
-<link rel="stylesheet" href="assets/css/audio-player.css?v=11">
 <link rel="stylesheet" href="assets/css/see-how-it-works.css?v=5">
+<link rel="stylesheet" href="assets/css/moment.css?v=3">
 <script src="assets/js/checkout.js?v=10" defer></script>
-<script src="assets/js/audio-player.js?v=12" defer></script>
 <script src="assets/js/newsletter.js?v=5" defer></script>
 <script src="assets/js/phone-fullscreen.js?v=1" defer></script>
 <script src="assets/js/see-how-it-works.js?v=14" defer></script>
+<script src="assets/js/moment-duel.js?v=1" defer></script>
 <style>
 /* ====================================================================
    MAKETZO landing — page-specific styles.
@@ -251,7 +251,7 @@ html.mkt-auth .nav-login-btn:hover{color:var(--mk-text-on-gold);background:var(-
 .hero-bg img {
   width: 100%; height: 100%;
   object-fit: cover;
-  object-position: 52% center;
+  object-position: 100% 30%;
   display: block;
   -webkit-mask-image: linear-gradient(90deg, transparent 0%, transparent 14%, rgba(0,0,0,0.45) 34%, #000 52%);
           mask-image: linear-gradient(90deg, transparent 0%, transparent 14%, rgba(0,0,0,0.45) 34%, #000 52%);
@@ -312,22 +312,6 @@ html.mkt-auth .nav-login-btn:hover{color:var(--mk-text-on-gold);background:var(-
   color: transparent;
   display: inline-block;
 }
-.hero-stop { display: block; margin-bottom: 24px; }
-.hero-stop .power-pulse {
-  font-family: var(--mk-font-display);
-  font-size: clamp(1.4rem, 2.6vw, 1.9rem);
-  letter-spacing: var(--mk-track-display-wide);
-  text-transform: uppercase;
-  background: var(--mk-gold-gradient);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation: mk-power-pulse 3s var(--mk-ease-in-out) infinite;
-}
-@keyframes mk-power-pulse {
-  0%, 100% { opacity: 1; filter: brightness(1); }
-  50%      { opacity: 0.95; filter: brightness(1.12); }
-}
 .hero-sub {
   font-size: var(--mk-text-lg);
   color: var(--mk-text-secondary);
@@ -341,6 +325,18 @@ html.mkt-auth .nav-login-btn:hover{color:var(--mk-text-on-gold);background:var(-
   display: flex; gap: 14px; flex-wrap: wrap;
   margin-bottom: 36px;
 }
+/* The price under the trial button (Ed, 2026-11-13): the plan, the price after the trial, the card, and the cheaper
+   plan one tap away. */
+.hero-terms {
+  font-size: var(--mk-text-sm);
+  line-height: 1.6;
+  color: var(--mk-text-secondary);
+  max-width: 500px;
+  margin: -20px 0 32px;
+  text-shadow: 0 1px 18px rgba(0,0,0,0.6);
+}
+.hero-terms a { color: var(--mk-brand); text-decoration: none; white-space: nowrap; border-bottom: 1px solid rgba(212,175,55,.35); }
+.hero-terms a:hover { border-bottom-color: var(--mk-brand); }
 .hero-proof {
   display: flex; flex-direction: column; gap: 14px;
   padding-top: 24px;
@@ -381,7 +377,7 @@ html.mkt-auth .nav-login-btn:hover{color:var(--mk-text-on-gold);background:var(-
   .hero-content { min-height: min(calc((50vw + 518px) / 1.75), 100vh); justify-content: center; }
   .hero-bg { right: auto; left: calc(50% - 518px); width: auto; height: 100%; max-width: calc(50% + 518px); aspect-ratio: 7 / 4; }
   .hero-bg img {
-    object-position: 67.5% 50%;
+    object-position: 100% 30%;
     -webkit-mask-image: linear-gradient(90deg, transparent 0, rgba(0,0,0,0.45) 288px, #000 547px);
             mask-image: linear-gradient(90deg, transparent 0, rgba(0,0,0,0.45) 288px, #000 547px);
   }
@@ -401,7 +397,7 @@ html.mkt-auth .nav-login-btn:hover{color:var(--mk-text-on-gold);background:var(-
 }
 @media (max-width: 1200px) {
   .hero-content { padding: 116px 44px 64px; }
-  .hero-bg img { object-position: 50% center; }
+  .hero-bg img { object-position: 100% 30%; }
 }
 /* Tablet + phone: a portrait frame can't hold monitors + trader + HUD across
    the wide shot, so re-anchor to the trader and let the image sink into
@@ -411,7 +407,7 @@ html.mkt-auth .nav-login-btn:hover{color:var(--mk-text-on-gold);background:var(-
   /* Image becomes a top band that dissolves into obsidian; the type flows
      BELOW the trader, merged by the fade, never across her face. */
   .hero-bg   { inset: 0 0 auto 0; height: 54vh; }
-  .hero-bg img { object-position: 55% 26%; -webkit-mask-image: none; mask-image: none; }
+  .hero-bg img { object-position: 92% 24%; -webkit-mask-image: none; mask-image: none; }
   .hero-scrim {
     inset: 0 0 auto 0; height: 62vh;
     background: linear-gradient(180deg,
@@ -439,7 +435,7 @@ html.mkt-auth .nav-login-btn:hover{color:var(--mk-text-on-gold);background:var(-
   .hero-content { padding: 32vh 22px 44px; }
   .hero-badge    { order: 0; }
   .hero-headline { order: 1; }
-  .hero-stop     { order: 2; margin-bottom: 18px; }
+  .hero-terms    { order: 3; margin: -12px 0 24px; }
   .hero-ctas     { order: 3; margin-bottom: 26px; }
   .hero-sub      { order: 4; }
   .hero-proof    { order: 5; }
@@ -584,11 +580,7 @@ body:has(.sticky-bar.visible) { padding-bottom: 80px; }
   margin-bottom: 18px;
   font-weight: 400;
 }
-.section-title em,
-.sp-title em,
-.sp-cue em,
-.wyg-w,
-.trp-run--if .trp-v {
+.section-title em {
   font-style: normal;
   background: var(--mk-gold-gradient);
   -webkit-background-clip: text;
@@ -1840,21 +1832,21 @@ footer {
    (longest travel, slowest settle); the badge is "light" (shortest
    travel, quickest settle). Curve is ease-out-expo for a graceful
    slow finish (cubic-bezier(.16, 1, .3, 1)). */
-.hero-badge, .hero-headline, .hero-stop,
+.hero-badge, .hero-headline, .hero-terms,
 .hero-sub, .hero-ctas, .hero-proof {
   opacity: 0;
   will-change: opacity, transform;
 }
 .hero-badge    { transform: translateY(20px); transition: opacity  700ms cubic-bezier(.16,1,.3,1), transform  700ms cubic-bezier(.16,1,.3,1); }
 .hero-headline { transform: translateY(48px); transition: opacity 1200ms cubic-bezier(.16,1,.3,1), transform 1200ms cubic-bezier(.16,1,.3,1); }
-.hero-stop     { transform: translateY(36px); transition: opacity 1000ms cubic-bezier(.16,1,.3,1), transform 1000ms cubic-bezier(.16,1,.3,1); }
+.hero-terms    { transform: translateY(22px); transition: opacity  800ms cubic-bezier(.16,1,.3,1), transform  800ms cubic-bezier(.16,1,.3,1); }
 .hero-sub      { transform: translateY(28px); transition: opacity  900ms cubic-bezier(.16,1,.3,1), transform  900ms cubic-bezier(.16,1,.3,1); }
 .hero-ctas     { transform: translateY(24px); transition: opacity  800ms cubic-bezier(.16,1,.3,1), transform  800ms cubic-bezier(.16,1,.3,1); }
 .hero-proof    { transform: translateY(20px); transition: opacity  800ms cubic-bezier(.16,1,.3,1), transform  800ms cubic-bezier(.16,1,.3,1); }
 
 body.hero-loaded .hero-badge    { opacity: 1; transform: translateY(0); transition-delay:  100ms; }
 body.hero-loaded .hero-headline { opacity: 1; transform: translateY(0); transition-delay:  300ms; }
-body.hero-loaded .hero-stop     { opacity: 1; transform: translateY(0); transition-delay:  600ms; }
+body.hero-loaded .hero-terms    { opacity: 1; transform: translateY(0); transition-delay: 1350ms; }
 body.hero-loaded .hero-sub      { opacity: 1; transform: translateY(0); transition-delay:  900ms; }
 body.hero-loaded .hero-ctas     { opacity: 1; transform: translateY(0); transition-delay: 1200ms; }
 body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transition-delay: 1500ms; }
@@ -1862,10 +1854,11 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
 @media (max-width: 600px) {
   body.hero-loaded .hero-ctas { transition-delay:  900ms; }
   body.hero-loaded .hero-sub  { transition-delay: 1200ms; }
+  body.hero-loaded .hero-terms { transition-delay: 1050ms; }
 }
 
 @media (scripting: none) {
-  .hero-badge, .hero-headline, .hero-stop,
+  .hero-badge, .hero-headline, .hero-terms,
   .hero-sub, .hero-ctas, .hero-proof {
     opacity: 1; transform: none;
   }
@@ -2105,100 +2098,6 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
 .phero .hero-copy { min-width: 0; display: flex; flex-direction: column; align-items: flex-start; }
 .phero .hero-headline { font-size: clamp(2.4rem, 3.9vw, 3.7rem); max-width: none; text-shadow: none; }
 .phero .hero-sub { max-width: 52ch; }
-/* 01 Why MAKETZO: without / with, two cards from Ed's mock (2026-10-15). Red card = the trader alone, gold card = with the system. */
-.vs-sub strong { color: var(--mk-text-primary); font-weight: 600; }
-.vs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; max-width: 1180px; margin: 40px auto 0; }
-.vs-card { position: relative; overflow: hidden; padding: 30px 28px 26px; border-radius: 22px; background: var(--mk-surface-raised); border: 1px solid rgba(255,255,255,.08); }
-.vs-card--without { background: linear-gradient(160deg, rgba(248,113,113,.07), transparent 55%), var(--mk-surface-raised); border-color: rgba(248,113,113,.38); box-shadow: var(--mk-glow-danger); }
-.vs-card--with { background: linear-gradient(160deg, rgba(212,175,55,.10), transparent 55%), var(--mk-surface-raised); border-color: rgba(212,175,55,.45); box-shadow: var(--mk-glow-gold-sm); }
-.vs-pill { position: relative; z-index: 1; padding: 8px 16px; letter-spacing: .16em; margin-bottom: 18px; }
-.vs-title { position: relative; z-index: 1; font-family: var(--mk-font-display); font-size: clamp(2rem, 3.4vw, 2.9rem); line-height: .98; letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); margin: 0 0 22px; font-weight: 400; }
-.vs-title em { font-style: normal; display: block; }
-.vs-card--without .vs-title em { color: var(--mk-danger-500); }
-.vs-card--with .vs-title em { background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
-.vs-list { position: relative; z-index: 1; list-style: none; margin: 0; padding: 0; border-top: 1px solid rgba(255,255,255,.07); }
-.vs-list li { display: flex; align-items: center; gap: 16px; padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,.07); font-size: var(--mk-text-md); color: var(--mk-text-primary); line-height: 1.4; }
-.vs-icon { flex: 0 0 auto; width: 34px; height: 34px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; }
-.vs-card--without .vs-icon { color: var(--mk-danger-500); border: 2px solid rgba(248,113,113,.7); box-shadow: 0 0 14px rgba(248,113,113,.35); background: rgba(248,113,113,.08); }
-.vs-card--with .vs-icon { color: var(--mk-brand); border: 2px solid rgba(212,175,55,.7); box-shadow: 0 0 14px rgba(212,175,55,.35); background: rgba(212,175,55,.08); }
-.vs-chart { position: absolute; top: 14px; right: 18px; width: 300px; height: auto; pointer-events: none; }
-/* Ed's mock (C:/dev/Without Strategy, With Discipline.png): soft glowing candles fading out at the foot, under an arrow
-   that tapers thin to thick into a solid head, inside a wide bloom. The candles replace the mock's bars at Ed's ask. */
-.vs-wick { fill: none; stroke: url(#vsCandle); stroke-width: 2; }
-.vs-body { fill: url(#vsCandle); }
-.vs-cap { fill: none; stroke: var(--mk-gold-300); stroke-width: 1.5; stroke-opacity: .45; }
-.vs-ghosts { fill: url(#vsGhost); }
-.vs-arrow-body { fill: url(#vsArrow); }
-.vs-arrow-head { fill: var(--mk-gold-300); }
-.vs-more { position: relative; z-index: 1; display: inline-block; margin-top: 18px; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: .14em; text-transform: uppercase; color: var(--mk-brand); text-decoration: none; }
-@media (max-width: 900px) { .vs { grid-template-columns: 1fr; gap: 18px; } .vs-card { padding: 24px 20px 22px; } .vs-chart { width: 190px; top: 12px; right: 12px; } }
-/* In motion (Ed, 2026-10-17: "Create a beautiful and elegant animation for this section"), once, when the gold card is
-   on screen. Only MAKETZO moves; the red card stays still. The gold edge warms, the arrow draws up the chart and each
-   candle rises as the arrow reaches it, the head flares and a light runs through REAL RESULTS., then each check lights
-   in turn with a gold line drawn under its row, and the link to how it works glows last. The script after the section
-   adds .vs-armed and then .vs-go; without it nothing here applies. The end frame is the static section. Reduce motion
-   keeps the clock: things fade where they would travel or grow. */
-.vs-card--with::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0;
-  box-shadow: inset 0 0 0 1px rgba(243,215,122,.85), inset 0 0 46px rgba(212,175,55,.16), 0 0 42px rgba(212,175,55,.3); }
-.vs-candle { transform-box: fill-box; transform-origin: 50% 100%; }
-.vs-flare { transform-box: fill-box; transform-origin: center; opacity: 0; }
-.vs-card--with .vs-icon { position: relative; }
-.vs-card--with .vs-icon::after { content: ""; position: absolute; inset: -2px; border-radius: 50%; pointer-events: none; opacity: 0;
-  box-shadow: 0 0 22px 4px rgba(255,214,110,.5), inset 0 0 14px rgba(255,214,110,.32); }
-.vs-card--with .vs-list li { position: relative; }
-.vs-card--with .vs-list li::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 1px; pointer-events: none; opacity: 0;
-  transform-origin: 0 50%; background: linear-gradient(90deg, rgba(243,215,122,.95), rgba(212,175,55,.5) 60%, rgba(212,175,55,0)); box-shadow: 0 0 8px rgba(240,200,80,.5); }
-.vs-armed .vs-card--with .vs-title em { background-image: linear-gradient(100deg, rgba(255,250,235,0) 38%, rgba(255,250,235,.85) 50%, rgba(255,250,235,0) 62%), var(--mk-gold-gradient);
-  background-size: 300% 100%, 100% 100%; background-position: 150% 0, 0 0; background-repeat: no-repeat; }
-.vs-armed .vs-candle { transform: scaleY(0); }
-.vs-armed .vs-arrow { mask: url(#vsReveal); }
-.vs-armed .vs-reveal { transform: translateX(-580px); }
-.vs-go .vs-card--with::after { animation: vsSwell 1.6s ease-in-out; }
-.vs-go .vs-reveal { animation: vsDraw 1.4s cubic-bezier(.37, 0, .63, 1) .3s forwards; }
-.vs-go .vs-candle { animation: vsRise .55s cubic-bezier(.22, 1, .36, 1) forwards; }
-.vs-go .vs-candle:nth-child(1) { animation-delay: .91s; }
-.vs-go .vs-candle:nth-child(2) { animation-delay: 1s; }
-.vs-go .vs-candle:nth-child(3) { animation-delay: 1.11s; }
-.vs-go .vs-candle:nth-child(4) { animation-delay: 1.22s; }
-.vs-go .vs-flare { animation: vsFlare 1.1s ease-out 1.3s; }
-.vs-go .vs-card--with .vs-title em { animation: vsShine 1.2s ease-in-out 1.45s; }
-.vs-go .vs-card--with .vs-icon { animation: vsRing 1.2s ease-in-out both; }
-.vs-go .vs-card--with .vs-icon::after { animation: vsSwell 1.4s ease-in-out both; }
-.vs-go .vs-card--with .vs-list li::after { animation: vsUnderline 1.3s cubic-bezier(.22, 1, .36, 1) both; }
-.vs-go .vs-card--with li:nth-child(1) .vs-icon, .vs-go .vs-card--with li:nth-child(1) .vs-icon::after { animation-delay: 2.2s; }
-.vs-go .vs-card--with li:nth-child(2) .vs-icon, .vs-go .vs-card--with li:nth-child(2) .vs-icon::after { animation-delay: 2.8s; }
-.vs-go .vs-card--with li:nth-child(3) .vs-icon, .vs-go .vs-card--with li:nth-child(3) .vs-icon::after { animation-delay: 3.4s; }
-.vs-go .vs-card--with li:nth-child(4) .vs-icon, .vs-go .vs-card--with li:nth-child(4) .vs-icon::after { animation-delay: 4s; }
-.vs-go .vs-card--with li:nth-child(5) .vs-icon, .vs-go .vs-card--with li:nth-child(5) .vs-icon::after { animation-delay: 4.6s; }
-.vs-go .vs-card--with li:nth-child(1)::after { animation-delay: 2.35s; }
-.vs-go .vs-card--with li:nth-child(2)::after { animation-delay: 2.95s; }
-.vs-go .vs-card--with li:nth-child(3)::after { animation-delay: 3.55s; }
-.vs-go .vs-card--with li:nth-child(4)::after { animation-delay: 4.15s; }
-.vs-go .vs-card--with li:nth-child(5)::after { animation-delay: 4.75s; }
-.vs-go .vs-more { animation: vsCall 1.4s ease-in-out 5.3s; }
-@keyframes vsSwell { 0%, 100% { opacity: 0; } 45% { opacity: 1; } }
-@keyframes vsDraw { to { transform: translateX(-200px); } }
-@keyframes vsRise { to { transform: none; } }
-@keyframes vsFlare { 0% { opacity: 0; transform: scale(.4); } 30% { opacity: .9; } 100% { opacity: 0; transform: scale(1.25); } }
-@keyframes vsShine { from { background-position: 150% 0, 0 0; } to { background-position: -50% 0, 0 0; } }
-@keyframes vsRing { 0%, 100% { transform: none; color: var(--mk-brand); } 40% { transform: scale(1.08); color: #fff1c4; } }
-@keyframes vsUnderline { 0% { opacity: 1; transform: scaleX(0); } 55% { opacity: 1; transform: none; } 100% { opacity: 0; transform: none; } }
-@keyframes vsCall { 0%, 100% { text-shadow: none; } 45% { text-shadow: 0 0 14px rgba(240,200,80,.75); color: var(--mk-gold-300); } }
-@media (prefers-reduced-motion: reduce) {
-  .vs-armed .vs-candle { transform: none; opacity: 0; }
-  .vs-armed .vs-arrow { mask: none; opacity: 0; }
-  .vs-go .vs-arrow { animation: vsFadeIn 1.4s ease .3s forwards; }
-  .vs-go .vs-reveal { animation: none; }
-  .vs-go .vs-candle { animation-name: vsFadeIn; }
-  .vs-go .vs-flare { animation-name: vsFlareStill; }
-  .vs-go .vs-card--with .vs-title em { animation: none; }
-  .vs-go .vs-card--with .vs-icon { animation-name: vsRingStill; }
-  .vs-go .vs-card--with .vs-list li::after { animation-name: vsUnderlineStill; }
-  @keyframes vsFadeIn { to { opacity: 1; } }
-  @keyframes vsFlareStill { 0%, 100% { opacity: 0; } 30% { opacity: .9; } }
-  @keyframes vsRingStill { 0%, 100% { color: var(--mk-brand); } 40% { color: #fff1c4; } }
-  @keyframes vsUnderlineStill { 0%, 100% { opacity: 0; } 45% { opacity: 1; } }
-}
 /* how it works: one trading day as a timeline, three numbered stops, each with the app's own screen at that moment.
    Ed's graphic is the look; every value is from a real morning on dev (tools/site-preview/capture-how.js). */
 .hw { list-style: none; position: relative; max-width: 1160px; margin: 44px auto 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 30px; }
@@ -2357,230 +2256,9 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
   .hw-badge::after, .hw-armed .hw-signed::before { display: none; }
 }
 .focus-feature-tag { display: inline-block; margin-left: 8px; vertical-align: middle; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); color: var(--mk-brand); border: 1px solid rgba(212,175,55,.35); border-radius: var(--mk-radius-pill); padding: 2px 8px; }
-/* free tools: four tools, each a gold icon, a name, what it does and one line that sells it; each lands on its own
-   explanation (index section 05, Ed 2026-10-15) */
-.wyg { list-style: none; max-width: 1100px; margin: 40px auto 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
-.wyg-card { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; height: 100%; box-sizing: border-box; padding: 24px 22px 22px; border-radius: 16px; background: rgba(255,255,255,.025); border: 1px solid rgba(255,255,255,.07); text-decoration: none; color: inherit; transition: transform var(--mk-dur-snap) var(--mk-ease-out), border-color var(--mk-dur-snap), background var(--mk-dur-snap); }
-.wyg-icon { flex: none; width: 48px; height: 48px; margin-bottom: 6px; display: grid; place-items: center; border-radius: 50%; color: var(--mk-gold-300); background: radial-gradient(circle at 35% 30%, rgba(240,200,80,.22), rgba(212,175,55,.05)); border: 1px solid rgba(240,200,80,.35); box-shadow: 0 0 16px rgba(240,200,80,.12); }
-.wyg-icon svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-.wyg-name { display: block; font-family: var(--mk-font-display); font-size: 1.5rem; letter-spacing: var(--mk-track-display); text-transform: uppercase; line-height: 1.05; color: var(--mk-text-primary); }
-.wyg-t { display: block; font-size: var(--mk-text-sm); line-height: 1.45; color: var(--mk-text-secondary); }
-.wyg-w { display: block; margin-top: auto; padding-top: 6px; font-size: var(--mk-text-md); font-weight: 600; line-height: 1.35; }
-@media (max-width: 760px) { .wyg { grid-template-columns: 1fr; } }
-/* Trade Replay leads the section (Ed, 2026-10-17: its value is learning to scale in by running what-ifs on past
-   charts, and the section must sell; "SIMPLE to understand immediately"). A wide card, copy at left and one replayed
-   trade at right: buy, add, sell, then the same trade with the add moved to the pullback. The other three below. */
-.wyg-feat { grid-column: 1 / -1; }
-.wyg-feat .wyg-card { position: relative; display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.45fr); align-items: center; gap: 36px; padding: 30px 30px 30px 32px; border-color: rgba(212,175,55,.3); isolation: isolate; background: linear-gradient(150deg, rgba(212,175,55,.06), rgba(255,255,255,.015) 55%, rgba(0,0,0,.18)); }
-/* A still gold haze behind the card (Ed: "some mist or hazy pattern"): soft pools of light, none of them moving. On its own layer, so the card's hover tint lays over it instead of replacing it. */
-.wyg-feat .wyg-card::before { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; pointer-events: none;
-  background: radial-gradient(55% 85% at 6% 0%, rgba(229,197,114,.17), transparent 62%), radial-gradient(40% 60% at 34% 92%, rgba(212,175,55,.08), transparent 70%),
-    radial-gradient(45% 60% at 66% 22%, rgba(255,250,235,.05), transparent 72%), radial-gradient(50% 75% at 98% 100%, rgba(184,148,31,.12), transparent 66%); }
-.wyg-copy { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
-.wyg-feat .wyg-name { font-size: 2rem; }
-.wyg-feat .wyg-t { font-size: var(--mk-text-md); }
-.wyg-feat .wyg-w { margin-top: 0; padding-top: 0; }
-/* The same trade twice, each chart sitting on its own result (Ed, 2026-10-17: "pinning the graph to AS TRADED so
-   it's clear what's being watched. Then pinning the new add to the WHAT IF scenario... It needs to be brainless").
-   The only difference between the two is where the add is. On WHAT IF a faint ring keeps where it was, and the
-   dotted arrow carries it over the top of the chart, clear of the line, down to the pullback. */
-.trp { display: block; }
-.trp-pair { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
-.trp-run { min-width: 0; display: flex; flex-direction: column; gap: 2px; padding: 12px 12px 14px; border-radius: 12px; background: rgba(0,0,0,.3); border: 1px solid rgba(255,255,255,.09); }
-.trp-run--if { background: rgba(212,175,55,.06); border-color: rgba(212,175,55,.4); }
-.trp-chart { display: block; width: 100%; height: auto; margin: 4px 0 6px; overflow: visible; }
-.trp-line { fill: none; stroke: rgba(232,237,233,.78); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-.trp-mk circle { fill: #E8EDE9; stroke: #0b0d0c; stroke-width: 2.2; transform-box: fill-box; transform-origin: center; }
-.trp-mk rect { fill: rgba(13,15,14,.92); stroke: rgba(232,237,233,.22); stroke-width: 1; }
-.trp-mk text { fill: #E8EDE9; font-family: var(--mk-font-mono); font-size: 10.5px; font-weight: 600; letter-spacing: .06em; text-anchor: middle; }
-.trp-mk--buy circle { fill: var(--mk-profit-500); }
-.trp-mk--sell circle { fill: var(--mk-danger-500); }
-.trp-mk--add circle { fill: var(--mk-gold-500); }
-.trp-mk--add rect { stroke: rgba(212,175,55,.6); }
-.trp-mk--add text { fill: var(--mk-gold-400); }
-.trp-mk--add .trp-ring { fill: none; stroke: var(--mk-gold-500); stroke-width: 1.5; opacity: 0; }
-.trp-was { fill: none; stroke: rgba(232,237,233,.7); stroke-width: 1.6; stroke-dasharray: 2 2.2; }
-.trp-move-path { fill: none; stroke: var(--mk-gold-500); stroke-width: 2.2; stroke-linecap: round; stroke-dasharray: 0 5.5; }
-.trp-move-reveal { fill: none; stroke: #fff; stroke-width: 8; stroke-linecap: round; stroke-linejoin: round; }
-.trp-move-head { fill: var(--mk-gold-500); }
-.trp-move-v { fill: var(--mk-gold-400); font-family: var(--mk-font-mono); font-size: 11px; font-weight: 700; letter-spacing: .06em; text-anchor: middle; }
-.trp-k { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); color: var(--mk-text-secondary); }
-.trp-run--if .trp-k { color: var(--mk-gold-400); }
-.trp-how { font-size: var(--mk-text-xs); color: var(--mk-text-secondary); }
-.trp-run--if .trp-how { color: var(--mk-gold-400); }
-.trp-v { font-family: var(--mk-font-mono); font-size: clamp(1.15rem, 5vw, 1.6rem); font-weight: 600; line-height: 1.15; color: #E8EDE9; font-variant-numeric: tabular-nums; }
-.trp-note { display: block; margin-top: 10px; text-align: center; font-size: var(--mk-text-sm); color: var(--mk-text-secondary); }
-@media (max-width: 900px) {
-  .wyg-feat .wyg-card { grid-template-columns: minmax(0, 1fr); gap: 22px; padding: 24px 18px; }
-}
-@media (max-width: 560px) { .trp-pair { grid-template-columns: minmax(0, 1fr); } }
-
-/* The replay plays once, when the charts are half on screen (classes from the script after the section; nothing is
-   armed without it, so the section stands finished). AS TRADED first: its panel lights, the line draws, BUY, the
-   $4.85 add and SELL land, and +$1,000 counts. Then WHAT IF: its panel lights, the same line draws, a faint ring sits
-   where the $4.85 add was, the dotted arrow carries it down to the $4.22 pullback, the gold add lands at its tip, and
-   +$1,630 counts. Every end frame is the static card.
-   The hidden lines use a gap of 2, not 1: "1 1" at offset 1 starts a zero-length dash exactly at the path's end, and a
-   round cap draws that as a dot, so WHAT IF showed two stray dots while it waited its turn (Ed, 2026-11-10: "Trade
-   Replay loads random dots initially"). A gap longer than the path starts no dash inside it; the draw is unchanged. */
-.tk-armed .trp-line { stroke-dasharray: 1 2; stroke-dashoffset: 1; }
-.tk-armed .trp-mk circle { scale: 0; }
-.tk-armed .trp-mk :is(rect, text) { opacity: 0; }
-.tk-armed :is(.trp-was, .trp-move-head, .trp-move-v) { opacity: 0; }
-.tk-armed .trp-move-reveal { stroke-dasharray: 1 2; stroke-dashoffset: 1; }
-.tk-go .trp-run--as { animation: trpOnAs 3.4s ease; }
-.tk-go .trp-run--as .trp-line { animation: trpDraw 2.4s linear forwards; }
-.tk-go .trp-run--as .trp-mk--buy circle { animation: trpPop .5s cubic-bezier(.3,1.5,.5,1) .38s forwards; }
-.tk-go .trp-run--as .trp-mk--buy :is(rect, text) { animation: trpIn .5s ease .5s forwards; }
-.tk-go .trp-run--as .trp-mk--was circle { animation: trpPop .5s cubic-bezier(.3,1.5,.5,1) 1.62s forwards; }
-.tk-go .trp-run--as .trp-mk--was :is(rect, text) { animation: trpIn .5s ease 1.74s forwards; }
-.tk-go .trp-run--as .trp-mk--sell circle { animation: trpPop .5s cubic-bezier(.3,1.5,.5,1) 1.83s forwards; }
-.tk-go .trp-run--as .trp-mk--sell :is(rect, text) { animation: trpIn .5s ease 1.95s forwards; }
-.tk-go .trp-run--if { animation: trpOnIf 5s ease 3.4s; }
-.tk-go .trp-run--if .trp-line { animation: trpDraw 1.6s linear 3.4s forwards; }
-.tk-go .trp-run--if .trp-mk--buy circle { animation: trpPop .5s cubic-bezier(.3,1.5,.5,1) 3.66s forwards; }
-.tk-go .trp-run--if .trp-mk--buy :is(rect, text) { animation: trpIn .5s ease 3.78s forwards; }
-.tk-go .trp-run--if .trp-mk--sell circle { animation: trpPop .5s cubic-bezier(.3,1.5,.5,1) 4.62s forwards; }
-.tk-go .trp-run--if .trp-mk--sell :is(rect, text) { animation: trpIn .5s ease 4.74s forwards; }
-.tk-go .trp-was { animation: trpIn .5s ease 4.48s forwards; }
-.tk-go .trp-move-reveal { animation: trpDraw 1.3s cubic-bezier(.65,0,.35,1) 5.2s forwards; }
-.tk-go .trp-move-head { animation: trpIn .3s ease 6.35s forwards; }
-.tk-go .trp-mk--add > circle:not(.trp-ring) { animation: trpPop .5s cubic-bezier(.3,1.5,.5,1) 6.5s forwards; }
-.tk-go .trp-mk--add :is(rect, text) { animation: trpIn .5s ease 6.65s forwards; }
-.tk-go .trp-ring { animation: trpRipple 1s ease-out 6.55s; }
-.tk-go .trp-move-v { animation: trpIn .5s ease 6.7s forwards; }
-.tk-go .trp-note { animation: trpSay 1.8s ease 7.8s; }
-@keyframes trpDraw { to { stroke-dashoffset: 0; } }
-@keyframes trpIn { to { opacity: 1; } }
-@keyframes trpPop { to { scale: 1; } }
-@keyframes trpRipple { from { opacity: .9; scale: 1; } to { opacity: 0; scale: 2.8; } }
-@keyframes trpOnAs { 12%, 80% { border-color: rgba(232,237,233,.5); box-shadow: 0 0 22px rgba(232,237,233,.08); } }
-@keyframes trpOnIf { 10%, 85% { border-color: rgba(212,175,55,.8); box-shadow: 0 0 26px rgba(212,175,55,.2); } }
-@keyframes trpSay { 40% { color: var(--mk-text-primary); text-shadow: 0 0 14px rgba(212,175,55,.45); } }
-
-/* Then the three below, one at a time (about 1.8 s a stop): the card lights, and its icon does its job once. The
-   clock's hand goes round, the book opens a little, the note writes its lines. */
-.wyg li:not(.wyg-feat) .wyg-card.is-lit { animation: wygLit 1.8s ease; }
-.wyg .is-lit .wyg-icon { animation: wygIcon 1.8s ease; }
-.wyg-hand, .wyg-pg { transform-box: view-box; }
-.wyg-hand { transform-origin: 12px 12px; }
-.wyg-pg { transform-origin: 12px 20px; }
-.wyg .is-lit .wyg-hand { animation: wygHand 1.4s cubic-bezier(.45,0,.2,1) .15s; }
-.wyg .is-lit .wyg-pg--l { animation: wygPgL 1.3s ease .15s; }
-.wyg .is-lit .wyg-pg--r { animation: wygPgR 1.3s ease .15s; }
-.wyg .is-lit .wyg-ln { stroke-dasharray: 1 2; animation: wygWrite 1s ease .15s both; } /* gap 2: see .tk-armed .trp-line */
-@keyframes wygLit { 35% { border-color: rgba(240,200,80,.55); box-shadow: 0 0 26px rgba(240,200,80,.12); } }
-@keyframes wygIcon { 35% { box-shadow: 0 0 26px rgba(240,200,80,.4); } }
-@keyframes wygHand { to { rotate: 360deg; } }
-@keyframes wygPgL { 45% { rotate: -9deg; } }
-@keyframes wygPgR { 45% { rotate: 9deg; } }
-@keyframes wygWrite { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
-
-/* Reduce motion: the same story on the same clock, without the pops, the glide or the ripple. The dots fade in, the
-   add fades out where it was and back in at the pullback, and the icons only light. */
-@media (prefers-reduced-motion: reduce) {
-  .tk-armed .trp-mk circle { scale: 1; opacity: 0; }
-  .tk-armed .trp-mk--add .trp-ring { opacity: 0; }
-  .tk-go .trp-run :is(.trp-mk--buy, .trp-mk--sell, .trp-mk--was) circle { animation-name: trpIn; animation-timing-function: ease; }
-  .tk-go .trp-mk--add > circle:not(.trp-ring) { animation-name: trpIn; animation-timing-function: ease; }
-  .tk-go .trp-ring { animation: none; }
-  .wyg .is-lit :is(.wyg-hand, .wyg-pg) { animation: none; }
-  .wyg .is-lit .wyg-ln { animation: none; stroke-dasharray: none; }
-}
-/* the soundtrack (index section 06), built to Ed's graphic (tools/site-preview/mock-section-06.png): copy at left;
-   at right a glass player slab in perspective, a satin vinyl record and two equaliser groups behind it, a glossy floor
-   under it. */
-.section.section-dark.sp-section { overflow: hidden; background: #0e1012; }
-.sp-inner { position: relative; max-width: 1536px; padding: 0 0 0 min(5.2vw, 80px); display: grid; grid-template-columns: minmax(0, 630fr) minmax(0, 826fr); gap: 0; align-items: center; }
-.sp-copy { padding-right: 24px; }
-.sp-inner > .section-eyebrow { grid-column: 1 / -1; }
-.sp-copy { min-width: 0; }
-.sp-title { margin: 0 0 30px; font-family: var(--mk-font-display); font-weight: 400; font-size: clamp(2.6rem, 5.3vw, 5.2rem); line-height: .95; letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); }
-.sp-lede { margin: 0 0 24px; font-size: clamp(1.15rem, 1.75vw, 1.65rem); line-height: 1.4; color: var(--mk-text-primary); }
-.sp-body { margin: 0 0 18px; font-size: clamp(1rem, 1.3vw, 1.25rem); line-height: 1.6; color: var(--mk-text-secondary); }
-.sp-cue { display: flex; align-items: center; gap: 26px; margin: 30px 0; padding: 22px 28px; border-radius: 16px; border: 1px solid rgba(212,175,55,.35); border-left: 3px solid var(--mk-gold-500); background: linear-gradient(90deg, rgba(212,175,55,.12), rgba(212,175,55,.02) 70%); box-shadow: 0 0 24px rgba(212,175,55,.08); }
-.sp-cue svg { flex: none; width: 36px; height: 36px; fill: none; stroke: var(--mk-gold-500); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 0 8px rgba(212,175,55,.35)); }
-.sp-cue p { margin: 0; font-size: clamp(1rem, 1.25vw, 1.2rem); line-height: 1.55; color: var(--mk-text-primary); }
-.sp-cue em { font-weight: 600; }
-.sp-tag { margin: 34px 0 0; padding-top: 30px; border-top: 1px solid rgba(212,175,55,.3); font-family: var(--mk-font-mono); font-size: 14px; letter-spacing: .26em; color: var(--mk-gold-400); }
-/* the player: the shared root (play, seek, time, analytics), its own frame removed */
-.mk-audio-player.sp-player { position: relative; padding: 0; border-radius: 0; background: none; box-shadow: none; }
-.sp-player .sp-list { display: none; }
-/* the scene: the mockup's render as the backdrop, the live card mapped onto its card, scaled as one piece */
-.sp-scene-box { position: relative; width: 100%; aspect-ratio: 820 / 964; }
-.sp-scene { position: absolute; left: 0; top: 0; width: 820px; height: 964px; transform-origin: 0 0; transform: scale(var(--sp-k, .84)); }
-.sp-scene::before { content: ""; position: absolute; inset: 0; background: url("assets/soundtrack/stage.jpg") 0 0 / 820px 964px no-repeat;
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 94%, transparent), linear-gradient(180deg, transparent, #000 5%, #000 90%, transparent); -webkit-mask-composite: source-in;
-  mask-image: linear-gradient(90deg, transparent, #000 7%, #000 94%, transparent), linear-gradient(180deg, transparent, #000 5%, #000 90%, transparent); mask-composite: intersect; }
-.sp-card { position: absolute; left: 0; top: 0; width: 727px; height: 466px; transform-origin: 0 0; transform: matrix3d(0.87480763, -0.02706622, 0, -0.00016128, -0.00227719, 0.99799714, 0, -0.00000295, 0, 0, 1, 0, 45.5, 213, 0, 1); }
-.sp-art { position: absolute; left: 33px; top: 51px; width: 368px; height: 364px; border-radius: 14px; overflow: hidden; border: 1px solid rgba(212,175,55,.32); box-shadow: 0 0 0 1px rgba(0,0,0,.55), 0 0 18px rgba(212,175,55,.12); }
-.sp-art img { display: block; width: 100%; height: 100%; object-fit: cover; }
-.sp-main { position: absolute; left: 439px; top: 90px; width: 258px; }
-.sp-player .sp-k { margin: 0 0 18px; white-space: nowrap; font-size: 12px; letter-spacing: .16em; color: var(--mk-gold-400); }
-.sp-player .sp-name { max-width: 195px; margin: 0; font-family: var(--mk-font-sans); font-weight: 600; font-size: 29px; line-height: 1.13; letter-spacing: -.015em; text-transform: none; color: var(--mk-text-primary); }
-.sp-sub { margin: 14px 0 0; white-space: nowrap; font-family: var(--mk-font-mono); font-size: 11.5px; letter-spacing: .12em; color: #8d8a84; }
-.sp-player .sp-bar { margin-top: 28px; height: 4px; border-radius: 4px; background: rgba(255,255,255,.16); cursor: pointer; }
-.sp-player .sp-bar .mk-audio-player__progress { position: relative; height: 100%; border-radius: 4px; background: var(--mk-gold-500); box-shadow: 0 0 10px rgba(212,175,55,.5); }
-.sp-player .sp-bar .mk-audio-player__progress::after { content: ""; position: absolute; right: -6px; top: 50%; width: 12px; height: 12px; margin-top: -6px; border-radius: 50%; background: var(--mk-gold-500); box-shadow: 0 0 10px rgba(212,175,55,.7); }
-.sp-time { display: flex; justify-content: space-between; margin-top: 12px; font-family: var(--mk-font-sans); font-size: 13px; color: #9a968f; }
-.sp-controls { display: flex; align-items: center; justify-content: center; gap: 30px; margin-top: 10px; }
-.sp-player .mk-audio-player__play { width: 78px; height: 78px; background: var(--mk-gold-gradient); color: #0b0b0b; box-shadow: 0 0 30px rgba(212,175,55,.35), inset 0 1px 0 rgba(255,255,255,.35); }
-.sp-player .mk-audio-player__play svg { width: 28px; height: 28px; }
-.sp-skip { display: grid; place-items: center; width: 40px; height: 40px; border: 0; border-radius: 50%; background: none; color: var(--mk-text-primary); cursor: pointer; transition: color var(--mk-dur-snap), transform var(--mk-dur-snap) var(--mk-ease-out); }
-.sp-skip:hover { color: var(--mk-gold-300); transform: scale(1.1); }
-.sp-skip:focus-visible { outline: 2px solid var(--mk-brand); outline-offset: 3px; }
-.sp-skip svg { width: 22px; height: 22px; fill: currentColor; }
-/* The song starts (Ed, 2026-10-17: "a beautiful and elegant animation for The Soundtrack section"). The equaliser is
-   lifted out of the graphic onto its own layer (eq.png, cut by tools/site-preview/make-stage-06.js) and added back with
-   plus-lighter, so at rest the scene is the graphic exactly. Once per visit the bars rise out from the record on the
-   beat while the record's hot edge glows with them, then the play button and the cue's note invite the press. While
-   the song really plays, the bars dance and the edge breathes; pause and they rest. Nothing is ever hidden. */
-.sp-eq { position: absolute; left: 100px; top: 40px; width: 700px; height: 175px; background: url("assets/soundtrack/eq.png") 0 0 / 700px 175px no-repeat; mix-blend-mode: plus-lighter; pointer-events: none; }
-.sp-eq.is-split { background: none; }
-.sp-eq i { position: absolute; left: calc(var(--l) * 1px); top: calc(var(--t) * 1px); width: calc(var(--w) * 1px); height: calc(var(--h) * 1px); background: url("assets/soundtrack/eq.png") calc(var(--l) * -1px) calc(var(--t) * -1px) / 700px 175px no-repeat; transform-origin: 50% 100%; }
-.sp-glow { position: absolute; left: 495px; top: 10px; width: 290px; height: 210px; border-radius: 50%; background: radial-gradient(closest-side, rgba(229,197,114,.5), rgba(212,175,55,.15) 55%, rgba(212,175,55,0)); mix-blend-mode: plus-lighter; opacity: 0; pointer-events: none; }
-.sp-player .mk-audio-player__play { position: relative; }
-.sp-player .mk-audio-player__play::after { content: ""; position: absolute; inset: 0; border-radius: 50%; border: 2px solid rgba(229,197,114,.85); opacity: 0; pointer-events: none; }
-.sp-go .sp-eq i { animation: spEqA 3.2s ease-in-out calc(var(--d) * 45ms) both; }
-.sp-go .sp-eq i:nth-child(3n+2) { animation-name: spEqB; }
-.sp-go .sp-eq i:nth-child(3n) { animation-name: spEqC; }
-.sp-go .sp-glow { animation: spGlowIn 3.6s ease-in-out both; }
-.sp-go .sp-player .mk-audio-player__play::after { animation: spInvite 1.1s cubic-bezier(.2, .7, .3, 1) 3.3s 2; }
-.sp-go .sp-cue svg { animation: spNote 1.1s ease-in-out 3.3s 2; }
-.sp-section .sp-player.is-playing .sp-eq i { animation: spEqPlay .5s ease-in-out calc(var(--d) * -97ms) infinite alternate; }
-.sp-section .sp-player.is-playing .sp-eq i:nth-child(3n+2) { animation-duration: .38s; }
-.sp-section .sp-player.is-playing .sp-eq i:nth-child(3n) { animation-duration: .62s; }
-.sp-section .sp-player.is-playing .sp-glow { animation: spGlowPlay 1.25s ease-in-out infinite alternate; }
-@keyframes spEqA { 0%, 100% { transform: none; } 14% { transform: scaleY(1.32); } 28% { transform: scaleY(.72); } 42% { transform: scaleY(1.22); } 56% { transform: scaleY(.84); } 70% { transform: scaleY(1.1); } 84% { transform: scaleY(.95); } }
-@keyframes spEqB { 0%, 100% { transform: none; } 14% { transform: scaleY(1.18); } 28% { transform: scaleY(.8); } 42% { transform: scaleY(1.34); } 56% { transform: scaleY(.88); } 70% { transform: scaleY(1.06); } 84% { transform: scaleY(.97); } }
-@keyframes spEqC { 0%, 100% { transform: none; } 14% { transform: scaleY(1.26); } 28% { transform: scaleY(.86); } 42% { transform: scaleY(1.14); } 56% { transform: scaleY(.78); } 70% { transform: scaleY(1.14); } 84% { transform: scaleY(.94); } }
-@keyframes spEqPlay { from { transform: scaleY(.62); } to { transform: scaleY(1.28); } }
-@keyframes spGlowIn { 0%, 100% { opacity: 0; } 14% { opacity: .6; } 28% { opacity: .22; } 42% { opacity: .55; } 56% { opacity: .25; } 70% { opacity: .4; } }
-@keyframes spGlowPlay { from { opacity: .12; } to { opacity: .42; } }
-@keyframes spInvite { from { opacity: .9; transform: none; } to { opacity: 0; transform: scale(1.75); } }
-@keyframes spNote { 0%, 100% { transform: none; } 30% { transform: translateY(-3px) rotate(-6deg) scale(1.08); } 60% { transform: rotate(3deg); } }
-/* reduce motion: the same clock, nothing moves; the edge still glows on the beat and the button's ring lights in place */
-@media (prefers-reduced-motion: reduce) {
-  .sp-go .sp-eq i, .sp-section .sp-player.is-playing .sp-eq i, .sp-go .sp-cue svg, .sp-section .sp-player.is-playing .sp-glow { animation: none; }
-  .sp-player .mk-audio-player__play::after { transform: scale(1.14); }
-  .sp-go .sp-player .mk-audio-player__play::after { animation-name: spInviteStill; animation-timing-function: ease-in-out; }
-}
-@keyframes spInviteStill { 0%, 100% { opacity: 0; } 45% { opacity: .85; } }
-/* phones: the card stands upright on its own, no backdrop */
-@media (max-width: 900px) {
-  .sp-eq, .sp-glow { display: none; }
-  .sp-inner { grid-template-columns: 1fr; gap: 16px; padding: 0 24px; }
-  .sp-copy { padding-right: 0; }
-  .sp-scene-box { aspect-ratio: auto; margin-top: 28px; }
-  .sp-scene { position: relative; width: auto; height: auto; transform: none; }
-  .sp-scene::before { display: none; }
-  .sp-card { position: relative; width: auto; height: auto; max-width: 440px; margin: 0 auto; transform: none; display: grid; gap: 22px; padding: 24px; border-radius: 22px; background: linear-gradient(165deg, #23211d, #121213 45%, #0d0d0e); border: 1px solid rgba(212,175,55,.3); box-shadow: inset 0 -1px 0 rgba(255,210,110,.45), 0 20px 50px rgba(0,0,0,.6), 0 0 40px rgba(212,175,55,.1); }
-  .sp-art { position: relative; left: auto; top: auto; width: 100%; height: auto; aspect-ratio: 1; }
-  .sp-main { position: relative; left: auto; top: auto; width: auto; }
-}
-.wyg-line, .sec-more { text-align: center; max-width: 760px; margin: 28px auto 0; font-size: var(--mk-text-sm); color: var(--mk-text-secondary); line-height: 1.6; }
+.sec-more { text-align: center; max-width: 760px; margin: 28px auto 0; font-size: var(--mk-text-sm); color: var(--mk-text-secondary); line-height: 1.6; }
 /* the deeper links: a gold underlined word wherever a feature is named in running copy */
-.wyg-line a, .sec-more a, .faq-a a, .proof-sub a { color: var(--mk-brand); border-bottom: 1px solid rgba(212,175,55,.4); text-decoration: none; }
+.sec-more a, .faq-a a, .proof-sub a { color: var(--mk-brand); border-bottom: 1px solid rgba(212,175,55,.4); text-decoration: none; }
 @media (max-width: 900px) { .phero { padding: 112px 20px 48px; } .phero-grid { grid-template-columns: 1fr; gap: 32px; } }
 
 /* h1: the photo hero with the dashboard over its right half */
@@ -2614,15 +2292,15 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
 <!-- MOBILE DRAWER -->
 <div class="mobile-drawer" id="mobileDrawer">
   <ul class="mobile-drawer-links">
-    <li><a href="system.html" onclick="closeDrawer()">The System</a></li>
     <li><a href="journal.html" onclick="closeDrawer()">Journal</a></li>
+    <li><a href="system.html" onclick="closeDrawer()">The System</a></li>
     <li><a href="focus.html" onclick="closeDrawer()">Focus Room</a></li>
     <li><a href="tools.html" onclick="closeDrawer()">Free Tools</a></li>
     <li><a href="/blog" onclick="closeDrawer()">Blog</a></li>
     <li><a href="pricing.html" onclick="closeDrawer()">Pricing</a></li>
     <li><a href="/app" onclick="closeDrawer()"><span class="nav-auth-out">Log In</span><span class="nav-auth-in">LAUNCH</span></a></li>
   </ul>
-  <button class="mobile-drawer-cta" onclick="handleCheckout('pro',{preventDefault:()=>{}});closeDrawer()">Start Free Trial &rarr;</button>
+  <button class="mobile-drawer-cta" data-cta-source="drawer" onclick="handleCheckout('pro',{preventDefault:()=>{}});closeDrawer()">Start Free Trial &rarr;</button>
 </div>
 
 <!-- NAV -->
@@ -2632,51 +2310,42 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
     <img class="mk-brand-lockup__wordmark" src="assets/logo-wordmark.png" alt="MAKETZO">
   </a>
   <ul class="nav-links">
-    <li><a href="system.html">The System</a></li>
     <li><a href="journal.html">Journal</a></li>
+    <li><a href="system.html">The System</a></li>
     <li><a href="focus.html">Focus Room</a></li>
     <li><a href="tools.html">Free Tools</a></li>
     <li><a href="/blog">Blog</a></li>
     <li><a href="pricing.html">Pricing</a></li>
     <li><a href="/app" class="nav-login-btn"><span class="nav-auth-out">Log In</span><span class="nav-auth-in">LAUNCH</span></a></li>
-    <li><button class="nav-cta" onclick="handleCheckout('pro',event)">Start Free Trial</button></li>
+    <li><button class="nav-cta" data-cta-source="nav" onclick="handleCheckout('pro',event)">Start Free Trial</button></li>
   </ul>
-  <button class="nav-cta nav-cta--phone" onclick="handleCheckout('pro',event)">Free Trial</button>
+  <button class="nav-cta nav-cta--phone" data-cta-source="nav-phone" onclick="handleCheckout('pro',event)">Free Trial</button>
   <button class="hamburger" id="hamburger" onclick="toggleDrawer()" aria-label="Menu"><span></span><span></span><span></span></button>
 </nav>
 
 <!-- HERO — FULL-BLEED CINEMATIC -->
 <section class="hero">
   <picture class="hero-bg" aria-hidden="true">
-    <source srcset="assets/hero-trader.avif" type="image/avif">
-    <source srcset="assets/hero-trader.webp" type="image/webp">
-    <img src="assets/hero-trader.png" alt="A focused trader at a multi-monitor desk with MAKETZO's real-time discipline guardrails" width="1606" height="979" fetchpriority="high" decoding="async">
+    <source srcset="assets/hero-trader-clean.avif" type="image/avif">
+    <source srcset="assets/hero-trader-clean.webp" type="image/webp">
+    <img src="assets/hero-trader-clean.png" alt="A focused day trader at a multi-monitor desk" width="1112" height="979" fetchpriority="high" decoding="async">
   </picture>
   <div class="hero-scrim" aria-hidden="true"></div>
 
   <div class="hero-content">
-    <div class="hero-badge"><span class="badge-dot"></span>The accountability system retail traders actually need</div>
-    <h1 class="hero-headline">You know the rules.<br>You break them <em>anyway.</em></h1>
-    <span class="hero-stop"><span class="power-pulse">MAKETZO STOPS THAT.</span></span>
-    <p class="hero-sub">You've read the books, joined the communities, learned the setups. And yet you still lose… <strong>to yourself.</strong> MAKETZO is the external enforcement system that holds the line when willpower doesn't.</p>
+    <div class="hero-badge"><span class="badge-dot"></span>TRADING JOURNAL + LIVE DISCIPLINE SYSTEM</div>
+    <h1 class="hero-headline">Your journal is a day late.<br><em>MAKETZO gets there before the damage.</em></h1>
+    <p class="hero-sub">MAKETZO is a trading journal that starts before the bell. Sign your rules before the open, type your P&amp;L as you trade, and it counts your strikes, warns you before the last one, and calls the day when your rules say stop.</p>
     <div class="hero-ctas">
-      <button class="btn-primary" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
+      <button class="btn-primary" data-cta-source="hero" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
       <a href="#see-it-work" class="btn-secondary" data-shiw>&#9654; See How It Works</a>
     </div>
+    <p class="hero-terms">Pro free for 7 days, then $49 a month. Card required, cancel anytime. <a href="#pricing" data-cta-source="hero-journal" data-cta-target="pricing">Journal only: $19.95 a month&nbsp;&rarr;</a></p>
     <div class="hero-proof">
       <div class="proof-row"><div class="proof-icon-wrap">&#9733;</div><div class="proof-text-wrap"><div class="proof-title">&ldquo;Stopped revenge trading in week two.&rdquo;</div><div class="proof-sub">From a real review. <a href="#reviews">Read them all &darr;</a></div></div></div>
       <div class="proof-row">
-        <div class="proof-icon-wrap">&#9889;</div>
-        <div class="proof-text-wrap"><div class="proof-title">7 days free, full access</div><div class="proof-sub">Test everything, risk-free</div></div>
-      </div>
-      <div class="proof-row">
-        <div class="proof-icon-wrap">&#10003;</div>
-        <div class="proof-text-wrap"><div class="proof-title">Cancel anytime</div><div class="proof-sub">No commitment, no phone call</div></div>
-      </div>
-      <div class="proof-row">
         <div class="proof-icon-wrap">&#9997;</div>
         <div class="proof-text-wrap"><div class="proof-title">No broker connection needed</div><div class="proof-sub">Type your P&amp;L after each trade. Connect DAS when you want.</div></div>
-      </div>
     </div>
   </div>
 </section>
@@ -2691,89 +2360,48 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
   <button class="sticky-bar-close" onclick="closeStickyBar()" aria-label="Close">&times;</button>
 </div>
 
-<!-- 01 THE PROBLEM -->
+<!-- 01 THE DIFFERENCE AT 10:42: the duel from /journal (assets/css/moment.css + assets/js/moment-duel.js, shared) -->
 <hr class="mk-rule-gold">
 
-<section class="section" id="why">
+<section class="section section-dark only only--moment duel" id="the-moment">
   <div class="section-inner">
-    <p class="section-eyebrow reveal">01 &middot; Why MAKETZO</p>
-    <h2 class="section-title reveal">You don't have a <em>strategy</em> problem.</h2>
-    <p class="section-sub vs-sub reveal">Every retail trader who keeps losing has the same diagnosis: they know exactly what to do. They just can't make themselves do it when it counts. That's not a knowledge gap. That's a <strong>discipline gap</strong>. And no journal alone fixes that.</p>
-    <!-- Without / With MAKETZO, from Ed's mock (2026-10-15); the three time-stamped pain cards read as a story that made no sense in order -->
-    <div class="vs reveal">
-      <div class="vs-card vs-card--without">
-        <span class="mk-pill mk-pill--danger vs-pill">WITHOUT MAKETZO</span>
-        <h3 class="vs-title">Good intentions. <em>Same outcome.</em></h3>
-        <ul class="vs-list">
-          <li><span class="vs-icon" aria-hidden="true">&#10005;</span>You know your rules, and break them in the moment</li>
-          <li><span class="vs-icon" aria-hidden="true">&#10005;</span>You revenge trade after a loss</li>
-          <li><span class="vs-icon" aria-hidden="true">&#10005;</span>You chase extended moves when you know you shouldn't</li>
-          <li><span class="vs-icon" aria-hidden="true">&#10005;</span>You blow up a good week in one bad afternoon</li>
-          <li><span class="vs-icon" aria-hidden="true">&#10005;</span>Your journal is a graveyard of good intentions</li>
-        </ul>
-      </div>
-      <div class="vs-card vs-card--with">
-        <svg class="vs-chart" viewBox="0 0 300 200" aria-hidden="true" focusable="false">
-          <defs>
-            <linearGradient id="vsCandle" gradientUnits="userSpaceOnUse" x1="0" y1="60" x2="0" y2="180"><stop offset="0" stop-color="#E5C572" stop-opacity=".78"/><stop offset=".5" stop-color="#D4AF37" stop-opacity=".4"/><stop offset="1" stop-color="#B8941F" stop-opacity="0"/></linearGradient>
-            <linearGradient id="vsGhost" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#D4AF37" stop-opacity="0"/><stop offset=".3" stop-color="#D4AF37" stop-opacity=".11"/><stop offset="1" stop-color="#D4AF37" stop-opacity="0"/></linearGradient>
-            <linearGradient id="vsArrow" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#D4AF37" stop-opacity=".55"/><stop offset=".5" stop-color="#E5C572"/><stop offset="1" stop-color="#FFF1B8"/></linearGradient>
-            <linearGradient id="vsRevealFade"><stop offset=".9167" stop-color="#fff"/><stop offset="1" stop-color="#000"/></linearGradient>
-            <mask id="vsReveal" maskUnits="userSpaceOnUse" x="-40" y="-40" width="380" height="280"><rect class="vs-reveal" x="-40" y="-40" width="600" height="280" fill="url(#vsRevealFade)"/></mask>
-            <radialGradient id="vsFlare"><stop offset="0" stop-color="#FFF6D6"/><stop offset=".3" stop-color="#F3D77A" stop-opacity=".55"/><stop offset="1" stop-color="#D4AF37" stop-opacity="0"/></radialGradient>
-            <filter id="vsBloom" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur in="SourceGraphic" stdDeviation="10" result="wide"/><feGaussianBlur in="SourceGraphic" stdDeviation="3" result="tight"/><feMerge><feMergeNode in="wide"/><feMergeNode in="wide"/><feMergeNode in="tight"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-          </defs>
-          <!-- faint tall columns behind, for depth, as in the mock -->
-          <g class="vs-ghosts">
-            <rect x="175" y="50" width="28" height="130"/>
-            <rect x="216" y="18" width="29" height="162"/>
-          </g>
-          <!-- four wide candles cascading up, crisp, fading into the divider line; tops sit just under the arrow -->
-          <g class="vs-candles">
-            <g class="vs-candle"><path class="vs-wick" d="M148 150 V157 M148 176 V180"/><rect class="vs-body" x="134" y="157" width="28" height="19"/><path class="vs-cap" d="M134 157 H162"/></g>
-            <g class="vs-candle"><path class="vs-wick" d="M189 129 V137 M189 172 V180"/><rect class="vs-body" x="175" y="137" width="28" height="35"/><path class="vs-cap" d="M175 137 H203"/></g>
-            <g class="vs-candle"><path class="vs-wick" d="M230.5 100 V109 M230.5 166 V180"/><rect class="vs-body" x="216" y="109" width="29" height="57"/><path class="vs-cap" d="M216 109 H245"/></g>
-            <g class="vs-candle"><path class="vs-wick" d="M271 67 V77 M271 158 V180"/><rect class="vs-body" x="257" y="77" width="28" height="81"/><path class="vs-cap" d="M257 77 H285"/></g>
-          </g>
-          <g class="vs-arrow" filter="url(#vsBloom)">
-            <path class="vs-arrow-body" d="M18 172.7 L 23.9 172.6 L 29.7 172.3 L 35.6 172 L 41.4 171.5 L 47.2 170.9 L 52.9 170.2 L 58.6 169.4 L 64.3 168.5 L 70 167.4 L 75.6 166.3 L 81.2 165 L 86.8 163.6 L 92.4 162.1 L 97.9 160.5 L 103.4 158.8 L 108.8 157 L 114.2 155.1 L 119.6 153.1 L 124.9 151 L 130.2 148.8 L 135.5 146.5 L 140.7 144.1 L 145.9 141.6 L 151.1 139 L 156.2 136.3 L 161.2 133.5 L 166.3 130.6 L 171.2 127.6 L 176.2 124.6 L 181.1 121.4 L 185.9 118.2 L 190.7 114.8 L 195.5 111.4 L 200.2 107.9 L 204.9 104.3 L 209.5 100.6 L 214.1 96.9 L 218.6 93 L 223.1 89.1 L 227.5 85.1 L 231.8 81.1 L 236.2 76.9 L 240.4 72.7 L 244.6 68.4 L 248.8 64 L 252.9 59.6 L 256.9 55 L 260.9 50.4 L 255.1 45.6 L 251.3 50.2 L 247.4 54.7 L 243.5 59.1 L 239.5 63.5 L 235.4 67.8 L 231.3 72.1 L 227.2 76.2 L 223 80.3 L 218.7 84.4 L 214.4 88.3 L 210 92.2 L 205.6 96 L 201.2 99.7 L 196.7 103.3 L 192.1 106.9 L 187.5 110.4 L 182.8 113.7 L 178.1 117 L 173.4 120.3 L 168.6 123.4 L 163.7 126.4 L 158.9 129.4 L 153.9 132.2 L 148.9 135 L 143.9 137.7 L 138.9 140.3 L 133.8 142.8 L 128.6 145.2 L 123.4 147.5 L 118.2 149.7 L 112.9 151.8 L 107.6 153.8 L 102.3 155.7 L 96.9 157.5 L 91.5 159.2 L 86.1 160.8 L 80.6 162.2 L 75 163.6 L 69.5 164.9 L 63.9 166.1 L 58.3 167.1 L 52.6 168.1 L 46.9 168.9 L 41.2 169.6 L 35.4 170.2 L 29.6 170.7 L 23.8 171.1 L 18 171.3 Z"/>
-            <path class="vs-arrow-head" d="M273.4 29.6 L 265.9 57.2 L 247.5 41.8 Z"/>
-          </g>
-          <circle class="vs-flare" cx="263" cy="42" r="34" fill="url(#vsFlare)"/>
-        </svg>
-        <span class="mk-pill mk-pill--brand vs-pill">WITH MAKETZO</span>
-        <h3 class="vs-title">Discipline. <em>Real results.</em></h3>
-        <ul class="vs-list">
-          <li><span class="vs-icon" aria-hidden="true">&#10003;</span>Your rules are enforced while the day is live, not filed away</li>
-          <li><span class="vs-icon" aria-hidden="true">&#10003;</span>Strikes and checkpoints stop a bad day before it compounds</li>
-          <li><span class="vs-icon" aria-hidden="true">&#10003;</span>COACH SAYS tells you to sit down, and you listen</li>
-          <li><span class="vs-icon" aria-hidden="true">&#10003;</span>Checkpoints protect your week on autopilot</li>
-          <li><span class="vs-icon" aria-hidden="true">&#10003;</span>Your journal shows exactly why you win and lose</li>
-        </ul>
-        <a class="vs-more" href="system.html#the-moment" data-cta-source="why" data-cta-target="system-the-moment">How checkpoints and strikes work&nbsp;&rarr;</a>
-      </div>
+    <div class="only-head">
+      <p class="section-eyebrow duel-eyebrow reveal">01 &middot; The Difference at 10:42</p>
+      <h2 class="section-title duel-title reveal">Same trader. Same Tuesday.<br><em>Two journals.</em></h2>
     </div>
+    <div class="moment moment--duel reveal">
+      <article class="moment-card moment-card--them" aria-label="Any other journal, the next morning">
+        <header class="moment-bar"><span>Any other journal</span><span>Wednesday &middot; 7:10 AM</span></header>
+        <div class="moment-entry">
+          <div class="moment-row"><span class="moment-k">Tuesday</span><span class="moment-v moment-v--loss">&minus;$1,140.00</span></div>
+          <div class="moment-row"><span class="moment-k">Tags</span><span class="moment-v"><i class="moment-tag">revenge</i><i class="moment-tag">oversized</i><i class="moment-tag">past max loss</i></span></div>
+          <div class="moment-row"><span class="moment-k">Note</span><span class="moment-v">Two stops by 10:40. Sized up on the third to get it back. I knew better.</span></div>
+          <div class="moment-row"><span class="moment-k">Lesson</span><span class="moment-v">Stop after two. Same lesson as last month.</span></div>
+        </div>
+        <p class="moment-verdict">Accurate. Searchable. A day late.</p>
+      </article>
+      <span class="duel-arrow" aria-hidden="true"><svg viewBox="0 0 40 48" focusable="false"><path d="M6 6l14 18L6 42"/><path d="M20 6l14 18-14 18"/></svg></span>
+      <article class="moment-card moment-card--us duel-us" aria-label="MAKETZO, live at 10:42">
+        <header class="moment-bar duel-bar"><span>MAKETZO</span><span><i class="moment-live" aria-hidden="true"></i>Tuesday &middot; 10:42 AM</span></header>
+        <div class="moment-app">
+          <div class="duel-pnl">
+            <p class="duel-pnl-k"><span class="moment-pnl-label">Session P&amp;L</span><span class="moment-pnl-val">&minus;$380.00</span></p>
+            <svg class="duel-alert" viewBox="0 0 48 44" aria-hidden="true" focusable="false"><path d="M24 4L44 40H4z"/><path d="M24 16v12"/><circle cx="24" cy="34" r="1.6"/></svg>
+            <svg class="duel-ecg" viewBox="0 0 300 60" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+              <path class="duel-ecg-line" pathLength="1" d="M0 32H70l6-3 6 5 6-2h28l6-8 6 20 6-42 6 50 6-36 6 20 6-10 6 5 6-2h24l5-5 5 8 5-3H300"/>
+              <path class="duel-ecg-pulse" pathLength="1" d="M0 32H70l6-3 6 5 6-2h28l6-8 6 20 6-42 6 50 6-36 6 20 6-10 6 5 6-2h24l5-5 5 8 5-3H300"/>
+            </svg>
+          </div>
+          <div class="moment-strikes duel-strikes" aria-label="Two of three strikes"><span class="is-hit">1</span><i class="duel-link duel-link--on" aria-hidden="true"></i><span class="is-hit">2</span><i class="duel-link duel-link--off" aria-hidden="true"></i><span>3</span><em>2 of 3 strikes</em></div>
+          <div class="moment-coach"><span class="moment-coach-label">Coach Says</span><p>Second strike. The next loss ends the day. Take a breath, take the cleanest setup, or wait it out.</p></div>
+        </div>
+        <p class="moment-verdict moment-verdict--us">Same trader, same morning.<br><span class="duel-verdict-2">The warning lands before the third trade.</span></p>
+      </article>
+    </div>
+    <p class="only-foot reveal">Live enforcement is Pro. The daily grade on your rules comes with every plan.</p>
+    <div class="mk-cta-repeat"><button class="btn-primary" data-cta-source="moment" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial</button></div>
   </div>
 </section>
-<script>
-/* Section 01 plays once, when the gold card is on screen (Ed, 2026-10-17). On a screen tall enough to show it at load,
-   it waits for the hero's own entrance to finish first, so only one thing moves at a time. Without IntersectionObserver
-   nothing is armed and the section stands finished. Classes only; the CSS is under .vs-armed and .vs-go. */
-(function () {
-  var vs = document.querySelector('.vs'), card = vs && vs.querySelector('.vs-card--with');
-  if (!card || !('IntersectionObserver' in window)) return;
-  vs.classList.add('vs-armed');
-  var o = new IntersectionObserver(function (es) {
-    if (!es[0].isIntersecting) return;
-    o.disconnect();
-    setTimeout(function () {
-      vs.classList.add('vs-go');
-      setTimeout(function () { vs.setAttribute('data-anim', 'done'); }, 6900);
-    }, Math.max(350, 2600 - performance.now()));
-  }, { rootMargin: '0px 0px -15% 0px', threshold: 0.35 });
-  o.observe(card);
-})();
-</script>
 
 <!-- INTERACTIVE SESSION SIM -->
 <hr class="mk-rule-gold">
@@ -3144,6 +2772,7 @@ document.addEventListener("DOMContentLoaded", function() {
       </li>
     </ol>
     <p class="how-note reveal">Checkpoints, COACH SAYS, strikes and the Focus Room are Pro. The journal and the daily grade come with every plan.</p>
+    <p class="sec-more reveal">Not ready for a trial? <a href="tools.html" data-cta-source="how" data-cta-target="tools">Try the free tools</a> or <a href="focus.html#hear-it" data-cta-source="how" data-cta-target="focus-hear-it">hear the MAKETZO soundtrack</a>.</p>
   </div>
 </section>
 <script>
@@ -3211,228 +2840,13 @@ document.addEventListener("DOMContentLoaded", function() {
 })();
 </script>
 
-<!-- 05 WHAT YOU GET -->
-<hr class="mk-rule-gold">
-
-<section class="section" id="toolkit">
-  <div class="section-inner">
-    <p class="section-eyebrow reveal">05 &middot; Free Tools</p>
-    <h2 class="section-title reveal">The tools no journal has, <em>for the small-cap day trader.</em></h2>
-    <p class="section-sub reveal">Included on every plan.</p>
-    <ul class="wyg reveal">
-      <li class="wyg-feat"><div class="wyg-card">
-        <span class="wyg-copy">
-          <span class="wyg-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/><path d="M10.5 9.5v5l4-2.5z"/></svg></span>
-          <span class="wyg-name">Trade Replay</span>
-          <span class="wyg-t">Pull up any past chart and trade it again. Move an entry, an add or an exit, and see what it does to your P&amp;L.</span>
-          <span class="wyg-w">Practice scaling in and out, the hardest skill in trading, with no money at risk.</span>
-        </span>
-        <!-- The same trade twice, average cost as the tool computes it: buy 1,000 at 4.25, add 1,000 more, sell all
-             2,000 at 5.05. AS TRADED adds at 4.85 (+$1,000); WHAT IF adds at the 4.22 pullback (+$1,630). -->
-        <span class="trp" aria-hidden="true">
-          <span class="trp-pair">
-            <span class="trp-run trp-run--as">
-              <span class="trp-k">AS TRADED</span>
-              <svg class="trp-chart" viewBox="0 4 260 118">
-                <path class="trp-line" pathLength="1" d="M12 108.8 C15.3 107.8 25.1 105.2 31.7 102.5 C38.2 99.9 44.8 96.4 51.3 93.1 C57.9 89.7 64.4 83.1 71 82.4 C77.6 81.6 84.1 86.6 90.7 88.7 C97.2 90.8 103.8 95.4 110.3 95 C116.9 94.5 123.4 90.3 130 86.1 C136.6 81.9 143.1 74.9 149.7 69.7 C156.2 64.6 162.8 59.8 169.3 55.2 C175.9 50.7 182.4 46.1 189 42.6 C195.6 39.1 202.1 34.7 208.7 34.4 C215.2 34.1 221.8 38.4 228.3 40.7 C234.9 43 244.7 47 248 48.3"/>
-                <g transform="translate(51.3 93.1)"><g class="trp-mk trp-mk--buy"><circle r="5"/><rect x="-44" y="-24" width="38" height="16" rx="8"/><text x="-25" y="-12.5">BUY</text></g></g>
-                <g transform="translate(169.3 55.2)"><g class="trp-mk trp-mk--was"><circle r="5"/><rect x="-82" y="-24" width="76" height="16" rx="8"/><text x="-44" y="-12.5">ADD $4.85</text></g></g>
-                <g transform="translate(189 42.6)"><g class="trp-mk trp-mk--sell"><circle r="5"/><rect x="8" y="6" width="42" height="16" rx="8"/><text x="29" y="17.5">SELL</text></g></g>
-              </svg>
-              <span class="trp-how">Add at $4.85</span>
-              <span class="trp-v" data-trp-to="1000">+$1,000</span>
-            </span>
-            <span class="trp-run trp-run--if">
-              <span class="trp-k">WHAT IF</span>
-              <svg class="trp-chart" viewBox="0 4 260 118">
-                <defs><mask id="trpMoveMask" maskUnits="userSpaceOnUse" x="0" y="4" width="260" height="118"><path class="trp-move-reveal" pathLength="1" d="M169.3 47 V20 Q169.3 14 163.3 14 H116.3 Q110.3 14 110.3 20 V82"/></mask></defs>
-                <path class="trp-line" pathLength="1" d="M12 108.8 C15.3 107.8 25.1 105.2 31.7 102.5 C38.2 99.9 44.8 96.4 51.3 93.1 C57.9 89.7 64.4 83.1 71 82.4 C77.6 81.6 84.1 86.6 90.7 88.7 C97.2 90.8 103.8 95.4 110.3 95 C116.9 94.5 123.4 90.3 130 86.1 C136.6 81.9 143.1 74.9 149.7 69.7 C156.2 64.6 162.8 59.8 169.3 55.2 C175.9 50.7 182.4 46.1 189 42.6 C195.6 39.1 202.1 34.7 208.7 34.4 C215.2 34.1 221.8 38.4 228.3 40.7 C234.9 43 244.7 47 248 48.3"/>
-                <circle class="trp-was" cx="169.3" cy="55.2" r="5"/>
-                <g class="trp-move"><path class="trp-move-path" mask="url(#trpMoveMask)" d="M169.3 47 V20 Q169.3 14 163.3 14 H116.3 Q110.3 14 110.3 20 V82"/><path class="trp-move-head" d="M110.3 88.5 L105.6 81 L115 81 Z"/><text class="trp-move-v" x="139.8" y="29">+$630</text></g>
-                <g transform="translate(51.3 93.1)"><g class="trp-mk trp-mk--buy"><circle r="5"/><rect x="-44" y="-24" width="38" height="16" rx="8"/><text x="-25" y="-12.5">BUY</text></g></g>
-                <g transform="translate(189 42.6)"><g class="trp-mk trp-mk--sell"><circle r="5"/><rect x="8" y="6" width="42" height="16" rx="8"/><text x="29" y="17.5">SELL</text></g></g>
-                <g transform="translate(110.3 95)"><g class="trp-mk trp-mk--add"><circle class="trp-ring" r="5"/><circle r="5"/><rect x="8" y="6" width="76" height="16" rx="8"/><text x="46" y="17.5">ADD $4.22</text></g></g>
-              </svg>
-              <span class="trp-how">Add at $4.22</span>
-              <span class="trp-v" data-trp-to="1630">+$1,630</span>
-            </span>
-          </span>
-          <span class="trp-note">Same shares. Adding 63&cent; lower made $630 more.</span>
-        </span>
-      </div></li>
-      <li><div class="wyg-card"><span class="wyg-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path class="wyg-hand" d="M12 7v5l3 2"/></svg></span><span class="wyg-name">Halt Clock</span><span class="wyg-t">Estimates when a halted stock reopens.</span><span class="wyg-w">Know when it reopens while everyone else is guessing.</span></div></li>
-      <li><div class="wyg-card"><span class="wyg-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="wyg-pg wyg-pg--l" d="M2 5h6a4 4 0 0 1 4 4v11a3 3 0 0 0-3-3H2z"/><path class="wyg-pg wyg-pg--r" d="M22 5h-6a4 4 0 0 0-4 4v11a3 3 0 0 1 3-3h7z"/></svg></span><span class="wyg-name">Knowledge Center</span><span class="wyg-t">The library, your playbook, and flash cards from your own rules.</span><span class="wyg-w">Learn what most traders only learn by losing money.</span></div></li>
-      <li><div class="wyg-card"><span class="wyg-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10z"/><path d="M15 21v-6h6"/><path class="wyg-ln" pathLength="1" d="M7 8h10M7 12h6"/></svg></span><span class="wyg-name">Sticky Notes</span><span class="wyg-t">Jot it mid-trade. One click sends it to your journal.</span><span class="wyg-w">Mid-trade ideas vanish by the close. Not anymore.</span></div></li>
-    </ul>
-    <p class="wyg-line reveal"><a href="tools.html" data-cta-source="what-you-get" data-cta-target="tools">See Free Tools&nbsp;&rarr;</a></p>
-  </div>
-</section>
-
-<script>
-/* Free Tools plays once (Ed, 2026-10-17: "an elegant and beautiful animation", "SIMPLE to understand immediately").
-   When the replay chart is half on screen: the trade draws and AS TRADED counts to +$1,000 as the sale lands; the add
-   glides down to the pullback and WHAT IF counts to +$1,630. Then the three tools below light one at a time (about
-   1.8 s a stop), each once it is on screen. A visitor who scrolls past the chart gets it finished. Reduce motion gets
-   the gentle version in CSS. Without IntersectionObserver nothing is armed and the section stands finished. Classes
-   only; the CSS is under .tk-armed. */
-(function () {
-  var sec = document.getElementById('toolkit');
-  var trp = sec && sec.querySelector('.trp');
-  if (!trp || !('IntersectionObserver' in window) || !window.matchMedia) return;
-  var vals = trp.querySelectorAll('[data-trp-to]');
-  var minis = Array.prototype.slice.call(sec.querySelectorAll('.wyg > li:not(.wyg-feat) > .wyg-card'));
-  vals.forEach(function (v) { v.textContent = '+$0'; });
-  sec.classList.add('tk-armed');
-
-  function money(n) { return '+$' + Math.round(n).toLocaleString('en-US'); }
-  function count(el) {
-    var to = +el.getAttribute('data-trp-to'), t0 = null;
-    function step(now) {
-      if (t0 === null) t0 = now;
-      var u = Math.min(1, (now - t0) / 900), e = 1 - Math.pow(1 - u, 3);
-      el.textContent = money(to * e);
-      if (u < 1) requestAnimationFrame(step);
-    }
-    requestAnimationFrame(step);
-  }
-
-  // The tools below light in turn, never before the replay has finished, and each only once it is on screen.
-  var started = false, busy = false, freeAt = 0, queue = [];
-  function next() {
-    if (busy || !started || !queue.length) return;
-    busy = true;
-    setTimeout(function () {
-      queue.shift().classList.add('is-lit');
-      setTimeout(function () { busy = false; next(); }, 1800);
-    }, Math.max(0, freeAt - Date.now()));
-  }
-  minis.forEach(function (a) {
-    var o = new IntersectionObserver(function (es) {
-      if (!es[0].isIntersecting) return;
-      o.disconnect(); queue.push(a);
-      queue.sort(function (p, q) { return minis.indexOf(p) - minis.indexOf(q); });   // left to right, however they arrive
-      next();
-    }, { threshold: 0.6 });
-    o.observe(a);
-  });
-
-  function play() {
-    started = true;
-    freeAt = Date.now() + 8600;
-    sec.classList.add('tk-go');
-    setTimeout(function () { count(vals[0]); }, 2000);
-    setTimeout(function () { count(vals[1]); }, 6700);
-    next();
-  }
-  var o = new IntersectionObserver(function (es) {
-    var e = es[0];
-    if (e.intersectionRatio >= 0.5 || (!e.isIntersecting && e.boundingClientRect.top < 0)) { o.disconnect(); play(); }
-  }, { threshold: [0, 0.5] });
-  o.observe(trp);
-})();
-</script>
-
-<!-- 06 THE SOUNDTRACK: Ed's graphic, the shared player under it -->
-<hr class="mk-rule-gold">
-
-<section class="section section-dark sp-section" id="soundtrack">
-  <div class="section-inner sp-inner">
-    <p class="section-eyebrow reveal">06 &middot; The Soundtrack</p>
-    <div class="sp-copy reveal">
-      <h2 class="sp-title">We turned trading mistakes into <em>music.</em></h2>
-      <p class="sp-lede">Most traders know exactly what they should do. The hard part is actually doing it.</p>
-      <p class="sp-body">That&rsquo;s why we created a trading soundtrack to keep you focused, disciplined, and out of your own way.</p>
-      <p class="sp-body">The songs are catchy, painfully relatable, and built around the mistakes every trader knows too well: revenge trading, FOMO, overtrading, and paying &ldquo;tuition to the market.&rdquo;</p>
-      <div class="sp-cue">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
-        <p>Hit play on <em>&ldquo;I Paid Tuition to the Market.&rdquo;</em><br>You&rsquo;ll laugh, cringe, and probably recognize yourself.</p>
-      </div>
-      <p class="sp-body">And the next time you&rsquo;re tempted to force a trade, the chorus may be the thing that keeps you sitting on your hands.</p>
-      <p class="sp-tag">MENTAL CONDITIONING, DISGUISED AS MUSIC.</p>
-    </div>
-    <div class="mk-audio-player sp-player reveal" data-motion-keep>
-      <audio preload="metadata">
-        <source src="https://media.maketzo.co/music/track-tuition.mp3" type="audio/mpeg">
-      </audio>
-      <div class="sp-scene-box">
-        <div class="sp-scene">
-      <span class="sp-eq" aria-hidden="true"></span>
-      <span class="sp-glow" aria-hidden="true"></span>
-      <div class="sp-card">
-        <div class="sp-art"><img src="assets/album-cover.jpg" alt="Earn the Right, the MAKETZO album" width="400" height="400" loading="lazy" decoding="async"></div>
-        <div class="sp-main">
-          <p class="mk-audio-player__eyebrow sp-k">MAKETZO &middot; EARN THE RIGHT</p>
-          <h3 class="mk-audio-player__title sp-name">I Paid Tuition to the Market</h3>
-          <p class="sp-sub">REAL MISTAKES. REAL LESSONS.</p>
-          <div class="mk-audio-player__bar sp-bar" role="slider" tabindex="0" aria-label="Seek"><div class="mk-audio-player__progress"></div></div>
-          <div class="sp-time"><span class="mk-audio-player__time-cur">0:00</span><span class="mk-audio-player__time-dur">0:00</span></div>
-          <div class="sp-controls">
-            <button class="mk-audio-player__prev sp-skip" type="button" aria-label="Previous track"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h2v14H6zM19 5v14L9 12z"/></svg></button>
-            <button class="mk-audio-player__play" type="button" aria-label="Play / pause">
-              <svg class="mk-audio-player__icon mk-audio-player__icon--play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
-              <svg class="mk-audio-player__icon mk-audio-player__icon--pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg>
-            </button>
-            <button class="mk-audio-player__next sp-skip" type="button" aria-label="Next track"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 5h2v14h-2zM5 5v14l10-7z"/></svg></button>
-          </div>
-        </div>
-      </div>
-        </div>
-      </div>
-      <ol class="mk-audio-player__list sp-list" hidden>
-          <li class="mk-audio-player__item is-active" data-track-id="tuition" data-src="https://media.maketzo.co/music/track-tuition.mp3" data-title="I Paid Tuition to the Market">I Paid Tuition to the Market</li>
-          <li class="mk-audio-player__item" data-track-id="earn" data-src="https://media.maketzo.co/music/track-earn-the-right.mp3" data-title="Earn the Right">Earn the Right</li>
-          <li class="mk-audio-player__item" data-track-id="wait" data-src="https://media.maketzo.co/music/track-wait-for-acceptance.mp3" data-title="Wait for Acceptance">Wait for Acceptance</li>
-          <li class="mk-audio-player__item" data-track-id="stronger" data-src="https://media.maketzo.co/music/track-stronger.mp3" data-title="Stronger Than the Red">Stronger Than the Red</li>
-          <li class="mk-audio-player__item" data-track-id="cushion" data-src="https://media.maketzo.co/music/track-cushion.mp3" data-title="Build a Cushion">Build a Cushion</li>
-      </ol>
-    </div>
-    <div class="mk-cta-repeat">
-      <button class="btn-primary" data-cta-source="soundtrack" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
-    </div>
-  </div>
-</section>
-<script>
-/* section 06: the scene is laid out at the backdrop's own size (820 wide) and scaled to its column */
-(function () {
-  var box = document.querySelector('.sp-scene-box');
-  if (!box || !window.ResizeObserver) return;
-  new ResizeObserver(function () { box.style.setProperty('--sp-k', String(box.clientWidth / 820)); }).observe(box);
-})();
-/* section 06, the song starts: each bar of the equaliser layer becomes its own strip so it can move, then the sequence
-   (CSS under .sp-go) plays once, when the player is on screen. Strips are [group, left, right, top, bottom] in eq.png,
-   printed by tools/site-preview/make-stage-06.js; group 0 sits left of the record, group 1 right of it. */
-(function () {
-  var sec = document.getElementById('soundtrack'), eq = sec && sec.querySelector('.sp-eq');
-  if (!eq || !('IntersectionObserver' in window)) return;
-  var BARS = [[0,6,19,120,167],[0,19,29,129,163],[0,29,41,102,169],[0,41,52,116,167],[0,52,58,82,159],[0,58,66,102,167],[0,66,72,107,160],[0,72,79,62,166],[0,79,87,107,163],[0,87,95,49,167],[0,95,104,114,163],[0,104,113,90,166],[0,113,122,104,159],[0,122,134,54,160],[0,135,149,29,157],[0,149,160,67,151],[0,160,169,95,142],[0,169,181,53,131],[0,181,195,54,116],[0,195,209,16,102],[0,209,222,54,90],[1,603,609,129,168],[1,609,616,53,172],[1,616,623,116,162],[1,623,630,84,172],[1,630,637,132,162],[1,637,645,110,171],[1,645,653,133,162],[1,653,662,122,169],[1,662,676,128,167]];
-  var left = BARS.filter(function (b) { return b[0] === 0; }).length;
-  BARS.forEach(function (b, k) {
-    var i = document.createElement('i');
-    // the wave runs out from the record: the left group counts leftward, the right group rightward
-    var d = b[0] === 0 ? left - 1 - k : k - left;
-    [['--l', b[1]], ['--w', b[2] - b[1]], ['--t', b[3]], ['--h', b[4] - b[3]], ['--d', d]].forEach(function (p) { i.style.setProperty(p[0], String(p[1])); });
-    eq.appendChild(i);
-  });
-  eq.classList.add('is-split');
-  var player = sec.querySelector('.sp-player .sp-card');
-  var o = new IntersectionObserver(function (es) {
-    var e = es[0];
-    if (!(e.intersectionRatio >= 0.5 || (!e.isIntersecting && e.boundingClientRect.top < 0))) return;
-    o.disconnect(); sec.classList.add('sp-go');
-    // done: taken off so a pause later returns the bars to rest instead of replaying the start
-    setTimeout(function () { sec.classList.remove('sp-go'); }, 5800);
-  }, { threshold: [0, 0.5] });
-  o.observe(player);
-})();
-</script>
-
 <!-- PRICING -->
 <hr class="mk-rule-gold">
 
 <section class="section" id="pricing">
   <div class="section-inner">
-    <p class="section-eyebrow reveal">07 &middot; Pricing</p>
-    <h2 class="section-title reveal">Start free. Stay because it works.</h2>
+    <p class="section-eyebrow reveal">05 &middot; Pricing</p>
+    <h2 class="section-title reveal">The journal you came for. <em>The discipline you stay for.</em></h2>
     <p class="section-sub reveal">7-day free trial on all plans. Card required, not charged until day 8. Cancel anytime.</p>
     <div class="pricing-toggle-wrap reveal">
       <span class="pricing-toggle-label active" id="labelMonthly" onclick="setPricing(false)">Monthly</span>
@@ -3442,7 +2856,7 @@ document.addEventListener("DOMContentLoaded", function() {
     </div>
     <div class="pricing-grid">
       <div class="price-card reveal">
-        <div class="price-eyebrow">Starter</div><div class="price-name">MAKETZO Journal</div>
+        <div class="price-eyebrow">The Journal</div><div class="price-name">MAKETZO Journal</div>
         <div class="price-row"><span class="price-dollar">$</span><span class="price-num" id="p1num">19.95</span><span class="price-per" id="p1per">/mo</span></div>
         <div class="price-sub" id="p1sub">or $199/yr, save 17%</div>
         <span class="price-compare-chip" id="p1cmp">Tradervue $29.95 · TradeZella $35</span>
@@ -3454,11 +2868,11 @@ document.addEventListener("DOMContentLoaded", function() {
           <li>Picard Score, a daily grade on following your rules</li>
           <li>Rules checklist in every journal entry</li>
         </ul>
-        <button class="cta-outline" id="cta1" data-tier="journal" data-interval="month" onclick="handleCheckout(this.dataset.tier,event)">Start Free Trial</button>
+        <button class="cta-outline" id="cta1" data-tier="journal" data-interval="month" data-cta-source="pricing" onclick="handleCheckout(this.dataset.tier,event)">Start Journal Trial</button>
         <p class="price-note">7 days free &middot; No charge until day 8</p>
       </div>
       <div class="price-card featured reveal">
-        <div class="popular-badge">Most Popular</div>
+        <div class="popular-badge">Journal + Live System</div>
         <div class="price-eyebrow">Pro</div><div class="price-name">MAKETZO Pro</div>
         <div class="price-row"><span class="price-dollar">$</span><span class="price-num" id="p2num">49</span><span class="price-per" id="p2per">/mo</span></div>
         <div class="price-sub" id="p2sub">or $399/yr, save 32%</div>
@@ -3467,11 +2881,11 @@ document.addEventListener("DOMContentLoaded", function() {
           <li class="bold">Everything in Journal</li>
           <li class="bold">COACH SAYS + State Machine + Strike System</li>
           <li class="bold">Focus Room (Lock-In, Reset, Soundtrack)</li>
-          <li>Give-Back Guard, a floor under a green day</li>
+          <li>Profit Floor, a floor under a green day</li>
           <li>Maketzo Edge + Pulse on TradingView (invite within 24 hrs)</li>
           <li>Dilution Check, 100 company reads a month</li>
         </ul>
-        <button class="cta-gold" id="cta2" data-tier="pro" data-interval="month" onclick="handleCheckout(this.dataset.tier,event)">Start Free Trial &rarr;</button>
+        <button class="cta-gold" id="cta2" data-tier="pro" data-interval="month" data-cta-source="pricing" onclick="handleCheckout(this.dataset.tier,event)">Start Pro Trial &rarr;</button>
         <p class="price-note">7 days free &middot; No charge until day 8</p>
       </div>
       <div class="price-card reveal">
@@ -3485,7 +2899,7 @@ document.addEventListener("DOMContentLoaded", function() {
           <li>Twice Pro's reads, for the trader who checks every gapper</li>
           <li>AI Training Engine, first access when it ships</li>
         </ul>
-        <button class="cta-outline" id="cta3" data-tier="elite" data-interval="month" onclick="handleCheckout(this.dataset.tier,event)">Start Free Trial</button>
+        <button class="cta-outline" id="cta3" data-tier="elite" data-interval="month" data-cta-source="pricing" onclick="handleCheckout(this.dataset.tier,event)">Start Elite Trial</button>
         <p class="price-note">7 days free &middot; No charge until day 8</p>
       </div>
     </div>
@@ -3501,7 +2915,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 <section class="section section-dark" id="faq">
   <div class="section-inner">
-    <p class="section-eyebrow reveal">08 &middot; Questions</p>
+    <p class="section-eyebrow reveal">06 &middot; Questions</p>
     <h2 class="section-title reveal">The questions traders actually ask.</h2>
     <p class="section-sub reveal">Anything else, email info@maketzo.co. We read every one.</p>
     <div class="faq-list">
@@ -3525,7 +2939,7 @@ document.addEventListener("DOMContentLoaded", function() {
     <h2 class="final-cta-headline reveal">Stop losing to <em>yourself.</em></h2>
     <p class="final-cta-sub reveal">7 days free. Full access from day one. No charge until day 8. Cancel anytime.</p>
     <div class="final-cta-btns reveal">
-      <button class="btn-primary" onclick="handleCheckout('pro',event)">Start Free Trial &rarr;</button>
+      <button class="btn-primary" data-cta-source="final" onclick="handleCheckout('pro',event)">Start Free Trial &rarr;</button>
       <a href="pricing.html" class="btn-secondary">Compare All Plans</a>
     </div>
     <p class="final-cta-note reveal">Pro &middot; $49/mo or $399/yr &middot; Discipline OS, Focus Room &amp; Dilution Check &middot; Cancel anytime</p>
@@ -3547,7 +2961,7 @@ document.addEventListener("DOMContentLoaded", function() {
         </div>
         <p class="footer-tagline"><strong>Stop the trade you'd regret.</strong>Discipline in every session. Edge in every trade. Accountability when it counts.</p>
       </div>
-      <div><div class="footer-col-title">Product</div><ul class="footer-links"><li><a href="system.html">The System</a></li><li><a href="journal.html">Journal</a></li><li><a href="indicators.html">Indicators</a></li><li><a href="focus.html">Focus Room</a></li><li><a href="tools.html">Free Tools</a></li><li><a href="dilution-check.html">Dilution Check</a></li><li><a href="pricing.html" data-cta-source="footer-product" data-cta-target="pricing">Pricing</a></li></ul></div>
+      <div><div class="footer-col-title">Product</div><ul class="footer-links"><li><a href="journal.html">Journal</a></li><li><a href="system.html">The System</a></li><li><a href="indicators.html">Indicators</a></li><li><a href="focus.html">Focus Room</a></li><li><a href="tools.html">Free Tools</a></li><li><a href="dilution-check.html">Dilution Check</a></li><li><a href="pricing.html" data-cta-source="footer-product" data-cta-target="pricing">Pricing</a></li></ul></div>
       <div><div class="footer-col-title">Explore</div><ul class="footer-links"><li><a href="guides.html" data-cta-source="footer-explore" data-cta-target="guides">Guides</a></li><li><a href="trader-type.html" data-cta-source="footer-explore" data-cta-target="trader-type">Trader Type</a></li><li><a href="trade-replay.html" data-cta-source="footer-explore" data-cta-target="trade-replay">Trade Replay</a></li><li><a href="trading-os.html" data-cta-source="footer-explore" data-cta-target="trading-os">Trading OS</a></li><li><a href="soundtrack.html" data-cta-source="footer-explore" data-cta-target="soundtrack">Soundtrack</a></li><li><a href="why.html" data-cta-source="footer-explore" data-cta-target="why">Why MAKETZO</a></li><li><a href="contact.html" data-cta-source="footer-explore" data-cta-target="contact">Contact Us</a></li></ul></div>
       <div><div class="footer-col-title">Legal</div><ul class="footer-links"><li><a href="privacy.html">Privacy Policy</a></li><li><a href="terms.html">Terms of Service</a></li><li><a href="disclaimer.html">Risk Disclaimer</a></li></ul></div>
     </div>

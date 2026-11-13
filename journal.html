@@ -70,6 +70,7 @@
 <script src="assets/js/newsletter.js?v=5" defer></script>
 <script src="assets/js/mkt-consent.js?v=2" defer></script>
 <script src="assets/js/motion-rest.js?v=1" defer></script>
+<script src="assets/js/moment-duel.js?v=1" defer></script>
 <script src="assets/js/checkout.js?v=10" defer></script>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -575,6 +576,147 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
   .compare-partial { display: inline-block; max-width: 100%; font-size: 0.5rem; letter-spacing: 0; line-height: 1.1; overflow-wrap: anywhere; }
   .compare-note { display: block; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: 0.02em; color: var(--mk-text-tertiary); margin-top: 3px; }
 }
+/* TOOLS NO JOURNAL HAS (moved from index.html 2026-11-13) */
+.wyg-w,
+.trp-run--if .trp-v {
+  font-style: normal;
+  background: var(--mk-gold-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.wyg-line { text-align: center; max-width: 760px; margin: 28px auto 0; font-size: var(--mk-text-sm); color: var(--mk-text-secondary); line-height: 1.6; }
+.wyg-line a { color: var(--mk-brand); border-bottom: 1px solid rgba(212,175,55,.4); text-decoration: none; }
+/* free tools: four tools, each a gold icon, a name, what it does and one line that sells it; each lands on its own
+   explanation (index section 05, Ed 2026-10-15) */
+.wyg { list-style: none; max-width: 1100px; margin: 40px auto 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.wyg-card { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; height: 100%; box-sizing: border-box; padding: 24px 22px 22px; border-radius: 16px; background: rgba(255,255,255,.025); border: 1px solid rgba(255,255,255,.07); text-decoration: none; color: inherit; transition: transform var(--mk-dur-snap) var(--mk-ease-out), border-color var(--mk-dur-snap), background var(--mk-dur-snap); }
+.wyg-icon { flex: none; width: 48px; height: 48px; margin-bottom: 6px; display: grid; place-items: center; border-radius: 50%; color: var(--mk-gold-300); background: radial-gradient(circle at 35% 30%, rgba(240,200,80,.22), rgba(212,175,55,.05)); border: 1px solid rgba(240,200,80,.35); box-shadow: 0 0 16px rgba(240,200,80,.12); }
+.wyg-icon svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.wyg-name { display: block; font-family: var(--mk-font-display); font-size: 1.5rem; letter-spacing: var(--mk-track-display); text-transform: uppercase; line-height: 1.05; color: var(--mk-text-primary); }
+.wyg-t { display: block; font-size: var(--mk-text-sm); line-height: 1.45; color: var(--mk-text-secondary); }
+.wyg-w { display: block; margin-top: auto; padding-top: 6px; font-size: var(--mk-text-md); font-weight: 600; line-height: 1.35; }
+@media (max-width: 760px) { .wyg { grid-template-columns: 1fr; } }
+/* Trade Replay leads the section (Ed, 2026-10-17: its value is learning to scale in by running what-ifs on past
+   charts, and the section must sell; "SIMPLE to understand immediately"). A wide card, copy at left and one replayed
+   trade at right: buy, add, sell, then the same trade with the add moved to the pullback. The other three below. */
+.wyg-feat { grid-column: 1 / -1; }
+.wyg-feat .wyg-card { position: relative; display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.45fr); align-items: center; gap: 36px; padding: 30px 30px 30px 32px; border-color: rgba(212,175,55,.3); isolation: isolate; background: linear-gradient(150deg, rgba(212,175,55,.06), rgba(255,255,255,.015) 55%, rgba(0,0,0,.18)); }
+/* A still gold haze behind the card (Ed: "some mist or hazy pattern"): soft pools of light, none of them moving. On its own layer, so the card's hover tint lays over it instead of replacing it. */
+.wyg-feat .wyg-card::before { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; pointer-events: none;
+  background: radial-gradient(55% 85% at 6% 0%, rgba(229,197,114,.17), transparent 62%), radial-gradient(40% 60% at 34% 92%, rgba(212,175,55,.08), transparent 70%),
+    radial-gradient(45% 60% at 66% 22%, rgba(255,250,235,.05), transparent 72%), radial-gradient(50% 75% at 98% 100%, rgba(184,148,31,.12), transparent 66%); }
+.wyg-copy { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
+.wyg-feat .wyg-name { font-size: 2rem; }
+.wyg-feat .wyg-t { font-size: var(--mk-text-md); }
+.wyg-feat .wyg-w { margin-top: 0; padding-top: 0; }
+/* The same trade twice, each chart sitting on its own result (Ed, 2026-10-17: "pinning the graph to AS TRADED so
+   it's clear what's being watched. Then pinning the new add to the WHAT IF scenario... It needs to be brainless").
+   The only difference between the two is where the add is. On WHAT IF a faint ring keeps where it was, and the
+   dotted arrow carries it over the top of the chart, clear of the line, down to the pullback. */
+.trp { display: block; }
+.trp-pair { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+.trp-run { min-width: 0; display: flex; flex-direction: column; gap: 2px; padding: 12px 12px 14px; border-radius: 12px; background: rgba(0,0,0,.3); border: 1px solid rgba(255,255,255,.09); }
+.trp-run--if { background: rgba(212,175,55,.06); border-color: rgba(212,175,55,.4); }
+.trp-chart { display: block; width: 100%; height: auto; margin: 4px 0 6px; overflow: visible; }
+.trp-line { fill: none; stroke: rgba(232,237,233,.78); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.trp-mk circle { fill: #E8EDE9; stroke: #0b0d0c; stroke-width: 2.2; transform-box: fill-box; transform-origin: center; }
+.trp-mk rect { fill: rgba(13,15,14,.92); stroke: rgba(232,237,233,.22); stroke-width: 1; }
+.trp-mk text { fill: #E8EDE9; font-family: var(--mk-font-mono); font-size: 10.5px; font-weight: 600; letter-spacing: .06em; text-anchor: middle; }
+.trp-mk--buy circle { fill: var(--mk-profit-500); }
+.trp-mk--sell circle { fill: var(--mk-danger-500); }
+.trp-mk--add circle { fill: var(--mk-gold-500); }
+.trp-mk--add rect { stroke: rgba(212,175,55,.6); }
+.trp-mk--add text { fill: var(--mk-gold-400); }
+.trp-mk--add .trp-ring { fill: none; stroke: var(--mk-gold-500); stroke-width: 1.5; opacity: 0; }
+.trp-was { fill: none; stroke: rgba(232,237,233,.7); stroke-width: 1.6; stroke-dasharray: 2 2.2; }
+.trp-move-path { fill: none; stroke: var(--mk-gold-500); stroke-width: 2.2; stroke-linecap: round; stroke-dasharray: 0 5.5; }
+.trp-move-reveal { fill: none; stroke: #fff; stroke-width: 8; stroke-linecap: round; stroke-linejoin: round; }
+.trp-move-head { fill: var(--mk-gold-500); }
+.trp-move-v { fill: var(--mk-gold-400); font-family: var(--mk-font-mono); font-size: 11px; font-weight: 700; letter-spacing: .06em; text-anchor: middle; }
+.trp-k { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); color: var(--mk-text-secondary); }
+.trp-run--if .trp-k { color: var(--mk-gold-400); }
+.trp-how { font-size: var(--mk-text-xs); color: var(--mk-text-secondary); }
+.trp-run--if .trp-how { color: var(--mk-gold-400); }
+.trp-v { font-family: var(--mk-font-mono); font-size: clamp(1.15rem, 5vw, 1.6rem); font-weight: 600; line-height: 1.15; color: #E8EDE9; font-variant-numeric: tabular-nums; }
+.trp-note { display: block; margin-top: 10px; text-align: center; font-size: var(--mk-text-sm); color: var(--mk-text-secondary); }
+@media (max-width: 900px) {
+  .wyg-feat .wyg-card { grid-template-columns: minmax(0, 1fr); gap: 22px; padding: 24px 18px; }
+}
+@media (max-width: 560px) { .trp-pair { grid-template-columns: minmax(0, 1fr); } }
+
+/* The replay plays once, when the charts are half on screen (classes from the script after the section; nothing is
+   armed without it, so the section stands finished). AS TRADED first: its panel lights, the line draws, BUY, the
+   $4.85 add and SELL land, and +$1,000 counts. Then WHAT IF: its panel lights, the same line draws, a faint ring sits
+   where the $4.85 add was, the dotted arrow carries it down to the $4.22 pullback, the gold add lands at its tip, and
+   +$1,630 counts. Every end frame is the static card.
+   The hidden lines use a gap of 2, not 1: "1 1" at offset 1 starts a zero-length dash exactly at the path's end, and a
+   round cap draws that as a dot, so WHAT IF showed two stray dots while it waited its turn (Ed, 2026-11-10: "Trade
+   Replay loads random dots initially"). A gap longer than the path starts no dash inside it; the draw is unchanged. */
+.tk-armed .trp-line { stroke-dasharray: 1 2; stroke-dashoffset: 1; }
+.tk-armed .trp-mk circle { scale: 0; }
+.tk-armed .trp-mk :is(rect, text) { opacity: 0; }
+.tk-armed :is(.trp-was, .trp-move-head, .trp-move-v) { opacity: 0; }
+.tk-armed .trp-move-reveal { stroke-dasharray: 1 2; stroke-dashoffset: 1; }
+.tk-go .trp-run--as { animation: trpOnAs 3.4s ease; }
+.tk-go .trp-run--as .trp-line { animation: trpDraw 2.4s linear forwards; }
+.tk-go .trp-run--as .trp-mk--buy circle { animation: trpPop .5s cubic-bezier(.3,1.5,.5,1) .38s forwards; }
+.tk-go .trp-run--as .trp-mk--buy :is(rect, text) { animation: trpIn .5s ease .5s forwards; }
+.tk-go .trp-run--as .trp-mk--was circle { animation: trpPop .5s cubic-bezier(.3,1.5,.5,1) 1.62s forwards; }
+.tk-go .trp-run--as .trp-mk--was :is(rect, text) { animation: trpIn .5s ease 1.74s forwards; }
+.tk-go .trp-run--as .trp-mk--sell circle { animation: trpPop .5s cubic-bezier(.3,1.5,.5,1) 1.83s forwards; }
+.tk-go .trp-run--as .trp-mk--sell :is(rect, text) { animation: trpIn .5s ease 1.95s forwards; }
+.tk-go .trp-run--if { animation: trpOnIf 5s ease 3.4s; }
+.tk-go .trp-run--if .trp-line { animation: trpDraw 1.6s linear 3.4s forwards; }
+.tk-go .trp-run--if .trp-mk--buy circle { animation: trpPop .5s cubic-bezier(.3,1.5,.5,1) 3.66s forwards; }
+.tk-go .trp-run--if .trp-mk--buy :is(rect, text) { animation: trpIn .5s ease 3.78s forwards; }
+.tk-go .trp-run--if .trp-mk--sell circle { animation: trpPop .5s cubic-bezier(.3,1.5,.5,1) 4.62s forwards; }
+.tk-go .trp-run--if .trp-mk--sell :is(rect, text) { animation: trpIn .5s ease 4.74s forwards; }
+.tk-go .trp-was { animation: trpIn .5s ease 4.48s forwards; }
+.tk-go .trp-move-reveal { animation: trpDraw 1.3s cubic-bezier(.65,0,.35,1) 5.2s forwards; }
+.tk-go .trp-move-head { animation: trpIn .3s ease 6.35s forwards; }
+.tk-go .trp-mk--add > circle:not(.trp-ring) { animation: trpPop .5s cubic-bezier(.3,1.5,.5,1) 6.5s forwards; }
+.tk-go .trp-mk--add :is(rect, text) { animation: trpIn .5s ease 6.65s forwards; }
+.tk-go .trp-ring { animation: trpRipple 1s ease-out 6.55s; }
+.tk-go .trp-move-v { animation: trpIn .5s ease 6.7s forwards; }
+.tk-go .trp-note { animation: trpSay 1.8s ease 7.8s; }
+@keyframes trpDraw { to { stroke-dashoffset: 0; } }
+@keyframes trpIn { to { opacity: 1; } }
+@keyframes trpPop { to { scale: 1; } }
+@keyframes trpRipple { from { opacity: .9; scale: 1; } to { opacity: 0; scale: 2.8; } }
+@keyframes trpOnAs { 12%, 80% { border-color: rgba(232,237,233,.5); box-shadow: 0 0 22px rgba(232,237,233,.08); } }
+@keyframes trpOnIf { 10%, 85% { border-color: rgba(212,175,55,.8); box-shadow: 0 0 26px rgba(212,175,55,.2); } }
+@keyframes trpSay { 40% { color: var(--mk-text-primary); text-shadow: 0 0 14px rgba(212,175,55,.45); } }
+
+/* Then the three below, one at a time (about 1.8 s a stop): the card lights, and its icon does its job once. The
+   clock's hand goes round, the book opens a little, the note writes its lines. */
+.wyg li:not(.wyg-feat) .wyg-card.is-lit { animation: wygLit 1.8s ease; }
+.wyg .is-lit .wyg-icon { animation: wygIcon 1.8s ease; }
+.wyg-hand, .wyg-pg { transform-box: view-box; }
+.wyg-hand { transform-origin: 12px 12px; }
+.wyg-pg { transform-origin: 12px 20px; }
+.wyg .is-lit .wyg-hand { animation: wygHand 1.4s cubic-bezier(.45,0,.2,1) .15s; }
+.wyg .is-lit .wyg-pg--l { animation: wygPgL 1.3s ease .15s; }
+.wyg .is-lit .wyg-pg--r { animation: wygPgR 1.3s ease .15s; }
+.wyg .is-lit .wyg-ln { stroke-dasharray: 1 2; animation: wygWrite 1s ease .15s both; } /* gap 2: see .tk-armed .trp-line */
+@keyframes wygLit { 35% { border-color: rgba(240,200,80,.55); box-shadow: 0 0 26px rgba(240,200,80,.12); } }
+@keyframes wygIcon { 35% { box-shadow: 0 0 26px rgba(240,200,80,.4); } }
+@keyframes wygHand { to { rotate: 360deg; } }
+@keyframes wygPgL { 45% { rotate: -9deg; } }
+@keyframes wygPgR { 45% { rotate: 9deg; } }
+@keyframes wygWrite { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+
+/* Reduce motion: the same story on the same clock, without the pops, the glide or the ripple. The dots fade in, the
+   add fades out where it was and back in at the pullback, and the icons only light. */
+@media (prefers-reduced-motion: reduce) {
+  .tk-armed .trp-mk circle { scale: 1; opacity: 0; }
+  .tk-armed .trp-mk--add .trp-ring { opacity: 0; }
+  .tk-go .trp-run :is(.trp-mk--buy, .trp-mk--sell, .trp-mk--was) circle { animation-name: trpIn; animation-timing-function: ease; }
+  .tk-go .trp-mk--add > circle:not(.trp-ring) { animation-name: trpIn; animation-timing-function: ease; }
+  .tk-go .trp-ring { animation: none; }
+  .wyg .is-lit :is(.wyg-hand, .wyg-pg) { animation: none; }
+  .wyg .is-lit .wyg-ln { animation: none; stroke-dasharray: none; }
+}
 </style>
 <script>try{if(document.cookie.indexOf('mkt_csrf=')>-1)document.documentElement.classList.add('mkt-auth');}catch(e){}</script>
 <style id="nav-fit">/* The nav on one line at every width (Ed, 2026-10-16: it wrapped at about 1024px). The full bar fits from 1024px, so below that the menu button takes over (it was 900px, which left 901-1140 wrapping); items never break, and the bar tightens up to 1180px. Last in the head so it wins over the page's own nav rules. */
@@ -597,8 +739,8 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 <div class="mobile-overlay" id="mobileOverlay" onclick="closeDrawer()"></div>
 <div class="mobile-drawer" id="mobileDrawer">
   <ul class="mobile-drawer-links">
-    <li><a href="system.html" onclick="closeDrawer()">The System</a></li>
     <li><a href="journal.html" aria-current="page" onclick="closeDrawer()">Journal</a></li>
+    <li><a href="system.html" onclick="closeDrawer()">The System</a></li>
     <li><a href="focus.html" onclick="closeDrawer()">Focus Room</a></li>
     <li><a href="tools.html" onclick="closeDrawer()">Free Tools</a></li>
     <li><a href="/blog" onclick="closeDrawer()">Blog</a></li>
@@ -614,8 +756,8 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
     <img class="mk-brand-lockup__wordmark" src="assets/logo-wordmark.png" alt="MAKETZO">
   </a>
   <ul class="nav-links">
-    <li><a href="system.html">The System</a></li>
     <li><a href="journal.html" aria-current="page">Journal</a></li>
+    <li><a href="system.html">The System</a></li>
     <li><a href="focus.html">Focus Room</a></li>
     <li><a href="tools.html">Free Tools</a></li>
     <li><a href="/blog">Blog</a></li>
@@ -693,55 +835,6 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
     <div class="mk-cta-repeat"><button class="btn-primary" data-cta-source="moment" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial</button></div>
   </div>
 </section>
-<script>
-/* Only MAKETZO plays (Ed, 2026-10-16, on the first version that animated both cards: "ANY OTHER JOURNAL should be
-   boring, bland, no animations. Maketzo should be more beautiful with animations. The compare and contrast should be
-   easily understood"). The other journal is never touched. Once the MAKETZO card is well in view: it lights, its
-   P&L counts to -$380.00, the second strike lands, and the COACH SAYS warning types out live (the untyped rest holds
-   its place, so the card never reflows); then the verdict. Every value ends exactly as written in the markup. Reduce
-   motion gets the gentle version in moment.css; without IntersectionObserver nothing is armed. */
-(function () {
-  var us = document.querySelector('#the-moment .moment-card--us');
-  if (!us || !('IntersectionObserver' in window)) return;
-  var pnl = us.querySelector('.moment-pnl-val'), say = us.querySelector('.moment-coach p');
-  if (!pnl || !say) return;
-  var finalPnl = pnl.textContent, line = say.textContent;
-  function money(v) { return (v < 0 ? '−$' : '$') + Math.abs(v).toFixed(2); }
-  function tween(ms, fn, done) {
-    var t0 = null;
-    function step(now) {
-      if (t0 === null) t0 = now;
-      var u = Math.min(1, (now - t0) / ms);
-      fn(1 - Math.pow(1 - u, 3));
-      if (u < 1) requestAnimationFrame(step); else if (done) done();
-    }
-    requestAnimationFrame(step);
-  }
-  var typed = document.createElement('span'), rest = document.createElement('span');
-  typed.className = 'mj-typed'; rest.className = 'mj-rest'; rest.textContent = line;
-  say.textContent = ''; say.appendChild(typed); say.appendChild(rest);
-  pnl.textContent = money(0);
-  us.classList.add('mj-armed');
-
-  function play() {
-    us.classList.add('is-on');
-    setTimeout(function () { tween(900, function (e) { pnl.textContent = money(-380 * e); }, function () { pnl.textContent = finalPnl; }); }, 400);
-    setTimeout(function () {
-      typed.classList.add('is-typing');
-      var n = 0;
-      (function next() {
-        n++; typed.textContent = line.slice(0, n); rest.textContent = line.slice(n);
-        if (n < line.length) { setTimeout(next, 24); return; }
-        typed.classList.remove('is-typing');
-        say.textContent = line;
-        setTimeout(function () { us.classList.add('is-done'); }, 250);
-      })();
-    }, 2100);
-  }
-  var o = new IntersectionObserver(function (es) { if (es[0].isIntersecting) { o.disconnect(); play(); } }, { threshold: 0.45 });
-  o.observe(us);
-})();
-</script>
 <hr class="mk-rule-gold">
 <!-- THE JOURNAL, IN FULL: the nineteen journal-plan capabilities, grouped (2026-10-15; the four-card block that duplicated the homepage is gone) -->
 <section class="section" id="in-full">
@@ -901,6 +994,126 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 })();
 </script>
 
+<!-- TOOLS NO JOURNAL HAS: moved here from the homepage 2026-11-13 -->
+<hr class="mk-rule-gold">
+<section class="section" id="toolkit">
+  <div class="section-inner">
+    <p class="section-eyebrow reveal">BEYOND THE JOURNAL</p>
+    <h2 class="section-title reveal">The tools no journal has, <em>for the small-cap day trader.</em></h2>
+    <p class="section-sub reveal">Included on every plan.</p>
+    <ul class="wyg reveal">
+      <li class="wyg-feat"><div class="wyg-card">
+        <span class="wyg-copy">
+          <span class="wyg-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/><path d="M10.5 9.5v5l4-2.5z"/></svg></span>
+          <span class="wyg-name">Trade Replay</span>
+          <span class="wyg-t">Pull up any past chart and trade it again. Move an entry, an add or an exit, and see what it does to your P&amp;L.</span>
+          <span class="wyg-w">Practice scaling in and out, the hardest skill in trading, with no money at risk.</span>
+        </span>
+        <!-- The same trade twice, average cost as the tool computes it: buy 1,000 at 4.25, add 1,000 more, sell all
+             2,000 at 5.05. AS TRADED adds at 4.85 (+$1,000); WHAT IF adds at the 4.22 pullback (+$1,630). -->
+        <span class="trp" aria-hidden="true">
+          <span class="trp-pair">
+            <span class="trp-run trp-run--as">
+              <span class="trp-k">AS TRADED</span>
+              <svg class="trp-chart" viewBox="0 4 260 118">
+                <path class="trp-line" pathLength="1" d="M12 108.8 C15.3 107.8 25.1 105.2 31.7 102.5 C38.2 99.9 44.8 96.4 51.3 93.1 C57.9 89.7 64.4 83.1 71 82.4 C77.6 81.6 84.1 86.6 90.7 88.7 C97.2 90.8 103.8 95.4 110.3 95 C116.9 94.5 123.4 90.3 130 86.1 C136.6 81.9 143.1 74.9 149.7 69.7 C156.2 64.6 162.8 59.8 169.3 55.2 C175.9 50.7 182.4 46.1 189 42.6 C195.6 39.1 202.1 34.7 208.7 34.4 C215.2 34.1 221.8 38.4 228.3 40.7 C234.9 43 244.7 47 248 48.3"/>
+                <g transform="translate(51.3 93.1)"><g class="trp-mk trp-mk--buy"><circle r="5"/><rect x="-44" y="-24" width="38" height="16" rx="8"/><text x="-25" y="-12.5">BUY</text></g></g>
+                <g transform="translate(169.3 55.2)"><g class="trp-mk trp-mk--was"><circle r="5"/><rect x="-82" y="-24" width="76" height="16" rx="8"/><text x="-44" y="-12.5">ADD $4.85</text></g></g>
+                <g transform="translate(189 42.6)"><g class="trp-mk trp-mk--sell"><circle r="5"/><rect x="8" y="6" width="42" height="16" rx="8"/><text x="29" y="17.5">SELL</text></g></g>
+              </svg>
+              <span class="trp-how">Add at $4.85</span>
+              <span class="trp-v" data-trp-to="1000">+$1,000</span>
+            </span>
+            <span class="trp-run trp-run--if">
+              <span class="trp-k">WHAT IF</span>
+              <svg class="trp-chart" viewBox="0 4 260 118">
+                <defs><mask id="trpMoveMask" maskUnits="userSpaceOnUse" x="0" y="4" width="260" height="118"><path class="trp-move-reveal" pathLength="1" d="M169.3 47 V20 Q169.3 14 163.3 14 H116.3 Q110.3 14 110.3 20 V82"/></mask></defs>
+                <path class="trp-line" pathLength="1" d="M12 108.8 C15.3 107.8 25.1 105.2 31.7 102.5 C38.2 99.9 44.8 96.4 51.3 93.1 C57.9 89.7 64.4 83.1 71 82.4 C77.6 81.6 84.1 86.6 90.7 88.7 C97.2 90.8 103.8 95.4 110.3 95 C116.9 94.5 123.4 90.3 130 86.1 C136.6 81.9 143.1 74.9 149.7 69.7 C156.2 64.6 162.8 59.8 169.3 55.2 C175.9 50.7 182.4 46.1 189 42.6 C195.6 39.1 202.1 34.7 208.7 34.4 C215.2 34.1 221.8 38.4 228.3 40.7 C234.9 43 244.7 47 248 48.3"/>
+                <circle class="trp-was" cx="169.3" cy="55.2" r="5"/>
+                <g class="trp-move"><path class="trp-move-path" mask="url(#trpMoveMask)" d="M169.3 47 V20 Q169.3 14 163.3 14 H116.3 Q110.3 14 110.3 20 V82"/><path class="trp-move-head" d="M110.3 88.5 L105.6 81 L115 81 Z"/><text class="trp-move-v" x="139.8" y="29">+$630</text></g>
+                <g transform="translate(51.3 93.1)"><g class="trp-mk trp-mk--buy"><circle r="5"/><rect x="-44" y="-24" width="38" height="16" rx="8"/><text x="-25" y="-12.5">BUY</text></g></g>
+                <g transform="translate(189 42.6)"><g class="trp-mk trp-mk--sell"><circle r="5"/><rect x="8" y="6" width="42" height="16" rx="8"/><text x="29" y="17.5">SELL</text></g></g>
+                <g transform="translate(110.3 95)"><g class="trp-mk trp-mk--add"><circle class="trp-ring" r="5"/><circle r="5"/><rect x="8" y="6" width="76" height="16" rx="8"/><text x="46" y="17.5">ADD $4.22</text></g></g>
+              </svg>
+              <span class="trp-how">Add at $4.22</span>
+              <span class="trp-v" data-trp-to="1630">+$1,630</span>
+            </span>
+          </span>
+          <span class="trp-note">Same shares. Adding 63&cent; lower made $630 more.</span>
+        </span>
+      </div></li>
+      <li><div class="wyg-card"><span class="wyg-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path class="wyg-hand" d="M12 7v5l3 2"/></svg></span><span class="wyg-name">Halt Clock</span><span class="wyg-t">Estimates when a halted stock reopens.</span><span class="wyg-w">Know when it reopens while everyone else is guessing.</span></div></li>
+      <li><div class="wyg-card"><span class="wyg-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="wyg-pg wyg-pg--l" d="M2 5h6a4 4 0 0 1 4 4v11a3 3 0 0 0-3-3H2z"/><path class="wyg-pg wyg-pg--r" d="M22 5h-6a4 4 0 0 0-4 4v11a3 3 0 0 1 3-3h7z"/></svg></span><span class="wyg-name">Knowledge Center</span><span class="wyg-t">The library, your playbook, and flash cards from your own rules.</span><span class="wyg-w">Learn what most traders only learn by losing money.</span></div></li>
+      <li><div class="wyg-card"><span class="wyg-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10z"/><path d="M15 21v-6h6"/><path class="wyg-ln" pathLength="1" d="M7 8h10M7 12h6"/></svg></span><span class="wyg-name">Sticky Notes</span><span class="wyg-t">Jot it mid-trade. One click sends it to your journal.</span><span class="wyg-w">Mid-trade ideas vanish by the close. Not anymore.</span></div></li>
+    </ul>
+    <p class="wyg-line reveal"><a href="tools.html" data-cta-source="what-you-get" data-cta-target="tools">See Free Tools&nbsp;&rarr;</a></p>
+  </div>
+</section>
+
+<script>
+/* Free Tools plays once (Ed, 2026-10-17: "an elegant and beautiful animation", "SIMPLE to understand immediately").
+   When the replay chart is half on screen: the trade draws and AS TRADED counts to +$1,000 as the sale lands; the add
+   glides down to the pullback and WHAT IF counts to +$1,630. Then the three tools below light one at a time (about
+   1.8 s a stop), each once it is on screen. A visitor who scrolls past the chart gets it finished. Reduce motion gets
+   the gentle version in CSS. Without IntersectionObserver nothing is armed and the section stands finished. Classes
+   only; the CSS is under .tk-armed. */
+(function () {
+  var sec = document.getElementById('toolkit');
+  var trp = sec && sec.querySelector('.trp');
+  if (!trp || !('IntersectionObserver' in window) || !window.matchMedia) return;
+  var vals = trp.querySelectorAll('[data-trp-to]');
+  var minis = Array.prototype.slice.call(sec.querySelectorAll('.wyg > li:not(.wyg-feat) > .wyg-card'));
+  vals.forEach(function (v) { v.textContent = '+$0'; });
+  sec.classList.add('tk-armed');
+
+  function money(n) { return '+$' + Math.round(n).toLocaleString('en-US'); }
+  function count(el) {
+    var to = +el.getAttribute('data-trp-to'), t0 = null;
+    function step(now) {
+      if (t0 === null) t0 = now;
+      var u = Math.min(1, (now - t0) / 900), e = 1 - Math.pow(1 - u, 3);
+      el.textContent = money(to * e);
+      if (u < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  // The tools below light in turn, never before the replay has finished, and each only once it is on screen.
+  var started = false, busy = false, freeAt = 0, queue = [];
+  function next() {
+    if (busy || !started || !queue.length) return;
+    busy = true;
+    setTimeout(function () {
+      queue.shift().classList.add('is-lit');
+      setTimeout(function () { busy = false; next(); }, 1800);
+    }, Math.max(0, freeAt - Date.now()));
+  }
+  minis.forEach(function (a) {
+    var o = new IntersectionObserver(function (es) {
+      if (!es[0].isIntersecting) return;
+      o.disconnect(); queue.push(a);
+      queue.sort(function (p, q) { return minis.indexOf(p) - minis.indexOf(q); });   // left to right, however they arrive
+      next();
+    }, { threshold: 0.6 });
+    o.observe(a);
+  });
+
+  function play() {
+    started = true;
+    freeAt = Date.now() + 8600;
+    sec.classList.add('tk-go');
+    setTimeout(function () { count(vals[0]); }, 2000);
+    setTimeout(function () { count(vals[1]); }, 6700);
+    next();
+  }
+  var o = new IntersectionObserver(function (es) {
+    var e = es[0];
+    if (e.intersectionRatio >= 0.5 || (!e.isIntersecting && e.boundingClientRect.top < 0)) { o.disconnect(); play(); }
+  }, { threshold: [0, 0.5] });
+  o.observe(trp);
+})();
+</script>
+
 <!-- WHERE PROFITS COME FROM -->
 <hr class="mk-rule-gold">
 <section class="section section-dark">
@@ -1034,7 +1247,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
         <tbody>
           <tr class="group-header"><td colspan="6">Real-time enforcement</td></tr>
           <tr><td>Strike System &amp; end-of-day lockout</td><td class="us-col"><span class="compare-check">&#10003;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td></tr>
-          <tr><td>Give-Back Guard <span class="compare-note">(protects a green day)</span></td><td class="us-col"><span class="compare-check">&#10003;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td></tr>
+          <tr><td>Profit Floor <span class="compare-note">(protects a green day)</span></td><td class="us-col"><span class="compare-check">&#10003;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td></tr>
           <tr><td>The Lock-In <span class="compare-note">(your daily trading contract)</span></td><td class="us-col"><span class="compare-check">&#10003;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td></tr>
           <tr><td>State Machine <span class="compare-note">(timed checkpoints)</span></td><td class="us-col"><span class="compare-check">&#10003;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td></tr>
           <tr><td>COACH SAYS <span class="compare-note">(coaching while the market is open)</span></td><td class="us-col"><span class="compare-check">&#10003;</span></td><td><span class="compare-check">&#10003;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td><td><span class="compare-dash">&mdash;</span></td></tr>
@@ -1229,7 +1442,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
         </div>
         <p class="footer-tagline"><strong>Stop the trade you'd regret.</strong>Discipline in every session. Edge in every trade. Accountability when it counts.</p>
       </div>
-      <div><div class="footer-col-title">Product</div><ul class="footer-links"><li><a href="system.html">The System</a></li><li><a href="journal.html">Journal</a></li><li><a href="indicators.html">Indicators</a></li><li><a href="focus.html">Focus Room</a></li><li><a href="tools.html">Free Tools</a></li><li><a href="dilution-check.html">Dilution Check</a></li><li><a href="pricing.html" data-cta-source="footer-product" data-cta-target="pricing">Pricing</a></li></ul></div>
+      <div><div class="footer-col-title">Product</div><ul class="footer-links"><li><a href="journal.html">Journal</a></li><li><a href="system.html">The System</a></li><li><a href="indicators.html">Indicators</a></li><li><a href="focus.html">Focus Room</a></li><li><a href="tools.html">Free Tools</a></li><li><a href="dilution-check.html">Dilution Check</a></li><li><a href="pricing.html" data-cta-source="footer-product" data-cta-target="pricing">Pricing</a></li></ul></div>
       <div><div class="footer-col-title">Explore</div><ul class="footer-links"><li><a href="trader-type.html" data-cta-source="footer-explore" data-cta-target="trader-type">Trader Type</a></li><li><a href="trade-replay.html" data-cta-source="footer-explore" data-cta-target="trade-replay">Trade Replay</a></li><li><a href="trading-os.html" data-cta-source="footer-explore" data-cta-target="trading-os">Trading OS</a></li><li><a href="soundtrack.html" data-cta-source="footer-explore" data-cta-target="soundtrack">Soundtrack</a></li><li><a href="why.html" data-cta-source="footer-explore" data-cta-target="why">Why MAKETZO</a></li><li><a href="contact.html" data-cta-source="footer-explore" data-cta-target="contact">Contact Us</a></li></ul></div>
       <div><div class="footer-col-title">Legal</div><ul class="footer-links"><li><a href="privacy.html">Privacy Policy</a></li><li><a href="terms.html">Terms of Service</a></li><li><a href="disclaimer.html">Risk Disclaimer</a></li></ul></div>
     </div>

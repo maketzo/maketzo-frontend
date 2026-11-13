@@ -186,7 +186,16 @@ if (tier) {
     const chargeDay = isReferred ? 15 : 8;
     document.getElementById('eyebrow').textContent = `START ${tier.name.toUpperCase()} TRIAL`;
     document.getElementById('title').innerHTML = `Sign up for <em>${tier.name}.</em>`;
-    document.getElementById('sub').textContent = `${tier.amount} · ${days}-day free trial · no charge until day ${chargeDay} · cancel anytime.`;
+    if (isReferred) {
+      // A referral's trial depends on who referred them (a partner's referee gets 30 days and no card, decided by the
+      // server), so this page keeps the friend gift's wording and promises no date.
+      document.getElementById('sub').textContent = `${tier.amount} · ${days}-day free trial · no charge until day ${chargeDay} · cancel anytime.`;
+    } else {
+      // The plan, the price, the card and the day the trial ends, on the page where the visitor commits (Ed's pick
+      // 2026-11-13). Stripe ends a 7-day trial seven days from checkout, so the visitor's own date plus seven.
+      const ends = new Date(Date.now() + days * 864e5).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+      document.getElementById('sub').textContent = `${tier.name} is free for ${days} days, then ${tier.amount}. Card required. Your trial ends ${ends}. Cancel before then and pay nothing.`;
+    }
     document.getElementById('signupSubmit').textContent = `Start ${days}-day free trial`;
   }
 }
