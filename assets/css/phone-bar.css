@@ -150,6 +150,8 @@
   /* everything else that sits at the bottom of a phone rises above the bar */
   html.mkpb-on .mkt-consent { bottom: calc(var(--pbar-h) + 12px); }
   html.mkpb-on .mk-share-toast { bottom: calc(var(--pbar-h) + 16px); }
+  /* the share engine's own toast ("Link copied", maketzo-app lib/share-menu.js), on every Share button since 2026-11-13 */
+  html.mkpb-on .kb-share-toast { bottom: calc(var(--pbar-h) + 16px); }
 
   @media (prefers-reduced-motion: reduce) {
     .mk-pbar, .mk-psheet, .mk-psheet-scrim { transition-duration: .01s; }

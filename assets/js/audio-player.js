@@ -1,12 +1,13 @@
 /*!
- * MAKETZO Audio Player + Share — v9
+ * MAKETZO Audio Player + Share, v10
  * Vanilla JS, no deps. Three coordinated modules in one file:
- *   1. Player           — single-track and multi-track HTML5 audio player,
- *                         deep-link parser (?track=slug&t=42), per-row share
- *                         trigger synthesis, track lifecycle analytics events.
- *   2. Share widget     — branded dropdown shared by album-level and per-track
- *                         triggers. Per-trigger payload (title/text/url) is
- *                         resolved at click time from data-share-* attributes.
+ *   1. Player           single-track and multi-track HTML5 audio player,
+ *                       deep-link parser (?track=slug&t=42), track lifecycle
+ *                       analytics events.
+ *   2. Share            every Share button on maketzo.co (the blog, the search
+ *                       pages, the songs, Trade Replay, Trading OS) opens the
+ *                       app's share engine; the payload is read at the tap from
+ *                       the button's data-share-* attributes (v10, 2026-11-13).
  *   3. API bootstrap    — for players with data-tracks-from="api" + a
  *                         data-surface attribute (e.g. "soundtrack-page"),
  *                         fetches the track list from /soundtrack?surface=...
@@ -214,7 +215,6 @@ var MK_SHARE_ICON_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1
     items.forEach(function (li) {
       li.addEventListener("click", function (e) {
         if (e.target && e.target.closest(".mk-audio-player__share-trigger")) return;
-        if (e.target && e.target.closest(".mk-share")) return;
         var wasActive = li.classList.contains("is-active");
         loadTrack(li);
         pauseOthers();
@@ -232,29 +232,6 @@ var MK_SHARE_ICON_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1
           durEl.textContent = formatTime(probe.duration);
         });
       }
-    });
-
-    items.forEach(function (li) {
-      var trigger = li.querySelector(".mk-audio-player__share-trigger");
-      if (!trigger || trigger._mkWrapped) return;
-      var slug = trackIdFromLi(li);
-      if (!slug) return;
-
-      var wrap = document.createElement("div");
-      wrap.className = "mk-share mk-audio-player__share";
-      wrap.dataset.scope = "track";
-      wrap.dataset.trackId = slug;
-      li.insertBefore(wrap, trigger);
-      wrap.appendChild(trigger);
-
-      var menu = document.createElement("div");
-      menu.className = "mk-share__menu mk-share__menu--track";
-      menu.setAttribute("role", "menu");
-      menu.hidden = true;
-      menu.innerHTML = renderShareMenuItems();
-      wrap.appendChild(menu);
-
-      trigger._mkWrapped = true;
     });
 
     var hasSlugs = items.some(function (li) { return !!trackIdFromLi(li); });
@@ -298,31 +275,6 @@ var MK_SHARE_ICON_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1
     }
   }
 
-  function renderShareMenuItems() {
-    return '' +
-      '<button class="mk-share__item" type="button" data-platform="email" role="menuitem">' +
-      '<svg class="mk-share__item-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>' +
-      '<span>Email</span></button>' +
-      '<button class="mk-share__item" type="button" data-platform="sms" role="menuitem">' +
-      '<svg class="mk-share__item-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 11H7V9h2v2zm4 0h-2V9h2v2zm4 0h-2V9h2v2z"/></svg>' +
-      '<span>Text</span></button>' +
-      '<button class="mk-share__item" type="button" data-platform="twitter" role="menuitem">' +
-      '<svg class="mk-share__item-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>' +
-      '<span>X</span></button>' +
-      '<button class="mk-share__item" type="button" data-platform="whatsapp" role="menuitem">' +
-      '<svg class="mk-share__item-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>' +
-      '<span>WhatsApp</span></button>' +
-      '<button class="mk-share__item" type="button" data-platform="telegram" role="menuitem">' +
-      '<svg class="mk-share__item-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.139-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>' +
-      '<span>Telegram</span></button>' +
-      '<button class="mk-share__item" type="button" data-platform="facebook" role="menuitem">' +
-      '<svg class="mk-share__item-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>' +
-      '<span>Facebook</span></button>' +
-      '<button class="mk-share__item mk-share__item--wide" type="button" data-platform="copy" role="menuitem">' +
-      '<svg class="mk-share__item-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>' +
-      '<span>Copy link</span></button>';
-  }
-
   // Static players get initialized at DOMContentLoaded. API-driven players
   // (data-tracks-from="api") are skipped here — the bootstrap module below
   // initializes them after the /soundtrack fetch resolves.
@@ -346,287 +298,182 @@ var MK_SHARE_ICON_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1
 
 
 // ═════════════════════════════════════════════════════════════════════════
-// 2. Share widget — branded dropdown shared by album and per-track triggers.
+// 2. Share. Every Share button on maketzo.co opens the app's share engine
+//   (maketzo-app lib/share-menu.js, window.MaketzoShare): the same grouped menu,
+//   channels and wording as every share in the app and on the game pages.
+//   Ed, 2026-11-13: "Yesterday's work tract on the app revamped the Share to a
+//   Trader Friend functionality. It was supposed to carry over to the .co
+//   website. It hasn't." Until then a 7-button menu of its own lived here and in
+//   the markup of all 132 pages that have a Share button.
+//
+//   The engine comes from the matching app tier through share-embed.js, loaded
+//   once the page is idle or a Share button is touched. Each button carries its
+//   own copy in data-share-* attributes (the blog, the search pages, Trade
+//   Replay, Trading OS) or gets it from the soundtrack API (each song); a button
+//   with none shares the album. His picks the same day: Email opens the
+//   visitor's own mail app (a public page never makes MAKETZO send mail); a
+//   signed-in member's link carries their Refer & Earn code (?ref=, which
+//   mkt-analytics.js credits on whatever page the friend lands); a song that is
+//   playing offers "Share at 1:23". If the engine cannot be reached, Share
+//   copies the link and says so.
 // ═════════════════════════════════════════════════════════════════════════
 (function () {
   "use strict";
 
-  // Album-level default — used by the page-bottom share button at
-  // soundtrack.html. Per-track copy lives ENTIRELY in data-share-* attributes
-  // on each trigger (populated by the API bootstrap or by inline HTML for
-  // non-API players). The hardcoded TRACK_COPY / TRACK_EMAIL_SUBJECTS maps
-  // that lived here through v8 are gone — the admin DB is now the single
-  // source of truth for marketing share copy.
-  var ALBUM_PAYLOAD = {
-    title: "Earn the Right — MAKETZO",
-    text:  "There's a trading album now. 'Earn the Right' by MAKETZO — songs for the bell, the wait, the win, and the loss. Each one too accurate.",
-    url:   "https://maketzo.co/soundtrack"
+  // The album, for a Share button with no copy of its own (/soundtrack, /focus).
+  var ALBUM = {
+    title: "Earn the Right by MAKETZO",
+    text: "There's a trading album now: Earn the Right by MAKETZO. Songs for the bell, the wait, the win and the loss.",
+    url: "https://maketzo.co/soundtrack",
+    subject: "There's a trading album. Yes, really."
   };
-  var ALBUM_EMAIL_SUBJECT = "There's a trading album. Yes, really.";
+  var TRIGGERS = ".mk-share__trigger, .mk-audio-player__share-trigger";
 
-  var PLATFORM_URLS = {
-    email:    function (t, u, subject) { return "mailto:?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(t + "\n\n" + u); },
-    sms:      function (t, u) { return "sms:?&body=" + encodeURIComponent(t + " " + u); },
-    twitter:  function (t, u) { return "https://twitter.com/intent/tweet?text=" + encodeURIComponent(t) + "&url=" + encodeURIComponent(u); },
-    whatsapp: function (t, u) { return "https://wa.me/?text=" + encodeURIComponent(t + " " + u); },
-    telegram: function (t, u) { return "https://t.me/share/url?url=" + encodeURIComponent(u) + "&text=" + encodeURIComponent(t); },
-    facebook: function (t, u) { return "https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(u); }
-  };
-
-  var openWidget = null;
-  var MENU_WIDTH = 320;
-  var MENU_GAP = 10;
-  var VIEWPORT_PAD = 16;
-
-  function shareOrigin() {
-    if (window.location.protocol === "file:" || !window.location.origin) {
-      return "https://maketzo.co";
-    }
-    return window.location.origin;
+  function track(event, props) {
+    try { if (window.MaketzoAnalytics && window.MaketzoAnalytics.send) window.MaketzoAnalytics.send(event, props); } catch (e) {}
   }
 
-  function getPlayerStateForTrigger(trigger) {
+  // The app tier that matches this page (dev.maketzo.co -> dev-app.maketzo.co).
+  function appBase() {
+    var h = (window.location.hostname || "").replace(/^www\./, "");
+    if (h.indexOf("dev.") === 0) return "https://dev-app.maketzo.co";
+    if (h.indexOf("staging.") === 0) return "https://staging-app.maketzo.co";
+    return "https://app.maketzo.co";
+  }
+
+  // ── The engine: loaded once, then a member's referral code is fetched. ──
+  var state = "idle", waiting = null, waitTimer = null, refCode = "";
+  function member() { return document.documentElement.classList.contains("mkt-auth"); }
+  function settle(s) {
+    if (state === "ready" || state === "failed") return;
+    state = s;
+    if (s === "ready" && member() && window.MaketzoShare.base) {
+      window.MaketzoShare.base().then(function (b) { refCode = (b && b.code) || ""; }, function () {});
+    }
+    var w = waiting;
+    waiting = null;
+    clearTimeout(waitTimer);
+    if (w) w();
+  }
+  function load() {
+    if (window.MaketzoShare) { settle("ready"); return; }
+    if (state !== "idle") return;
+    state = "loading";
+    document.addEventListener("mk:share-ready", function () { settle(window.MaketzoShare ? "ready" : "failed"); });
+    document.addEventListener("mk:share-failed", function () { settle("failed"); });
+    var s = document.createElement("script");
+    s.src = appBase() + "/share-embed.js";
+    s.async = true;
+    s.onerror = function () { settle("failed"); };
+    document.head.appendChild(s);
+  }
+
+  // ── What a button shares, built at the tap. ──
+  function withParam(url, key, value) {
+    return url + (url.indexOf("?") >= 0 ? "&" : "?") + key + "=" + encodeURIComponent(value);
+  }
+  function playingAt(trigger) {
+    // The seconds into this song when it is the one playing, past the first second; otherwise null.
+    var slug = trigger.getAttribute("data-track-id");
     var player = trigger.closest && trigger.closest(".mk-audio-player");
-    if (!player || !player._maketzoPlayer) return null;
-    return {
-      activeSlug: player._maketzoPlayer.getActiveSlug(),
-      currentTime: player._maketzoPlayer.getCurrentTime()
-    };
+    var p = player && player._maketzoPlayer;
+    if (!slug || !p || p.getActiveSlug() !== slug) return null;
+    var t = Math.floor(p.getCurrentTime() || 0);
+    return t >= 1 ? t : null;
   }
-
-  function getPayloadForTrigger(trigger, includeTimestamp) {
-    // Every share trigger (per-track or otherwise) carries its own copy via
-    // data-share-* attributes. Per-track triggers also get a timestamp
-    // appended to their URL when the player is mid-play and the toggle is on.
-    var dataTitle   = trigger.getAttribute("data-share-title");
-    var dataUrl     = trigger.getAttribute("data-share-url");
-    var dataText    = trigger.getAttribute("data-share-text");
-    var dataSubject = trigger.getAttribute("data-share-subject");
-    var slug        = trigger.getAttribute("data-track-id");
-    var source      = trigger.getAttribute("data-share-source") || "";
-
-    // Apply timestamp append for live-playing per-track triggers.
-    var finalUrl = dataUrl || ALBUM_PAYLOAD.url;
-    if (source === "track" && includeTimestamp) {
-      var state = getPlayerStateForTrigger(trigger);
-      if (state && state.activeSlug === slug && state.currentTime > 1) {
-        var ts = Math.floor(state.currentTime);
-        finalUrl += (finalUrl.indexOf("?") >= 0 ? "&" : "?") + "t=" + ts;
-      }
-    }
-
-    if (dataTitle || dataUrl || dataText) {
-      return {
-        title:   dataTitle   || ALBUM_PAYLOAD.title,
-        text:    dataText    || dataTitle || ALBUM_PAYLOAD.text,
-        url:     finalUrl,
-        subject: dataSubject || dataTitle || ALBUM_EMAIL_SUBJECT,
-        track_id: slug || null,
-        timestamp_sec: includeTimestamp && source === "track"
-          ? (function () {
-              var st = getPlayerStateForTrigger(trigger);
-              return st && st.activeSlug === slug ? Math.floor(st.currentTime) : null;
-            })()
-          : null
+  function payloadFor(trigger) {
+    function a(k) { return trigger.getAttribute("data-share-" + k) || ""; }
+    var source = a("source"), slug = trigger.getAttribute("data-track-id") || null;
+    var own = !!(a("title") || a("url") || a("text"));
+    var title = own ? (a("title") || ALBUM.title) : ALBUM.title;
+    var url = own ? (a("url") || ALBUM.url) : ALBUM.url;
+    if (refCode) url = withParam(url, "ref", refCode);
+    var at = null;
+    var p = {
+      title: title,
+      subject: own ? (a("subject") || title) : ALBUM.subject,
+      text: own ? (a("text") || title) : ALBUM.text,
+      url: url,
+      page: true,
+      campaign: source === "track" ? "song" : (source.indexOf("blog-") === 0 ? "blog" : (source || "site")),
+      count: false,
+      onShare: function (ch) { track("share_action", { track_id: slug, platform: ch, timestamp_sec: at }); }
+    };
+    var t = source === "track" ? playingAt(trigger) : null;
+    if (t != null) {
+      p.option = {
+        label: "Share at " + Math.floor(t / 60) + ":" + (t % 60 < 10 ? "0" : "") + (t % 60),
+        apply: function (q) {
+          at = t;
+          var r = {};
+          for (var k in q) r[k] = q[k];
+          r.url = withParam(q.url, "t", t);
+          return r;
+        }
       };
     }
-    // Album-level trigger with no overrides.
-    return {
-      title: ALBUM_PAYLOAD.title,
-      text: ALBUM_PAYLOAD.text,
-      url: ALBUM_PAYLOAD.url,
-      subject: ALBUM_EMAIL_SUBJECT,
-      track_id: null,
-      timestamp_sec: null
-    };
+    return p;
   }
 
-  function positionMenu(trigger, menu) {
-    var rect = trigger.getBoundingClientRect();
-    var menuRect = menu.getBoundingClientRect();
-    var menuWidth = menuRect.width || MENU_WIDTH;
-    var menuHeight = menuRect.height || 280;
-    var vw = window.innerWidth;
-    var vh = window.innerHeight;
-    var left = rect.left + rect.width / 2 - menuWidth / 2;
-    left = Math.max(VIEWPORT_PAD, Math.min(left, vw - menuWidth - VIEWPORT_PAD));
-    var below = rect.bottom + MENU_GAP;
-    var aboveTop = rect.top - menuHeight - MENU_GAP;
-    var top;
-    if (below + menuHeight <= vh - VIEWPORT_PAD) {
-      top = below;
-    } else if (aboveTop >= VIEWPORT_PAD) {
-      top = aboveTop;
-    } else {
-      var spaceBelow = vh - rect.bottom;
-      var spaceAbove = rect.top;
-      if (spaceBelow >= spaceAbove) {
-        top = below;
-      } else {
-        top = Math.max(VIEWPORT_PAD, aboveTop);
-      }
+  function openFor(trigger) {
+    track("share_open", { track_id: trigger.getAttribute("data-track-id") || null, timestamp_sec: playingAt(trigger) });
+    window.MaketzoShare.open(payloadFor(trigger), trigger);
+  }
+
+  // ── No engine: copy the link, and say what happened. ──
+  function toast(msg) {
+    var t = document.querySelector(".mk-share-toast");
+    if (!t) {
+      t = document.createElement("div");
+      t.className = "mk-share-toast";
+      t.setAttribute("role", "status");
+      t.setAttribute("aria-live", "polite");
+      document.body.appendChild(t);
     }
-    if (top + menuHeight > vh - VIEWPORT_PAD) {
-      top = Math.max(VIEWPORT_PAD, vh - menuHeight - VIEWPORT_PAD);
-    }
-    menu.style.left = left + "px";
-    menu.style.top = top + "px";
+    t.textContent = msg;
+    t.hidden = false;
+    t.classList.add("is-visible");
+    clearTimeout(t._mkHide);
+    t._mkHide = setTimeout(function () {
+      t.classList.remove("is-visible");
+      setTimeout(function () { t.hidden = true; }, 300);
+    }, 2200);
+  }
+  function fallback(trigger) {
+    var url = payloadFor(trigger).url;
+    var failed = function () { toast("Sharing is not available right now. Try again in a moment."); };
+    try {
+      navigator.clipboard.writeText(url).then(function () { toast("Link copied"); }, failed);
+    } catch (e) { failed(); }
+    track("share_action", { track_id: trigger.getAttribute("data-track-id") || null, platform: "copy-fallback", timestamp_sec: null });
   }
 
-  function closeAll() {
-    if (!openWidget) return;
-    var trigger = openWidget.querySelector(".mk-share__trigger, .mk-audio-player__share-trigger");
-    var menu = openWidget._mkMenu;
-    if (trigger) trigger.setAttribute("aria-expanded", "false");
-    if (menu) {
-      menu.hidden = true;
-      var ts = menu.querySelector(".mk-share__timestamp");
-      if (ts) ts.remove();
-    }
-    openWidget = null;
+  // ── One listener for every Share button, including the songs the API adds later. ──
+  document.addEventListener("click", function (e) {
+    var trigger = e.target && e.target.closest && e.target.closest(TRIGGERS);
+    if (!trigger) return;
+    e.preventDefault();
+    e.stopPropagation();
+    if (window.MaketzoShare) { settle("ready"); openFor(trigger); return; }
+    if (state === "failed") { fallback(trigger); return; }
+    load();
+    waiting = function () { if (window.MaketzoShare) openFor(trigger); else fallback(trigger); };
+    clearTimeout(waitTimer);
+    waitTimer = setTimeout(function () { if (waiting) { waiting = null; fallback(trigger); } }, 6000);
+  });
+  // A finger or pointer on its way to a Share button starts the load early.
+  ["pointerover", "touchstart", "focusin"].forEach(function (type) {
+    document.addEventListener(type, function (e) {
+      if (state === "idle" && e.target && e.target.closest && e.target.closest(TRIGGERS)) load();
+    }, { passive: true });
+  });
+  function boot() {
+    if (!document.querySelector(TRIGGERS + ', .mk-audio-player[data-tracks-from="api"]')) return;
+    var later = window.requestIdleCallback || function (fn) { return setTimeout(fn, 1500); };
+    later(function () { load(); });
   }
-
-  function showToast(root) {
-    var toast = root.querySelector(".mk-share-toast") || document.querySelector(".mk-share-toast");
-    if (!toast) return;
-    toast.hidden = false;
-    toast.classList.add("is-visible");
-    setTimeout(function () {
-      toast.classList.remove("is-visible");
-      setTimeout(function () { toast.hidden = true; }, 300);
-    }, 1800);
-  }
-
-  function handlePlatform(platform, root, trigger) {
-    var menu = root._mkMenu;
-    var tsBox = menu ? menu.querySelector(".mk-share__timestamp-input") : null;
-    var includeTimestamp = !!(tsBox && tsBox.checked);
-    var payload = getPayloadForTrigger(trigger, includeTimestamp);
-
-    if (window.MaketzoAnalytics) {
-      window.MaketzoAnalytics.send("share_action", {
-        track_id: payload.track_id,
-        platform: platform,
-        timestamp_sec: payload.timestamp_sec
-      });
-    }
-
-    if (platform === "copy") {
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(payload.url).then(function () { showToast(root); });
-      } else {
-        var ta = document.createElement("textarea");
-        ta.value = payload.url;
-        ta.style.position = "fixed"; ta.style.opacity = "0";
-        document.body.appendChild(ta);
-        ta.select();
-        try { document.execCommand("copy"); showToast(root); } catch (e) {}
-        document.body.removeChild(ta);
-      }
-      return;
-    }
-    var builder = PLATFORM_URLS[platform];
-    if (builder) {
-      var url = (platform === "email")
-        ? builder(payload.text, payload.url, payload.subject)
-        : builder(payload.text, payload.url);
-      if (platform === "email" || platform === "sms") {
-        window.location.href = url;
-      } else {
-        window.open(url, "_blank", "noopener,noreferrer");
-      }
-    }
-  }
-
-  function maybeAddTimestampToggle(trigger, menu) {
-    if (trigger.getAttribute("data-share-source") !== "track") return;
-    var slug = trigger.getAttribute("data-track-id");
-    var state = getPlayerStateForTrigger(trigger);
-    if (!state || state.activeSlug !== slug) return;
-    var ts = Math.floor(state.currentTime || 0);
-    if (ts < 1) return;
-
-    var m = Math.floor(ts / 60);
-    var s = ts % 60;
-    var label = "Share at " + m + ":" + (s < 10 ? "0" + s : s);
-
-    var row = document.createElement("label");
-    row.className = "mk-share__timestamp";
-    row.innerHTML = '<input type="checkbox" class="mk-share__timestamp-input" checked>' +
-                    '<span class="mk-share__timestamp-label">' + label + '</span>';
-    row.addEventListener("click", function (e) { e.stopPropagation(); });
-    menu.insertBefore(row, menu.firstChild);
-  }
-
-  function initShareWidget(root) {
-    if (root._mkShareInitialized) return;
-    var trigger = root.querySelector(".mk-share__trigger, .mk-audio-player__share-trigger");
-    var menu = root.querySelector(".mk-share__menu");
-    if (!trigger || !menu) return;
-    root._mkShareInitialized = true;
-
-    document.body.appendChild(menu);
-    root._mkMenu = menu;
-
-    trigger.addEventListener("click", function (e) {
-      e.stopPropagation();
-      var isOpen = trigger.getAttribute("aria-expanded") === "true";
-      closeAll();
-      if (!isOpen) {
-        trigger.setAttribute("aria-expanded", "true");
-        menu.hidden = false;
-        maybeAddTimestampToggle(trigger, menu);
-        positionMenu(trigger, menu);
-        openWidget = root;
-        if (window.MaketzoAnalytics) {
-          var slug = trigger.getAttribute("data-track-id") || null;
-          window.MaketzoAnalytics.send("share_open", {
-            track_id: slug,
-            timestamp_sec: (function () {
-              var st = getPlayerStateForTrigger(trigger);
-              return st ? st.currentTime : null;
-            })()
-          });
-        }
-      }
-    });
-
-    menu.addEventListener("click", function (e) {
-      var btn = e.target.closest("[data-platform]");
-      if (!btn) return;
-      e.stopPropagation();
-      handlePlatform(btn.getAttribute("data-platform"), root, trigger);
-      closeAll();
-    });
-  }
-
-  function init() {
-    var widgets = document.querySelectorAll(".mk-share");
-    widgets.forEach(initShareWidget);
-    document.addEventListener("click", function (e) {
-      if (!openWidget) return;
-      var menu = openWidget._mkMenu;
-      if (!openWidget.contains(e.target) && (!menu || !menu.contains(e.target))) closeAll();
-    });
-    document.addEventListener("keydown", function (e) {
-      if (e.key === "Escape") closeAll();
-    });
-    window.addEventListener("scroll", function () { closeAll(); }, { passive: true });
-    window.addEventListener("resize", function () { closeAll(); });
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", init);
-  } else {
-    init();
-  }
-
-  // Public — the API bootstrap calls this on newly-injected per-row triggers.
-  window.__mkInitShareWidgetsIn = function (root) {
-    if (!root) return;
-    var widgets = root.querySelectorAll(".mk-share");
-    widgets.forEach(initShareWidget);
-  };
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
+  else boot();
 })();
 
 
@@ -678,7 +525,7 @@ var MK_SHARE_ICON_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1
     var displayName = name + (t.variantTag ? " · " + t.variantTag : "");
     var eyebrow = fallbackEyebrow || "MAKETZO · Earn the Right";
     var shareUrl = window.location.origin + "/soundtrack?track=" + encodeURIComponent(slug);
-    var shareTitle = t.marketingShareTitle || (displayName + " — MAKETZO");
+    var shareTitle = t.marketingShareTitle || (displayName + " by MAKETZO");
     var shareText = t.marketingShareText || shareTitle;
     var shareSubject = t.marketingShareSubject || ("Listen: " + displayName);
 
@@ -707,7 +554,7 @@ var MK_SHARE_ICON_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1
       +           'data-share-url="' + escapeAttr(shareUrl) + '" '
       +           'data-tooltip="Share to friend" '
       +           'aria-label="Share ' + escapeAttr(name) + '" '
-      +           'aria-expanded="false">'
+      +           'aria-haspopup="dialog">'
       +     MK_SHARE_ICON_SVG
       +   '</button>'
       + '</li>';
@@ -774,7 +621,7 @@ var MK_SHARE_ICON_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1
             && player.parentNode && !player.parentNode.querySelector(".mk-audio-player__shared-banner")) {
           var banner = document.createElement("div");
           banner.className = "mk-audio-player__shared-banner";
-          banner.innerHTML = 'A trader sent you this track. Press play — then '
+          banner.innerHTML = 'A trader sent you this track. Press play, then '
             + '<button type="button" class="mk-audio-player__shared-cta">start your free trial</button> '
             + 'to unlock the full library inside.';
           player.parentNode.insertBefore(banner, player);
@@ -790,10 +637,9 @@ var MK_SHARE_ICON_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1
         listEl.innerHTML = fallbackHtml;
       })
       .then(function () {
-        // Wire up the now-populated DOM. initPlayer creates per-row .mk-share
-        // wrappers; the share-widget initializer then binds click handlers.
+        // Wire up the now-populated DOM. Its Share buttons need nothing: one
+        // listener in section 2 answers every Share button on the page.
         if (window.__mkInitPlayer) window.__mkInitPlayer(player);
-        if (window.__mkInitShareWidgetsIn) window.__mkInitShareWidgetsIn(player);
       });
   }
 
