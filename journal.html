@@ -507,13 +507,19 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 .od-checks .od-signed { color: var(--mk-gold-300); font-weight: 600; }
 
 /* moment 2, other journal: the click nobody interrupts */
-.od-screen { position: relative; height: 74px; border-radius: 10px; background: var(--mk-surface-page); border: 1px solid rgba(255,255,255,.08); overflow: hidden; }
-.od-buy { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); padding: 9px 30px; border-radius: 7px; border: 1.5px solid rgba(239,68,68,.75); color: #F87171; font-family: var(--mk-font-sans); font-weight: 700; font-size: var(--mk-text-lg); letter-spacing: .1em; transition: background .3s ease, box-shadow .3s ease; }
-.od-cursor { position: absolute; left: 54%; top: 46%; width: 24px; height: 24px; transition: transform 1.1s cubic-bezier(.4,0,.2,1); }
+.od-screen { position: relative; height: 84px; border-radius: 10px; background: var(--mk-surface-page); border: 1px solid rgba(255,255,255,.08); overflow: hidden; }
+.od-buy { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); padding: 10px 28px; border-radius: 6px; border: 1px solid rgba(52,191,154,.6); color: var(--mk-state-profit); font-family: var(--mk-font-mono); font-size: var(--mk-mono-md); letter-spacing: .16em; transition: background .3s ease; }
+.od-cursor { position: absolute; left: 54%; top: 50%; width: 22px; height: 22px; transition: transform 1.1s cubic-bezier(.4,0,.2,1); }
 .od-cursor svg { width: 100%; height: 100%; fill: var(--mk-text-primary); stroke: var(--mk-surface-page); stroke-width: 1.5; }
-.od-clicked .od-buy { background: rgba(239,68,68,.16); box-shadow: 0 0 18px rgba(239,68,68,.4); }
+.od-clicked .od-buy { background: rgba(52,191,154,.18); }
+.od-clicked .od-screen { animation: odFlash 1.2s ease .25s 1; }
+@keyframes odFlash { 30% { box-shadow: inset 0 0 0 1px rgba(239,68,68,.7), 0 0 26px rgba(239,68,68,.35); } }
+.od-stopped { font-weight: 600; }
+.od-stopped span { font-family: var(--mk-font-mono); color: var(--mk-state-danger); white-space: nowrap; }
 
 /* moment 2, MAKETZO: strike two, then COACH SAYS */
+.od-strike-box { display: grid; gap: 8px; }
+.od-strike-box > span { font-family: var(--mk-font-mono); font-size: var(--mk-mono-sm); letter-spacing: var(--mk-track-eyebrow); color: var(--mk-text-secondary); }
 .od-strikes { display: flex; gap: 8px; }
 .od-strikes i { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-style: normal; font-family: var(--mk-font-mono); font-size: var(--mk-mono-sm); border: 1px solid rgba(255,255,255,.2); color: var(--mk-text-tertiary); transition: background .35s ease, border-color .35s ease, color .35s ease; }
 .od-strikes i.is-hit { background: var(--mk-strike-warning-bg); border-color: var(--mk-strike-warning); color: var(--mk-strike-warning); }
@@ -574,11 +580,15 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 .od-armed .od-stage.is-in b { color: var(--mk-text-primary); }
 .od-armed .od-chev { opacity: .15; }
 .od-armed .od-chev.is-in { opacity: 1; }
-.od-armed .od-cursor { transform: translate(70px, 22px); }
+.od-armed .od-cursor { transform: translate(72px, 26px); }
 .od-armed .od-go .od-cursor { transform: none; }
-.od-armed .od-after { opacity: 0; transition: opacity .5s ease .4s; }
+.od-armed .od-after { opacity: 0; transition: opacity .5s ease .5s; }
 .od-armed .od-clicked .od-after { opacity: 1; }
-.od-armed .od-coach { opacity: 0; transform: translateY(8px); }
+.od-armed .od-stopped.od-after { transition-delay: 1.1s; }
+/* strike two lands with one pulse; COACH SAYS follows it, a beat later */
+.od-armed .od-strikes i.is-hit:nth-child(2) { animation: odHit .8s cubic-bezier(.3,.7,.3,1) 1; }
+@keyframes odHit { 35% { transform: scale(1.35); box-shadow: 0 0 0 7px rgba(245,158,11,.22), 0 0 18px rgba(245,158,11,.55); } }
+.od-armed .od-coach { opacity: 0; transform: translateY(10px); }
 .od-armed .od-spoke .od-coach { opacity: 1; transform: none; }
 .od-armed .od-chip { opacity: 0; transform: translateY(6px); }
 .od-armed .od-graded .od-chip { opacity: 1; transform: none; }
@@ -748,9 +758,10 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
           <p>Two losses in. You see a setup and size up to win it back.</p>
           <div class="od-screen"><span class="od-buy">BUY</span><span class="od-cursor" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M4 2l15 11-6.5 1.2L16 21l-3 1.4-3.4-6.8L4 19z"/></svg></span></div>
           <p class="od-note od-after">Nothing on screen stops you.</p>
+          <p class="od-stopped od-after">Stopped out: <span>&minus;$760.00</span></p>
         </div>
         <div class="od-card od-r2 od-c2 od-spoke">
-          <div class="od-strikes" role="img" aria-label="Two of three strikes"><i class="is-hit">1</i><i class="is-hit">2</i><i>3</i></div>
+          <div class="od-strike-box"><span>STRIKES</span><div class="od-strikes" role="img" aria-label="Two of three strikes"><i class="is-hit">1</i><i class="is-hit">2</i><i>3</i></div></div>
           <div class="od-coach"><div class="od-coach-head"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2.5 12h4l2-4.5 3.5 9 2.5-6 1.5 1.5h5.5"/></svg>COACH SAYS</div><p>Second strike. The next loss ends the day. Take a breath, take the cleanest setup, or wait it out.</p></div>
         </div>
       </div>
@@ -820,11 +831,11 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
     var m = moments[i];
     m.querySelectorAll('.od-stage, .od-card').forEach(function (c) { c.classList.add('is-in'); });
     if (i === 1) {
-      setTimeout(function () { hits[0].classList.add('is-hit'); }, 300);
-      setTimeout(function () { hits[1].classList.add('is-hit'); }, 650);
-      setTimeout(function () { us.classList.add('od-spoke'); }, 1000);
-      setTimeout(function () { them.classList.add('od-go'); }, 900);
-      setTimeout(function () { them.classList.add('od-clicked'); }, 2100);
+      setTimeout(function () { hits[0].classList.add('is-hit'); }, 250);
+      setTimeout(function () { hits[1].classList.add('is-hit'); }, 1000);   // strike two lands, with its pulse
+      setTimeout(function () { us.classList.add('od-spoke'); }, 1900);       // then COACH SAYS
+      setTimeout(function () { them.classList.add('od-go'); }, 2200);        // the other row's cursor only now heads for Buy
+      setTimeout(function () { them.classList.add('od-clicked'); }, 3400);
     }
     if (i === 2) {
       var t0 = performance.now();
@@ -849,8 +860,8 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
     once(grid, 0.3, function () {
       light(0);
       setTimeout(function () { chevrons(1); light(1); }, 1600);
-      setTimeout(function () { chevrons(2); light(2); }, 5400);
-      setTimeout(function () { once(end, 0.35, finish); }, 7600); // the close waits until the result is on screen
+      setTimeout(function () { chevrons(2); light(2); }, 7000);
+      setTimeout(function () { once(end, 0.35, finish); }, 9200); // the close waits until the result is on screen
     });
   } else {
     moments.forEach(function (m, i) { once(m, 0.35, function () { light(i); }); });
