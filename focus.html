@@ -789,13 +789,13 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
    this section"). Three across, a light reads along the nine top edges in reading order; then A+ Only Day is picked,
    lifts and is stamped LOCKED IN (the app's word: "Locked in on A+ Only Day"), the rules bar lights, and a beat later
    the card offers "See what you agreed to". Tapping any card locks it in (one contract at a time, as in the app) and
-   opens its panel beside it: what the trader just did, what the contract is for, a few of its rules and what each
+   opens its panel from it: what the trader just did, what the contract is for, a few of its rules and what each
    costs, and what it does for them (Ed, 2026-11-13: "A popup should appear with the consequences of locked in to
    educate the user what they just did"; picked: opens from the card, only on a tap, and "Don't give away the secret
    sauce": purpose, sample rules and the payoff, never the thresholds). On a phone the panel rises from the bottom.
    Card words are never dimmed or hidden; nothing applies without .lk-live, so with no script the section stands as
    it is. Every motion is a one-shot transform or opacity change; nothing loops. */
-.lk-live .lockin-card { cursor: pointer; transition: opacity var(--mk-dur-slow) var(--mk-ease-out), transform var(--mk-dur-slow) var(--mk-ease-out), border-color .5s ease, box-shadow .6s ease; }
+.lk-live .lockin-card { cursor: pointer; transition: opacity var(--mk-dur-slow) var(--mk-ease-out), transform var(--mk-dur-slow) var(--mk-ease-out), filter var(--mk-dur-slow) var(--mk-ease-out), border-color .5s ease, box-shadow .6s ease; }
 .lk-live .lockin-card:hover { border-color: rgba(255,255,255,.18); }   /* hover-ok: under .lk-live the script makes each card a button (role, tabindex, click and keys) that locks that contract in and opens its panel */
 .lk-live .lockin-card:focus-visible { outline: 2px solid var(--acc); outline-offset: 3px; }
 .lk-live .lockin-card::before { content: ''; position: absolute; z-index: 1; left: 14px; right: 14px; top: -1px; height: 2px; border-radius: 2px; background: linear-gradient(90deg, transparent, rgba(255,255,255,.95), transparent) no-repeat; background-size: 40% 100%; background-position: -60% 0; opacity: 0; pointer-events: none; }
@@ -830,7 +830,23 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
 .lk-live .lockin-mech { transition: opacity var(--mk-dur-slow) var(--mk-ease-out), transform var(--mk-dur-slow) var(--mk-ease-out), border-color .8s ease, box-shadow 1s ease; }
 .lk-live .lockin-mech.is-lit { border-color: rgba(212,175,55,.75); box-shadow: 0 0 0 1px rgba(212,175,55,.14), 0 0 44px rgba(212,175,55,.18); }
 
-/* the panel a tap opens, beside the card (the script places it); on a phone it rises from the bottom */
+/* While a panel is open, the card it came from holds its icon and name at its top edge (the script glides them there)
+   and the panel's top corner tucks inside the card just under them, covering the description, which fades out. The
+   other eight go grey until the panel closes; a tap on a grey one moves the lock and the panel to it. Ed, 2026-11-14:
+   "Make the box corner appear within the selected box with the name of the originating box visible" and "Make all
+   other locked in states greyed out until the detailed box is exited". */
+.lk-live .lockin-card .lk-ico, .lk-live .lockin-card .lk-txt { transition: transform .38s var(--mk-ease-out); }
+.lk-live .lockin-card .lk-flip { transform: translateY(var(--gy, 0px)); transition: none; }
+.lk-live .lockin-card .lockin-use { transition: opacity .3s ease; }
+.lk-live .lockin-grid.is-focus .lockin-card:not(.is-open) { opacity: .34; filter: grayscale(1); }
+.lk-live .lockin-grid.is-focus .lockin-card:not(.is-open):hover { opacity: .6; }   /* hover-ok: a grey card is still a button; a tap locks it in and moves the panel to it */
+@media (min-width: 641px) {
+  .lk-live .lockin-card.is-open { align-items: flex-start; }
+  .lk-live .lockin-card.is-open .lockin-use { opacity: 0; }
+  .lk-p-top .lk-ico { display: none; }   /* the card's own icon sits just above; the phone sheet, away from its card, keeps it */
+}
+
+/* the panel a tap opens from the card (the script places it); on a phone it rises from the bottom */
 .lk-panel {
   --acc: #D4AF37;
   position: absolute; z-index: 60; left: var(--px, 0px); top: var(--py, 0px);
@@ -847,8 +863,6 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
 }
 .lk-panel.is-open { opacity: 1; transform: none; visibility: visible; transition: opacity .26s ease, transform .38s var(--mk-ease-out), visibility 0s; }
 .lk-panel::after { content: ''; position: absolute; left: 18px; right: 18px; top: -1px; height: 2px; border-radius: 2px; background: linear-gradient(90deg, transparent, var(--acc) 18%, var(--acc) 82%, transparent); box-shadow: 0 0 14px 1px color-mix(in srgb, var(--acc) 55%, transparent); pointer-events: none; }
-.lk-notch { position: absolute; left: var(--nx, 50%); top: -8px; width: 14px; height: 14px; background: #151820; border-left: 1px solid color-mix(in srgb, var(--acc) 50%, transparent); border-top: 1px solid color-mix(in srgb, var(--acc) 50%, transparent); transform: rotate(45deg); }
-.lk-panel.is-above .lk-notch { top: auto; bottom: -8px; background: #0D0F14; transform: rotate(225deg); }
 .lk-p-x { position: absolute; top: 14px; right: 14px; display: grid; place-items: center; width: 38px; height: 38px; border-radius: 10px; border: 1px solid rgba(255,255,255,.1); background: transparent; color: var(--mk-text-secondary); cursor: pointer; }
 .lk-p-x:hover { border-color: rgba(255,255,255,.26); color: var(--mk-text-primary); }
 .lk-p-x:focus-visible { outline: 2px solid var(--acc); outline-offset: 2px; }
@@ -909,7 +923,6 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
   .lk-art { width: 46vw; opacity: .8; }
   .lk-panel { position: fixed; z-index: 125; left: 0; right: 0; top: auto; bottom: 0; width: 100%; max-height: 86vh; overflow-y: auto; border-radius: 20px 20px 0 0; border-bottom: 0; padding: 20px 20px calc(22px + env(safe-area-inset-bottom, 0px)); opacity: 1; transform: translateY(100%); transition: transform .4s var(--mk-ease-out), visibility 0s linear .4s; }
   .lk-panel.is-open { transform: none; transition: transform .4s var(--mk-ease-out), visibility 0s; }
-  .lk-notch { display: none; }
   .lk-scrim { display: block; position: fixed; inset: 0; z-index: 124; background: rgba(4,5,7,.62); opacity: 0; visibility: hidden; transition: opacity .3s ease, visibility 0s linear .3s; }
   .lk-scrim.is-open { opacity: 1; visibility: visible; transition: opacity .3s ease, visibility 0s; }
 }
@@ -1474,7 +1487,6 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
   panel.setAttribute('role', 'dialog');
   panel.setAttribute('aria-labelledby', 'lk-p-title');
   panel.innerHTML =
-    '<span class="lk-notch" aria-hidden="true"></span>' +
     '<button type="button" class="lk-p-x" aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>' +
     '<div class="lk-p-top"><span class="lk-ico" aria-hidden="true"></span><div><p class="lk-p-eyebrow">' + LOCK_SVG + 'LOCKED IN</p><h3 class="lk-p-title" id="lk-p-title" tabindex="-1"></h3></div></div>' +
     '<p class="lk-p-lead">You chose today’s rules before your first trade. From here, MAKETZO holds you to them.</p>' +
@@ -1509,22 +1521,39 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
     pCta.setAttribute('data-cta-contract', m);
   }
 
+  // The panel's top corner tucks inside the card, just under its icon and name: the left corner, or the right one when
+  // the card sits too near the right edge for the panel to fit. Every row opens downward, so no name is covered.
   function place(card) {
     if (phoneQ.matches) return;
-    var r = card.getBoundingClientRect(), g = grid.getBoundingClientRect();
+    var r = card.getBoundingClientRect(), ico = card.querySelector('.lk-ico'), name = card.querySelector('.lockin-name');
+    var head = Math.max(ico.offsetTop + ico.offsetHeight, name.offsetTop + name.offsetHeight);   // offsets ignore the glide
     var vw = document.documentElement.clientWidth, pw = panel.offsetWidth, ph = panel.offsetHeight;
-    var below = r.bottom < g.bottom - 4;              // the last row opens upward
-    var left = Math.max(16, Math.min(r.left + r.width / 2 - pw / 2, vw - 16 - pw));
-    var top = below ? r.bottom + 14 : r.top - ph - 14;
-    var nx = Math.max(18, Math.min(r.left + r.width / 2 - left - 7, pw - 32));
-    panel.classList.toggle('is-above', !below);
+    var left = r.left + 12, fromRight = left + pw > vw - 16;
+    if (fromRight) left = r.right - 12 - pw;
+    left = Math.max(16, Math.min(left, vw - 16 - pw));
+    var top = r.top + head + 14;
     panel.style.setProperty('--px', Math.round(left + window.scrollX) + 'px');
     panel.style.setProperty('--py', Math.round(top + window.scrollY) + 'px');
-    panel.style.setProperty('--nx', Math.round(nx) + 'px');
-    panel.style.setProperty('--ox', Math.round(nx + 7) + 'px');
-    panel.style.setProperty('--oy', below ? '0%' : '100%');
-    panel.style.setProperty('--dy', below ? '-6px' : '6px');   // it grows out of the card, toward its resting place
+    panel.style.setProperty('--ox', fromRight ? (pw - 24) + 'px' : '24px');
+    panel.style.setProperty('--oy', '0%');
+    panel.style.setProperty('--dy', '-6px');           // it grows out of the card, downward
     return { top: top, bottom: top + ph };
+  }
+
+  // The open card's icon and name rise to its top edge; they glide there from where they sat (FLIP on offsetTop).
+  function setOpen(card, on) {
+    var els = [card.querySelector('.lk-ico'), card.querySelector('.lk-txt')];
+    var was = els.map(function (e) { return e.offsetTop; });
+    card.classList.toggle('is-open', on);
+    if (reduce) return;
+    els.forEach(function (e, i) {
+      var d = was[i] - e.offsetTop;
+      if (!d) return;
+      e.style.setProperty('--gy', d + 'px');
+      e.classList.add('lk-flip');
+      void e.offsetWidth;
+      e.classList.remove('lk-flip');
+    });
   }
 
   function showHint() {
@@ -1534,8 +1563,11 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
   }
 
   function openPanel(card) {
+    if (openCard && openCard !== card) { openCard.setAttribute('aria-expanded', 'false'); setOpen(openCard, false); }
     fill(card);
     openCard = card;
+    setOpen(card, true);
+    grid.classList.add('is-focus');                    // the other eight go grey until the panel closes
     var at = place(card);                              // where it will rest, measured before it animates
     scrim.classList.add('is-open');
     panel.classList.remove('is-open'); void panel.offsetWidth; panel.classList.add('is-open');
@@ -1558,6 +1590,8 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
     openCard = null;
     panel.classList.remove('is-open');
     scrim.classList.remove('is-open');
+    setOpen(card, false);
+    grid.classList.remove('is-focus');
     card.setAttribute('aria-expanded', 'false');
     showHint();
     if (refocus) card.focus({ preventScroll: true });
