@@ -486,7 +486,8 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
 @media (max-width: 420px) { .lib-card { --sx-icon: 44px 46px; } }
 
 /* ── THE RESET · built to Ed's mock (2026-11-14: "I like the look and feel much more than what's on focus.html") ──
-   One glass panel: 01 NAME THE MOMENT on the left, 02 LET THE ROOM TAKE OVER on the right, the automatic-reset line
+   One glass panel: 01 PICK WHAT YOU FEEL on the left, 02 BREATHE THROUGH IT on the right (the mock's "NAME THE MOMENT"
+   and "LET THE ROOM TAKE OVER", made plain on Ed's copy check the same day), the automatic-reset line
    along its foot. A tap on a moment plays THAT reset in the room (Ed's pick, after "the clicking action doesn't really
    do much"): the app's own ring breathes its cadence, the clock counts down from its real length, and the line the
    reset asks the trader to hold appears, word for word from the app. The ring breathes two breaths per pick and then
@@ -508,8 +509,8 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
 }
 .rs-pick { grid-area: pick; min-width: 0; padding: 40px 0 36px 48px; }
 .rs-room { grid-area: room; min-width: 0; padding: 40px 48px 32px 8px; display: flex; flex-direction: column; align-items: center; text-align: center; scroll-margin-top: 84px; scroll-margin-bottom: 8px; }
-.rs-step { display: flex; align-items: baseline; gap: 14px; margin: 0 0 22px; font-family: var(--mk-font-sans); font-weight: 600; font-size: 1.05rem; line-height: 1.2; letter-spacing: .3em; text-transform: uppercase; color: var(--mk-text-primary); }
-.rs-step b { font-family: var(--mk-font-display); font-weight: 400; font-size: 1.9rem; letter-spacing: .04em; color: var(--mk-gold-500); }
+.rs-step { display: flex; align-items: center; gap: 14px; margin: 0 0 22px; font-family: var(--mk-font-sans); font-weight: 600; font-size: 1.05rem; line-height: 1.2; letter-spacing: .3em; text-transform: uppercase; color: var(--mk-text-primary); }
+.rs-step b { font-family: var(--mk-font-display); font-weight: 400; font-size: 1.9rem; line-height: 1; position: relative; top: .06em; letter-spacing: .04em; color: var(--mk-gold-500); }   /* the digits' ink centred on the label's, measured (Bebas sits high in its box by .06em); (Ed, 2026-11-14: "Needs vertical alignment - centered probably best") */
 .rs-room .rs-step { align-self: flex-start; text-align: left; }
 
 /* the divider between the two steps, with the arrow from one to the other */
@@ -2062,11 +2063,11 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
   <div class="section-inner">
     <p class="section-eyebrow rs-eyebrow reveal">THE RESET</p>
     <h2 class="section-title reveal">Feel the spiral? <em>Click reset.</em></h2>
-    <p class="section-sub reveal">Six guided resets, one for each way a session goes sideways. Tell the room what you're feeling and it takes it from there.</p>
+    <p class="section-sub reveal">Six guided resets, one for each way a session goes sideways. Pick what you're feeling and MAKETZO walks you through it.</p>
 
     <div class="rs-panel reveal">
       <div class="rs-pick">
-        <p class="rs-step"><b>01</b>NAME THE MOMENT</p>
+        <p class="rs-step"><b>01</b>PICK WHAT YOU FEEL</p>
         <div class="rs-list">
           <button class="rs-moment is-picked" type="button" data-reset="loss" aria-pressed="true"><span class="rs-feel">&ldquo;I just took a loss and I want it back.&rdquo;</span><span class="rs-meta"><span class="rs-name">LOSS RESET</span><span class="rs-dur">3 min</span></span></button>
           <button class="rs-moment" type="button" data-reset="bored" aria-pressed="false"><span class="rs-feel">&ldquo;I'm clicking because I'm bored.&rdquo;</span><span class="rs-meta"><span class="rs-name">SIT-ON-HANDS</span><span class="rs-dur">5 min</span></span></button>
@@ -2078,12 +2079,12 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
       </div>
       <span class="rs-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></span>
       <div class="rs-room">
-        <p class="rs-step"><b>02</b>LET THE ROOM TAKE OVER</p>
+        <p class="rs-step"><b>02</b>BREATHE THROUGH IT</p>
         <div class="rs-orb" data-motion-keep>
           <span class="rs-still" aria-hidden="true"></span>
           <div class="rs-orb-host" aria-hidden="true"></div>
         </div>
-        <p class="rs-now" aria-live="polite">LOSS RESET &middot; DEEP CALM 4-7-8</p>
+        <p class="rs-now" aria-live="polite">LOSS RESET &middot; IN 4 &middot; HOLD 7 &middot; OUT 8</p>
         <p class="rs-clock"><span class="rs-time">03:00</span><span class="rs-left">REMAINING</span></p>
         <div class="rs-hold" aria-live="polite">
           <p class="rs-hold-line">&ldquo;I will not enter another trade until this timer ends.&rdquo;</p>
@@ -2095,7 +2096,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
     </div>
 
     <h3 class="rs-after reveal">A few minutes in. <em>A different trader walks back out.</em></h3>
-    <p class="rs-after-sub reveal">A breathing ring with four cadences and six environments to reset your state, clear the noise, and get you back to high-quality decisions.</p>
+    <p class="rs-after-sub reveal">Four breathing rhythms and six calm backdrops. A few minutes later you're back at the screen, trading your plan.</p>
 
     <div class="mk-cta-repeat">
       <button class="btn-primary" data-cta-source="reset" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
@@ -2121,9 +2122,9 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
     };
     var RESETS = {
       loss:             { p: 'calm',     sec: 180, len: '3 minutes', hold: 'I will not enter another trade until this timer ends.', sub: 'The next trade is not the previous trade.' },
-      bored:            { p: 'resonant', sec: 300, len: '5 minutes', hold: 'No setup, no trade.', sub: 'Hold the queue until the timer ends.' },
+      bored:            { p: 'resonant', sec: 300, len: '5 minutes', hold: 'No setup, no trade.', sub: 'Place no orders until the timer ends.' },
       fomo:             { p: 'box',      sec: 120, len: '2 minutes', hold: 'Missing a move costs nothing. Chasing it costs everything.', sub: 'Reset the chase reflex. Wait for the next setup.' },
-      'stop-negotiate': { p: 'box',      sec: 60,  len: '1 minute',  hold: 'The stop is the stop.', sub: 'When the timer ends, the rule executes itself.' },
+      'stop-negotiate': { p: 'box',      sec: 60,  len: '1 minute',  hold: 'The stop is the stop.', sub: 'When the timer ends, take the stop you set.' },
       'hod-heat':       { p: 'steady',   sec: 120, len: '2 minutes', hold: 'Extension is not opportunity.', sub: 'Verify the setup or step back.' },
       meditate:         { p: 'resonant', sec: 300, len: '3 to 15 minutes, your choice', hold: 'Nothing to fix. Nowhere to be.', sub: 'Just breathe, settle in, and find your focus.' }
     };
@@ -2169,7 +2170,8 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
       if (!same) {
         left = d.sec; time.textContent = fmt(left);
         var words = function () {
-          now.textContent = m.querySelector('.rs-name').textContent + ' · ' + p.name.toUpperCase() + ' ' + p.count;
+          // the breathing in plain numbers (Ed's pick, 2026-11-14): "IN 4 · HOLD 7 · OUT 8", never "DEEP CALM 4-7-8"
+          now.textContent = m.querySelector('.rs-name').textContent + ' · ' + p.phases.map(function (ph) { return (ph.k === 'inhale' ? 'IN' : ph.k === 'exhale' ? 'OUT' : 'HOLD') + ' ' + ph.sec; }).join(' · ');
           holdLine.textContent = '“' + d.hold + '”';
           holdSub.textContent = d.sub;
           now.classList.remove('is-swap'); hold.classList.remove('is-swap');
