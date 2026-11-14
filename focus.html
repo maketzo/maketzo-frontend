@@ -72,6 +72,7 @@
 <script src="assets/js/mkt-consent.js?v=2" defer></script>
 <script src="assets/js/motion-rest.js?v=1" defer></script>
 <script src="assets/js/checkout.js?v=10" defer></script>
+<script src="assets/js/phone-bar.js?v=1" defer></script>
 <script src="assets/js/audio-player.js?v=12" defer></script>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -253,7 +254,8 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
 @media (max-width: 600px) {
   .page-hero-bg { height: 46vh; }
   .page-hero-scrim { height: 54vh; }
-  .page-hero-inner { padding: 41vh 22px 48px; }
+  .page-hero-inner { padding: 39vh 22px 48px; }
+  .page-hero .page-hero-cta { margin-top: 22px; }   /* the hero button clears the phone bar (assets/js/phone-bar.js) */
   .page-hero-title { font-size: clamp(2rem, 9vw, 2.8rem); }
   .page-hero-cta .btn-primary { width: 100%; justify-content: center; text-align: center; }
 }
@@ -905,10 +907,10 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
   .lk-info { width: 34px; height: 34px; }
   .lk-bar { display: none; }
   .lk-art { width: 46vw; opacity: .8; }
-  .lk-panel { position: fixed; left: 0; right: 0; top: auto; bottom: 0; width: 100%; max-height: 86vh; overflow-y: auto; border-radius: 20px 20px 0 0; border-bottom: 0; padding: 20px 20px calc(22px + env(safe-area-inset-bottom, 0px)); opacity: 1; transform: translateY(100%); transition: transform .4s var(--mk-ease-out), visibility 0s linear .4s; }
+  .lk-panel { position: fixed; z-index: 125; left: 0; right: 0; top: auto; bottom: 0; width: 100%; max-height: 86vh; overflow-y: auto; border-radius: 20px 20px 0 0; border-bottom: 0; padding: 20px 20px calc(22px + env(safe-area-inset-bottom, 0px)); opacity: 1; transform: translateY(100%); transition: transform .4s var(--mk-ease-out), visibility 0s linear .4s; }
   .lk-panel.is-open { transform: none; transition: transform .4s var(--mk-ease-out), visibility 0s; }
   .lk-notch { display: none; }
-  .lk-scrim { display: block; position: fixed; inset: 0; z-index: 59; background: rgba(4,5,7,.62); opacity: 0; visibility: hidden; transition: opacity .3s ease, visibility 0s linear .3s; }
+  .lk-scrim { display: block; position: fixed; inset: 0; z-index: 124; background: rgba(4,5,7,.62); opacity: 0; visibility: hidden; transition: opacity .3s ease, visibility 0s linear .3s; }
   .lk-scrim.is-open { opacity: 1; visibility: visible; transition: opacity .3s ease, visibility 0s; }
 }
 

@@ -1,0 +1,154 @@
+/* The phone bar (assets/js/phone-bar.js), maketzo.co below 768px. Ed, 2026-11-13: "For the mobile version of
+   maketzo.co website, can you create smart bottom navigation system like you've done in the app and admin console.
+   Make it very intuitive for the user." Picked from the questions: four tabs and a gold trial button in the middle
+   (Journal, The System, Free Trial, Pricing, More); it hides while the visitor reads down and comes back when they
+   scroll up or reach the end, in step with Safari's own toolbar; the newsletter bar rises above it once and, closed
+   or used, never comes back for that visitor; the same bar on blog posts.
+   More replaces the top menu button, as in the app (lib/phone-tabs.js): a sheet that rises with every page as a
+   tile, Log In and the newsletter. Nothing here applies without html.mkpb-on, which the script sets only on a phone
+   once it has built the bar, so with no script the page keeps its menu button. No blur anywhere (a solid, slightly
+   warm surface instead): a blurred fixed bar repaints on every scroll frame. Motion is transform and opacity only. */
+.mk-pbar-root { display: none; }
+@media (max-width: 767px) {
+  html.mkpb-on { --pbar-h: calc(62px + env(safe-area-inset-bottom, 0px)); --pbar-lift: var(--pbar-h); }
+  html.mkpb-on.mkpb-down, html.mkpb-on.mkpb-kb { --pbar-lift: 0px; }
+  html.mkpb-on body { padding-bottom: var(--pbar-h); }
+  html.mkpb-on #mainNav .hamburger { display: none; }          /* More is the menu now */
+  html.mkpb-on .mk-pbar-root { display: block; }
+
+  .mk-pbar {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 70;   /* under the offer sheet (80), the Lock-In panel and every modal */
+    height: var(--pbar-h);
+    padding: 0 6px env(safe-area-inset-bottom, 0px);
+    display: flex; align-items: stretch;
+    background: linear-gradient(180deg, rgba(22,25,33,.97), rgba(11,13,17,.98));
+    border-top: 1px solid rgba(212,175,55,.26);
+    box-shadow: 0 -10px 28px -12px rgba(0,0,0,.75);
+    transform: translateY(0);
+    transition: transform .32s cubic-bezier(.22,1,.36,1);
+  }
+  html.mkpb-down .mk-pbar, html.mkpb-kb .mk-pbar { transform: translateY(calc(100% + 2px)); }
+  .mk-pbar a, .mk-pbar button { -webkit-tap-highlight-color: transparent; }
+  .mk-ptab {
+    flex: 1 1 0; min-width: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+    padding: 6px 0 4px; margin: 0;
+    background: none; border: 0; border-radius: 12px;
+    color: #9AA1AE; text-decoration: none;
+    font-family: var(--mk-font-sans, 'DM Sans', system-ui, sans-serif); font-size: 12px; font-weight: 500; letter-spacing: .01em; line-height: 1;
+    cursor: pointer;
+  }
+  .mk-ptab svg { width: 23px; height: 23px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+  .mk-ptab span { max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .mk-ptab:active { background: rgba(255,255,255,.05); }
+  .mk-ptab:focus-visible { outline: 2px solid #D4AF37; outline-offset: -2px; }
+  .mk-ptab[aria-current="page"], .mk-ptab.is-here { color: #E5C572; }
+  .mk-ptab[aria-current="page"]::after, .mk-ptab.is-here::after { content: ''; width: 18px; height: 2px; margin-top: 1px; border-radius: 2px; background: #D4AF37; box-shadow: 0 0 8px rgba(212,175,55,.6); }
+  .mk-ptab[aria-current="page"] span, .mk-ptab.is-here span { margin-bottom: -3px; }
+
+  /* the middle: the one thing the site exists for, a gold key that stands a little proud of the bar */
+  .mk-ptab--trial { flex: 1.15 1 0; justify-content: flex-start; padding-top: 0; color: #0D0F14; }
+  .mk-ptab--trial .mk-pkey {
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+    width: 76px; height: 50px; margin-top: -12px;
+    border-radius: 14px;
+    background: linear-gradient(160deg, #EED58A 0%, #D4AF37 48%, #B8941F 100%);
+    border: 1px solid rgba(255,255,255,.28);
+    box-shadow: 0 8px 20px -6px rgba(212,175,55,.55), 0 0 0 4px rgba(11,13,17,.98), inset 0 1px 0 rgba(255,255,255,.45);
+    font-weight: 700; font-size: 12px; letter-spacing: .02em;
+  }
+  .mk-ptab--trial svg { width: 19px; height: 19px; stroke-width: 2.1; }
+  .mk-ptab--trial:active { background: none; }
+  .mk-ptab--trial:active .mk-pkey { transform: translateY(1px); }
+  .mk-pkey .mk-p-in { display: none; }
+  html.mkt-auth .mk-pkey .mk-p-out { display: none; }
+  html.mkt-auth .mk-pkey .mk-p-in { display: inline; }
+
+  /* More: the whole site in one sheet */
+  .mk-psheet-scrim {
+    position: fixed; inset: 0; z-index: 120;
+    background: rgba(4,5,7,.62);
+    opacity: 0; visibility: hidden;
+    transition: opacity .28s ease, visibility 0s linear .28s;
+  }
+  .mk-psheet {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 121;
+    max-height: 88vh; overflow-y: auto; overscroll-behavior: contain;
+    padding: 10px 16px calc(18px + env(safe-area-inset-bottom, 0px));
+    border-radius: 22px 22px 0 0;
+    background: radial-gradient(120% 40% at 50% 0%, rgba(212,175,55,.09), transparent 60%), linear-gradient(180deg, #161921, #0D0F14);
+    border-top: 1px solid rgba(212,175,55,.38);
+    box-shadow: 0 -24px 60px -12px rgba(0,0,0,.85);
+    transform: translateY(102%); visibility: hidden;
+    transition: transform .38s cubic-bezier(.22,1,.36,1), visibility 0s linear .38s;
+    color: #F2F0EA;
+  }
+  html.mkpb-sheet .mk-psheet-scrim { opacity: 1; visibility: visible; transition: opacity .28s ease, visibility 0s; }
+  html.mkpb-sheet .mk-psheet { transform: none; visibility: visible; transition: transform .38s cubic-bezier(.22,1,.36,1), visibility 0s; }
+  html.mkpb-sheet body { overflow: hidden; }
+  .mk-psheet-grab { width: 40px; height: 4px; margin: 0 auto 12px; border-radius: 4px; background: rgba(255,255,255,.18); }
+  .mk-psheet-head { display: flex; align-items: center; justify-content: space-between; margin: 0 2px 12px; }
+  .mk-psheet-title { margin: 0; font-family: var(--mk-font-mono, 'DM Mono', monospace); font-size: 12px; font-weight: 500; letter-spacing: .18em; color: #D4AF37; }
+  .mk-psheet-x { display: grid; place-items: center; width: 40px; height: 40px; margin: -6px -6px -6px 0; border-radius: 12px; border: 1px solid rgba(255,255,255,.1); background: transparent; color: #B8BEC9; cursor: pointer; }
+  .mk-psheet-x svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+  .mk-psheet-x:focus-visible { outline: 2px solid #D4AF37; outline-offset: 2px; }
+  .mk-ptiles { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 0 0 14px; padding: 0; list-style: none; }
+  .mk-ptile {
+    display: flex; flex-direction: column; gap: 6px; height: 100%; box-sizing: border-box;
+    padding: 13px 13px 12px;
+    border-radius: 14px;
+    background: linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.015));
+    border: 1px solid rgba(255,255,255,.08);
+    color: #F2F0EA; text-decoration: none;
+  }
+  .mk-ptile:active { border-color: rgba(212,175,55,.45); }
+  .mk-ptile:focus-visible { outline: 2px solid #D4AF37; outline-offset: 2px; }
+  .mk-ptile-top { display: flex; align-items: center; gap: 9px; }
+  .mk-ptile-ico { display: grid; place-items: center; flex: none; width: 32px; height: 32px; border-radius: 9px; background: rgba(212,175,55,.1); border: 1px solid rgba(212,175,55,.22); color: #E5C572; }
+  .mk-ptile-ico svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .mk-ptile-name { font-family: var(--mk-font-display, 'Bebas Neue', Impact, sans-serif); font-size: 21px; letter-spacing: .03em; line-height: 1; text-transform: uppercase; }
+  .mk-ptile-use { font-size: 13px; line-height: 1.35; color: #9AA1AE; }
+  .mk-ptile.is-here { border-color: rgba(212,175,55,.55); background: linear-gradient(180deg, rgba(212,175,55,.1), rgba(212,175,55,.03)); }
+  .mk-plogin {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    min-height: 48px; margin: 0 0 14px; border-radius: 12px;
+    border: 1px solid rgba(255,255,255,.16); background: rgba(255,255,255,.03);
+    color: #F2F0EA; text-decoration: none; font-size: 15px; font-weight: 600;
+  }
+  .mk-plogin:focus-visible { outline: 2px solid #D4AF37; outline-offset: 2px; }
+  .mk-plogin svg { flex: none; width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+  .mk-plogin .mk-p-in { display: none; }
+  html.mkt-auth .mk-plogin .mk-p-out { display: none; }
+  html.mkt-auth .mk-plogin .mk-p-in { display: inline; }
+  .mk-pnews { padding: 14px 14px 12px; border-radius: 14px; border: 1px solid rgba(212,175,55,.3); background: rgba(212,175,55,.04); }
+  .mk-pnews p { margin: 0 0 10px; font-size: 15px; line-height: 1.4; color: #B8BEC9; }
+  .mk-pnews p strong { color: #F2F0EA; }
+  .mk-pnews form { position: relative; display: flex; gap: 8px; }
+  .mk-pnews input { flex: 1; min-width: 0; height: 44px; padding: 0 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,.14); background: rgba(13,15,20,.9); color: #F2F0EA; font-size: 16px; }
+  .mk-pnews input:focus { outline: none; border-color: #D4AF37; box-shadow: 0 0 0 3px rgba(212,175,55,.18); }
+  .mk-pnews button { flex: none; height: 44px; padding: 0 16px; border-radius: 10px; border: 0; background: linear-gradient(160deg, #E5C572, #D4AF37 55%, #B8941F); color: #0D0F14; font-weight: 700; font-size: 14px; cursor: pointer; }
+  .mk-pnews .newsletter-error { margin: 8px 0 0; color: #F87171; font-size: 13px; }
+  .mk-pnews .newsletter-error[hidden], .mk-pnews .newsletter-success[hidden] { display: none; }
+  .mk-pnews .newsletter-success { margin: 8px 0 0; color: #4ADE80; font-size: 14px; }
+  html.mkt-auth .mk-pnews { display: none; }
+
+  /* the newsletter bar rises above the tab bar as a card, once (the script keeps it away after) */
+  html.mkpb-on .sticky-bar {
+    left: 10px; right: 10px; bottom: 10px;
+    padding: 12px 44px 12px 14px;
+    border: 1px solid rgba(212,175,55,.38); border-radius: 14px;
+    box-shadow: 0 14px 34px -10px rgba(0,0,0,.8);
+    transform: translateY(calc(100% + 24px));
+  }
+  html.mkpb-on .sticky-bar.visible { transform: translateY(calc(-1 * var(--pbar-lift))); }
+  html.mkpb-on body:has(.sticky-bar.visible) { padding-bottom: var(--pbar-h); }
+  html.mkpb-on.mkpb-news-done .sticky-bar { display: none; }
+
+  /* everything else that sits at the bottom of a phone rises above the bar */
+  html.mkpb-on .mkt-consent { bottom: calc(var(--pbar-h) + 12px); }
+  html.mkpb-on .mk-share-toast { bottom: calc(var(--pbar-h) + 16px); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mk-pbar, .mk-psheet, .mk-psheet-scrim { transition-duration: .01s; }
+  }
+}
