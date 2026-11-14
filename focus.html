@@ -792,7 +792,7 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
    opens its panel from it: what the trader just did, what the contract is for, a few of its rules and what each
    costs, and what it does for them (Ed, 2026-11-13: "A popup should appear with the consequences of locked in to
    educate the user what they just did"; picked: opens from the card, only on a tap, and "Don't give away the secret
-   sauce": purpose, sample rules and the payoff, never the thresholds). On a phone the panel rises from the bottom.
+   sauce": purpose, sample rules and the payoff, never the thresholds). On a phone the panel opens centred on screen.
    Card words are never dimmed or hidden; nothing applies without .lk-live, so with no script the section stands as
    it is. Every motion is a one-shot transform or opacity change; nothing loops. */
 .lk-live .lockin-card { cursor: pointer; transition: opacity var(--mk-dur-slow) var(--mk-ease-out), transform var(--mk-dur-slow) var(--mk-ease-out), filter var(--mk-dur-slow) var(--mk-ease-out), border-color .5s ease, box-shadow .6s ease; }
@@ -845,10 +845,10 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
   /* its card steps back (a quieter edge, no glow) so the panel on top of it is the brightest thing there */
   .lk-live .lockin-card.is-locked.is-open { border-color: color-mix(in srgb, var(--acc) 38%, transparent); box-shadow: 0 0 0 1px color-mix(in srgb, var(--acc) 10%, transparent); }
   .lk-live .lockin-card.is-open .lockin-use { opacity: 0; }
-  .lk-p-top .lk-ico { display: none; }   /* the card's own icon sits just above; the phone sheet, away from its card, keeps it */
+  .lk-p-top .lk-ico { display: none; }   /* the card's own icon sits just above; the phone card, away from its card, keeps it */
 }
 
-/* the panel a tap opens from the card (the script places it); on a phone it rises from the bottom. It sits a layer
+/* the panel a tap opens from the card (the script places it); on a phone it opens centred on screen. It sits a layer
    above its card (Ed, 2026-11-14: "it needs to stand out a little more from the parent"): a lighter surface, a
    brighter edge, a dark keyline outside the edge, and a shadow cast up onto the card. */
 .lk-panel {
@@ -925,10 +925,26 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
   .lk-info { width: 34px; height: 34px; }
   .lk-bar { display: none; }
   .lk-art { width: 46vw; opacity: .8; }
-  .lk-panel { position: fixed; z-index: 125; left: 0; right: 0; top: auto; bottom: 0; width: 100%; max-height: 86vh; overflow-y: auto; border-radius: 20px 20px 0 0; border-bottom: 0; padding: 20px 20px calc(22px + env(safe-area-inset-bottom, 0px)); opacity: 1; transform: translateY(100%); transition: transform .4s var(--mk-ease-out), visibility 0s linear .4s; }
-  .lk-panel.is-open { transform: none; transition: transform .4s var(--mk-ease-out), visibility 0s; }
-  .lk-scrim { display: block; position: fixed; inset: 0; z-index: 124; background: rgba(4,5,7,.62); opacity: 0; visibility: hidden; transition: opacity .3s ease, visibility 0s linear .3s; }
+  /* On a phone the panel is a card centred in the visible screen, every corner rounded, its height capped by dvh so
+     Safari's toolbars never cut it off (Ed, 2026-11-14: "center the pop up detailed view on the screen. Right now the
+     bottom curve is cut off"; it was a bottom sheet capped at 86vh, which counts the hidden toolbar space). */
+  .lk-panel { position: fixed; z-index: 125; left: 50%; top: 50%; right: auto; bottom: auto; width: calc(100vw - 32px); max-width: 440px; max-height: calc(100vh - 40px); max-height: calc(100dvh - 40px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)); overflow-y: auto; overscroll-behavior: contain; border-radius: 18px; padding: 20px 20px 22px; transform: translate(-50%, -47%) scale(.97); transform-origin: 50% 50%; }
+  .lk-panel.is-open { transform: translate(-50%, -50%); }
+  /* tighter gaps (the text keeps its size) so a whole contract fits Safari's visible screen without scrolling */
+  .lk-panel { padding: 16px 18px 18px; }
+  .lk-p-x { top: 10px; right: 10px; }
+  .lk-p-top { margin-bottom: 10px; }
+  .lk-p-top .lk-ico { width: 42px; height: 42px; border-radius: 11px; }
+  .lk-p-title { font-size: 1.7rem; }
+  .lk-p-lead { margin-bottom: 12px; }
+  .lk-p-label { margin-bottom: 4px; }
+  .lk-p-text, .lk-p-rules { margin-bottom: 12px; }
+  .lk-p-rules li { padding: 8px 0; }
+  .lk-scrim { display: block; position: fixed; inset: 0; z-index: 124; background: rgba(4,5,7,.7); opacity: 0; visibility: hidden; transition: opacity .3s ease, visibility 0s linear .3s; }
   .lk-scrim.is-open { opacity: 1; visibility: visible; transition: opacity .3s ease, visibility 0s; }
+}
+@media (max-width: 640px) and (prefers-reduced-motion: reduce) {
+  .lk-panel, .lk-panel.is-open { transform: translate(-50%, -50%); }
 }
 
 /* ── THE WARM-UP — game cards ────────────────────────────────────────── */
