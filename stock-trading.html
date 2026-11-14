@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stock Trading: How It Works and Why Knowing Is Not Doing</title>
+<meta name="description" content="How stock trading works for active traders: orders and fills, the 2026 account rules, the clock, sizing to survive, and doing what you planned.">
+<meta name="theme-color" content="#06070A">
+<meta property="og:title" content="Stock Trading: Knowing the Setup Is the Easy Half">
+<meta property="og:description" content="How stock trading works for active traders: orders and fills, the 2026 account rules, the clock, sizing to survive, and doing what you planned.">
+<meta property="og:url" content="https://maketzo.co/stock-trading">
+<meta property="og:type" content="article">
+<meta property="og:image" content="https://media.maketzo.co/blog-images/5cb0984e-0617-443e-b510-225d91519eb4.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://maketzo.co/stock-trading">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Stock Trading: Knowing the Setup Is the Easy Half",
+  "description": "How stock trading works for active traders: orders and fills, the 2026 account rules, the clock, sizing to survive, and doing what you planned.",
+  "datePublished": "2026-11-14T19:57:54.770Z",
+  "dateModified": "2026-11-14T19:57:54.769Z",
+  "url": "https://maketzo.co/stock-trading",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://maketzo.co/stock-trading"
+  },
+  "author": {
+    "@type": "Organization",
+    "name": "MAKETZO"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "MAKETZO",
+    "url": "https://maketzo.co",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://maketzo.co/assets/logo-mark.png"
+    }
+  },
+  "image": "https://media.maketzo.co/blog-images/5cb0984e-0617-443e-b510-225d91519eb4.jpg"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How can I do stock trading?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Open a brokerage account and choose cash or margin, keeping in mind that margin takes at least $2,000 in equity. Learn the four order types before your first live order, because in a thin stock the order type decides your fill more than the chart does. Write your rules for entries, exits and a daily max loss before the open, practice them in a simulator until following them feels boring, and grade each day on whether you followed the plan rather than on the P&L."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is swing trading?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Swing trading holds a position for several days to a few weeks to catch a move larger than one session offers. It takes less screen time and fewer decisions than day trading. The cost is overnight risk: news after the close can gap the stock past your stop by the next open, and a stop-market order then fills at the first real price, not at your stop. Swing traders lean on the daily chart and the company's calendar, including earnings dates and filings."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How much can you make day trading with $1000?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "There is no honest fixed number, because the result depends on your edge, your costs and whether you follow your plan. Three facts shape a $1,000 account. It sits under the $2,000 needed to borrow on margin, so it trades as a cash account, and the cash from each sale has to settle, the next business day, before it can pay for a trade you also close that day. Costs like the spread take a bigger bite from small positions. And losses compound against you, so the first goal is to keep the account alive long enough to learn whether your edge is real."
+      }
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "MAKETZO",
+      "item": "https://maketzo.co/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Stock Trading: Knowing the Setup Is the Easy Half",
+      "item": "https://maketzo.co/stock-trading"
+    }
+  ]
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://maketzo.co/assets/css/tokens.css">
+<link rel="stylesheet" href="https://maketzo.co/assets/css/components.css">
+<link rel="stylesheet" href="https://maketzo.co/assets/css/audio-player.css?v=11">
+<script src="https://maketzo.co/assets/js/mkt-analytics.js?v=19" defer></script>
+<script src="https://maketzo.co/assets/js/newsletter.js?v=4" defer></script>
+<script src="https://maketzo.co/assets/js/mkt-consent.js?v=2" defer></script>
+<script src="https://maketzo.co/assets/js/motion-rest.js?v=1" defer></script>
+<script src="https://maketzo.co/assets/js/checkout.js?v=10" defer></script>
+<script src="https://maketzo.co/assets/js/phone-bar.js?v=1" defer></script>
+<script src="https://maketzo.co/assets/js/audio-player.js?v=11" defer></script>
+<style>
+/* ════════════════════════════════════════════════════════════════
+   All of the following CSS is a verbatim clone of the inline <style>
+   block from maketzo-frontend/why.html (lines 24-261). Per
+   memory/feedback-detail-page-css-inline.md, page-layout CSS is
+   intentionally inline per-page rather than centralized in
+   components.css — every new detail page must clone this block whole.
+   ════════════════════════════════════════════════════════════════ */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; overflow-y: scroll; }
+body { background: var(--mk-surface-page); color: var(--mk-text-primary); font-family: var(--mk-font-sans); font-size: var(--mk-text-md); line-height: var(--mk-lead-body); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+a { color: inherit; text-decoration: none; }
+ul, ol { list-style: none; }
+img { display: block; max-width: 100%; }
+em, i { font-style: italic; }
+strong { color: var(--mk-text-primary); font-weight: 600; }
+
+.mobile-overlay { position: fixed; inset: 0; z-index: 90; background: rgba(0,0,0,.6); backdrop-filter: blur(6px); opacity: 0; pointer-events: none; visibility: hidden; transition: opacity var(--mk-dur-med), visibility 0s linear var(--mk-dur-med); /* closed: not drawn, so its blur never runs under the page (Ed's fans, 2026-11-10) */ }
+.mobile-overlay.open { opacity: 1; pointer-events: auto; visibility: visible; transition: opacity var(--mk-dur-med); }
+.mobile-drawer { position: fixed; top: 0; right: 0; bottom: 0; z-index: 100; width: min(320px, 88%); background: var(--mk-surface-base); border-left: var(--mk-border-soft); padding: 80px 28px 28px; transform: translateX(100%); transition: transform var(--mk-dur-med) var(--mk-ease-out); display: flex; flex-direction: column; gap: 20px; }
+.mobile-drawer.open { transform: translateX(0); }
+.mobile-drawer-links li { padding: 12px 0; border-bottom: var(--mk-border-hairline); }
+.mobile-drawer-links a { font-family: var(--mk-font-display); font-size: var(--mk-display-md); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); }
+.mobile-drawer-cta { display: inline-flex; align-items: center; justify-content: center; background: var(--mk-gold-gradient); color: var(--mk-text-on-gold); font-family: var(--mk-font-sans); font-weight: 600; font-size: var(--mk-text-sm); letter-spacing: var(--mk-track-cap); text-transform: uppercase; padding: 14px 22px; border: 1px solid rgba(0,0,0,.18); border-radius: var(--mk-radius-button); cursor: pointer; margin-top: auto; }
+
+#mainNav { position: fixed; top: 0; left: 0; right: 0; z-index: 50; background: rgba(6,7,10,.92); /* no backdrop blur: it re-blurred the bar on every frame of a scroll (Ed's fans, 2026-11-10); near solid, as the app's top bar since 2026-06-01 */ border-bottom: 1px solid rgba(212,175,55,.12); transition: border-color var(--mk-dur-snap); display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 14px 32px 14px 64px; }
+.nav-logo.mk-brand-lockup { --mk-brand-lockup-mark-h: 44px; --mk-brand-lockup-wordmark-h: 22px; --mk-brand-lockup-gap: 10px; }
+.nav-links { display: flex; align-items: center; gap: 28px; margin: 0; padding: 0; }
+.nav-links > li > a:not(.nav-login-btn) { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); font-weight: 500; letter-spacing: 0.02em; transition: color var(--mk-dur-fast); }
+.nav-links > li > a:not(.nav-login-btn):hover { color: var(--mk-text-primary); }
+.nav-links > li > a[aria-current="page"] { color: var(--mk-brand); }
+.nav-login-btn { display: inline-flex; align-items: center; font-size: var(--mk-text-sm); font-weight: 600; letter-spacing: var(--mk-track-cap); text-transform: uppercase; padding: 7px 14px; color: var(--mk-text-secondary); border: 1px solid var(--mk-smoke-700); border-radius: var(--mk-radius-button); transition: color var(--mk-dur-fast), border-color var(--mk-dur-fast), background var(--mk-dur-fast); }
+.nav-login-btn:hover { color: var(--mk-text-primary); border-color: var(--mk-smoke-600); background: rgba(255,255,255,.03); }
+.nav-auth-in { display: none; }
+html.mkt-auth .nav-auth-out { display: none; }
+html.mkt-auth .nav-auth-in { display: inline; }
+html.mkt-auth .nav-links li:has(.nav-cta){display:none;}
+html.mkt-auth .mobile-drawer-cta{display:none;}
+html.mkt-auth .nav-login-btn{background:var(--mk-gold-gradient);color:var(--mk-text-on-gold);border-color:rgba(0,0,0,.18);}
+html.mkt-auth .nav-login-btn:hover{color:var(--mk-text-on-gold);background:var(--mk-gold-gradient);border-color:rgba(0,0,0,.18);transform:translateY(-1px);box-shadow:var(--mk-glow-gold-sm);}
+.nav-cta { display: inline-flex; align-items: center; justify-content: center; font-family: var(--mk-font-sans); font-size: var(--mk-text-sm); font-weight: 600; letter-spacing: var(--mk-track-cap); text-transform: uppercase; padding: 7px 14px; border: 1px solid rgba(0,0,0,.18); border-radius: var(--mk-radius-button); cursor: pointer; background: var(--mk-gold-gradient); color: var(--mk-text-on-gold); transition: transform var(--mk-dur-snap), box-shadow var(--mk-dur-snap); white-space: nowrap; }
+.nav-cta:hover { transform: translateY(-1px); box-shadow: var(--mk-glow-gold-sm); }
+.hamburger { display: none; background: transparent; border: 0; padding: 8px; cursor: pointer; flex-direction: column; gap: 5px; }
+.hamburger span { display: block; width: 24px; height: 2px; background: var(--mk-text-primary); transition: transform var(--mk-dur-snap), opacity var(--mk-dur-snap); }
+.hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+@media (max-width: 900px) { #mainNav { padding: 12px 20px; gap: 16px; } .nav-links { display: none; } .hamburger { display: flex; } }
+/* The nav on one line at every width (Ed, 2026-10-16: it wrapped at about 1024px). The full bar fits from 1024px, so below that the menu button takes over (it was 900px, which left 901-1140 wrapping); items never break, and the bar tightens up to 1180px. */
+.nav-links > li > a{white-space:nowrap}
+@media (max-width:1180px){#mainNav{padding-left:28px;padding-right:24px;gap:16px}.nav-links{gap:18px}}
+@media (max-width:1023px){#mainNav{padding:12px 20px;gap:16px}.nav-links{display:none}.hamburger{display:flex}}
+
+.btn-primary, .btn-secondary, .btn-ghost { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-family: var(--mk-font-sans); font-size: var(--mk-text-sm); font-weight: 600; letter-spacing: var(--mk-track-cap); text-transform: uppercase; padding: 12px 22px; border-radius: var(--mk-radius-button); border: 1px solid transparent; cursor: pointer; text-decoration: none; white-space: nowrap; transition: transform var(--mk-dur-snap), box-shadow var(--mk-dur-snap), background var(--mk-dur-snap), border-color var(--mk-dur-snap), color var(--mk-dur-snap); }
+.btn-primary { background: var(--mk-gold-gradient); color: var(--mk-text-on-gold); border-color: rgba(0,0,0,.18); }
+.btn-primary:hover { transform: translateY(-1px); box-shadow: var(--mk-glow-gold-md); color: var(--mk-text-on-gold); }
+
+.section { position: relative; z-index: 1; padding: 88px 0; background: var(--mk-surface-page); }
+.section.section-dark { background: var(--mk-surface-base); }
+.section-inner { max-width: var(--mk-container-marketing); margin: 0 auto; padding: 0 32px; }
+.section-eyebrow { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); text-align: center; margin-bottom: 14px; }
+.section-title { font-family: var(--mk-font-display); font-size: clamp(2rem, 4.5vw, 3.4rem); letter-spacing: var(--mk-track-display); line-height: 1.04; text-transform: uppercase; text-align: center; margin-bottom: 18px; font-weight: 400; }
+.section-title em { font-style: normal; background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+hr.mk-rule-gold, hr.mk-rule-gold--bold { margin: 0 auto; max-width: 1180px; }
+
+.mk-cta-repeat { display: none; }
+@media (max-width: 600px) { .mk-cta-repeat { display: flex; justify-content: center; margin: 36px auto 0; padding: 0 16px; } .mk-cta-repeat .btn-primary { width: 100%; max-width: 320px; padding: 16px 24px; font-size: var(--mk-text-md); } }
+
+/* End-of-post CTA section (cloned from why.html's .final-cta-section). */
+.final-cta-section { padding: 96px 0; background: var(--mk-obsidian-950); text-align: center; border-top: var(--mk-border-hairline); }
+.final-cta-eyebrow { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); margin-bottom: 18px; }
+.final-cta-title { font-family: var(--mk-font-display); font-size: clamp(2.2rem, 4.6vw, 3.2rem); letter-spacing: var(--mk-track-display); line-height: 1.04; text-transform: uppercase; font-weight: 400; margin-bottom: 20px; max-width: 700px; margin-left: auto; margin-right: auto; }
+.final-cta-title em { font-style: normal; background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.final-cta-sub { font-size: var(--mk-text-lg); color: var(--mk-text-secondary); max-width: 600px; margin: 0 auto 36px; line-height: var(--mk-lead-body); }
+.final-cta-btn-wrap { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.final-cta-note { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: 0.04em; color: var(--mk-text-tertiary); }
+
+.page-hero { position: relative; z-index: 1; padding: 152px 0 80px; background: var(--mk-obsidian-950); text-align: center; border-bottom: var(--mk-border-hairline); }
+.page-hero-inner { max-width: 820px; margin: 0 auto; padding: 0 32px; }
+.page-hero-eyebrow { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); margin-bottom: 18px; }
+.page-hero-title { font-family: var(--mk-font-display); font-size: clamp(2.4rem, 5.4vw, 4rem); letter-spacing: var(--mk-track-display); line-height: 1.04; text-transform: uppercase; font-weight: 400; margin-bottom: 28px; }
+.page-hero-title em { font-style: normal; background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.page-hero-sub { font-size: var(--mk-text-lg); color: var(--mk-text-secondary); line-height: var(--mk-lead-body); max-width: 720px; margin: 0 auto; }
+
+.prose-wrap { max-width: 660px; margin: 0 auto; }
+.prose-wrap h2, .prose-wrap h3 { font-family: var(--mk-font-display); font-size: clamp(1.6rem, 3vw, 2.2rem); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); font-weight: 400; line-height: 1.08; margin: 44px 0 18px; }
+.prose-wrap h2 em, .prose-wrap h3 em { font-style: normal; background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.prose-wrap p { font-size: var(--mk-text-md); color: var(--mk-text-secondary); line-height: var(--mk-lead-body); margin-bottom: 18px; }
+.prose-wrap p strong { color: var(--mk-text-primary); }
+.prose-wrap .mk-gold { background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.prose-wrap p:last-child { margin-bottom: 0; }
+.prose-wrap ul, .prose-wrap ol { padding-left: 24px; margin-bottom: 18px; color: var(--mk-text-secondary); list-style: revert; }
+.prose-wrap ul li, .prose-wrap ol li { margin-bottom: 10px; line-height: var(--mk-lead-body); }
+.prose-wrap .section-eyebrow { text-align: left; margin-top: 40px; }
+.pull-quote { margin: 56px 0; padding: 40px 44px; background: linear-gradient(135deg, rgba(212,175,55,.06), transparent 60%), var(--mk-surface-raised); border-left: 3px solid var(--mk-brand); border-radius: var(--mk-radius-card); font-family: var(--mk-font-display); font-size: clamp(1.4rem, 2.6vw, 1.8rem); line-height: 1.18; letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); }
+.pull-quote em { font-style: normal; background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairline); padding: 56px 0 28px; }
+.footer-inner { max-width: var(--mk-container-marketing); margin: 0 auto; padding: 0 32px; }
+.footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 32px; padding-bottom: 32px; border-bottom: var(--mk-border-hairline); }
+.footer-logo-wrap { display: flex; flex-direction: column; align-items: flex-start; gap: 18px; margin-bottom: 12px; }
+.footer-logo-wrap .mk-brand-lockup { --mk-brand-lockup-mark-h: 40px; --mk-brand-lockup-wordmark-h: 20px; }
+.footer-tagline { font-size: var(--mk-text-sm); color: var(--mk-text-tertiary); line-height: var(--mk-lead-body); max-width: 360px; }
+.footer-tagline strong { display: block; color: var(--mk-text-primary); margin-bottom: 4px; }
+.footer-col-title { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); margin-bottom: 16px; }
+.footer-links { display: flex; flex-direction: column; gap: 10px; padding: 0; }
+.footer-links a { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); transition: color var(--mk-dur-fast); }
+.footer-links a:hover { color: var(--mk-text-primary); }
+.footer-bottom { display: flex; flex-direction: column; gap: 10px; }
+.footer-copy { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: 0.04em; color: var(--mk-text-tertiary); }
+.footer-disclaimer { font-size: var(--mk-text-xs); color: var(--mk-text-tertiary); line-height: var(--mk-lead-body); max-width: 900px; }
+@media (max-width: 800px) { .footer-grid { grid-template-columns: 1fr; gap: 24px; } }
+
+/* ── Blog-specific additions (NOT in why.html) ──────────────── */
+.blog-byline-strip { display: inline-flex; align-items: center; gap: 14px; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); color: var(--mk-text-tertiary); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; margin-top: 28px; }
+.blog-byline-strip .dot { color: var(--mk-text-tertiary); opacity: 0.5; }
+.blog-byline-wrap { text-align: center; }
+/* Compact share button placed on its own centered line below the byline.
+   Gold-bordered by default so it reads as a real action (not invisible
+   until hover), brighter gold on hover. */
+.blog-share-mini-wrap { text-align: center; margin-top: 18px; }
+.blog-share-mini { display: inline-flex; }
+.blog-share-mini .mk-share__trigger {
+  padding: 6px; border-radius: 999px; border: 1px solid var(--mk-brand); background: rgba(212,175,55,.08);
+  width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer;
+  color: var(--mk-brand);
+  transition: background var(--mk-dur-fast), transform var(--mk-dur-snap), box-shadow var(--mk-dur-snap);
+}
+.blog-share-mini .mk-share__trigger:hover { background: var(--mk-gold-gradient); color: var(--mk-text-on-gold); transform: translateY(-1px); box-shadow: var(--mk-glow-gold-sm); }
+.blog-share-mini .mk-share__trigger span { display: none; }
+.blog-share-mini .mk-share__icon { width: 15px; height: 15px; fill: currentColor; }
+/* Magazine-style floated hero with feathered edges that blend the image
+   into the dark page background. No tilt — pseudo-element radial overlay
+   approach (paints a transparent-center → page-bg edge gradient OVER the
+   image) for maximum browser reliability. CSS mask-image is unreliable
+   across rendering engines; this approach works everywhere. */
+/* Shared figure base — both the hero and the mid-article image use this. The
+   placement modifier (-left / -right / -full) is chosen per-post so layout
+   varies across the feed instead of every post floating right in the same spot. */
+.blog-fig { position: relative; aspect-ratio: 4/3; overflow: visible; }
+.blog-fig img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: drop-shadow(0 20px 48px rgba(0,0,0,0.65));
+}
+.blog-fig::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 75% 75% at center, transparent 40%, var(--mk-surface-page) 95%);
+  /* Page background fades INTO the image edges, creating the feather illusion. */
+}
+.blog-fig-right { float: right; width: 46%; max-width: 400px; margin: 6px 0 28px 36px; }
+.blog-fig-left  { float: left;  width: 46%; max-width: 400px; margin: 6px 36px 28px 0; }
+.blog-fig-full  { float: none; width: 100%; max-width: 660px; margin: 40px auto; aspect-ratio: 16/9; }
+@media (max-width: 720px) {
+  .blog-fig-right, .blog-fig-left, .blog-fig-full { float: none; width: 100%; max-width: none; margin: 0 0 28px; aspect-ratio: 4/3; }
+}
+.blog-fig-clear { clear: both; }
+/* Author-placed inline images (editor "Insert image"). Distinct from .blog-fig:
+   rendered at NATURAL aspect (no crop, no edge-feather) since these are content
+   images / graphics, not decorative Unsplash heroes. */
+.blog-embed { margin: 28px 0; max-width: 100%; }
+.blog-embed img { display: block; width: 100%; height: auto; border-radius: var(--mk-radius-card); }
+.blog-embed-left { float: left; width: 46%; max-width: 400px; margin: 6px 36px 20px 0; }
+.blog-embed-right { float: right; width: 46%; max-width: 400px; margin: 6px 0 20px 36px; }
+.blog-embed-full { float: none; width: 100%; max-width: 660px; margin: 32px auto; }
+.blog-embed figcaption { font-size: var(--mk-text-sm); color: var(--mk-text-tertiary); text-align: center; padding-top: 10px; line-height: var(--mk-lead-body); }
+@media (max-width: 720px) { .blog-embed-left, .blog-embed-right, .blog-embed-full { float: none; width: 100%; max-width: none; margin: 0 0 24px; } }
+.blog-prose-clear::after { content: ''; display: block; clear: both; }
+.blog-author-card { display: flex; gap: 20px; align-items: center; max-width: 660px; margin: 0 auto; padding-top: 32px; border-top: var(--mk-border-hairline); }
+.blog-author-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+.blog-author-name { font-family: var(--mk-font-display); font-size: var(--mk-display-md); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); margin-bottom: 4px; }
+.blog-author-bio { font-size: var(--mk-text-sm); color: var(--mk-text-tertiary); line-height: var(--mk-lead-body); }
+.blog-credit { max-width: 660px; margin: 28px auto 0; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); color: var(--mk-text-tertiary); letter-spacing: 0.04em; text-align: center; opacity: 0.7; }
+.blog-credit a { color: inherit; text-decoration: underline; }
+.blog-share-section { padding: 24px 0 48px; background: var(--mk-obsidian-950); text-align: center; }
+.blog-share-section .section-eyebrow { margin-top: 0; }
+.blog-share-section .section-title { margin: 0 auto 18px; }
+.final-cta-section { padding-bottom: 36px !important; }
+
+/* Back-to-index navigation: small chip near the top of the post (above
+   the title) so the reader sees they're inside a collection, plus a
+   bigger "Browse all posts" card at the end of the body before the CTA. */
+.blog-back-strip { max-width: 820px; margin: 0 auto; padding: 16px 32px 0; }
+.blog-back-strip--bottom { max-width: 820px; margin: 56px auto 0; padding: 0 32px; text-align: center; }
+.blog-back-link { display: inline-flex; align-items: center; gap: 10px; padding: 14px 28px; background: var(--mk-smoke-800, #1a1a1a); border: 1px solid var(--mk-smoke-700); border-radius: var(--mk-radius-button); font-family: var(--mk-font-mono); font-size: var(--mk-mono-sm, .8125rem); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-text-primary); font-weight: 600; transition: background var(--mk-dur-fast), border-color var(--mk-dur-fast), transform var(--mk-dur-fast); }
+.blog-back-link:hover { background: var(--mk-smoke-700); border-color: var(--mk-smoke-600, #444); transform: translateY(-1px); }
+.blog-browse-more { display: block; max-width: 660px; margin: 64px auto 0; padding: 36px 32px; text-align: center; background: linear-gradient(135deg, rgba(212,175,55,.04), transparent 70%); border: 1px solid rgba(212,175,55,.18); border-radius: var(--mk-radius-card); transition: border-color var(--mk-dur-fast), background var(--mk-dur-fast); }
+.blog-browse-more:hover { border-color: rgba(212,175,55,.4); background: linear-gradient(135deg, rgba(212,175,55,.08), transparent 70%); }
+.blog-browse-more-eyebrow { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); margin-bottom: 12px; }
+.blog-browse-more-title { font-family: var(--mk-font-display); font-size: clamp(1.4rem, 2.4vw, 1.8rem); line-height: 1.1; letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); margin-bottom: 8px; }
+.blog-browse-more-arrow { font-family: var(--mk-font-mono); font-size: var(--mk-text-sm); color: var(--mk-brand); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; }
+</style>
+<style id="blog-layout">
+.page-hero { padding: 100px 0 30px; }
+.blog-back-wrap { margin: 0 0 18px; }
+.blog-back-wrap .blog-back-link { padding: 10px 4px; background: none; border: 0; border-radius: 0; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-text-tertiary); }
+.blog-back-wrap .blog-back-link:hover { background: none; color: var(--mk-text-primary); transform: none; }
+.page-hero-title { margin-bottom: 18px; }
+.page-hero-inner .blog-byline-wrap, .page-hero-inner .blog-share-mini-wrap { display: inline-flex; align-items: center; height: 40px; vertical-align: top; margin-top: 20px; }
+.page-hero-inner .blog-share-mini-wrap { margin-left: 14px; }
+.page-hero-inner .blog-byline-strip { margin-top: 0; }
+.blog-share-mini .mk-share__trigger { width: 40px; height: 40px; }
+.section.blog-article { padding: 36px 0 28px; }
+.blog-article .prose-wrap, .blog-article .blog-author-card, .blog-article .blog-credit { max-width: 620px; }
+.blog-article .prose-wrap .prose-wrap > p:not(.section-eyebrow), .blog-article .prose-wrap .prose-wrap li { font-size: 17px; line-height: 1.65; }
+.blog-article .prose-wrap .prose-wrap > p:not(.section-eyebrow) { margin-bottom: 20px; }
+.blog-article .prose-wrap .prose-wrap a { color: var(--mk-brand); text-decoration: underline; text-underline-offset: 3px; }
+.blog-article .prose-wrap .prose-wrap a:hover { color: var(--mk-text-primary); }
+.blog-article .prose-wrap .section-eyebrow { text-align: left; margin: 44px 0 8px; }
+.blog-article .prose-wrap h2, .blog-article .prose-wrap h3 { text-align: left; margin: 44px 0 16px; text-wrap: balance; }
+.blog-article .prose-wrap .section-eyebrow + h2, .blog-article .prose-wrap .section-eyebrow + h3 { margin-top: 0; }
+.blog-article .prose-wrap > .prose-wrap:first-child > :first-child { margin-top: 0; }
+.blog-article .pull-quote { margin: 32px 0; padding: 28px 32px; }
+.blog-article .blog-fig-full { max-width: 620px; margin: 32px auto; }
+.blog-article .blog-fig, .blog-article .blog-hero-figure { aspect-ratio: 16/9; }
+.blog-article .prose-wrap > .prose-wrap > h2 { clear: both; }
+/* A photo that opens its own section keeps the title beside it. Only an image from the section before gets cleared. */
+.blog-article .prose-wrap > .prose-wrap > figure + h2, .blog-article .prose-wrap > .prose-wrap > figure + .section-eyebrow + h2 { clear: none; }
+/* A real screen of the app (lib/guide-shots.js). Never cropped or feathered the way a stock photo is, and no frame of its own. */
+.blog-article .blog-shot { margin: 28px 0 32px; }
+.blog-article .blog-shot a { display: block; }
+.blog-article .blog-shot img { display: block; width: 100%; height: auto; }
+.blog-article .blog-shot a:hover img { opacity: 0.92; }
+.blog-article .blog-shot figcaption { margin-top: 10px; font-size: 14px; line-height: 1.45; color: var(--mk-text-tertiary); }
+.blog-article .blog-shot-right { float: right; width: 46%; max-width: 400px; margin: 6px 0 20px 28px; }
+.blog-article .blog-shot-left { float: left; width: 46%; max-width: 400px; margin: 6px 28px 20px 0; }
+@media (max-width: 720px) {
+  .blog-article .blog-shot-right, .blog-article .blog-shot-left { float: none; width: 100%; max-width: none; margin: 20px 0 24px; }
+}
+.blog-article .blog-author-card { margin-top: 36px; padding-top: 24px; }
+.blog-share-row { max-width: 620px; margin: 24px auto 0; padding-top: 24px; border-top: var(--mk-border-hairline); display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.blog-share-row .blog-share-row__ask { margin: 0; font-family: var(--mk-font-display); font-size: 1.5rem; line-height: 1; letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); }
+.blog-share-row .mk-share { display: inline-flex; }
+.blog-share-row .mk-share__trigger { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 18px; border: 1px solid var(--mk-brand); border-radius: var(--mk-radius-button); background: rgba(212,175,55,.06); color: var(--mk-brand); font-family: var(--mk-font-sans); font-size: var(--mk-text-sm); font-weight: 600; letter-spacing: var(--mk-track-cap); text-transform: uppercase; cursor: pointer; transition: background var(--mk-dur-fast), color var(--mk-dur-fast); }
+.blog-share-row .mk-share__trigger:hover { background: var(--mk-gold-gradient); color: var(--mk-text-on-gold); }
+.blog-share-row .mk-share__icon { width: 16px; height: 16px; fill: currentColor; }
+.blog-article .blog-credit { margin: 28px auto 0; text-align: left; }
+.final-cta-section { padding: 40px 0 44px !important; }
+.final-cta-title { font-size: clamp(1.8rem, 3.6vw, 2.6rem); }
+.final-cta-sub { margin-bottom: 28px; }
+@media (max-width: 720px) {
+  .page-hero { padding: 92px 0 24px; }
+  .page-hero-inner, .section-inner { padding-left: 20px; padding-right: 20px; }
+  .blog-article .prose-wrap .prose-wrap > p:not(.section-eyebrow), .blog-article .prose-wrap .prose-wrap li { font-size: 16px; line-height: 1.6; }
+  .blog-article .blog-fig, .blog-article .blog-hero-figure { margin: 4px 0 24px; }
+  .blog-share-row { flex-direction: column; align-items: flex-start; gap: 14px; }
+  .final-cta-section { padding: 32px 20px 36px !important; }
+}
+
+.prose-wrap a { color: var(--mk-brand); text-decoration: underline; text-underline-offset: 3px; }
+.prose-wrap a:hover { color: var(--mk-text-primary); }
+.prose-wrap h3 { font-size: clamp(1.25rem, 2.2vw, 1.5rem); margin: 28px 0 10px; }
+.sticky-bar { position: fixed; bottom: 0; left: 0; right: 0; z-index: 55; display: flex; align-items: center; justify-content: center; gap: 14px; padding: 10px 64px 10px 24px; background: rgba(13,15,20,.92); /* no backdrop blur, same reason as #mainNav */ border-top: 1px solid rgba(212,175,55,.35); transform: translateY(100%); transition: transform var(--mk-dur-med) var(--mk-ease-out); }
+.sticky-bar.visible { transform: translateY(0); }
+body:has(.sticky-bar.visible) { padding-bottom: 80px; }
+.sticky-bar-text { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); }
+.sticky-bar-text strong { color: var(--mk-text-primary); }
+.sticky-bar-form { display: flex; gap: 8px; align-items: center; position: relative; }
+.sticky-bar-input { background: rgba(20,24,33,.85); border: 1px solid rgba(255,255,255,.12); color: var(--mk-text-primary); font-family: var(--mk-font-mono); font-size: var(--mk-mono-sm); padding: 8px 12px; border-radius: var(--mk-radius-input); outline: none; width: 220px; }
+.sticky-bar-input:focus { border-color: var(--mk-brand); box-shadow: 0 0 0 3px rgba(212,175,55,.18); }
+.sticky-bar-form .newsletter-error { position: absolute; bottom: calc(100% + 10px); left: 50%; transform: translateX(-50%); background: #ef4444; color: #fff; font-family: var(--mk-font-mono); font-size: 11px; padding: 6px 12px; border-radius: 4px; white-space: nowrap; }
+.sticky-bar-form .newsletter-error[hidden] { display: none; }
+.sticky-bar-form .newsletter-inline-success { font-family: var(--mk-font-mono); font-size: var(--mk-mono-sm); color: #4ade80; padding: 0 12px; white-space: nowrap; }
+.sticky-bar-form .btn-primary { padding: 8px 14px; font-size: var(--mk-text-xs); }
+.sticky-bar-close { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); width: 36px; height: 36px; background: none; border: 0; color: var(--mk-text-tertiary); font-size: 22px; cursor: pointer; }
+@media (max-width: 720px) { .sticky-bar { flex-direction: column; align-items: stretch; gap: 8px; padding: 12px 44px 12px 16px; } .sticky-bar-form { width: 100%; } .sticky-bar-input { flex: 1 1 auto; width: auto; min-width: 0; } }
+</style>
+<!-- Image lightbox. Root-relative on purpose, unlike the absolute asset URLs above:
+     that lets dev.maketzo.co and staging.maketzo.co serve their own copy so the
+     feature is QA-able on a tier. Cost is the admin post-preview (rendered from the
+     api origin) not loading it, which is a preview-only gap. Loaded last so it wins
+     any tie with the inline <style> block. -->
+<link rel="stylesheet" href="/assets/css/lightbox.css?v=2">
+<script src="/assets/js/lightbox.js?v=1" defer></script>
+<script>try{if(document.cookie.indexOf('mkt_csrf=')>-1)document.documentElement.classList.add('mkt-auth');}catch(e){}</script>
+</head>
+<body>
+
+<div class="mobile-overlay" id="mobileOverlay" onclick="closeDrawer()"></div>
+<div class="mobile-drawer" id="mobileDrawer">
+  <ul class="mobile-drawer-links">
+    <li><a href="https://maketzo.co/journal" onclick="closeDrawer()">Journal</a></li>
+    <li><a href="https://maketzo.co/system" onclick="closeDrawer()">The System</a></li>
+    <li><a href="https://maketzo.co/focus" onclick="closeDrawer()">Focus Room</a></li>
+    <li><a href="https://maketzo.co/tools" onclick="closeDrawer()">Free Tools</a></li>
+    <li><a href="https://maketzo.co/blog" onclick="closeDrawer()">Blog</a></li>
+    <li><a href="https://maketzo.co/pricing" onclick="closeDrawer()">Pricing</a></li>
+    <li><a href="https://maketzo.co/app" onclick="closeDrawer()"><span class="nav-auth-out">Log In</span><span class="nav-auth-in">LAUNCH</span></a></li>
+  </ul>
+  <button class="mobile-drawer-cta" onclick="handleCheckout('pro',{preventDefault:()=>{},currentTarget:null});closeDrawer()">Start Free Trial &rarr;</button>
+</div>
+
+<nav id="mainNav">
+  <a href="https://maketzo.co" class="nav-logo mk-brand-lockup">
+    <img class="mk-brand-lockup__mark" src="https://maketzo.co/assets/logo-mark.png" alt="">
+    <img class="mk-brand-lockup__wordmark" src="https://maketzo.co/assets/logo-wordmark.png" alt="MAKETZO">
+  </a>
+  <ul class="nav-links">
+    <li><a href="https://maketzo.co/journal">Journal</a></li>
+    <li><a href="https://maketzo.co/system">The System</a></li>
+    <li><a href="https://maketzo.co/focus">Focus Room</a></li>
+    <li><a href="https://maketzo.co/tools">Free Tools</a></li>
+    <li><a href="https://maketzo.co/blog">Blog</a></li>
+    <li><a href="https://maketzo.co/pricing">Pricing</a></li>
+    <li><a href="https://maketzo.co/app" class="nav-login-btn"><span class="nav-auth-out">Log In</span><span class="nav-auth-in">LAUNCH</span></a></li>
+    <li><button class="nav-cta" onclick="handleCheckout('pro',event)">Start Free Trial</button></li>
+  </ul>
+  <button class="hamburger" id="hamburger" onclick="toggleDrawer()" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+
+<!-- Article header — uses the design-system .page-hero pattern from /why -->
+<section class="page-hero">
+  <div class="page-hero-inner">
+    <p class="blog-back-wrap"><a class="blog-back-link" href="/guides">&larr; All Guides</a></p>
+    <p class="page-hero-eyebrow">GUIDE</p>
+    <h1 class="page-hero-title">Stock Trading: Knowing the Setup Is the Easy Half</h1>
+    <p class="page-hero-sub">Stock trading is buying and selling shares to profit from the move in between, over minutes for a day trader and over days or weeks for a swing trader. The mechanics take an afternoon to learn, and the part of stock trading that decides whether an account lasts is doing what you planned once your own money is moving.</p>
+    
+  </div>
+</section>
+
+<hr class="mk-rule-gold">
+
+<!-- Article body — wraps Claude's bodyHtml in a section + prose-wrap so
+     design-system typography (paragraphs, h2, .pull-quote, lists) all
+     resolve through components.css. Both images sit inside the body
+     (placeFigures): the story opens the post. -->
+<section class="section blog-article">
+  <div class="section-inner">
+    <div class="prose-wrap blog-prose-clear">
+      <div class="prose-wrap">
+  <h2>Most Traders Who Lose Already Knew Better</h2>
+  <figure class="blog-fig blog-fig-right"><img src="https://media.maketzo.co/blog-images/5cb0984e-0617-443e-b510-225d91519eb4.jpg" alt="Trading chart showing a sharp selloff, beside a trading plan checklist and a handwritten note reading “I knew better.”"></figure><p>It is 9:31. A small cap is up 60% on a contract headline, and a trader has a written plan: wait for the first pullback, buy it with a limit order, stop under the pullback's low. The stock dips for eight seconds and rips. The trader drops the plan and hits a market order into a thin book, and the fill lands well over the price on the screen. Two minutes later the stock flushes through the stop, the stop-limit never fills, and the trader is holding a loss the plan said could not exist. By 11:00 there are four more trades, each one trying to win back the first. The day closes red, and the trader's verdict is three words: I knew better.</p>
+  <p>That trader did not have a knowledge problem. Every rule broken that morning was one they could have recited at breakfast. The rules live in the calm part of the brain, and the order gets clicked by the part that wants relief, revenge or to be right. You cannot fix a doing problem with more knowing, which is why one more course or one more indicator rarely turns a red month green.</p>
+  <p>What does turn it is structure around the moment of decision: rules set before the bell, a record that grades whether you followed them, and something that catches the drift while it is happening. That is the job MAKETZO does for small cap day traders. The <a href="/journal">MAKETZO journal</a> grades discipline on every trade, and its <a href="/journal">Picard Score</a> measures how well you ran your process whatever the P&amp;L said. <a href="/system">COACH SAYS</a> steps in during the session when your trading drifts from the rules you set, and the <a href="/focus">Focus Room</a> is where you get your head straight before the next order instead of firing it. Every plan starts with a <a href="/pricing">7-day free trial</a>.</p>
+</div>
+
+<div class="prose-wrap">
+  <h2>How Stock Trading Works: Orders, Fills and the Book</h2>
+  <p>Every order makes you choose between two things you cannot both lock down: getting filled, and the price you get.</p>
+  <p>When you buy, your broker routes the order to a market where it meets a seller. The bid is the highest price a buyer is offering right now, the ask is the lowest price a seller will take, and the gap between them is the spread, a cost you pay on every round trip. Behind each price sits a number of shares, and that depth decides how your order fills.</p>
+  <ul><li><strong>Market order.</strong> Fills now at whatever is resting in the book. Fine in a deep, liquid name. In a thin small cap it sweeps up through every offer until it is full, and your average price can land far from where you clicked.</li><li><strong>Limit order.</strong> Fills only at your price or better. It protects the price and can sit unfilled while the stock runs without you.</li><li><strong>Stop-market.</strong> Turns into a market order when it triggers. You get out, at no known price, and on a fast flush it can fill well through the stop.</li><li><strong>Stop-limit.</strong> Turns into a limit order when it triggers. It caps the price, and in a fast drop that cap is the trap: price blows past the limit, nothing fills, and you still own the shares.</li></ul>
+  <p>All four come down to one line. Market and stop-market guarantee the execution, limit and stop-limit guarantee the price, and nothing guarantees both. In a thin, fast name, a marketable limit set at or just through the ask fills quickly while capping the worst price you will pay. When your first job is to be flat, use the stop that fills, not the one that might not.</p>
+  <p>A low share price is no discount on the danger. A two-dollar stock with a thin book sweeps a market order as hard as a two-hundred-dollar one, so pick the order type from the book in front of you, never from habit.</p>
+</div>
+
+<div class="prose-wrap">
+  <h2>Day Trading, Swing Trading and the 2026 Account Rules</h2>
+  <p>The account you trade in has a rulebook that has nothing to do with charts, and the biggest rule in it changed this year.</p>
+  <p>A day trader opens and closes inside one session and goes home flat, so news after the close cannot gap the position. A swing trader holds for days or weeks to catch a larger move, and accepts that overnight risk in exchange for fewer decisions and less screen time.</p>
+  <p>For years the pattern day trader rule froze margin accounts under $25,000 after four day trades in five business days. FINRA replaced it with intraday margin requirements on June 4, 2026: no $25,000 minimum, and no pattern day trader label from counting trades. Margin is now watched through the day, so an add that takes the account past what it can carry can create a deficit even if you are flat by the close. Borrowing on margin still takes at least $2,000 in equity. Firms may keep the old rules during a transition that runs to October 20, 2027, so ask your broker which set it runs before you lean on either.</p>
+  <p>A cash account never had a day-trade count, but it has settlement. Stock settles the next business day, known as T+1. Buy with proceeds that have not settled, sell before they do, and you have a good-faith violation that can restrict the account. Know what has settled before you use it again.</p>
+  <p>Then the tax rule that catches active traders. Sell at a loss and buy the same stock within 30 days before or after the sale, and the wash-sale rule defers that loss into the cost basis of the new shares. The loss is not erased, it moves, and a trader who keeps coming back to the same ticker can reach December with a pile of deferred losses they never planned for.</p>
+  <p>This is general information, not tax or legal advice. Rules change and your situation is your own, so confirm the details with your broker or a tax professional.</p>
+</div>
+
+<div class="prose-wrap">
+  <h2>The Clock and the Runner: Trading the Day's Rhythm</h2>
+  <p>The market at 9:35 is a different animal from the market at noon, and trading against the clock is a quiet, steady way to bleed.</p>
+  <p>The open brings the heaviest volume, the biggest moves and the most noise. Late morning into lunch, volume thins, price drifts and chops, and the setups get worse while the urge to trade does not. That midday stretch is where overtrading does most of its damage, and the disciplined move when the tape goes quiet is to trade less, not to invent trades. The last hour, power hour, wakes up again as the day's positions get resolved, so it earns your attention back.</p>
+  <p>When a theme is running, trade the leader: the name with the most relative strength, making new highs. A weak name moving only in sympathy is usually the first to fade.</p>
+  <p>Small caps add one question that has nothing to do with the chart: can the company sell stock into this move? A runner with an open channel to issue shares can turn into the supply that buries it. Before you trade one, run it through <a href="/dilution-check">Dilution Check</a>. It reads the company's SEC filings and returns a supply risk read: whether a registered way to sell stock is open right now, such as an effective shelf or an at-the-market program, how often the company has used it in the last year, and how long its cash lasts at its last reported burn. Every form code links straight to the filing, so you can check the read rather than trust it. If you trade <a href="/small-cap-day-trading">low float stocks</a>, that read belongs in your premarket routine next to the news.</p>
+</div>
+
+<div class="prose-wrap">
+  <h2>Size for the Losing Streak You Will Get</h2>
+  <p>Give two traders the same edge, the same win rate and the same reward for each dollar of risk, and one can compound for years while the other is gone by spring. The difference is bet size.</p>
+  <p>Every strategy, even a great one, produces losing streaks, because the math guarantees stretches of bad luck. Bet small and a cold streak is a dip you trade through. Bet big and the same ordinary streak buries you before the edge has a chance to pay. The relationship is steep: cut your risk per trade in half and it takes roughly twice as many losers in a row to do the same damage.</p>
+  <p>Drawdowns also climb out slower than they fall in. A 25% drawdown takes a 33% gain to recover, and a 50% hole takes 100%. That is why the first job of size is to keep you in the game long enough for your edge to show up.</p>
+  <ul><li>Judge your size by the worst normal streak, not the average trade.</li><li>Keep edge and bet size as separate decisions. A good week is not a reason to bet more.</li><li>If a normal cold streak is doing real damage, the size was wrong, not the edge.</li></ul>
+  <p>The time to settle that number is before the open, while you are calm. In MAKETZO, the <a href="/focus">Morning Lock-In</a> is where you sign your rules for the day before the first order, your max loss included, so the version of you at 9:31 is overruled by the one who already made the call.</p>
+  <figure class="blog-shot blog-shot-full"><a href="/focus" data-cta-source="guide-screen-todays-pick" data-cta-target="focus"><img src="/assets/guides/todays-pick.webp?v=3" alt="The MAKETZO Lock-In recommending an A+ Only Day, the highest bar, for a fresh session." width="1704" height="514" loading="lazy" decoding="async"></a><figcaption>The Lock-In suggests what kind of day to trade. Then you sign the rules for it.</figcaption></figure>
+  <p>Go back to the trader who chased at 9:31. They knew the order types, the clock and the rules on size. Knowing the setup is the easy half of stock trading. The half that pays is doing what you planned when the stock rips and your own money is on the line.</p>
+</div>
+
+<div class="prose-wrap">
+  <h2>Common Questions</h2>
+  <h3>How can I do stock trading?</h3>
+  <p>Open a brokerage account and choose cash or margin, keeping in mind that margin takes at least $2,000 in equity. Learn the four order types before your first live order, because in a thin stock the order type decides your fill more than the chart does. Write your rules for entries, exits and a daily max loss before the open, practice them in a simulator until following them feels boring, and grade each day on whether you followed the plan rather than on the P&amp;L.</p>
+  <h3>What is swing trading?</h3>
+  <p>Swing trading holds a position for several days to a few weeks to catch a move larger than one session offers. It takes less screen time and fewer decisions than day trading. The cost is overnight risk: news after the close can gap the stock past your stop by the next open, and a stop-market order then fills at the first real price, not at your stop. Swing traders lean on the daily chart and the company's calendar, including earnings dates and filings.</p>
+  <h3>How much can you make day trading with $1000?</h3>
+  <p>There is no honest fixed number, because the result depends on your edge, your costs and whether you follow your plan. Three facts shape a $1,000 account. It sits under the $2,000 needed to borrow on margin, so it trades as a cash account, and the cash from each sale has to settle, the next business day, before it can pay for a trade you also close that day. Costs like the spread take a bigger bite from small positions. And losses compound against you, so the first goal is to keep the account alive long enough to learn whether your edge is real.</p>
+</div>
+      <div class="blog-fig-clear" aria-hidden="true"></div>
+      
+      
+      <div class="blog-share-row">
+        <p class="blog-share-row__ask">Know a trader who needs this?</p>
+        <div class="mk-share blog-share">
+          <button class="mk-share__trigger" type="button" data-share-source="blog-stock-trading" data-share-title="Stock Trading: Knowing the Setup Is the Easy Half" data-share-url="https://maketzo.co/stock-trading" data-share-text="Stock trading is buying and selling shares to profit from the move in between, over minutes for a day trader and over days or weeks for a swing trader. The mechanics take an afternoon to learn, and the part of stock trading that decides whether an account lasts is doing what you planned once your own money is moving." data-share-subject="Stock Trading: Knowing the Setup Is the Easy Half" aria-haspopup="dialog">
+            <svg class="mk-share__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/></svg>
+            <span>Share with a trading friend</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="mk-rule-gold mk-rule-gold--bold" aria-hidden="true">
+
+<!-- Final CTA — matches the .final-cta-section pattern used on every
+     other detail page. Always visible (not the mobile-only mk-cta-repeat). -->
+<section class="final-cta-section">
+  <p class="final-cta-eyebrow">Stop Losing to Yourself</p>
+  <h2 class="final-cta-title">Start trading <em>with discipline.</em></h2>
+  <p class="final-cta-sub">Maketzo is the system that closes the door at the exact moment your hand is on it.</p>
+  <div class="final-cta-btn-wrap">
+    <button class="btn-primary" data-cta-source="page-stock-trading" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
+    <p class="final-cta-note">7-day free trial &middot; cancel anytime</p>
+  </div>
+</section>
+
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-col-brand">
+        <div class="footer-logo-wrap">
+          <a href="https://maketzo.co" class="mk-brand-lockup mk-brand-lockup--stacked">
+            <img class="mk-brand-lockup__mark" src="https://maketzo.co/assets/logo-mark.png" alt="">
+            <img class="mk-brand-lockup__wordmark" src="https://maketzo.co/assets/logo-wordmark.png" alt="MAKETZO">
+          </a>
+        </div>
+        <p class="footer-tagline"><strong>Stop the trade you'd regret.</strong>Discipline in every session. Edge in every trade. Accountability when it counts.</p>
+      </div>
+      <div><div class="footer-col-title">Product</div><ul class="footer-links"><li><a href="https://maketzo.co/journal">Journal</a></li><li><a href="https://maketzo.co/system">The System</a></li><li><a href="https://maketzo.co/indicators">Indicators</a></li><li><a href="https://maketzo.co/focus">Focus Room</a></li><li><a href="https://maketzo.co/tools">Free Tools</a></li><li><a href="https://maketzo.co/dilution-check">Dilution Check</a></li><li><a href="https://maketzo.co/pricing">Pricing</a></li></ul></div>
+      <div><div class="footer-col-title">Explore</div><ul class="footer-links"><li><a href="https://maketzo.co/trade-replay">Trade Replay</a></li><li><a href="https://maketzo.co/trading-os">Trading OS</a></li><li><a href="https://maketzo.co/why">Why MAKETZO</a></li><li><a href="https://maketzo.co/blog">Blog</a></li><li><a href="https://maketzo.co/contact">Contact Us</a></li></ul></div>
+      <div><div class="footer-col-title">Legal</div><ul class="footer-links"><li><a href="https://maketzo.co/privacy">Privacy</a></li><li><a href="https://maketzo.co/terms">Terms</a></li><li><a href="https://maketzo.co/disclaimer">Disclaimer</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">&copy; 2026 Abinic, LLC. All rights reserved. MAKETZO&reg; is a product of Abinic, LLC. maketzo.co</p>
+      <p class="footer-disclaimer">Trading involves substantial risk of loss. MAKETZO is a journaling, behavioral accountability, educational, and decision-support platform, not investment advice, not a broker-dealer, not a registered investment adviser. See full disclaimer at <a href="https://maketzo.co/disclaimer">maketzo.co/disclaimer</a>.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+function toggleDrawer(){
+  document.getElementById('mobileOverlay').classList.toggle('open');
+  document.getElementById('mobileDrawer').classList.toggle('open');
+}
+function closeDrawer(){
+  document.getElementById('mobileOverlay').classList.remove('open');
+  document.getElementById('mobileDrawer').classList.remove('open');
+}
+</script>
+<div class="sticky-bar" id="stickyBar">
+  <span class="sticky-bar-text"><strong>Stay Sharp.</strong> Bi-weekly trading discipline insights.</span>
+  <form class="sticky-bar-form" onsubmit="return MKTNewsletter.handleForm(event, 'sticky-bar')" novalidate>
+    <input class="sticky-bar-input" id="stickyEmail" name="email" type="email" placeholder="your@email.com" required autocomplete="email" aria-label="Email address" aria-describedby="stickyEmailError">
+    <button class="btn-primary" type="submit">Subscribe</button>
+    <div class="newsletter-error" id="stickyEmailError" hidden></div>
+  </form>
+  <button class="sticky-bar-close" onclick="closeStickyBar()" aria-label="Close">&times;</button>
+</div>
+<script>
+var stickyShown=false,stickyDismissed=false;
+window.addEventListener('scroll',function(){if(!stickyDismissed&&!stickyShown&&window.scrollY/(document.body.scrollHeight-window.innerHeight)>0.45){document.getElementById('stickyBar').classList.add('visible');stickyShown=true;}});
+function closeStickyBar(){document.getElementById('stickyBar').classList.remove('visible');stickyDismissed=true;}
+</script>
+</body>
+</html>
