@@ -842,11 +842,15 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
 .lk-live .lockin-grid.is-focus .lockin-card:not(.is-open):hover { opacity: .6; }   /* hover-ok: a grey card is still a button; a tap locks it in and moves the panel to it */
 @media (min-width: 641px) {
   .lk-live .lockin-card.is-open { align-items: flex-start; }
+  /* its card steps back (a quieter edge, no glow) so the panel on top of it is the brightest thing there */
+  .lk-live .lockin-card.is-locked.is-open { border-color: color-mix(in srgb, var(--acc) 38%, transparent); box-shadow: 0 0 0 1px color-mix(in srgb, var(--acc) 10%, transparent); }
   .lk-live .lockin-card.is-open .lockin-use { opacity: 0; }
   .lk-p-top .lk-ico { display: none; }   /* the card's own icon sits just above; the phone sheet, away from its card, keeps it */
 }
 
-/* the panel a tap opens from the card (the script places it); on a phone it rises from the bottom */
+/* the panel a tap opens from the card (the script places it); on a phone it rises from the bottom. It sits a layer
+   above its card (Ed, 2026-11-14: "it needs to stand out a little more from the parent"): a lighter surface, a
+   brighter edge, a dark keyline outside the edge, and a shadow cast up onto the card. */
 .lk-panel {
   --acc: #D4AF37;
   position: absolute; z-index: 60; left: var(--px, 0px); top: var(--py, 0px);
@@ -854,9 +858,9 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
   padding: 22px 24px 24px;
   border-radius: 18px;
   color: var(--mk-text-primary);
-  background: radial-gradient(110% 46% at 50% 0%, color-mix(in srgb, var(--acc) 12%, transparent), transparent 62%), linear-gradient(180deg, #151820, #0D0F14);
-  border: 1px solid color-mix(in srgb, var(--acc) 50%, transparent);
-  box-shadow: 0 24px 60px -10px rgba(0,0,0,.85), 0 0 40px -8px color-mix(in srgb, var(--acc) 30%, transparent);
+  background: radial-gradient(110% 46% at 50% 0%, color-mix(in srgb, var(--acc) 18%, transparent), transparent 62%), linear-gradient(180deg, #232833, #161920);
+  border: 1px solid color-mix(in srgb, var(--acc) 82%, transparent);
+  box-shadow: 0 0 0 1px rgba(4,5,7,.95), 0 -10px 30px rgba(0,0,0,.55), 0 30px 70px -12px rgba(0,0,0,.9), 0 0 50px -4px color-mix(in srgb, var(--acc) 45%, transparent);
   opacity: 0; transform: translateY(var(--dy, 8px)) scale(.98); transform-origin: var(--ox, 50%) var(--oy, 0%);
   visibility: hidden;
   transition: opacity .26s ease, transform .38s var(--mk-ease-out), visibility 0s linear .38s;
