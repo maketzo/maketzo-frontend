@@ -2,8 +2,10 @@
    maketzo.co website, can you create smart bottom navigation system like you've done in the app and admin console.
    Make it very intuitive for the user." Picked from the questions: four tabs and a gold trial button in the middle
    (Journal, The System, Free Trial, Pricing, More); it hides while the visitor reads down and comes back when they
-   scroll up or reach the end, in step with Safari's own toolbar; the newsletter bar rises above it once and, closed
-   or used, never comes back for that visitor; the same bar on blog posts.
+   scroll up or reach the end, in step with Safari's own toolbar; the newsletter bar rises above it as a card; the same
+   bar on blog posts. Closed, the card stays away for the rest of that visit and returns on the next; subscribed, it
+   never returns (Ed, 2026-11-13, after "it should reappear whenever I reload the page, right?": the first release
+   kept a close forever, while a computer shows the bar again on every reload).
    More replaces the top menu button, as in the app (lib/phone-tabs.js): a sheet that rises with every page as a
    tile, Log In and the newsletter. Nothing here applies without html.mkpb-on, which the script sets only on a phone
    once it has built the bar, so with no script the page keeps its menu button. No blur anywhere (a solid, slightly
@@ -123,16 +125,17 @@
   .mk-pnews { padding: 14px 14px 12px; border-radius: 14px; border: 1px solid rgba(212,175,55,.3); background: rgba(212,175,55,.04); }
   .mk-pnews p { margin: 0 0 10px; font-size: 15px; line-height: 1.4; color: #B8BEC9; }
   .mk-pnews p strong { color: #F2F0EA; }
-  .mk-pnews form { position: relative; display: flex; gap: 8px; }
+  .mk-pnews form { position: relative; display: flex; flex-wrap: wrap; gap: 8px; }
   .mk-pnews input { flex: 1; min-width: 0; height: 44px; padding: 0 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,.14); background: rgba(13,15,20,.9); color: #F2F0EA; font-size: 16px; }
   .mk-pnews input:focus { outline: none; border-color: #D4AF37; box-shadow: 0 0 0 3px rgba(212,175,55,.18); }
   .mk-pnews button { flex: none; height: 44px; padding: 0 16px; border-radius: 10px; border: 0; background: linear-gradient(160deg, #E5C572, #D4AF37 55%, #B8941F); color: #0D0F14; font-weight: 700; font-size: 14px; cursor: pointer; }
-  .mk-pnews .newsletter-error { margin: 8px 0 0; color: #F87171; font-size: 13px; }
-  .mk-pnews .newsletter-error[hidden], .mk-pnews .newsletter-success[hidden] { display: none; }
-  .mk-pnews .newsletter-success { margin: 8px 0 0; color: #4ADE80; font-size: 14px; }
+  .mk-pnews .newsletter-error { flex: 0 0 100%; margin: 0; color: #F87171; font-size: 13px; }
+  .mk-pnews .newsletter-error[hidden] { display: none; }
+  /* newsletter.js swaps the field and button for this line once the server accepts the email */
+  .mk-pnews .newsletter-inline-success { display: flex; align-items: center; min-height: 44px; color: #4ADE80; font-size: 15px; }
   html.mkt-auth .mk-pnews { display: none; }
 
-  /* the newsletter bar rises above the tab bar as a card, once (the script keeps it away after) */
+  /* the newsletter bar rises above the tab bar as a card (the script keeps it away once closed this visit, or subscribed) */
   html.mkpb-on .sticky-bar {
     left: 10px; right: 10px; bottom: 10px;
     padding: 12px 44px 12px 14px;

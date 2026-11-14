@@ -9,8 +9,10 @@
  * mkt-analytics.js) sees Launch in the middle instead, and Launch the App in More. More is the whole site as tiles,
  * Log In, and the newsletter. The bar hides while the visitor scrolls down to read and comes back when they scroll
  * up, reach the end of the page, or are near the top; it steps aside while a text field has focus (the keyboard).
- * The newsletter bar on the page rises above the tab bar as a card; once its close button or its form is used, it
- * stays away for that visitor (localStorage, a per-visitor convenience: if storage is blocked it simply shows again).
+ * The newsletter bar on the page rises above the tab bar as a card. Closed, it stays away for the rest of that visit
+ * and comes back on the next one (sessionStorage); once the visitor subscribes, here or in More, it stays away for
+ * good (localStorage). Both are per-visitor conveniences: if storage is blocked it simply shows again (Ed's picks,
+ * 2026-11-13). The signup in More loads assets/js/newsletter.js itself on the pages that do not carry it.
  *
  * Analytics: every tab and tile tap is one mkt_nav_tap {from: tabbar|more, to}; opening More is to: "more". The
  * Free Trial key carries data-cta-source="tabbar", so mkt-analytics.js records its cta_click (never a second event).
@@ -141,15 +143,24 @@
       '<a class="mk-plogin" href="' + url('app') + '" data-to="app">' + svg('login') + '<span class="mk-p-out">Log In</span><span class="mk-p-in">Launch the App</span></a>' +
       '<div class="mk-pnews"><p><strong>Stay Sharp.</strong> Bi-weekly trading discipline insights.</p>' +
       '<form novalidate><input type="email" name="email" placeholder="you@email.com" autocomplete="email" aria-label="Email address">' +
-      '<button type="submit">Subscribe</button><p class="newsletter-error" role="alert" hidden></p><p class="newsletter-success" hidden></p></form></div>';
+      '<button type="submit">Subscribe</button><p class="newsletter-error" role="alert" hidden></p></form></div>';
     sheet.querySelector('.mk-psheet-x').addEventListener('click', closeSheet);
     Array.prototype.forEach.call(sheet.querySelectorAll('[data-to]'), function (a) {
       a.addEventListener('click', function () { track('more', a.getAttribute('data-to')); });
     });
     var form = sheet.querySelector('form');
+    // A few pages (contact, the legal pages, 404, learn, soundtrack, unsubscribed) carry no newsletter script.
+    if (!window.MKTNewsletter) {
+      var ns = document.createElement('script');
+      ns.src = BASE + 'assets/js/newsletter.js?v=5';
+      document.head.appendChild(ns);
+    }
     form.addEventListener('submit', function (e) {
       if (window.MKTNewsletter && window.MKTNewsletter.handleForm) return window.MKTNewsletter.handleForm(e, 'tabbar-more');
-      e.preventDefault();
+      e.preventDefault();                                   // its script never arrived: say so, never fail silently
+      var err = form.querySelector('.newsletter-error');
+      err.textContent = 'Something went wrong. Please try again.';
+      err.hidden = false;
       return false;
     });
 
@@ -197,16 +208,20 @@
   document.addEventListener('focusin', function (e) { if (isField(e.target) && !sheet.contains(e.target)) root.classList.add('mkpb-kb'); });
   document.addEventListener('focusout', function (e) { if (isField(e.target)) root.classList.remove('mkpb-kb'); });
 
-  // The newsletter bar: once closed or used, it stays away for this visitor.
-  var NEWS_KEY = 'mk_news_bar_done';
-  function newsDone() { try { localStorage.setItem(NEWS_KEY, '1'); } catch (e) {} }
-  try { if (localStorage.getItem(NEWS_KEY) === '1') root.classList.add('mkpb-news-done'); } catch (e) {}
-  document.addEventListener('click', function (e) { if (e.target.closest && e.target.closest('.sticky-bar-close')) newsDone(); });
+  // The newsletter bar: closed, it stays away for the rest of this visit; subscribed, for good.
+  var CLOSED_KEY = 'mk_news_bar_closed', SUBSCRIBED_KEY = 'mk_news_subscribed';
+  try { localStorage.removeItem('mk_news_bar_done'); } catch (e) {}   // the first release kept a close forever
+  try {
+    if (localStorage.getItem(SUBSCRIBED_KEY) === '1' || sessionStorage.getItem(CLOSED_KEY) === '1') root.classList.add('mkpb-news-done');
+  } catch (e) {}
+  document.addEventListener('click', function (e) {
+    if (e.target.closest && e.target.closest('.sticky-bar-close')) { try { sessionStorage.setItem(CLOSED_KEY, '1'); } catch (err) {} }
+  });
   document.addEventListener('submit', function (e) {
     var f = e.target;
-    if (!f.closest || !f.closest('.sticky-bar')) return;
+    if (!f.closest || !f.closest('.sticky-bar, .mk-pnews')) return;
     var input = f.querySelector('input[type="email"]');
-    if (input && /\S+@\S+\.\S+/.test(input.value)) newsDone();
+    if (input && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value.trim())) { try { localStorage.setItem(SUBSCRIBED_KEY, '1'); } catch (err) {} }
   }, true);
 
   function apply() {
