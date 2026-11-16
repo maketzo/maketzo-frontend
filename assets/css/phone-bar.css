@@ -152,6 +152,9 @@
   html.mkpb-on .mk-share-toast { bottom: calc(var(--pbar-h) + 16px); }
   /* the share engine's own toast ("Link copied", maketzo-app lib/share-menu.js), on every Share button since 2026-11-13 */
   html.mkpb-on .kb-share-toast { bottom: calc(var(--pbar-h) + 16px); }
+  /* the minimized offer tab (offer-toast.css) rides above the bar, and above the newsletter card when it shows; it sat
+     on the bar's right tabs until 2026-11-16 */
+  html.mkpb-on .mk-offer-tab { bottom: calc(max(var(--pbar-lift), env(safe-area-inset-bottom, 0px)) + 12px + var(--mk-offer-lift, 0px)); }
 
   @media (prefers-reduced-motion: reduce) {
     .mk-pbar, .mk-psheet, .mk-psheet-scrim { transition-duration: .01s; }

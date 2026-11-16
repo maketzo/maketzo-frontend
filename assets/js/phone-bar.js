@@ -205,7 +205,8 @@
 
   // The keyboard: a text field with focus pushes the bar away until it lets go.
   function isField(el) { return el && (el.tagName === 'TEXTAREA' || el.tagName === 'SELECT' || (el.tagName === 'INPUT' && !/^(button|submit|checkbox|radio|range|reset)$/i.test(el.type))); }
-  document.addEventListener('focusin', function (e) { if (isField(e.target) && !sheet.contains(e.target)) root.classList.add('mkpb-kb'); });
+  // (On a computer the sheet is never built; reading it unguarded threw on every field focus until 2026-11-16.)
+  document.addEventListener('focusin', function (e) { if (isField(e.target) && !(sheet && sheet.contains(e.target))) root.classList.add('mkpb-kb'); });
   document.addEventListener('focusout', function (e) { if (isField(e.target)) root.classList.remove('mkpb-kb'); });
 
   // The newsletter bar: closed, it stays away for the rest of this visit; subscribed, for good.

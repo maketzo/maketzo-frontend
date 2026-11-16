@@ -1229,6 +1229,9 @@
     getRef: getRef,
     isInternal: isInternal,
     setInternal: setInternal,
+    // May another feature tie what this visitor does to their browser id? The same rule as the Live beat: a visitor
+    // outside the EU, or one who accepted, and no privacy signal. The support chat sends its id only when this is true.
+    canLink: function () { return !analyticsOptOut() && liveAllowed(); },
     // This tier's API (offer-toast.js posts to it).
     apiBase: API_BASE
   };
