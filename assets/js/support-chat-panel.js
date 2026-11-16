@@ -23,7 +23,6 @@
     hello: 'Hi there.',
     hello2: 'What can we help you with?',
     sub: 'Answers come from our help library. Email us any time and we reply within one trading day.',
-    chips: ['Do I need a card for the free trial?', 'Can I cancel any time?', 'Do I need to connect my broker?'],
     placeholder: 'Ask a question',
     question: 'Your question',
     send: 'Send',
@@ -68,7 +67,8 @@
     bad: 'Bad',
     better: 'Anything we could do better? (optional)',
     skip: 'Skip',
-    thanks: 'Thanks. We read every one.',
+    thanks: 'Thanks for rating this chat.',
+    thanksNote: 'Thanks. Your note was sent to the team.',
     opening: 'Opening your chat',
     ratedYes: 'You said our reply answered your question',
     ratedNo: 'You said our reply missed',
@@ -144,7 +144,18 @@
   function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
   function el(tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
   function button(cls, text, fn) { var b = el('button', cls); b.type = 'button'; b.textContent = text; if (fn) b.addEventListener('click', fn); return b; }
-  function add(node) { log.appendChild(node); log.scrollTop = log.scrollHeight; return node; }
+  function add(node) { log.appendChild(node); toEnd(); return node; }
+  // The thread stays on its newest line while the reader is at the bottom: anything added later under it (Seen, the
+  // typing dots, a late layout) or a resize (a phone keyboard) keeps it in view. Scrolled up to reread, it stays put.
+  // Ed, 2026-11-16: "Cursor position is off while I chat" -- his last message sat half under the box after Seen landed.
+  var stick = true;
+  function toEnd() { log.scrollTop = log.scrollHeight; stick = true; }
+  function pinLog() {
+    log.addEventListener('scroll', function () { stick = log.scrollHeight - log.scrollTop - log.clientHeight < 48; }, { passive: true });
+    var keep = function () { if (stick) log.scrollTop = log.scrollHeight; };
+    if (window.MutationObserver) new MutationObserver(keep).observe(log, { childList: true, subtree: true, characterData: true });
+    if (window.ResizeObserver) new ResizeObserver(keep).observe(log);
+  }
   function paras(text) {
     return String(text || '').split(/\n\s*\n/).map(function (p) { return '<p>' + esc(p.trim()).replace(/\n/g, '<br>') + '</p>'; }).join('');
   }
@@ -233,6 +244,7 @@
       + '<div class="mkc-foot"><span>' + esc(COPY.footLeft) + '</span></div>';
     root.appendChild(panel);
     log = panel.querySelector('.mkc-log');
+    pinLog();
     art = panel.querySelector('.mkc-art');
     input = panel.querySelector('.mkc-in');
     sendBtn = panel.querySelector('.mkc-send');
@@ -322,7 +334,7 @@
   function sayHello() {
     post('hello', firstFacts({})).then(function (j) {
       if (!(S.state === 'waiting' || S.state === 'live')) S.live = !!j.live;
-      if (j.chips && j.chips.length) S.chips = j.chips;
+      if (Array.isArray(j.chips)) S.chips = j.chips;
       var ch = log.querySelector('.mkc-chips');
       if (ch && S.chips) fillChips(ch);
       var sub = log.querySelector('.mkc-sub');
@@ -349,7 +361,7 @@
     else if (!asked) rate(null, ended);
     hello(); head(); sayHello();
     input.value = '';
-    log.scrollTop = 0;
+    log.scrollTop = 0; stick = false;
   }
   // The chat so far for this browser, or the welcome. Also how a page with a live chat picks it up in the background.
   function restore(saved) {
@@ -374,11 +386,14 @@
     add(el('div', '', '<p class="mkc-hello">' + esc(COPY.hello) + '<br>' + esc(COPY.hello2) + '</p><p class="mkc-sub">' + esc(S.live ? COPY.subOn : COPY.sub) + '</p>'));
     fillChips(add(el('div', 'mkc-chips')));
   }
+  // The suggested questions come only from the server, which offers only ones the chat can answer right now (Ed,
+  // 2026-11-16: a suggested question that found nothing). Until it answers, or when it has none, there are none.
   function fillChips(box) {
     box.innerHTML = '';
-    (S.chips || COPY.chips).forEach(function (q) {
+    (S.chips || []).forEach(function (q) {
       box.appendChild(button('mkc-chip', q, function () { ask(q, true); }));
     });
+    box.hidden = !box.childNodes.length;
   }
 
   // -- the chat so far (another page, a reload, or the reply email's link) --
@@ -590,7 +605,7 @@
     var em = f.querySelector('#mkcEm'), note = f.querySelector('#mkcNote'), nl = f.querySelector('input[type=checkbox]');
     var hp = f.querySelector('.mkc-hp'), go = f.querySelector('button[type=submit]'), err = f.querySelector('.is-error');
     function problem(text) { err.textContent = text; err.hidden = !text; }
-    function back() { f.hidden = false; go.disabled = false; log.appendChild(f); log.scrollTop = log.scrollHeight; }
+    function back() { f.hidden = false; go.disabled = false; log.appendChild(f); toEnd(); }
     f.addEventListener('submit', function (e) {
       e.preventDefault();
       var email = em ? em.value.trim() : '', text = note.value.trim(), news = !!(nl && nl.checked);
@@ -685,12 +700,13 @@
     f.innerHTML = '<label class="mkc-sr" for="mkcRc">' + esc(prompt) + '</label><textarea class="mkc-in" id="mkcRc" maxlength="1000" placeholder="' + esc(prompt) + '"></textarea>'
       + '<div class="mkc-row"><button class="mkc-b mkc-b--gold" type="submit">' + esc(COPY.send) + '</button></div>';
     f.querySelector('.mkc-row').appendChild(button('mkc-b', COPY.skip, function () { box.innerHTML = '<p><b>' + esc(COPY.thanks) + '</b></p>'; }));
-    log.scrollTop = log.scrollHeight;
+    toEnd();
     f.addEventListener('submit', function (e) {
       e.preventDefault();
       var text = f.querySelector('textarea').value.trim();
       if (text) post('rate', withIt({ rating: rating, comment: text })).catch(function () {});
-      box.innerHTML = '<p><b>' + esc(COPY.thanks) + '</b></p>';
+      // Ed, 2026-11-16, on "Thanks. We read every one.": "Doesn't make sense". Say what happened to what they gave.
+      box.innerHTML = '<p><b>' + esc(text ? COPY.thanksNote : COPY.thanks) + '</b></p>';
     });
   }
 
@@ -872,12 +888,15 @@
     S.emailGiven = S.emailGiven || !!j.emailGiven;
     if (typeof j.live === 'boolean' && S.state !== 'waiting' && S.state !== 'live') S.live = j.live;
     liveFacts(j);
-    var fresh = 0;
+    var fresh = 0, arrived = false;
     (j.messages || []).forEach(function (m) {
       if (Number(m.seq) <= S.lastSeq) return;
       S.lastSeq = Number(m.seq);
       if (m.kind === 'rep') { S.replied = true; dropDots(); repLine(m); fresh++; }
-      else if (m.kind === 'system' && (m.code === 'joined' || m.code === 'handed' || m.code === 'missed' || (m.code === 'ended' && m.by !== 'visitor'))) systemLine(m);
+      else if (m.kind === 'system' && (m.code === 'joined' || m.code === 'handed' || m.code === 'missed' || (m.code === 'ended' && m.by !== 'visitor'))) {
+        systemLine(m);
+        if (m.code === 'joined' || m.code === 'handed') arrived = true;
+      }
     });
     if (was !== S.state) {
       if (S.state === 'live') { if (was === 'waiting') track('joined', { waited_s: S.waitStart ? Math.round((Date.now() - S.waitStart) / 1000) : 0 }); endWait(); }
@@ -885,7 +904,7 @@
       else if (S.state === 'missed') { endWait(); track('missed', {}); if (!S.emailGiven) emailForm(COPY.missedAsk); }
       else if (S.state === 'closed') { endWait(); dropDots(); if (S.everLive && !j.rated && !log.querySelector('.mkc-rate')) rate(); }
     }
-    if (fresh) newReply(fresh);
+    if (fresh || arrived) newReply(fresh);
     saveConv();
     head();
     paintLiveBits(j);
@@ -947,7 +966,7 @@
     [[740, 0], [988, 0.11]].forEach(function (n) {
       var o = actx.createOscillator(), g = actx.createGain();
       o.type = 'sine'; o.frequency.value = n[0];
-      g.gain.setValueAtTime(0, t + n[1]); g.gain.linearRampToValueAtTime(0.06, t + n[1] + 0.012); g.gain.exponentialRampToValueAtTime(0.0001, t + n[1] + 0.42);
+      g.gain.setValueAtTime(0, t + n[1]); g.gain.linearRampToValueAtTime(0.11, t + n[1] + 0.012); g.gain.exponentialRampToValueAtTime(0.0001, t + n[1] + 0.42);
       o.connect(g); g.connect(actx.destination); o.start(t + n[1]); o.stop(t + n[1] + 0.45);
     });
   }
@@ -959,10 +978,13 @@
       btn.setAttribute('aria-label', COPY.unreadLabel.replace('{n}', S.unread));
     } else { if (b) b.remove(); btn.setAttribute('aria-label', COPY.chatLabel); }
   }
+  // A sound on every reply from a person, and when one joins (Ed's spec: "a sound on answers"; 2026-11-16 "Sound works
+  // in the admin - but not on the website": it used to ring only with the chat closed or the tab hidden). The speaker
+  // button in the header mutes it; a browser plays it only after the visitor has touched the chat.
   function newReply(n) {
-    if (S.open && !document.hidden) return;
-    if (!S.open) { S.unread += n; badge(); }
     chime();
+    if (!n) return;
+    if (!S.open) { S.unread += n; badge(); }
     if (document.hidden && !flashT) {
       var on = true;
       baseTitle = document.title;
