@@ -12,6 +12,9 @@
  *     except in the EU, where it must start empty (Ed, 2026-11-16; the offer tab's rule).
  *   - Email Me This Chat: after the email path, and whenever a chat ends (End Chat, or the rep ending it), so the
  *     visitor can keep the whole thread (Ed, 2026-11-16).
+ *   - A visitor the team blocked (Ed's pick A, 2026-11-16) reads "This chat has ended." and keeps the help library;
+ *     no person, no Email Us, no rating. The browser remembers the blocked chat (mkc_blk) until the server says the
+ *     block is over.
  *   - The question's words never go to analytics; events carry short facts only (matched, kind, yes or no).
  *
  * Every visitor-facing string is in COPY below. CLAUDE.md section 3: no em dashes, one reading, Title Case buttons.
@@ -99,6 +102,9 @@
     otherAlone: 'Nobody else is free right now. Keep chatting here, or email the team instead.',
     endChat: 'End Chat',
     endedRep: '{name} ended the chat',
+    // A visitor the team blocked (Ed's pick A, 2026-11-16): no name, no rating, no person or Email Us after it.
+    endedBlocked: 'This chat has ended.',
+    notReally: 'Not Really',
     endedYou: 'You ended the chat',
     missed: 'Nobody is free right now. We will email you within one trading day.',
     missedAsk: 'Where should we send the answer?',
@@ -190,6 +196,20 @@
     } catch (e) {}
   }
   function forget() { S.conv = null; S.state = 'bot'; S.emailGiven = false; saveConv(); }
+  // Blocked by the team: this browser remembers the chat it was blocked in and sends it with every request (blk), so a
+  // fresh chat stays blocked; the server decides, and a lifted or expired block clears it (sayHello).
+  var BLK_KEY = 'mkc_blk';
+  function blkId() { try { return localStorage.getItem(BLK_KEY) || ''; } catch (e) { return ''; } }
+  function setBlocked() {
+    if (S.blocked) return;
+    S.blocked = true; S.live = false;
+    track('blocked', {});
+    try { if (!blkId() && S.conv) localStorage.setItem(BLK_KEY, S.conv.c); } catch (e) {}
+    // Nothing left on screen offers what the block takes away.
+    log.querySelectorAll('form.mkc-form, .mkc-waitbox, .mkc-reach').forEach(function (n) { n.remove(); });
+    log.querySelectorAll('.mkc-no:not(:disabled)').forEach(function (n) { n.textContent = COPY.notReally; });
+    head();
+  }
 
   // -- the server: text/plain JSON, one round trip, no cookie --
   function apiBase() {
@@ -201,13 +221,16 @@
   }
   // keep: the request outlives the page (a tap on an answer's link leaves it at once).
   function post(path, body, keep) {
+    body = body || {};
+    var blk = blkId(); if (blk && body.blk === undefined) body.blk = blk;
     return fetch(apiBase() + '/support/' + path, {
-      method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify(body || {}), credentials: 'omit', mode: 'cors', keepalive: !!keep
+      method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify(body), credentials: 'omit', mode: 'cors', keepalive: !!keep
     }).then(function (r) {
       if (r.status === 204) return {};
       return r.json().catch(function () { return {}; }).then(function (j) {
+        if (j && j.blocked && S.built) setBlocked();
         if (r.ok) return j;
-        var e = new Error(j.error || COPY.error); e.status = r.status; e.ended = !!j.ended; e.state = j.state; throw e;
+        var e = new Error(j.error || COPY.error); e.status = r.status; e.ended = !!j.ended; e.state = j.state; e.blocked = !!j.blocked; throw e;
       });
     }, function () { var e = new Error(COPY.offline); e.status = 0; throw e; });
   }
@@ -336,6 +359,9 @@
   // Is a person on, and the suggested questions for this page.
   function sayHello() {
     post('hello', firstFacts({})).then(function (j) {
+      // The server's word on a block: lifted or over, and this browser forgets it.
+      if (!j.blocked && S.blocked) S.blocked = false;
+      if (!j.blocked) { try { localStorage.removeItem(BLK_KEY); } catch (e) {} }
       if (!(S.state === 'waiting' || S.state === 'live')) S.live = !!j.live;
       if (Array.isArray(j.chips)) S.chips = j.chips;
       var ch = log.querySelector('.mkc-chips');
@@ -360,9 +386,9 @@
     endWait(); dropDots(); closeArticle(); badge();
     log.innerHTML = '';
     add(el('div', 'mkc-sys')).textContent = COPY.endedYou;
-    transcriptLink(ended, known);
+    if (!S.blocked) transcriptLink(ended, known);
     if (pending) add(el('div', 'mkc-note')).textContent = COPY.stillWithTeam;
-    else if (!asked) rate(null, ended);
+    else if (!asked && !S.blocked) rate(null, ended);
     hello(); head(); sayHello();
     input.value = '';
     log.scrollTop = 0; stick = false;
@@ -437,7 +463,7 @@
       emailed: COPY.sent, 'rated-yes': COPY.ratedYes, 'rated-no': COPY.ratedNo,
       joined: COPY.joined.replace('{name}', name),
       handed: COPY.handed.replace('{from}', m.from || 'MAKETZO').replace('{name}', name),
-      ended: m.by === 'visitor' ? COPY.endedYou : COPY.endedRep.replace('{name}', name)
+      ended: m.blocked ? COPY.endedBlocked : m.by === 'visitor' ? COPY.endedYou : COPY.endedRep.replace('{name}', name)
     }[m.code];
     if (text) add(el('div', 'mkc-sys')).textContent = text;
     if (m.code === 'missed') { S.missedOnce = true; add(el('div', 'mkc-note')).textContent = COPY.missed; }
@@ -485,8 +511,9 @@
     add(el('div', 'mkc-label')).textContent = COPY.from;
     if (!list.length) {
       var person = live && personOffered();
-      add(el('div', 'mkc-card', '<b class="mkc-title">' + esc(COPY.noneTitle) + '</b><p>' + esc(person ? COPY.noneBodyOn : COPY.noneBody) + '</p>'));
-      if (live && (person || S.state !== 'email')) add(el('div', 'mkc-row')).appendChild(button('mkc-b mkc-b--gold', person ? COPY.talk : COPY.emailUs, function () { reach(); }));
+      // Blocked: the miss is said plainly, with no promise of a reply.
+      add(el('div', 'mkc-card', '<b class="mkc-title">' + esc(COPY.noneTitle) + '</b>' + (S.blocked ? '' : '<p>' + esc(person ? COPY.noneBodyOn : COPY.noneBody) + '</p>')));
+      if (live && !S.blocked && (person || S.state !== 'email')) add(el('div', 'mkc-row mkc-reach')).appendChild(button('mkc-b mkc-b--gold', person ? COPY.talk : COPY.emailUs, function () { reach(); }));
       return;
     }
     list.forEach(function (x) { add(x.kind === 'answer' ? answerCard(x, qid) : articleCard(x, qid)); });
@@ -494,13 +521,13 @@
     var box = add(el('div', 'mkc-ask', '<p>' + esc(COPY.didIt) + '</p>'));
     var row = box.appendChild(el('div', 'mkc-row'));
     var yes = row.appendChild(button('mkc-b', COPY.helped));
-    var no = row.appendChild(button('mkc-b', personOffered() ? COPY.talk : COPY.emailUs));
+    var no = row.appendChild(button('mkc-b mkc-no', S.blocked ? COPY.notReally : personOffered() ? COPY.talk : COPY.emailUs));
     function pick(b, helpful) {
       b.setAttribute('aria-pressed', 'true'); yes.disabled = no.disabled = true;
       track('helpful', { helpful: helpful ? 'yes' : 'no' });
       post('feedback', withConv({ qid: qid, helpful: helpful ? 1 : 0 })).catch(function () {});
       if (helpful) add(el('div', 'mkc-note')).textContent = COPY.glad;
-      else reach();
+      else if (!S.blocked) reach();
     }
     yes.addEventListener('click', function () { pick(yes, true); });
     no.addEventListener('click', function () { pick(no, false); });
@@ -572,7 +599,7 @@
   // A chat already sent to the team by email can still reach a person once someone is online (Ed, 2026-11-16: "There's
   // no way to get to a live agent"; his test chat had gone to email before live chat was on, and the panel used to
   // rule a person out for good from then on). The server takes a person request from bot, email, missed or closed.
-  function personOffered() { return S.live && !S.missedOnce; }
+  function personOffered() { return S.live && !S.missedOnce && !S.blocked; }
   // Sent to the team by email and not yet answered: anything typed here is added to it.
   function withTeam() { return S.state === 'email' && S.emailGiven && !S.replied; }
   // Said once: asking again moves the note to the bottom instead of stacking copies (Ed, 2026-11-16: "Trying to click
@@ -582,10 +609,12 @@
     add(el('div', 'mkc-note is-already')).textContent = COPY.already;
   }
   function reach() {
+    if (S.blocked) return;
     if (personOffered() && (S.state === 'bot' || S.state === 'closed' || S.state === 'missed' || S.state === 'email')) return personForm();
     return emailForm();
   }
   function emailForm(title) {
+    if (S.blocked) return;
     build();
     if (!S.open) setOpen(true);
     closeArticle();
@@ -786,7 +815,7 @@
       mark.className = 'mkc-mark'; mark.textContent = 'M'; name.textContent = COPY.name;
       if (st === 'waiting') { dot.className = 'mkc-dot is-wait'; line.textContent = COPY.lineWait; }
       else if (personOffered()) { dot.className = 'mkc-dot is-on'; line.textContent = COPY.lineOn; }
-      else { dot.className = 'mkc-dot'; line.textContent = COPY.lineOff; }
+      else { dot.className = 'mkc-dot'; line.textContent = S.blocked ? COPY.footLeft : COPY.lineOff; }
     }
     muteBtn.hidden = !withPerson;
     endBtn.hidden = !S.conv;
@@ -794,7 +823,7 @@
     footL.hidden = st === 'live';
     footR.textContent = st === 'live' ? COPY.endChat : st === 'waiting' ? COPY.emailUs : (personOffered() ? COPY.talk : COPY.emailUs);
     // Already with the team by email and nobody online: there is nothing for Email Us to do.
-    footR.hidden = st === 'live' || (withTeam() && !personOffered());
+    footR.hidden = st === 'live' || S.blocked || (withTeam() && !personOffered());
     input.placeholder = st === 'live' ? COPY.messagePh.replace('{name}', S.rep || 'MAKETZO') : st === 'waiting' ? COPY.waitPh : COPY.placeholder;
     input.maxLength = withPerson ? 1000 : 300;
   }
@@ -806,6 +835,7 @@
 
   // "Talk to a Person": the email first, with the reason, and skippable; the question too when none was asked yet.
   function personForm() {
+    if (S.blocked) return;
     build();
     if (!S.open) setOpen(true);
     closeArticle();
@@ -930,8 +960,8 @@
       else if (S.state === 'missed') { endWait(); track('missed', {}); if (!S.emailGiven) emailForm(COPY.missedAsk); }
       else if (S.state === 'closed') {
         endWait(); dropDots();
-        if (S.everLive && !log.querySelector('.mkc-tr')) transcriptLink();
-        if (S.everLive && !j.rated && !log.querySelector('.mkc-rate')) rate();
+        if (S.everLive && !S.blocked && !log.querySelector('.mkc-tr')) transcriptLink();
+        if (S.everLive && !S.blocked && !j.rated && !log.querySelector('.mkc-rate')) rate();
       }
     }
     if (fresh || arrived) newReply(fresh);
@@ -971,7 +1001,7 @@
       track('other', { alone: j.alone ? 'yes' : 'no' });
       if (j.next === 'email') {
         add(el('div', 'mkc-note')).textContent = COPY.otherAlone;
-        add(el('div', 'mkc-row')).appendChild(button('mkc-b', COPY.emailUs, function () { emailForm(); }));
+        add(el('div', 'mkc-row mkc-reach')).appendChild(button('mkc-b', COPY.emailUs, function () { emailForm(); }));
         return;
       }
       S.state = 'waiting'; liveFacts(j); S.waitStart = Date.now(); saveConv();
