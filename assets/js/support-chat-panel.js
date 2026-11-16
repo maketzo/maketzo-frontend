@@ -170,6 +170,16 @@
   // Ed, 2026-11-16: "Cursor position is off while I chat" -- his last message sat half under the box after Seen landed.
   var stick = true;
   function toEnd() { log.scrollTop = log.scrollHeight; stick = true; }
+  // A help-library answer reads from the question down (Ed's pick, 2026-11-16: "the cursor was on the bottom, so I had
+  // to scroll up"): the visitor's question sits at the top of the thread and the cards run below it. An answer that
+  // fits moves nothing. Live chat with a person still follows the newest line (stick, above).
+  function toQuestion(node) {
+    if (!node || !node.parentNode) return toEnd();
+    var top = node.getBoundingClientRect().top - log.getBoundingClientRect().top + log.scrollTop - 8;
+    if (log.scrollHeight - top <= log.clientHeight + 1) return toEnd();
+    stick = false;
+    log.scrollTop = Math.max(0, top);
+  }
   function pinLog() {
     log.addEventListener('scroll', function () { stick = log.scrollHeight - log.scrollTop - log.clientHeight < 48; }, { passive: true });
     var keep = function () { if (stick) log.scrollTop = log.scrollHeight; };
@@ -487,7 +497,8 @@
     if (S.busy) return;
     var ch = log.querySelector('.mkc-chips'); if (ch) ch.remove();
     closeArticle();
-    add(el('div', 'mkc-me')).textContent = q;
+    S.asked = add(el('div', 'mkc-me'));
+    S.asked.textContent = q;
     // Only a suggested question is remembered, never what the visitor typed.
     if (chip) remember([q]);
     send(q, chip, true);
@@ -501,7 +512,10 @@
     var started = Date.now(), slow = null;
     var wait = add(el('div', 'mkc-wait mkc-think', '<span class="mkc-dots" data-motion-keep aria-hidden="true"><i></i><i></i><i></i></span><span>' + esc(COPY.searching) + '</span>'));
     var body = withConv({ q: q });
-    if (!S.conv) { firstFacts(body); body.ms = S.shownAt ? Date.now() - S.shownAt : 0; }
+    // ms feeds the server's too-fast rule (a first question under 0.8 s after opening is treated as a bot). A tapped
+    // suggestion is left out of it: a quick tap is a person, and the rule answered one with "Nothing in our help
+    // library answers that" (the harness hit it 2026-11-16; Ed's earlier "Major bug" was the same miss for a chip).
+    if (!S.conv) { firstFacts(body); if (!chip) body.ms = S.shownAt ? Date.now() - S.shownAt : 0; }
     post('ask', body).then(function (j) {
       return new Promise(function (ok) { setTimeout(function () { ok(j); }, Math.max(0, THINK_MS - (Date.now() - started))); });
     }).then(function (j) {
@@ -520,6 +534,7 @@
       head();
       track('ask', { matched: j.matched ? 'yes' : 'no', results: (j.results || []).length, top: j.results && j.results[0] ? j.results[0].kind : 'none', chip: chip ? 'yes' : 'no' });
       results(j.results || [], j.qid, !then);
+      if (!then) toQuestion(S.asked);
       loop();
       if (then) then(j);
     }).catch(function (e) {
