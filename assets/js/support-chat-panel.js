@@ -8,7 +8,10 @@
  *     thinking: every word is text Ed approved, and nobody is passed off as a person.
  *   - Nothing reaches the server until the first question (the panel's opening call stores nothing). The first
  *     question returns the chat's id and token, kept in this browser so the chat survives a reload or another page.
- *   - The email is asked only when the visitor wants a person, with the reason, and the newsletter box starts empty.
+ *   - The email is asked only when the visitor wants a person, with the reason. The newsletter box starts ticked,
+ *     except in the EU, where it must start empty (Ed, 2026-11-16; the offer tab's rule).
+ *   - Email Me This Chat: after the email path, and whenever a chat ends (End Chat, or the rep ending it), so the
+ *     visitor can keep the whole thread (Ed, 2026-11-16).
  *   - The question's words never go to analytics; events carry short facts only (matched, kind, yes or no).
  *
  * Every visitor-facing string is in COPY below. CLAUDE.md section 3: no em dashes, one reading, Title Case buttons.
@@ -347,7 +350,7 @@
   // visits on purpose; this ends it, starts the panel fresh, and asks how the chat was. A chat still waiting on the
   // team's emailed reply is not closed (the reply arrives by email with its link back) and is not rated yet.
   function endChat() {
-    var was = S.state, ended = S.conv, pending = withTeam(), asked = S.rated || !!log.querySelector('.mkc-rate');
+    var was = S.state, ended = S.conv, known = S.emailGiven, pending = withTeam(), asked = S.rated || !!log.querySelector('.mkc-rate');
     if (!ended) return;
     if (!pending) post('close', withConv({})).catch(function () {});
     track('end', { by: 'visitor', from: was });
@@ -357,6 +360,7 @@
     endWait(); dropDots(); closeArticle(); badge();
     log.innerHTML = '';
     add(el('div', 'mkc-sys')).textContent = COPY.endedYou;
+    transcriptLink(ended, known);
     if (pending) add(el('div', 'mkc-note')).textContent = COPY.stillWithTeam;
     else if (!asked) rate(null, ended);
     hello(); head(); sayHello();
@@ -598,10 +602,11 @@
         + '<input class="mkc-in" id="mkcEm" type="email" autocomplete="email" inputmode="email" placeholder="' + esc(COPY.emailPh) + '" maxlength="160" required>' : '')
       + '<label class="mkc-sr" for="mkcNote">' + esc(needQ ? COPY.question : COPY.noteLabel) + '</label>'
       + '<textarea class="mkc-in" id="mkcNote" maxlength="1000" placeholder="' + esc(needQ ? COPY.questionPh : COPY.notePh) + '"></textarea>'
-      + (askEmail ? '<label class="mkc-check"><input type="checkbox"> ' + esc(COPY.newsletter) + '</label>' : '')
+      + (askEmail ? newsBox() : '')
       + '<input class="mkc-hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">'
       + '<div class="mkc-row"><button class="mkc-b mkc-b--gold" type="submit">' + esc(COPY.send) + '</button></div>'
       + '<p class="mkc-note is-error" hidden></p>';
+    tickNews(f);
     var em = f.querySelector('#mkcEm'), note = f.querySelector('#mkcNote'), nl = f.querySelector('input[type=checkbox]');
     var hp = f.querySelector('.mkc-hp'), go = f.querySelector('button[type=submit]'), err = f.querySelector('.is-error');
     function problem(text) { err.textContent = text; err.hidden = !text; }
@@ -639,19 +644,36 @@
     (em || note).focus();
   }
 
-  // -- "Email Me This Chat" --
-  function transcriptLink() {
-    var row = add(el('div', 'mkc-row'));
+  // -- the newsletter box: ticked, except in the EU, where it must start empty. It starts empty here and is ticked once
+  // the visitor is known not to be in the EU, so a failed lookup leaves it empty; a box they already touched is theirs. --
+  function newsBox() { return '<label class="mkc-check"><input type="checkbox" data-nl> ' + esc(COPY.newsletter) + '</label>'; }
+  function tickNews(f) {
+    var nl = f.querySelector('input[data-nl]');
+    if (!nl) return;
+    nl.addEventListener('change', function () { nl.setAttribute('data-touched', ''); });
+    function set(on) { if (!nl.hasAttribute('data-touched')) nl.checked = on; }
+    try {
+      if (window.MKT && MKT.isEuVisitor) MKT.isEuVisitor().then(function (eu) { set(!eu); }).catch(function () {});
+      else set(true);
+    } catch (e) {}
+  }
+
+  // -- "Email Me This Chat": the whole thread to the visitor's inbox. conv: a chat the panel has already moved on from
+  // (End Chat), with known saying whether that chat has their email. --
+  function transcriptLink(conv, known) {
+    if (known === undefined) known = S.emailGiven;
+    var row = add(el('div', 'mkc-row mkc-tr'));
     var b = row.appendChild(button('mkc-link', COPY.transcript));
     b.addEventListener('click', function () {
-      if (S.emailGiven) return sendTranscript(b, {});
+      if (known) return sendTranscript(b, {}, conv);
       b.remove();
       var f = row.appendChild(el('form', 'mkc-form'));
       f.noValidate = true;
       f.innerHTML = '<p><b>' + esc(COPY.transcriptAsk) + '</b></p><label class="mkc-sr" for="mkcTr">' + esc(COPY.emailLabel) + '</label>'
         + '<input class="mkc-in" id="mkcTr" type="email" autocomplete="email" inputmode="email" placeholder="' + esc(COPY.emailPh) + '" maxlength="160">'
-        + '<label class="mkc-check"><input type="checkbox"> ' + esc(COPY.newsletter) + '</label>'
+        + newsBox()
         + '<div class="mkc-row"><button class="mkc-b mkc-b--gold" type="submit">' + esc(COPY.send) + '</button></div><p class="mkc-note is-error" hidden></p>';
+      tickNews(f);
       var em = f.querySelector('#mkcTr'), err = f.querySelector('.is-error');
       em.focus();
       f.addEventListener('submit', function (e) {
@@ -659,16 +681,19 @@
         if (!EMAIL_RE.test(em.value.trim())) { err.textContent = COPY.badEmail; err.hidden = false; return; }
         var done = row.appendChild(button('mkc-link', COPY.transcript));
         f.remove();
-        sendTranscript(done, { email: em.value.trim(), newsletter: f.querySelector('input[type=checkbox]').checked ? 1 : 0 });
+        known = true;
+        sendTranscript(done, { email: em.value.trim(), newsletter: f.querySelector('input[data-nl]').checked ? 1 : 0 }, conv);
       });
     });
   }
-  function sendTranscript(b, extra) {
+  function sendTranscript(b, extra, conv) {
     b.disabled = true;
-    post('transcript', withConv(extra)).then(function () {
+    var body = conv ? Object.assign({ c: conv.c, t: conv.t }, extra) : withConv(extra);
+    post('transcript', body).then(function () {
       b.textContent = COPY.transcriptSent;
-      if (extra.email) S.emailGiven = true;
-      track('transcript', {});
+      // The email belongs to the chat it was given for, not to a fresh one started since End Chat.
+      if (extra.email && !conv) S.emailGiven = true;
+      track('transcript', { from: conv ? 'ended' : 'chat' });
     }).catch(function (e) { b.disabled = false; add(el('div', 'mkc-note is-error')).textContent = e.message; });
   }
 
@@ -795,12 +820,13 @@
         + '<textarea class="mkc-in" id="mkcPq" maxlength="300" placeholder="' + esc(COPY.questionPh) + '"></textarea>' : '')
       + (S.emailGiven ? '' : '<p>' + (needQ ? esc(COPY.personAsk) : '<b>' + esc(COPY.personAsk) + '</b>') + '</p><label class="mkc-sr" for="mkcPe">' + esc(COPY.emailLabel) + '</label>'
         + '<input class="mkc-in" id="mkcPe" type="email" autocomplete="email" inputmode="email" placeholder="' + esc(COPY.emailPh) + '" maxlength="160">'
-        + '<label class="mkc-check"><input type="checkbox"> ' + esc(COPY.newsletter) + '</label>')
+        + newsBox())
       + '<input class="mkc-hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">'
       + '<div class="mkc-row"><button class="mkc-b mkc-b--gold" type="submit">' + esc(COPY.goOn) + '</button>'
       + (S.emailGiven ? '' : '<button class="mkc-b" type="button" data-skip>' + esc(COPY.skip) + '</button>') + '</div>'
       + '<p class="mkc-note is-error" hidden></p>';
-    var q = f.querySelector('#mkcPq'), em = f.querySelector('#mkcPe'), nl = f.querySelector('input[type=checkbox]'), hp = f.querySelector('.mkc-hp'), err = f.querySelector('.is-error');
+    tickNews(f);
+    var q = f.querySelector('#mkcPq'), em = f.querySelector('#mkcPe'), nl = f.querySelector('input[data-nl]'), hp = f.querySelector('.mkc-hp'), err = f.querySelector('.is-error');
     function problem(t) { err.textContent = t; err.hidden = !t; }
     function go(withEmail) {
       var email = withEmail && em ? em.value.trim() : '';
@@ -902,7 +928,11 @@
       if (S.state === 'live') { if (was === 'waiting') track('joined', { waited_s: S.waitStart ? Math.round((Date.now() - S.waitStart) / 1000) : 0 }); endWait(); }
       else if (S.state === 'waiting' && was === 'live') waitBox(COPY.waitOther);
       else if (S.state === 'missed') { endWait(); track('missed', {}); if (!S.emailGiven) emailForm(COPY.missedAsk); }
-      else if (S.state === 'closed') { endWait(); dropDots(); if (S.everLive && !j.rated && !log.querySelector('.mkc-rate')) rate(); }
+      else if (S.state === 'closed') {
+        endWait(); dropDots();
+        if (S.everLive && !log.querySelector('.mkc-tr')) transcriptLink();
+        if (S.everLive && !j.rated && !log.querySelector('.mkc-rate')) rate();
+      }
     }
     if (fresh || arrived) newReply(fresh);
     saveConv();
