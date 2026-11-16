@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Why cutting winners early makes you overtrade all day</title>
+<meta name="description" content="Your worst afternoon may have started with a winner you sold too early. Here is how partial reinforcement drives overtrading and how to break the loop.">
+<meta name="theme-color" content="#06070A">
+<meta property="og:title" content="The winner you cut short is why you overtrade all afternoon">
+<meta property="og:description" content="Your worst afternoon may have started with a winner you sold too early. Here is how partial reinforcement drives overtrading and how to break the loop.">
+<meta property="og:url" content="https://maketzo.co/blog/winner-cut-short-overtrading">
+<meta property="og:type" content="article">
+<meta property="og:image" content="https://images.unsplash.com/photo-1722574856757-c8d4487741e0?ixid=M3w5NTQxMzl8MHwxfHNlYXJjaHwxfHxoYWxmJTIwZWF0ZW4lMjBtZWFsJTIwY29sZHxlbnwxfDB8fHwxNzk0ODM3NzM0fDA&ixlib=rb-4.1.0&w=1600&q=80&fm=jpg&fit=crop">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://maketzo.co/blog/winner-cut-short-overtrading">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "The winner you cut short is why you overtrade all afternoon",
+  "description": "Your worst afternoon may have started with a winner you sold too early. Here is how partial reinforcement drives overtrading and how to break the loop.",
+  "datePublished": "2026-11-16T14:02:17.000Z",
+  "dateModified": "2026-11-16T14:02:17.000Z",
+  "url": "https://maketzo.co/blog/winner-cut-short-overtrading",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://maketzo.co/blog/winner-cut-short-overtrading"
+  },
+  "author": {
+    "@type": "Person",
+    "name": "John P."
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "MAKETZO",
+    "url": "https://maketzo.co",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://maketzo.co/assets/logo-mark.png"
+    }
+  },
+  "image": "https://images.unsplash.com/photo-1722574856757-c8d4487741e0?ixid=M3w5NTQxMzl8MHwxfHNlYXJjaHwxfHxoYWxmJTIwZWF0ZW4lMjBtZWFsJTIwY29sZHxlbnwxfDB8fHwxNzk0ODM3NzM0fDA&ixlib=rb-4.1.0&w=1600&q=80&fm=jpg&fit=crop"
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://maketzo.co/assets/css/tokens.css">
+<link rel="stylesheet" href="https://maketzo.co/assets/css/components.css">
+<link rel="stylesheet" href="https://maketzo.co/assets/css/audio-player.css?v=11">
+<script src="https://maketzo.co/assets/js/mkt-analytics.js?v=19" defer></script>
+<script src="https://maketzo.co/assets/js/newsletter.js?v=4" defer></script>
+<script src="https://maketzo.co/assets/js/mkt-consent.js?v=2" defer></script>
+<script src="https://maketzo.co/assets/js/motion-rest.js?v=1" defer></script>
+<script src="https://maketzo.co/assets/js/checkout.js?v=10" defer></script>
+<script src="https://maketzo.co/assets/js/phone-bar.js?v=1" defer></script>
+<script src="https://maketzo.co/assets/js/audio-player.js?v=11" defer></script>
+<style>
+/* ════════════════════════════════════════════════════════════════
+   All of the following CSS is a verbatim clone of the inline <style>
+   block from maketzo-frontend/why.html (lines 24-261). Per
+   memory/feedback-detail-page-css-inline.md, page-layout CSS is
+   intentionally inline per-page rather than centralized in
+   components.css — every new detail page must clone this block whole.
+   ════════════════════════════════════════════════════════════════ */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; overflow-y: scroll; }
+body { background: var(--mk-surface-page); color: var(--mk-text-primary); font-family: var(--mk-font-sans); font-size: var(--mk-text-md); line-height: var(--mk-lead-body); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+a { color: inherit; text-decoration: none; }
+ul, ol { list-style: none; }
+img { display: block; max-width: 100%; }
+em, i { font-style: italic; }
+strong { color: var(--mk-text-primary); font-weight: 600; }
+
+.mobile-overlay { position: fixed; inset: 0; z-index: 90; background: rgba(0,0,0,.6); backdrop-filter: blur(6px); opacity: 0; pointer-events: none; visibility: hidden; transition: opacity var(--mk-dur-med), visibility 0s linear var(--mk-dur-med); /* closed: not drawn, so its blur never runs under the page (Ed's fans, 2026-11-10) */ }
+.mobile-overlay.open { opacity: 1; pointer-events: auto; visibility: visible; transition: opacity var(--mk-dur-med); }
+.mobile-drawer { position: fixed; top: 0; right: 0; bottom: 0; z-index: 100; width: min(320px, 88%); background: var(--mk-surface-base); border-left: var(--mk-border-soft); padding: 80px 28px 28px; transform: translateX(100%); transition: transform var(--mk-dur-med) var(--mk-ease-out); display: flex; flex-direction: column; gap: 20px; }
+.mobile-drawer.open { transform: translateX(0); }
+.mobile-drawer-links li { padding: 12px 0; border-bottom: var(--mk-border-hairline); }
+.mobile-drawer-links a { font-family: var(--mk-font-display); font-size: var(--mk-display-md); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); }
+.mobile-drawer-cta { display: inline-flex; align-items: center; justify-content: center; background: var(--mk-gold-gradient); color: var(--mk-text-on-gold); font-family: var(--mk-font-sans); font-weight: 600; font-size: var(--mk-text-sm); letter-spacing: var(--mk-track-cap); text-transform: uppercase; padding: 14px 22px; border: 1px solid rgba(0,0,0,.18); border-radius: var(--mk-radius-button); cursor: pointer; margin-top: auto; }
+
+#mainNav { position: fixed; top: 0; left: 0; right: 0; z-index: 50; background: rgba(6,7,10,.92); /* no backdrop blur: it re-blurred the bar on every frame of a scroll (Ed's fans, 2026-11-10); near solid, as the app's top bar since 2026-06-01 */ border-bottom: 1px solid rgba(212,175,55,.12); transition: border-color var(--mk-dur-snap); display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 14px 32px 14px 64px; }
+.nav-logo.mk-brand-lockup { --mk-brand-lockup-mark-h: 44px; --mk-brand-lockup-wordmark-h: 22px; --mk-brand-lockup-gap: 10px; }
+.nav-links { display: flex; align-items: center; gap: 28px; margin: 0; padding: 0; }
+.nav-links > li > a:not(.nav-login-btn) { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); font-weight: 500; letter-spacing: 0.02em; transition: color var(--mk-dur-fast); }
+.nav-links > li > a:not(.nav-login-btn):hover { color: var(--mk-text-primary); }
+.nav-links > li > a[aria-current="page"] { color: var(--mk-brand); }
+.nav-login-btn { display: inline-flex; align-items: center; font-size: var(--mk-text-sm); font-weight: 600; letter-spacing: var(--mk-track-cap); text-transform: uppercase; padding: 7px 14px; color: var(--mk-text-secondary); border: 1px solid var(--mk-smoke-700); border-radius: var(--mk-radius-button); transition: color var(--mk-dur-fast), border-color var(--mk-dur-fast), background var(--mk-dur-fast); }
+.nav-login-btn:hover { color: var(--mk-text-primary); border-color: var(--mk-smoke-600); background: rgba(255,255,255,.03); }
+.nav-auth-in { display: none; }
+html.mkt-auth .nav-auth-out { display: none; }
+html.mkt-auth .nav-auth-in { display: inline; }
+html.mkt-auth .nav-links li:has(.nav-cta){display:none;}
+html.mkt-auth .mobile-drawer-cta{display:none;}
+html.mkt-auth .nav-login-btn{background:var(--mk-gold-gradient);color:var(--mk-text-on-gold);border-color:rgba(0,0,0,.18);}
+html.mkt-auth .nav-login-btn:hover{color:var(--mk-text-on-gold);background:var(--mk-gold-gradient);border-color:rgba(0,0,0,.18);transform:translateY(-1px);box-shadow:var(--mk-glow-gold-sm);}
+.nav-cta { display: inline-flex; align-items: center; justify-content: center; font-family: var(--mk-font-sans); font-size: var(--mk-text-sm); font-weight: 600; letter-spacing: var(--mk-track-cap); text-transform: uppercase; padding: 7px 14px; border: 1px solid rgba(0,0,0,.18); border-radius: var(--mk-radius-button); cursor: pointer; background: var(--mk-gold-gradient); color: var(--mk-text-on-gold); transition: transform var(--mk-dur-snap), box-shadow var(--mk-dur-snap); white-space: nowrap; }
+.nav-cta:hover { transform: translateY(-1px); box-shadow: var(--mk-glow-gold-sm); }
+.hamburger { display: none; background: transparent; border: 0; padding: 8px; cursor: pointer; flex-direction: column; gap: 5px; }
+.hamburger span { display: block; width: 24px; height: 2px; background: var(--mk-text-primary); transition: transform var(--mk-dur-snap), opacity var(--mk-dur-snap); }
+.hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+@media (max-width: 900px) { #mainNav { padding: 12px 20px; gap: 16px; } .nav-links { display: none; } .hamburger { display: flex; } }
+/* The nav on one line at every width (Ed, 2026-10-16: it wrapped at about 1024px). The full bar fits from 1024px, so below that the menu button takes over (it was 900px, which left 901-1140 wrapping); items never break, and the bar tightens up to 1180px. */
+.nav-links > li > a{white-space:nowrap}
+@media (max-width:1180px){#mainNav{padding-left:28px;padding-right:24px;gap:16px}.nav-links{gap:18px}}
+@media (max-width:1023px){#mainNav{padding:12px 20px;gap:16px}.nav-links{display:none}.hamburger{display:flex}}
+
+.btn-primary, .btn-secondary, .btn-ghost { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-family: var(--mk-font-sans); font-size: var(--mk-text-sm); font-weight: 600; letter-spacing: var(--mk-track-cap); text-transform: uppercase; padding: 12px 22px; border-radius: var(--mk-radius-button); border: 1px solid transparent; cursor: pointer; text-decoration: none; white-space: nowrap; transition: transform var(--mk-dur-snap), box-shadow var(--mk-dur-snap), background var(--mk-dur-snap), border-color var(--mk-dur-snap), color var(--mk-dur-snap); }
+.btn-primary { background: var(--mk-gold-gradient); color: var(--mk-text-on-gold); border-color: rgba(0,0,0,.18); }
+.btn-primary:hover { transform: translateY(-1px); box-shadow: var(--mk-glow-gold-md); color: var(--mk-text-on-gold); }
+
+.section { position: relative; z-index: 1; padding: 88px 0; background: var(--mk-surface-page); }
+.section.section-dark { background: var(--mk-surface-base); }
+.section-inner { max-width: var(--mk-container-marketing); margin: 0 auto; padding: 0 32px; }
+.section-eyebrow { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); text-align: center; margin-bottom: 14px; }
+.section-title { font-family: var(--mk-font-display); font-size: clamp(2rem, 4.5vw, 3.4rem); letter-spacing: var(--mk-track-display); line-height: 1.04; text-transform: uppercase; text-align: center; margin-bottom: 18px; font-weight: 400; }
+.section-title em { font-style: normal; background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+hr.mk-rule-gold, hr.mk-rule-gold--bold { margin: 0 auto; max-width: 1180px; }
+
+.mk-cta-repeat { display: none; }
+@media (max-width: 600px) { .mk-cta-repeat { display: flex; justify-content: center; margin: 36px auto 0; padding: 0 16px; } .mk-cta-repeat .btn-primary { width: 100%; max-width: 320px; padding: 16px 24px; font-size: var(--mk-text-md); } }
+
+/* End-of-post CTA section (cloned from why.html's .final-cta-section). */
+.final-cta-section { padding: 96px 0; background: var(--mk-obsidian-950); text-align: center; border-top: var(--mk-border-hairline); }
+.final-cta-eyebrow { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); margin-bottom: 18px; }
+.final-cta-title { font-family: var(--mk-font-display); font-size: clamp(2.2rem, 4.6vw, 3.2rem); letter-spacing: var(--mk-track-display); line-height: 1.04; text-transform: uppercase; font-weight: 400; margin-bottom: 20px; max-width: 700px; margin-left: auto; margin-right: auto; }
+.final-cta-title em { font-style: normal; background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.final-cta-sub { font-size: var(--mk-text-lg); color: var(--mk-text-secondary); max-width: 600px; margin: 0 auto 36px; line-height: var(--mk-lead-body); }
+.final-cta-btn-wrap { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.final-cta-note { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: 0.04em; color: var(--mk-text-tertiary); }
+
+.page-hero { position: relative; z-index: 1; padding: 152px 0 80px; background: var(--mk-obsidian-950); text-align: center; border-bottom: var(--mk-border-hairline); }
+.page-hero-inner { max-width: 820px; margin: 0 auto; padding: 0 32px; }
+.page-hero-eyebrow { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); margin-bottom: 18px; }
+.page-hero-title { font-family: var(--mk-font-display); font-size: clamp(2.4rem, 5.4vw, 4rem); letter-spacing: var(--mk-track-display); line-height: 1.04; text-transform: uppercase; font-weight: 400; margin-bottom: 28px; }
+.page-hero-title em { font-style: normal; background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.page-hero-sub { font-size: var(--mk-text-lg); color: var(--mk-text-secondary); line-height: var(--mk-lead-body); max-width: 720px; margin: 0 auto; }
+
+.prose-wrap { max-width: 660px; margin: 0 auto; }
+.prose-wrap h2, .prose-wrap h3 { font-family: var(--mk-font-display); font-size: clamp(1.6rem, 3vw, 2.2rem); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); font-weight: 400; line-height: 1.08; margin: 44px 0 18px; }
+.prose-wrap h2 em, .prose-wrap h3 em { font-style: normal; background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.prose-wrap p { font-size: var(--mk-text-md); color: var(--mk-text-secondary); line-height: var(--mk-lead-body); margin-bottom: 18px; }
+.prose-wrap p strong { color: var(--mk-text-primary); }
+.prose-wrap .mk-gold { background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.prose-wrap p:last-child { margin-bottom: 0; }
+.prose-wrap ul, .prose-wrap ol { padding-left: 24px; margin-bottom: 18px; color: var(--mk-text-secondary); list-style: revert; }
+.prose-wrap ul li, .prose-wrap ol li { margin-bottom: 10px; line-height: var(--mk-lead-body); }
+.prose-wrap .section-eyebrow { text-align: left; margin-top: 40px; }
+.pull-quote { margin: 56px 0; padding: 40px 44px; background: linear-gradient(135deg, rgba(212,175,55,.06), transparent 60%), var(--mk-surface-raised); border-left: 3px solid var(--mk-brand); border-radius: var(--mk-radius-card); font-family: var(--mk-font-display); font-size: clamp(1.4rem, 2.6vw, 1.8rem); line-height: 1.18; letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); }
+.pull-quote em { font-style: normal; background: var(--mk-gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairline); padding: 56px 0 28px; }
+.footer-inner { max-width: var(--mk-container-marketing); margin: 0 auto; padding: 0 32px; }
+.footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 32px; padding-bottom: 32px; border-bottom: var(--mk-border-hairline); }
+.footer-logo-wrap { display: flex; flex-direction: column; align-items: flex-start; gap: 18px; margin-bottom: 12px; }
+.footer-logo-wrap .mk-brand-lockup { --mk-brand-lockup-mark-h: 40px; --mk-brand-lockup-wordmark-h: 20px; }
+.footer-tagline { font-size: var(--mk-text-sm); color: var(--mk-text-tertiary); line-height: var(--mk-lead-body); max-width: 360px; }
+.footer-tagline strong { display: block; color: var(--mk-text-primary); margin-bottom: 4px; }
+.footer-col-title { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); margin-bottom: 16px; }
+.footer-links { display: flex; flex-direction: column; gap: 10px; padding: 0; }
+.footer-links a { font-size: var(--mk-text-sm); color: var(--mk-text-secondary); transition: color var(--mk-dur-fast); }
+.footer-links a:hover { color: var(--mk-text-primary); }
+.footer-bottom { display: flex; flex-direction: column; gap: 10px; }
+.footer-copy { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: 0.04em; color: var(--mk-text-tertiary); }
+.footer-disclaimer { font-size: var(--mk-text-xs); color: var(--mk-text-tertiary); line-height: var(--mk-lead-body); max-width: 900px; }
+@media (max-width: 800px) { .footer-grid { grid-template-columns: 1fr; gap: 24px; } }
+
+/* ── Blog-specific additions (NOT in why.html) ──────────────── */
+.blog-byline-strip { display: inline-flex; align-items: center; gap: 14px; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); color: var(--mk-text-tertiary); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; margin-top: 28px; }
+.blog-byline-strip .dot { color: var(--mk-text-tertiary); opacity: 0.5; }
+.blog-byline-wrap { text-align: center; }
+/* Compact share button placed on its own centered line below the byline.
+   Gold-bordered by default so it reads as a real action (not invisible
+   until hover), brighter gold on hover. */
+.blog-share-mini-wrap { text-align: center; margin-top: 18px; }
+.blog-share-mini { display: inline-flex; }
+.blog-share-mini .mk-share__trigger {
+  padding: 6px; border-radius: 999px; border: 1px solid var(--mk-brand); background: rgba(212,175,55,.08);
+  width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer;
+  color: var(--mk-brand);
+  transition: background var(--mk-dur-fast), transform var(--mk-dur-snap), box-shadow var(--mk-dur-snap);
+}
+.blog-share-mini .mk-share__trigger:hover { background: var(--mk-gold-gradient); color: var(--mk-text-on-gold); transform: translateY(-1px); box-shadow: var(--mk-glow-gold-sm); }
+.blog-share-mini .mk-share__trigger span { display: none; }
+.blog-share-mini .mk-share__icon { width: 15px; height: 15px; fill: currentColor; }
+/* Magazine-style floated hero with feathered edges that blend the image
+   into the dark page background. No tilt — pseudo-element radial overlay
+   approach (paints a transparent-center → page-bg edge gradient OVER the
+   image) for maximum browser reliability. CSS mask-image is unreliable
+   across rendering engines; this approach works everywhere. */
+/* Shared figure base — both the hero and the mid-article image use this. The
+   placement modifier (-left / -right / -full) is chosen per-post so layout
+   varies across the feed instead of every post floating right in the same spot. */
+.blog-fig { position: relative; aspect-ratio: 4/3; overflow: visible; }
+.blog-fig img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: drop-shadow(0 20px 48px rgba(0,0,0,0.65));
+}
+.blog-fig::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 75% 75% at center, transparent 40%, var(--mk-surface-page) 95%);
+  /* Page background fades INTO the image edges, creating the feather illusion. */
+}
+.blog-fig-right { float: right; width: 46%; max-width: 400px; margin: 6px 0 28px 36px; }
+.blog-fig-left  { float: left;  width: 46%; max-width: 400px; margin: 6px 36px 28px 0; }
+.blog-fig-full  { float: none; width: 100%; max-width: 660px; margin: 40px auto; aspect-ratio: 16/9; }
+@media (max-width: 720px) {
+  .blog-fig-right, .blog-fig-left, .blog-fig-full { float: none; width: 100%; max-width: none; margin: 0 0 28px; aspect-ratio: 4/3; }
+}
+.blog-fig-clear { clear: both; }
+/* Author-placed inline images (editor "Insert image"). Distinct from .blog-fig:
+   rendered at NATURAL aspect (no crop, no edge-feather) since these are content
+   images / graphics, not decorative Unsplash heroes. */
+.blog-embed { margin: 28px 0; max-width: 100%; }
+.blog-embed img { display: block; width: 100%; height: auto; border-radius: var(--mk-radius-card); }
+.blog-embed-left { float: left; width: 46%; max-width: 400px; margin: 6px 36px 20px 0; }
+.blog-embed-right { float: right; width: 46%; max-width: 400px; margin: 6px 0 20px 36px; }
+.blog-embed-full { float: none; width: 100%; max-width: 660px; margin: 32px auto; }
+.blog-embed figcaption { font-size: var(--mk-text-sm); color: var(--mk-text-tertiary); text-align: center; padding-top: 10px; line-height: var(--mk-lead-body); }
+@media (max-width: 720px) { .blog-embed-left, .blog-embed-right, .blog-embed-full { float: none; width: 100%; max-width: none; margin: 0 0 24px; } }
+.blog-prose-clear::after { content: ''; display: block; clear: both; }
+.blog-author-card { display: flex; gap: 20px; align-items: center; max-width: 660px; margin: 0 auto; padding-top: 32px; border-top: var(--mk-border-hairline); }
+.blog-author-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+.blog-author-name { font-family: var(--mk-font-display); font-size: var(--mk-display-md); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); margin-bottom: 4px; }
+.blog-author-bio { font-size: var(--mk-text-sm); color: var(--mk-text-tertiary); line-height: var(--mk-lead-body); }
+.blog-credit { max-width: 660px; margin: 28px auto 0; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); color: var(--mk-text-tertiary); letter-spacing: 0.04em; text-align: center; opacity: 0.7; }
+.blog-credit a { color: inherit; text-decoration: underline; }
+.blog-share-section { padding: 24px 0 48px; background: var(--mk-obsidian-950); text-align: center; }
+.blog-share-section .section-eyebrow { margin-top: 0; }
+.blog-share-section .section-title { margin: 0 auto 18px; }
+.final-cta-section { padding-bottom: 36px !important; }
+
+/* Back-to-index navigation: small chip near the top of the post (above
+   the title) so the reader sees they're inside a collection, plus a
+   bigger "Browse all posts" card at the end of the body before the CTA. */
+.blog-back-strip { max-width: 820px; margin: 0 auto; padding: 16px 32px 0; }
+.blog-back-strip--bottom { max-width: 820px; margin: 56px auto 0; padding: 0 32px; text-align: center; }
+.blog-back-link { display: inline-flex; align-items: center; gap: 10px; padding: 14px 28px; background: var(--mk-smoke-800, #1a1a1a); border: 1px solid var(--mk-smoke-700); border-radius: var(--mk-radius-button); font-family: var(--mk-font-mono); font-size: var(--mk-mono-sm, .8125rem); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-text-primary); font-weight: 600; transition: background var(--mk-dur-fast), border-color var(--mk-dur-fast), transform var(--mk-dur-fast); }
+.blog-back-link:hover { background: var(--mk-smoke-700); border-color: var(--mk-smoke-600, #444); transform: translateY(-1px); }
+.blog-browse-more { display: block; max-width: 660px; margin: 64px auto 0; padding: 36px 32px; text-align: center; background: linear-gradient(135deg, rgba(212,175,55,.04), transparent 70%); border: 1px solid rgba(212,175,55,.18); border-radius: var(--mk-radius-card); transition: border-color var(--mk-dur-fast), background var(--mk-dur-fast); }
+.blog-browse-more:hover { border-color: rgba(212,175,55,.4); background: linear-gradient(135deg, rgba(212,175,55,.08), transparent 70%); }
+.blog-browse-more-eyebrow { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); margin-bottom: 12px; }
+.blog-browse-more-title { font-family: var(--mk-font-display); font-size: clamp(1.4rem, 2.4vw, 1.8rem); line-height: 1.1; letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); margin-bottom: 8px; }
+.blog-browse-more-arrow { font-family: var(--mk-font-mono); font-size: var(--mk-text-sm); color: var(--mk-brand); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; }
+</style>
+<style id="blog-layout">
+.page-hero { padding: 100px 0 30px; }
+.blog-back-wrap { margin: 0 0 18px; }
+.blog-back-wrap .blog-back-link { padding: 10px 4px; background: none; border: 0; border-radius: 0; font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-text-tertiary); }
+.blog-back-wrap .blog-back-link:hover { background: none; color: var(--mk-text-primary); transform: none; }
+.page-hero-title { margin-bottom: 18px; }
+.page-hero-inner .blog-byline-wrap, .page-hero-inner .blog-share-mini-wrap { display: inline-flex; align-items: center; height: 40px; vertical-align: top; margin-top: 20px; }
+.page-hero-inner .blog-share-mini-wrap { margin-left: 14px; }
+.page-hero-inner .blog-byline-strip { margin-top: 0; }
+.blog-share-mini .mk-share__trigger { width: 40px; height: 40px; }
+.section.blog-article { padding: 36px 0 28px; }
+.blog-article .prose-wrap, .blog-article .blog-author-card, .blog-article .blog-credit { max-width: 620px; }
+.blog-article .prose-wrap .prose-wrap > p:not(.section-eyebrow), .blog-article .prose-wrap .prose-wrap li { font-size: 17px; line-height: 1.65; }
+.blog-article .prose-wrap .prose-wrap > p:not(.section-eyebrow) { margin-bottom: 20px; }
+.blog-article .prose-wrap .prose-wrap a { color: var(--mk-brand); text-decoration: underline; text-underline-offset: 3px; }
+.blog-article .prose-wrap .prose-wrap a:hover { color: var(--mk-text-primary); }
+.blog-article .prose-wrap .section-eyebrow { text-align: left; margin: 44px 0 8px; }
+.blog-article .prose-wrap h2, .blog-article .prose-wrap h3 { text-align: left; margin: 44px 0 16px; text-wrap: balance; }
+.blog-article .prose-wrap .section-eyebrow + h2, .blog-article .prose-wrap .section-eyebrow + h3 { margin-top: 0; }
+.blog-article .prose-wrap > .prose-wrap:first-child > :first-child { margin-top: 0; }
+.blog-article .pull-quote { margin: 32px 0; padding: 28px 32px; }
+.blog-article .blog-fig-full { max-width: 620px; margin: 32px auto; }
+.blog-article .blog-fig, .blog-article .blog-hero-figure { aspect-ratio: 16/9; }
+.blog-article .prose-wrap > .prose-wrap > h2 { clear: both; }
+/* A photo that opens its own section keeps the title beside it. Only an image from the section before gets cleared. */
+.blog-article .prose-wrap > .prose-wrap > figure + h2, .blog-article .prose-wrap > .prose-wrap > figure + .section-eyebrow + h2 { clear: none; }
+/* A real screen of the app (lib/guide-shots.js). Never cropped or feathered the way a stock photo is, and no frame of its own. */
+.blog-article .blog-shot { margin: 28px 0 32px; }
+.blog-article .blog-shot a { display: block; }
+.blog-article .blog-shot img { display: block; width: 100%; height: auto; }
+.blog-article .blog-shot a:hover img { opacity: 0.92; }
+.blog-article .blog-shot figcaption { margin-top: 10px; font-size: 14px; line-height: 1.45; color: var(--mk-text-tertiary); }
+.blog-article .blog-shot-right { float: right; width: 46%; max-width: 400px; margin: 6px 0 20px 28px; }
+.blog-article .blog-shot-left { float: left; width: 46%; max-width: 400px; margin: 6px 28px 20px 0; }
+@media (max-width: 720px) {
+  .blog-article .blog-shot-right, .blog-article .blog-shot-left { float: none; width: 100%; max-width: none; margin: 20px 0 24px; }
+}
+.blog-article .blog-author-card { margin-top: 36px; padding-top: 24px; }
+.blog-share-row { max-width: 620px; margin: 24px auto 0; padding-top: 24px; border-top: var(--mk-border-hairline); display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.blog-share-row .blog-share-row__ask { margin: 0; font-family: var(--mk-font-display); font-size: 1.5rem; line-height: 1; letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); }
+.blog-share-row .mk-share { display: inline-flex; }
+.blog-share-row .mk-share__trigger { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 18px; border: 1px solid var(--mk-brand); border-radius: var(--mk-radius-button); background: rgba(212,175,55,.06); color: var(--mk-brand); font-family: var(--mk-font-sans); font-size: var(--mk-text-sm); font-weight: 600; letter-spacing: var(--mk-track-cap); text-transform: uppercase; cursor: pointer; transition: background var(--mk-dur-fast), color var(--mk-dur-fast); }
+.blog-share-row .mk-share__trigger:hover { background: var(--mk-gold-gradient); color: var(--mk-text-on-gold); }
+.blog-share-row .mk-share__icon { width: 16px; height: 16px; fill: currentColor; }
+.blog-article .blog-credit { margin: 28px auto 0; text-align: left; }
+.final-cta-section { padding: 40px 0 44px !important; }
+.final-cta-title { font-size: clamp(1.8rem, 3.6vw, 2.6rem); }
+.final-cta-sub { margin-bottom: 28px; }
+@media (max-width: 720px) {
+  .page-hero { padding: 92px 0 24px; }
+  .page-hero-inner, .section-inner { padding-left: 20px; padding-right: 20px; }
+  .blog-article .prose-wrap .prose-wrap > p:not(.section-eyebrow), .blog-article .prose-wrap .prose-wrap li { font-size: 16px; line-height: 1.6; }
+  .blog-article .blog-fig, .blog-article .blog-hero-figure { margin: 4px 0 24px; }
+  .blog-share-row { flex-direction: column; align-items: flex-start; gap: 14px; }
+  .final-cta-section { padding: 32px 20px 36px !important; }
+}
+</style>
+<!-- Image lightbox. Root-relative on purpose, unlike the absolute asset URLs above:
+     that lets dev.maketzo.co and staging.maketzo.co serve their own copy so the
+     feature is QA-able on a tier. Cost is the admin post-preview (rendered from the
+     api origin) not loading it, which is a preview-only gap. Loaded last so it wins
+     any tie with the inline <style> block. -->
+<link rel="stylesheet" href="/assets/css/lightbox.css?v=2">
+<script src="/assets/js/lightbox.js?v=1" defer></script>
+<script>try{if(document.cookie.indexOf('mkt_csrf=')>-1)document.documentElement.classList.add('mkt-auth');}catch(e){}</script>
+<link rel="stylesheet" href="/assets/css/blog-keep-reading.css?v=2">
+</head>
+<body>
+
+<div class="mobile-overlay" id="mobileOverlay" onclick="closeDrawer()"></div>
+<div class="mobile-drawer" id="mobileDrawer">
+  <ul class="mobile-drawer-links">
+    <li><a href="https://maketzo.co/journal" onclick="closeDrawer()">Journal</a></li>
+    <li><a href="https://maketzo.co/system" onclick="closeDrawer()">The System</a></li>
+    <li><a href="https://maketzo.co/focus" onclick="closeDrawer()">Focus Room</a></li>
+    <li><a href="https://maketzo.co/tools" onclick="closeDrawer()">Free Tools</a></li>
+    <li><a href="https://maketzo.co/blog" onclick="closeDrawer()">Blog</a></li>
+    <li><a href="https://maketzo.co/pricing" onclick="closeDrawer()">Pricing</a></li>
+    <li><a href="https://maketzo.co/app" onclick="closeDrawer()"><span class="nav-auth-out">Log In</span><span class="nav-auth-in">LAUNCH</span></a></li>
+  </ul>
+  <button class="mobile-drawer-cta" onclick="handleCheckout('pro',{preventDefault:()=>{},currentTarget:null});closeDrawer()">Start Free Trial &rarr;</button>
+</div>
+
+<nav id="mainNav">
+  <a href="https://maketzo.co" class="nav-logo mk-brand-lockup">
+    <img class="mk-brand-lockup__mark" src="https://maketzo.co/assets/logo-mark.png" alt="">
+    <img class="mk-brand-lockup__wordmark" src="https://maketzo.co/assets/logo-wordmark.png" alt="MAKETZO">
+  </a>
+  <ul class="nav-links">
+    <li><a href="https://maketzo.co/journal">Journal</a></li>
+    <li><a href="https://maketzo.co/system">The System</a></li>
+    <li><a href="https://maketzo.co/focus">Focus Room</a></li>
+    <li><a href="https://maketzo.co/tools">Free Tools</a></li>
+    <li><a href="https://maketzo.co/blog" aria-current="page">Blog</a></li>
+    <li><a href="https://maketzo.co/pricing">Pricing</a></li>
+    <li><a href="https://maketzo.co/app" class="nav-login-btn"><span class="nav-auth-out">Log In</span><span class="nav-auth-in">LAUNCH</span></a></li>
+    <li><button class="nav-cta" onclick="handleCheckout('pro',event)">Start Free Trial</button></li>
+  </ul>
+  <button class="hamburger" id="hamburger" onclick="toggleDrawer()" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+
+<!-- Article header — uses the design-system .page-hero pattern from /why -->
+<section class="page-hero">
+  <div class="page-hero-inner">
+    <p class="blog-back-wrap"><a class="blog-back-link" href="/blog">&larr; All posts</a></p>
+    <p class="page-hero-eyebrow">PSYCHOLOGY</p>
+    <h1 class="page-hero-title">The winner you cut short is why you overtrade all afternoon</h1>
+    <p class="page-hero-sub">Trace your worst afternoon back honestly and the trade that started the spiral was not a loss. It was a win you took too early.</p>
+    <div class="blog-byline-wrap"><span class="blog-byline-strip">John P. <span class="dot">&middot;</span> Mon Nov 16</span></div><div class="blog-share-mini-wrap"><span class="mk-share blog-share-mini">
+    <button class="mk-share__trigger" type="button" data-share-source="blog-winner-cut-short-overtrading-byline" data-share-title="The winner you cut short is why you overtrade all afternoon" data-share-url="https://maketzo.co/blog/winner-cut-short-overtrading" data-share-text="Trace your worst afternoon back honestly and the trade that started the spiral was not a loss. It was a win you took too early." data-share-subject="The winner you cut short is why you overtrade all afternoon" aria-haspopup="dialog" aria-label="Share this post">
+      <svg class="mk-share__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/></svg>
+      <span>Share</span>
+    </button>
+  </span></div>
+  </div>
+</section>
+
+<hr class="mk-rule-gold">
+
+<!-- Article body — wraps Claude's bodyHtml in a section + prose-wrap so
+     design-system typography (paragraphs, h2, .pull-quote, lists) all
+     resolve through components.css. Both images sit inside the body
+     (placeFigures): the story opens the post. -->
+<section class="section blog-article">
+  <div class="section-inner">
+    <div class="prose-wrap blog-prose-clear">
+      <div class="prose-wrap"><p>A purple belt I rolled with last week went for an arm triangle that was maybe thirty percent there. He didn't get it. He also didn't let it go. He spent the next five minutes hunting the finish he almost had, gassed his arms, lost the position, and tapped to something he never saw coming.</p><p>He did not lose that round because of a mistake. He lost it because of an almost. The almost is louder than the error. The almost is the thing you can't walk away from.</p><p>Overtrading works the same way. <strong>The trade that triggers your worst afternoon is not the loss. It is the winner you cut too early.</strong></p></div><div class="prose-wrap"><figure class="blog-fig blog-fig-left"><img src="https://images.unsplash.com/photo-1722574856757-c8d4487741e0?ixid=M3w5NTQxMzl8MHwxfHNlYXJjaHwxfHxoYWxmJTIwZWF0ZW4lMjBtZWFsJTIwY29sZHxlbnwxfDB8fHwxNzk0ODM3NzM0fDA&amp;ixlib=rb-4.1.0&amp;w=1600&amp;q=80&amp;fm=jpg&amp;fit=crop" alt="A white plate topped with meat and veggies"></figure><p class="section-eyebrow">THE REAL TRIGGER</p><h2 class="section-title">The trade that broke your morning was the one you got right</h2><p>Think about your last blown afternoon. Trace it back honestly. The trade that put you on tilt was not the one where you stopped out small on a bad entry. That trade closed a loop. You were wrong, the market told you, you took the hit, you moved on. Clean.</p><p>The trade that broke you was the one where you were right. You called the setup, you got the entry, you took $62 and watched it run to $740 without you. That is the trade that makes the next ten happen. Because you proved you can read it. You just didn't collect.</p><p>Your brain cannot metabolize that. A loss closes the file. A cut-short winner leaves it open. You spend the rest of the session trying to re-earn the money you already saw with your own eyes.</p></div><div class="prose-wrap"><p class="section-eyebrow">WHY IT'S WORSE</p><h2 class="section-title">Partial reinforcement is the most addictive feedback in the world</h2><p>Psychologists figured this out with pigeons and slot machines a long time ago. The reward schedule that creates the most relentless compulsion is not consistent reward. It is intermittent reward with near-misses. The slot pays out just often enough, and shows you two cherries and a lemon just often enough, to keep you locked in.</p><p>A cut-short winner is a two-cherries-and-a-lemon trade. You were right. You got paid. You almost got paid more. <strong>The brain registers the almost as unfinished business, and unfinished business is the fuel for every bad decision you will make between 10:30 and the close.</strong></p><blockquote class="pull-quote">A loss closes a loop. A winner you cut short doesn't. You spend the rest of the day trying to close it with trades that have nothing to do with the one that opened it.</blockquote><p>This is why the trader who takes one $500 loss and goes flat often has a better day than the trader who booked $180 on a setup that paid $1,400. The $500 loss hurts for an hour. The $180 win hurts until the close, and every trade between now and then is a letter you are writing to the version of you that sold too early.</p></div><figure class="blog-fig blog-fig-full"><img src="https://images.unsplash.com/photo-1683758507025-6e74ad3ca1e5?ixid=M3w5NTQxMzl8MHwxfHNlYXJjaHwxfHxncmFwcGxlciUyMGV4aGF1c3RlZCUyMG1hdHxlbnwxfDB8fHwxNzk0ODM3NzM0fDA&amp;ixlib=rb-4.1.0&amp;w=1600&amp;q=80&amp;fm=jpg&amp;fit=crop" alt="a pair of dumbbells and a black mat on the floor" loading="lazy" decoding="async"></figure><div class="prose-wrap"><p class="section-eyebrow">THE INTERRUPT</p><h2 class="section-title">The sequence that breaks the loop</h2><p>You cannot willpower your way out of this. The pigeons didn't willpower their way out of it either. You need a structural interrupt between the cut-short winner and the next click. Three things, in order.</p><ol><li><strong>Name it out loud.</strong> Say the words: "I just cut a winner short and I am going to want to overtrade now." Say it to the empty room. Naming the state is not therapy, it is labeling. The part of your brain that is about to spend the next hour hunting ghost trades needs to hear itself described.</li><li><strong>Close the physical loop.</strong> Stand up. Walk away from the desk for four minutes. Not to meditate. Not to center. To physically remove your hands from the keyboard so the chase cannot begin on autopilot. Your hands click before your brain decides. Take them out of the room.</li><li><strong>Re-enter with a written condition, not a feeling.</strong> Before you sit back down, write one sentence: "I will take the next trade only if it matches setup X with trigger Y." If no setup like that appears in the next hour, you are done for the day. The condition is the leash. The leash is not punishment. It is the thing that lets you trust yourself to sit in the chair at all.</li></ol><p>None of this is willpower. It is architecture. The purple belt who learns to let the failed submission go does not become a more disciplined person overnight. He builds a reflex that says <em>the position is worth more than the finish you almost had.</em> Traders who last build the same reflex about the trade.</p></div><div class="prose-wrap"><p class="section-eyebrow">THE QUIET PART</p><h2 class="section-title">The best traders are mourning winners all day</h2><p>Here is the thing nobody says out loud. The traders who survive are not the ones who do not feel the almost. They feel it just as hard. The difference is they have accepted something most of us refuse to.</p><blockquote class="pull-quote">A small win on a big move is a cost of doing business, not a verdict on your skill.</blockquote><p>They sold too early. The market paid someone else. The next trade is not a rematch. The next trade is a new trade, with its own setup, its own risk, its own reasons. Confusing one for the other is how you turn a green morning into a red afternoon, and how you turn a red afternoon into a red month.</p><p>If you want to see this pattern in your own history, pull your last ten overtrading episodes and look at the trade right before the spiral started. It will not be a loss. I will bet the house on it. It will be a small win on a setup that paid someone who held.</p><p>When you catch yourself in that state, interrupt before the next click. <a href="/focus">Loss Reset</a> is three minutes of paced breathing, a photo of what you actually trade for, and one written promise before you take the next trade. It was built for the moment after a loss, but it works just as well for the moment after a winner you left on the table, which is a loss your P&L does not know how to show you.</p>
+<figure class="blog-shot blog-shot-full"><a href="/focus" data-cta-source="guide-screen-stop-negotiation" data-cta-target="focus"><img src="/assets/guides/stop-negotiation.webp?v=3" alt="Stop Negotiation reset running in MAKETZO: a breathing ring, a timer and the line The stop is the stop." width="2360" height="1450" loading="lazy" decoding="async"></a><figcaption>Stop Negotiation: a 60-second pause for the moment you want to move your stop.</figcaption></figure></div>
+      <div class="blog-fig-clear" aria-hidden="true"></div>
+      <p class="blog-credit">Photo by Nahrizul Kadri on Unsplash &middot; Photo by Giorgio Trovato on Unsplash</p>
+      <aside class="blog-author-card">
+        
+        <div>
+          <p class="blog-author-name">Written by John P.</p>
+          <p class="blog-author-bio">Day Trader. 5 years experience with Large and Small Cap Stocks. BJJ Brown Belt.</p>
+        </div>
+      </aside>
+      <div class="blog-share-row">
+        <p class="blog-share-row__ask">Know a trader who needs this?</p>
+        <div class="mk-share blog-share">
+          <button class="mk-share__trigger" type="button" data-share-source="blog-winner-cut-short-overtrading" data-share-title="The winner you cut short is why you overtrade all afternoon" data-share-url="https://maketzo.co/blog/winner-cut-short-overtrading" data-share-text="Trace your worst afternoon back honestly and the trade that started the spiral was not a loss. It was a win you took too early." data-share-subject="The winner you cut short is why you overtrade all afternoon" aria-haspopup="dialog">
+            <svg class="mk-share__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/></svg>
+            <span>Share with a trading friend</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- KEEP-READING:START -->
+<section class="section kr" aria-labelledby="kr-h">
+  <div class="section-inner">
+    <p class="kr-eye">Keep Reading</p>
+    <h2 class="kr-h" id="kr-h">More on <em>Psychology</em></h2>
+    <div class="kr-grid">
+      <a class="kr-card" href="/blog/overtrading-is-an-income-strategy" data-cta-source="blog-keep-reading" data-cta-target="blog-overtrading-is-an-income-strategy"><div class="th"><img src="/assets/blog/overtrading-is-an-income-strategy.jpg?v=1zO4O3Z0UJA" alt="Tiny figurine of a man in a blue jacket reading a newspaper while seated on a pile of gold and silver coins" loading="lazy" decoding="async"></div><p class="e">PSYCHOLOGY</p><p class="t">Overtrading isn't a habit, it's an income strategy</p><p class="m">John P. &middot; 2026-06-02</p></a>
+      <a class="kr-card" href="/blog/why-do-day-traders-give-back-profits-after" data-cta-source="blog-keep-reading" data-cta-target="blog-why-do-day-traders-give-back-profits-after"><div class="th"><img src="https://images.unsplash.com/photo-1596451190630-186aff535bf2?ixid=M3w5NTQxMzl8MHwxfHNlYXJjaHwxfHxjYXNpbm8lMjBjaGlwcyUyMHN0YWNrZWQlMjBvbiUyMHRhYmxlfGVufDF8MHx8fDE3OTQ0MDY2OTh8MA&ixlib=rb-4.1.0&w=1200&q=80&fm=jpg&fit=crop" alt="Stacks of casino chips on a table, the house money a trader feels free to spend after a big green morning" loading="lazy" decoding="async"></div><p class="e">PSYCHOLOGY</p><p class="t">Why Do Day Traders Give Back Profits After a Big Win?</p><p class="m">Jeremy B. &middot; 2026-11-11</p></a>
+      <a class="kr-card" href="/blog/hunt-with-morning-profits" data-cta-source="blog-keep-reading" data-cta-target="blog-hunt-with-morning-profits"><div class="th"><img src="https://media.maketzo.co/blog-images/bf7dbc06-7904-44e2-9fcc-600d27198fb4.jpg" alt="Flat graphic of a green morning chart with a P&amp;L tag, green coins flowing toward a crosshair over an afternoon chart" loading="lazy" decoding="async"></div><p class="e">PSYCHOLOGY</p><p class="t">You don't give back profits. You hunt with them.</p><p class="m">Jeremy B. &middot; 2026-11-05</p></a>
+    </div>
+    <p class="kr-all"><a href="/blog" data-cta-source="blog-keep-reading-all">All posts &rarr;</a></p>
+  </div>
+</section>
+<!-- KEEP-READING:END -->
+
+<hr class="mk-rule-gold mk-rule-gold--bold" aria-hidden="true">
+
+<!-- Final CTA — matches the .final-cta-section pattern used on every
+     other detail page. Always visible (not the mobile-only mk-cta-repeat). -->
+<section class="final-cta-section">
+  <p class="final-cta-eyebrow">Stop Losing to Yourself</p>
+  <h2 class="final-cta-title">Start trading <em>with discipline.</em></h2>
+  <p class="final-cta-sub">Maketzo is the system that closes the door at the exact moment your hand is on it.</p>
+  <div class="final-cta-btn-wrap">
+    <button class="btn-primary" data-cta-source="blog-winner-cut-short-overtrading" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
+    <p class="final-cta-note">7-day free trial &middot; cancel anytime</p>
+  </div>
+</section>
+
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-col-brand">
+        <div class="footer-logo-wrap">
+          <a href="https://maketzo.co" class="mk-brand-lockup mk-brand-lockup--stacked">
+            <img class="mk-brand-lockup__mark" src="https://maketzo.co/assets/logo-mark.png" alt="">
+            <img class="mk-brand-lockup__wordmark" src="https://maketzo.co/assets/logo-wordmark.png" alt="MAKETZO">
+          </a>
+        </div>
+        <p class="footer-tagline"><strong>Stop the trade you'd regret.</strong>Discipline in every session. Edge in every trade. Accountability when it counts.</p>
+      </div>
+      <div><div class="footer-col-title">Product</div><ul class="footer-links"><li><a href="https://maketzo.co/journal">Journal</a></li><li><a href="https://maketzo.co/system">The System</a></li><li><a href="https://maketzo.co/indicators">Indicators</a></li><li><a href="https://maketzo.co/focus">Focus Room</a></li><li><a href="https://maketzo.co/tools">Free Tools</a></li><li><a href="https://maketzo.co/dilution-check">Dilution Check</a></li><li><a href="https://maketzo.co/pricing">Pricing</a></li></ul></div>
+      <div><div class="footer-col-title">Explore</div><ul class="footer-links"><li><a href="https://maketzo.co/trade-replay">Trade Replay</a></li><li><a href="https://maketzo.co/trading-os">Trading OS</a></li><li><a href="https://maketzo.co/why">Why MAKETZO</a></li><li><a href="https://maketzo.co/blog">Blog</a></li><li><a href="https://maketzo.co/contact">Contact Us</a></li></ul></div>
+      <div><div class="footer-col-title">Legal</div><ul class="footer-links"><li><a href="https://maketzo.co/privacy">Privacy</a></li><li><a href="https://maketzo.co/terms">Terms</a></li><li><a href="https://maketzo.co/disclaimer">Disclaimer</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">&copy; 2026 Abinic, LLC. All rights reserved. MAKETZO&reg; is a product of Abinic, LLC. maketzo.co</p>
+      <p class="footer-disclaimer">Trading involves substantial risk of loss. MAKETZO is a journaling, behavioral accountability, educational, and decision-support platform, not investment advice, not a broker-dealer, not a registered investment adviser. See full disclaimer at <a href="https://maketzo.co/disclaimer">maketzo.co/disclaimer</a>.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+function toggleDrawer(){
+  document.getElementById('mobileOverlay').classList.toggle('open');
+  document.getElementById('mobileDrawer').classList.toggle('open');
+}
+function closeDrawer(){
+  document.getElementById('mobileOverlay').classList.remove('open');
+  document.getElementById('mobileDrawer').classList.remove('open');
+}
+</script>
+
+</body>
+</html>

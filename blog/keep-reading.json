@@ -312,7 +312,7 @@
    "stop-trading-randomly"
   ],
   "photo-replaces-the-trader": [
-   "why-do-day-traders-give-back-profits-after",
+   "winner-cut-short-overtrading",
    "hunt-with-morning-profits",
    "nervous-system-skip-vs-loss"
   ],
@@ -517,7 +517,7 @@
    "why-do-stocks-drop-at-the-open-after"
   ],
   "why-do-day-traders-give-back-profits-after": [
-   "overtrading-is-a-boredom-problem",
+   "winner-cut-short-overtrading",
    "the-line-you-drew-then-crossed",
    "nobody-journals-skipped-trade"
   ],
@@ -555,6 +555,11 @@
    "best-trade-you-skipped",
    "no-trade-hardest-position",
    "the-trade-you-dont-take"
+  ],
+  "winner-cut-short-overtrading": [
+   "overtrading-is-an-income-strategy",
+   "why-do-day-traders-give-back-profits-after",
+   "hunt-with-morning-profits"
   ],
   "winning-makes-you-bigger": [
    "green-streaks-get-upgraded",
