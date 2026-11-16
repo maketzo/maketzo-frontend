@@ -487,6 +487,11 @@
       clearTimeout(slow); if (wait) wait.remove();
       S.busy = false; sendBtn.disabled = false;
       if (j.c && j.t) S.conv = { c: j.c, t: j.t };
+      // The question as sent, strong words hidden: the newest line that reads exactly what was typed.
+      if (j.said) {
+        var mine = log.querySelectorAll('.mkc-me');
+        for (var i = mine.length - 1; i >= 0; i--) { if (mine[i].textContent === q) { mine[i].textContent = j.said; break; } }
+      }
       S.emailGiven = !!j.emailGiven;
       if (typeof j.live === 'boolean') S.live = j.live;
       if (S.state === 'closed') S.state = 'bot';
@@ -824,7 +829,8 @@
     footR.textContent = st === 'live' ? COPY.endChat : st === 'waiting' ? COPY.emailUs : (personOffered() ? COPY.talk : COPY.emailUs);
     // Already with the team by email and nobody online: there is nothing for Email Us to do.
     footR.hidden = st === 'live' || S.blocked || (withTeam() && !personOffered());
-    input.placeholder = st === 'live' ? COPY.messagePh.replace('{name}', S.rep || 'MAKETZO') : st === 'waiting' ? COPY.waitPh : COPY.placeholder;
+    // The reply box says the person's first name only (Ed, 2026-11-16: "Message John Hanshe... Maybe Message John").
+    input.placeholder = st === 'live' ? COPY.messagePh.replace('{name}', (S.rep || 'MAKETZO').split(' ')[0]) : st === 'waiting' ? COPY.waitPh : COPY.placeholder;
     input.maxLength = withPerson ? 1000 : 300;
   }
   function footAction() {
@@ -989,7 +995,8 @@
   function sayIt(text) {
     var b = add(el('div', 'mkc-me'));
     b.textContent = text;
-    post('say', withConv({ text: text })).then(function (j) { b.setAttribute('data-seq', j.seq); loop(); })
+    // Strong words come back hidden (Ed, 2026-11-16, "Hide the words"): the line shows as the team sees it.
+    post('say', withConv({ text: text })).then(function (j) { b.setAttribute('data-seq', j.seq); if (j.said) b.textContent = j.said; loop(); })
       .catch(function (e) {
         if (e.status === 409) { S.state = e.state || 'bot'; saveConv(); head(); }
         add(el('div', 'mkc-note is-error')).textContent = e.message;
