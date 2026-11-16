@@ -39,6 +39,7 @@
     emailUs: 'Email Us',
     from: 'From our help library',
     searching: 'Searching our help library',
+    greet: 'Hi there. Ask your question in a few words, or pick one below.',
     answer: 'Answer',
     kc: 'Knowledge Center',
     readHere: 'Read it here',
@@ -132,6 +133,13 @@
   var KEY = 'mkc_v1', OPEN_KEY = 'mkc_open';
   // The shortest time the search line shows before an answer (see send).
   var THINK_MS = 900;
+  // A greeting on its own, in the ways people type one.
+  var GREETING = /^(hi+|hello+|hey+|hiya|howdy|yo|sup|greetings|good (morning|afternoon|evening))( there| team| all| everyone)?[\s!.?,:)]*$/i;
+  function greet() {
+    add(el('p', 'mkc-sub')).textContent = COPY.greet;
+    if (S.chips && S.chips.length) fillChips(add(el('div', 'mkc-chips')));
+    input.focus();
+  }
   // The suggested questions this browser was offered or tapped, never anything typed, so the next chat suggests
   // others (Ed, 2026-11-16: "rotate each time they start a new chat"). A convenience only: empty means the most asked.
   var SEEN_KEY = 'mkc_seen';
@@ -240,12 +248,18 @@
     if (/^staging[.-]/.test(h)) return 'https://staging-api.maketzo.co';
     return 'https://api.maketzo.co';
   }
+  // A visitor signed in to MAKETZO: the sign-in's readable cookie (mkt_csrf, the one the nav reads before first paint)
+  // is on the page. Only then does the chat send the session with its requests, so the server attaches their account
+  // and never asks for an email (the plan's default). Everyone else's requests carry no cookies, as before.
+  function signedIn() { try { return /(?:^|;\s*)mkt_csrf=/.test(document.cookie); } catch (e) { return false; } }
+  // The chat has somewhere to reply: an email given, or the account of a signed-in visitor (hello said so).
+  function hasEmail() { return !!(S.emailGiven || S.account); }
   // keep: the request outlives the page (a tap on an answer's link leaves it at once).
   function post(path, body, keep) {
     body = body || {};
     var blk = blkId(); if (blk && body.blk === undefined) body.blk = blk;
     return fetch(apiBase() + '/support/' + path, {
-      method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify(body), credentials: 'omit', mode: 'cors', keepalive: !!keep
+      method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify(body), credentials: signedIn() ? 'include' : 'omit', mode: 'cors', keepalive: !!keep
     }).then(function (r) {
       if (r.status === 204) return {};
       return r.json().catch(function () { return {}; }).then(function (j) {
@@ -385,6 +399,8 @@
       if (!j.blocked) { try { localStorage.removeItem(BLK_KEY); } catch (e) {} }
       if (!(S.state === 'waiting' || S.state === 'live')) S.live = !!j.live;
       if (Array.isArray(j.chips)) S.chips = j.chips;
+      // Signed in: their account's email is used, so no form asks for one.
+      S.account = !!j.account;
       var ch = log.querySelector('.mkc-chips');
       if (ch && S.chips) fillChips(ch);
       var sub = log.querySelector('.mkc-sub');
@@ -397,7 +413,7 @@
   // visits on purpose; this ends it, starts the panel fresh, and asks how the chat was. A chat still waiting on the
   // team's emailed reply is not closed (the reply arrives by email with its link back) and is not rated yet.
   function endChat() {
-    var was = S.state, ended = S.conv, known = S.emailGiven, pending = withTeam(), asked = S.rated || !!log.querySelector('.mkc-rate');
+    var was = S.state, ended = S.conv, known = hasEmail(), pending = withTeam(), asked = S.rated || !!log.querySelector('.mkc-rate');
     if (!ended) return;
     if (!pending) post('close', withConv({})).catch(function () {});
     track('end', { by: 'visitor', from: was });
@@ -499,6 +515,9 @@
     closeArticle();
     S.asked = add(el('div', 'mkc-me'));
     S.asked.textContent = q;
+    // "Hello" is not a question: it gets a hello back and the suggested questions, not "nothing answers that".
+    // Nothing is sent or stored for it.
+    if (!chip && GREETING.test(q)) return greet();
     // Only a suggested question is remembered, never what the visitor typed.
     if (chip) remember([q]);
     send(q, chip, true);
@@ -678,7 +697,7 @@
     if (open) { (open.querySelector('input:not(.mkc-hp), textarea')).focus(); return; }
     // Already sent and not yet answered: the team has it. After a reply, they can write again without retyping.
     if (withTeam()) { alreadyNote(); input.focus(); return; }
-    var needQ = !S.conv, askEmail = !S.emailGiven;
+    var needQ = !S.conv, askEmail = !hasEmail();
     var f = add(el('form', 'mkc-form'));
     f.setAttribute('data-k', 'email');
     f.noValidate = true;
@@ -746,7 +765,7 @@
   // -- "Email Me This Chat": the whole thread to the visitor's inbox. conv: a chat the panel has already moved on from
   // (End Chat), with known saying whether that chat has their email. --
   function transcriptLink(conv, known) {
-    if (known === undefined) known = S.emailGiven;
+    if (known === undefined) known = hasEmail();
     var row = add(el('div', 'mkc-row mkc-tr'));
     var b = row.appendChild(button('mkc-link', COPY.transcript));
     b.addEventListener('click', function () {
@@ -898,19 +917,19 @@
     closeArticle();
     var open = log.querySelector('form.mkc-form[data-k="person"]');
     if (open) { open.querySelector('input:not(.mkc-hp), textarea').focus(); return; }
-    var needQ = !S.conv;
-    if (S.emailGiven && !needQ) return askPerson({});
+    var needQ = !S.conv, known = hasEmail();
+    if (known && !needQ) return askPerson({});
     var f = add(el('form', 'mkc-form'));
     f.setAttribute('data-k', 'person');
     f.noValidate = true;
     f.innerHTML = (needQ ? '<p><b>' + esc(COPY.hello2) + '</b></p><label class="mkc-sr" for="mkcPq">' + esc(COPY.question) + '</label>'
         + '<textarea class="mkc-in" id="mkcPq" maxlength="300" placeholder="' + esc(COPY.questionPh) + '"></textarea>' : '')
-      + (S.emailGiven ? '' : '<p>' + (needQ ? esc(COPY.personAsk) : '<b>' + esc(COPY.personAsk) + '</b>') + '</p><label class="mkc-sr" for="mkcPe">' + esc(COPY.emailLabel) + '</label>'
+      + (known ? '' : '<p>' + (needQ ? esc(COPY.personAsk) : '<b>' + esc(COPY.personAsk) + '</b>') + '</p><label class="mkc-sr" for="mkcPe">' + esc(COPY.emailLabel) + '</label>'
         + '<input class="mkc-in" id="mkcPe" type="email" autocomplete="email" inputmode="email" placeholder="' + esc(COPY.emailPh) + '" maxlength="160">'
         + newsBox())
       + '<input class="mkc-hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">'
       + '<div class="mkc-row"><button class="mkc-b mkc-b--gold" type="submit">' + esc(COPY.goOn) + '</button>'
-      + (S.emailGiven ? '' : '<button class="mkc-b" type="button" data-skip>' + esc(COPY.skip) + '</button>') + '</div>'
+      + (known ? '' : '<button class="mkc-b" type="button" data-skip>' + esc(COPY.skip) + '</button>') + '</div>'
       + '<p class="mkc-note is-error" hidden></p>';
     tickNews(f);
     var q = f.querySelector('#mkcPq'), em = f.querySelector('#mkcPe'), nl = f.querySelector('input[data-nl]'), hp = f.querySelector('.mkc-hp'), err = f.querySelector('.is-error');
@@ -1014,7 +1033,7 @@
     if (was !== S.state) {
       if (S.state === 'live') { if (was === 'waiting') track('joined', { waited_s: S.waitStart ? Math.round((Date.now() - S.waitStart) / 1000) : 0 }); endWait(); }
       else if (S.state === 'waiting' && was === 'live') waitBox(COPY.waitOther);
-      else if (S.state === 'missed') { endWait(); track('missed', {}); if (!S.emailGiven) emailForm(COPY.missedAsk); }
+      else if (S.state === 'missed') { endWait(); track('missed', {}); if (!hasEmail()) emailForm(COPY.missedAsk); }
       else if (S.state === 'closed') {
         endWait(); dropDots();
         if (S.everLive && !S.blocked && !log.querySelector('.mkc-tr')) transcriptLink();
