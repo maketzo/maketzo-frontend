@@ -160,6 +160,8 @@ button.mkc-card:hover { border-color: var(--mkc-chip-line); }
   color: var(--mkc-fg); font-size: 15px; white-space: pre-wrap; overflow-wrap: anywhere; box-shadow: 0 1px 2px rgba(20,22,27,.05);
 }
 .mkc-wait { font-size: 14px; color: var(--mkc-fg3); }
+/* Searching the help library: the dots, then what is happening (a search, never a person typing). */
+.mkc-think { display: flex; align-items: center; gap: 8px; }
 
 /* live chat: the person's mark, waiting, typing dots (three beats per signal, never looping), Seen */
 .mkc-head .mkc-mark.is-rep { border-radius: 50%; border: 0; background: linear-gradient(135deg, #E5C572, #B8941F); color: #15120A; font: 700 15px/1 var(--mkc-sans); }

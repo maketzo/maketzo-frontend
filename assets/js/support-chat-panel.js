@@ -130,6 +130,17 @@
   };
 
   var KEY = 'mkc_v1', OPEN_KEY = 'mkc_open';
+  // The shortest time the search line shows before an answer (see send).
+  var THINK_MS = 900;
+  // The suggested questions this browser was offered or tapped, never anything typed, so the next chat suggests
+  // others (Ed, 2026-11-16: "rotate each time they start a new chat"). A convenience only: empty means the most asked.
+  var SEEN_KEY = 'mkc_seen';
+  function seenList() { try { var l = JSON.parse(localStorage.getItem(SEEN_KEY) || '[]'); return Array.isArray(l) ? l : []; } catch (e) { return []; } }
+  function remember(list) {
+    var out = seenList();
+    (list || []).forEach(function (q) { if (typeof q !== 'string' || !q) return; var i = out.indexOf(q); if (i >= 0) out.splice(i, 1); out.push(q.slice(0, 300)); });
+    try { localStorage.setItem(SEEN_KEY, JSON.stringify(out.slice(-30))); } catch (e) {}
+  }
   var IDLE_MS = 30 * 60 * 1000;            // an answers-only chat starts over after 30 quiet minutes
   var KEEP_MS = 7 * 24 * 60 * 60 * 1000;   // one that reached the team is kept a week, for the reply
   var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -358,7 +369,7 @@
   }
   // Is a person on, and the suggested questions for this page.
   function sayHello() {
-    post('hello', firstFacts({})).then(function (j) {
+    post('hello', firstFacts({ seen: seenList() })).then(function (j) {
       // The server's word on a block: lifted or over, and this browser forgets it.
       if (!j.blocked && S.blocked) S.blocked = false;
       if (!j.blocked) { try { localStorage.removeItem(BLK_KEY); } catch (e) {} }
@@ -389,6 +400,8 @@
     if (!S.blocked) transcriptLink(ended, known);
     if (pending) add(el('div', 'mkc-note')).textContent = COPY.stillWithTeam;
     else if (!asked && !S.blocked) rate(null, ended);
+    // The new chat suggests questions other than the ones just offered (none show until the server picks them).
+    remember(S.chips); S.chips = null;
     hello(); head(); sayHello();
     input.value = '';
     log.scrollTop = 0; stick = false;
@@ -475,15 +488,23 @@
     var ch = log.querySelector('.mkc-chips'); if (ch) ch.remove();
     closeArticle();
     add(el('div', 'mkc-me')).textContent = q;
+    // Only a suggested question is remembered, never what the visitor typed.
+    if (chip) remember([q]);
     send(q, chip, true);
   }
   // then / failed: the email path asks a first question before it sends; they run after the answer, or after an error.
   function send(q, chip, retry, then, failed) {
     S.busy = true; sendBtn.disabled = true;
-    var wait = null, slow = setTimeout(function () { wait = add(el('div', 'mkc-wait', esc(COPY.searching))); }, 300);
+    // The search line with its dots shows for at least THINK_MS (Ed, 2026-11-16: the answer "came back too fast, I'd
+    // prefer a slight delay with the thinking animation"). It says what is happening, a search of the help library,
+    // so the pause is never passed off as a person typing.
+    var started = Date.now(), slow = null;
+    var wait = add(el('div', 'mkc-wait mkc-think', '<span class="mkc-dots" data-motion-keep aria-hidden="true"><i></i><i></i><i></i></span><span>' + esc(COPY.searching) + '</span>'));
     var body = withConv({ q: q });
     if (!S.conv) { firstFacts(body); body.ms = S.shownAt ? Date.now() - S.shownAt : 0; }
     post('ask', body).then(function (j) {
+      return new Promise(function (ok) { setTimeout(function () { ok(j); }, Math.max(0, THINK_MS - (Date.now() - started))); });
+    }).then(function (j) {
       clearTimeout(slow); if (wait) wait.remove();
       S.busy = false; sendBtn.disabled = false;
       if (j.c && j.t) S.conv = { c: j.c, t: j.t };
@@ -543,10 +564,25 @@
       var a = c.appendChild(el('a', 'mkc-link'));
       a.href = x.link.path;
       a.textContent = (x.link.label || 'Read More') + ' \u2192';
-      a.addEventListener('click', function () { opened(qid, x.link.path, 'answer', true); });
+      a.addEventListener('click', function (ev) {
+        opened(qid, x.link.path, 'answer', true);
+        // Already on that page (Ed, 2026-11-16, on /system: "I clicked See How it Works and nothing happened"): a reload
+        // only reopened the chat over the same page. Close the chat and show the page from its top instead.
+        if (x.link.path.indexOf('#') < 0 && samePage(x.link.path)) {
+          ev.preventDefault();
+          setOpen(false);
+          window.scrollTo({ top: 0, behavior: reduced() ? 'auto' : 'smooth' });
+        }
+      });
     }
     return c;
   }
+  // "/system", "/system.html" and "/system/" are one page; the query string does not make another.
+  function samePage(p) {
+    var norm = function (s) { return (String(s).split('?')[0].replace(/\.html$/, '').replace(/\/+$/, '') || '/').toLowerCase(); };
+    return norm(p) === norm(location.pathname);
+  }
+  function reduced() { try { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } }
   function articleCard(x, qid) {
     var c = el('button', 'mkc-card');
     c.type = 'button';
