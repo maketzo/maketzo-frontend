@@ -85,6 +85,15 @@ html:has(.mk-offer-tab) .mkc { --mkc-b: calc(80px + var(--mkc-lift, 0px)); }
   display: grid; place-items: center; flex: none;
 }
 .mkc-icon:hover { background: rgba(255,255,255,.08); color: var(--mkc-head-fg); }
+/* End Chat (Ed's picks 2026-11-16): a labelled button in the header whenever there is a chat; it ends, resets, asks for a rating.
+   It sits on the name's row, so the status line under it keeps the full width and never wraps. */
+.mkc-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-width: 0; }
+.mkc-top .mkc-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mkc-end {
+  flex: none; height: 26px; padding: 0 10px; border-radius: 7px; border: 1px solid rgba(255,255,255,.2); background: transparent;
+  color: var(--mkc-head-fg); font: 600 12.5px/1 var(--mkc-sans); white-space: nowrap;
+}
+.mkc-end:hover { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.32); }
 .mkc-icon svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
 .mkc-body { position: relative; flex: 1; min-height: 0; background: var(--mkc-bg); }

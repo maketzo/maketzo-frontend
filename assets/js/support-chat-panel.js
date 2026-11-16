@@ -28,6 +28,7 @@
     question: 'Your question',
     send: 'Send',
     close: 'Close chat',
+    stillWithTeam: 'Your question is still with our team. The reply comes by email within one trading day.',
     dialog: 'Support chat',
     footLeft: 'Answers from our help library',
     emailUs: 'Email Us',
@@ -137,7 +138,7 @@
     // has, whether a person ever joined (the rating), unread replies while closed, and a miss (email from then on)
     rep: null, v: null, lastSeq: 0, everLive: false, unread: 0, missedOnce: false, typedAt: 0
   };
-  var panel, log, art, input, sendBtn, footR, footL, footO, muteBtn;
+  var panel, log, art, input, sendBtn, footR, footL, footO, muteBtn, endBtn;
 
   // -- small helpers --
   function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
@@ -220,7 +221,9 @@
     panel.hidden = true;
     panel.innerHTML =
       '<header class="mkc-head"><span class="mkc-mark" aria-hidden="true">M</span>'
-      + '<div class="mkc-who"><b class="mkc-name">' + esc(COPY.name) + '</b><div class="mkc-status"><span class="mkc-dot"></span><span class="mkc-line">' + esc(COPY.lineOff) + '</span></div></div>'
+      + '<div class="mkc-who"><div class="mkc-top"><b class="mkc-name">' + esc(COPY.name) + '</b>'
+      + '<button type="button" class="mkc-end" data-act="end" hidden>' + esc(COPY.endChat) + '</button></div>'
+      + '<div class="mkc-status"><span class="mkc-dot"></span><span class="mkc-line">' + esc(COPY.lineOff) + '</span></div></div>'
       + '<button type="button" class="mkc-icon" data-act="mute" hidden></button>'
       + '<button type="button" class="mkc-icon" data-act="close" aria-label="' + esc(COPY.close) + '">' + IC.down + '</button></header>'
       + '<div class="mkc-body"><div class="mkc-log" role="log" aria-live="polite"></div><div class="mkc-art" hidden></div></div>'
@@ -241,6 +244,8 @@
     panel.querySelector('.mkc-foot').appendChild(footR);
     muteBtn = panel.querySelector('[data-act="mute"]');
     muteBtn.addEventListener('click', function () { setMute(!muted()); });
+    endBtn = panel.querySelector('[data-act="end"]');
+    endBtn.addEventListener('click', endChat);
     paintMute();
     panel.querySelector('[data-act="close"]').addEventListener('click', function () { setOpen(false); });
     panel.querySelector('.mkc-compose').addEventListener('submit', function (e) {
@@ -310,6 +315,11 @@
   function firstView(from) {
     var saved = loadConv();
     track('open', { from: from || 'button', resumed: saved ? 'yes' : 'no' });
+    sayHello();
+    restore(saved);
+  }
+  // Is a person on, and the suggested questions for this page.
+  function sayHello() {
     post('hello', firstFacts({})).then(function (j) {
       if (!(S.state === 'waiting' || S.state === 'live')) S.live = !!j.live;
       if (j.chips && j.chips.length) S.chips = j.chips;
@@ -319,7 +329,27 @@
       if (sub) sub.textContent = S.live ? COPY.subOn : COPY.sub;
       head();
     }).catch(function () {});
-    restore(saved);
+  }
+  // End Chat: a labelled button in the chat's header whenever there is a chat (Ed's picks, 2026-11-16: the header
+  // button, then "a way to log out of the chat so it resets and then prompted for feedback"). The thread is kept across
+  // visits on purpose; this ends it, starts the panel fresh, and asks how the chat was. A chat still waiting on the
+  // team's emailed reply is not closed (the reply arrives by email with its link back) and is not rated yet.
+  function endChat() {
+    var was = S.state, ended = S.conv, pending = withTeam(), asked = S.rated || !!log.querySelector('.mkc-rate');
+    if (!ended) return;
+    if (!pending) post('close', withConv({})).catch(function () {});
+    track('end', { by: 'visitor', from: was });
+    clearTimeout(loopT);
+    forget();
+    S.replied = false; S.missedOnce = false; S.everLive = false; S.rated = false; S.rep = null; S.v = null; S.lastSeq = 0; S.unread = 0; S.waitStart = 0;
+    endWait(); dropDots(); closeArticle(); badge();
+    log.innerHTML = '';
+    add(el('div', 'mkc-sys')).textContent = COPY.endedYou;
+    if (pending) add(el('div', 'mkc-note')).textContent = COPY.stillWithTeam;
+    else if (!asked) rate(null, ended);
+    hello(); head(); sayHello();
+    input.value = '';
+    log.scrollTop = 0;
   }
   // The chat so far for this browser, or the welcome. Also how a page with a live chat picks it up in the background.
   function restore(saved) {
@@ -330,6 +360,9 @@
     post('sync', withConv({ after: 0 })).then(function (j) {
       wait.remove();
       thread(j);
+      // Keep checking while the panel is open (every 10 seconds without a person), so a person coming online or a
+      // reply from the team shows without a reload.
+      loop();
     }).catch(function (e) {
       wait.remove();
       if (e.ended) forget();
@@ -364,7 +397,7 @@
       else if (m.kind === 'rep') { S.replied = true; repLine(m); }
       else if (m.kind === 'system') systemLine(m);
     });
-    if (S.state === 'email' && !S.replied) add(el('div', 'mkc-note', esc(COPY.already)));
+    if (S.state === 'email' && !S.replied) alreadyNote();
     if (S.state === 'waiting') waitBox();
     if (S.replied && !j.rated && S.state !== 'live' && S.state !== 'waiting') rate();
     head();
@@ -416,6 +449,7 @@
       head();
       track('ask', { matched: j.matched ? 'yes' : 'no', results: (j.results || []).length, top: j.results && j.results[0] ? j.results[0].kind : 'none', chip: chip ? 'yes' : 'no' });
       results(j.results || [], j.qid, !then);
+      loop();
       if (then) then(j);
     }).catch(function (e) {
       clearTimeout(slow); if (wait) wait.remove();
@@ -433,7 +467,7 @@
     if (!list.length) {
       var person = live && personOffered();
       add(el('div', 'mkc-card', '<b class="mkc-title">' + esc(COPY.noneTitle) + '</b><p>' + esc(person ? COPY.noneBodyOn : COPY.noneBody) + '</p>'));
-      if (live && S.state !== 'email') add(el('div', 'mkc-row')).appendChild(button('mkc-b mkc-b--gold', person ? COPY.talk : COPY.emailUs, function () { reach(); }));
+      if (live && (person || S.state !== 'email')) add(el('div', 'mkc-row')).appendChild(button('mkc-b mkc-b--gold', person ? COPY.talk : COPY.emailUs, function () { reach(); }));
       return;
     }
     list.forEach(function (x) { add(x.kind === 'answer' ? answerCard(x, qid) : articleCard(x, qid)); });
@@ -516,9 +550,20 @@
   }
 
   // -- a person: live when someone is online (personForm), otherwise an email to the team (emailForm) --
-  function personOffered() { return S.live && !S.missedOnce && S.state !== 'email'; }
+  // A chat already sent to the team by email can still reach a person once someone is online (Ed, 2026-11-16: "There's
+  // no way to get to a live agent"; his test chat had gone to email before live chat was on, and the panel used to
+  // rule a person out for good from then on). The server takes a person request from bot, email, missed or closed.
+  function personOffered() { return S.live && !S.missedOnce; }
+  // Sent to the team by email and not yet answered: anything typed here is added to it.
+  function withTeam() { return S.state === 'email' && S.emailGiven && !S.replied; }
+  // Said once: asking again moves the note to the bottom instead of stacking copies (Ed, 2026-11-16: "Trying to click
+  // Email us and keep getting the same message").
+  function alreadyNote() {
+    Array.prototype.forEach.call(log.querySelectorAll('.mkc-note.is-already'), function (n) { n.remove(); });
+    add(el('div', 'mkc-note is-already')).textContent = COPY.already;
+  }
   function reach() {
-    if (personOffered() && (S.state === 'bot' || S.state === 'closed' || S.state === 'missed')) return personForm();
+    if (personOffered() && (S.state === 'bot' || S.state === 'closed' || S.state === 'missed' || S.state === 'email')) return personForm();
     return emailForm();
   }
   function emailForm(title) {
@@ -528,7 +573,7 @@
     var open = log.querySelector('form.mkc-form[data-k="email"]');
     if (open) { (open.querySelector('input:not(.mkc-hp), textarea')).focus(); return; }
     // Already sent and not yet answered: the team has it. After a reply, they can write again without retyping.
-    if (S.state === 'email' && S.emailGiven && !S.replied) { add(el('div', 'mkc-note')).textContent = COPY.already; return; }
+    if (withTeam()) { alreadyNote(); input.focus(); return; }
     var needQ = !S.conv, askEmail = !S.emailGiven;
     var f = add(el('form', 'mkc-form'));
     f.setAttribute('data-k', 'email');
@@ -612,8 +657,10 @@
     }).catch(function (e) { b.disabled = false; add(el('div', 'mkc-note is-error')).textContent = e.message; });
   }
 
-  // -- after a person replied: one rating, with a comment box only after a tap --
-  function rate(preset) {
+  // -- at the end of a chat: one rating, with a comment box only after a tap. conv: the chat being rated, when the panel
+  // has already moved on from it (End Chat) --
+  function rate(preset, conv) {
+    var withIt = function (b) { if (conv) { b.c = conv.c; b.t = conv.t; return b; } return withConv(b); };
     var box = add(el('div', 'mkc-rate', '<p><b>' + esc(COPY.rateAsk) + '</b></p>'));
     var th = box.appendChild(el('div', 'mkc-thumbs'));
     var up = th.appendChild(el('button', 'mkc-thumb', IC.up)), dn = th.appendChild(el('button', 'mkc-thumb', IC.dn));
@@ -623,16 +670,17 @@
     function pick(b) {
       var rating = b === up ? 'up' : 'down';
       up.setAttribute('aria-pressed', b === up ? 'true' : 'false'); dn.setAttribute('aria-pressed', b === dn ? 'true' : 'false');
-      post('rate', withConv({ rating: rating })).catch(function () {});
+      post('rate', withIt({ rating: rating })).catch(function () {});
       track('rate', { rating: rating, via: 'chat' });
       if (box.querySelector('form')) return;
-      comment(box, rating, COPY.better);
+      comment(box, rating, COPY.better, withIt);
     }
     up.addEventListener('click', function () { pick(up); });
     dn.addEventListener('click', function () { pick(dn); });
     if (preset) pick(preset === 'up' ? up : dn);
   }
-  function comment(box, rating, prompt) {
+  function comment(box, rating, prompt, withIt) {
+    withIt = withIt || withConv;
     var f = box.appendChild(el('form', ''));
     f.innerHTML = '<label class="mkc-sr" for="mkcRc">' + esc(prompt) + '</label><textarea class="mkc-in" id="mkcRc" maxlength="1000" placeholder="' + esc(prompt) + '"></textarea>'
       + '<div class="mkc-row"><button class="mkc-b mkc-b--gold" type="submit">' + esc(COPY.send) + '</button></div>';
@@ -641,7 +689,7 @@
     f.addEventListener('submit', function (e) {
       e.preventDefault();
       var text = f.querySelector('textarea').value.trim();
-      if (text) post('rate', withConv({ rating: rating, comment: text })).catch(function () {});
+      if (text) post('rate', withIt({ rating: rating, comment: text })).catch(function () {});
       box.innerHTML = '<p><b>' + esc(COPY.thanks) + '</b></p>';
     });
   }
@@ -685,6 +733,7 @@
     if (j.v) S.v = j.v;
     if (j.waited != null) S.waitStart = Date.now() - j.waited * 1000;
     if (j.state === 'live') S.everLive = true;
+    if (j.rated) S.rated = true;
   }
   function head() {
     if (!S.built) return;
@@ -699,9 +748,12 @@
       else { dot.className = 'mkc-dot'; line.textContent = COPY.lineOff; }
     }
     muteBtn.hidden = !withPerson;
+    endBtn.hidden = !S.conv;
     footO.hidden = st !== 'live';
     footL.hidden = st === 'live';
     footR.textContent = st === 'live' ? COPY.endChat : st === 'waiting' ? COPY.emailUs : (personOffered() ? COPY.talk : COPY.emailUs);
+    // Already with the team by email and nobody online: there is nothing for Email Us to do.
+    footR.hidden = st === 'live' || (withTeam() && !personOffered());
     input.placeholder = st === 'live' ? COPY.messagePh.replace('{name}', S.rep || 'MAKETZO') : st === 'waiting' ? COPY.waitPh : COPY.placeholder;
     input.maxLength = withPerson ? 1000 : 300;
   }
@@ -797,10 +849,11 @@
     var body = withConv({ after: S.lastSeq, hold: hold ? 1 : 0 });
     if (hold && S.v) body.v = S.v;
     if (S.open && !document.hidden) body.read = S.lastSeq;
-    var t0 = Date.now(), ok = true, v0 = S.v, n0 = S.lastSeq;
-    post('sync', body).then(apply).catch(function (e) {
+    var t0 = Date.now(), ok = true, v0 = S.v, n0 = S.lastSeq, c0 = S.conv;
+    // A reply for a chat the visitor has since left (New Chat) is dropped.
+    post('sync', body).then(function (j) { if (S.conv === c0) apply(j); }).catch(function (e) {
       ok = false;
-      if (e.ended) { S.state = 'closed'; endWait(); dropDots(); saveConv(); head(); }
+      if (e.ended && S.conv === c0) { S.state = 'closed'; endWait(); dropDots(); saveConv(); head(); }
     }).then(function () {
       looping = false;
       if (!wantLoop()) return;
@@ -876,14 +929,6 @@
       waitBox(COPY.waitOther); head(); loop();
     }).catch(function (e) { add(el('div', 'mkc-note is-error')).textContent = e.message; });
   }
-  function endChat() {
-    post('close', withConv({})).catch(function () {});
-    track('end', { by: 'visitor' });
-    S.state = 'closed'; endWait(); dropDots(); saveConv(); head();
-    add(el('div', 'mkc-sys')).textContent = COPY.endedYou;
-    if (S.everLive && !log.querySelector('.mkc-rate')) rate();
-  }
-
   // Sound, the unread count on the button, the tab title.
   var actx = null, flashT = null, baseTitle = document.title;
   function muted() { try { return localStorage.getItem('mkc_mute') === '1'; } catch (e) { return false; } }
