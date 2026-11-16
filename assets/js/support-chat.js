@@ -97,9 +97,12 @@
       panel().then(function (c) { c.fromEmail(link.raw, link.rate); }).catch(function () {});
       return;
     }
-    var reopen = false;
+    var reopen = false, st = null;
     try { reopen = sessionStorage.getItem('mkc_open') === '1' && window.matchMedia('(min-width: 768px)').matches; } catch (e) {}
+    try { st = (JSON.parse(localStorage.getItem('mkc_v1') || 'null') || {}).st; } catch (e) {}
     if (reopen) panel().then(function (c) { c.open('page'); }).catch(function () {});
+    // A chat waiting for, or with, a person carries on here: the panel loads closed, so a reply rings and counts.
+    else if (st === 'waiting' || st === 'live') panel().then(function (c) { c.watch(); }).catch(function () {});
   }
 
   if (document.body) start(); else document.addEventListener('DOMContentLoaded', start);

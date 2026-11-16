@@ -76,11 +76,42 @@
     rateNoPh: 'What do you still need? (optional)',
     moreAsk: 'Tell us what you still need. We will reply by email within one trading day.',
     noteLabel: 'Your note',
+    // live chat (phase B)
+    lineOn: 'Usually replies in a few minutes',
+    lineWait: 'Finding someone for you',
+    lineRep: 'MAKETZO team',
+    subOn: 'Answers come from our help library. A person is one tap away.',
+    talk: 'Talk to a Person',
+    noneBodyOn: 'A person can. Most chats get a reply in a few minutes.',
+    personAsk: 'Leave your email so we can reply if you step away.',
+    goOn: 'Continue',
+    waitNote: 'Finding someone for you. Usually under 2 minutes.',
+    waitOther: 'Finding someone else for you.',
+    waitPh: 'Add anything while you wait',
+    messagePh: 'Message {name}',
+    joined: '{name} from MAKETZO joined',
+    handed: '{from} handed you to {name}',
+    otherLink: 'Talk to Someone Else',
+    otherAlone: 'Nobody else is free right now. Keep chatting here, or email the team instead.',
+    endChat: 'End Chat',
+    endedRep: '{name} ended the chat',
+    endedYou: 'You ended the chat',
+    missed: 'Nobody is free right now. We will email you within one trading day.',
+    missedAsk: 'Where should we send the answer?',
+    typing: '{name} is typing',
+    seen: 'Seen',
+    newReply: 'New reply',
+    soundOff: 'Turn sound off',
+    soundOn: 'Turn sound on',
+    chatLabel: 'Chat with us',
+    unreadLabel: 'Chat with us, {n} new',
     error: 'Something went wrong. Try again in a minute.',
     offline: 'We could not reach the chat. Check your connection and try again.'
   };
 
   var IC = {
+    snd: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg>',
+    mute: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M22 9l-6 6M16 9l6 6"/></svg>',
     down: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>',
     send: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>',
     back: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>',
@@ -101,9 +132,12 @@
   var S = {
     open: false, built: false, busy: false, conv: null, state: 'bot', emailGiven: false, replied: false, live: false,
     shownAt: 0, chips: null, said: false, artFrom: null,
-    key: randomKey()
+    key: randomKey(),
+    // live chat: who is answering, the chat's version (the held request waits on it), the last message seq this panel
+    // has, whether a person ever joined (the rating), unread replies while closed, and a miss (email from then on)
+    rep: null, v: null, lastSeq: 0, everLive: false, unread: 0, missedOnce: false, typedAt: 0
   };
-  var panel, log, art, input, sendBtn, footR;
+  var panel, log, art, input, sendBtn, footR, footL, footO, muteBtn;
 
   // -- small helpers --
   function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
@@ -158,7 +192,7 @@
       if (r.status === 204) return {};
       return r.json().catch(function () { return {}; }).then(function (j) {
         if (r.ok) return j;
-        var e = new Error(j.error || COPY.error); e.status = r.status; e.ended = !!j.ended; throw e;
+        var e = new Error(j.error || COPY.error); e.status = r.status; e.ended = !!j.ended; e.state = j.state; throw e;
       });
     }, function () { var e = new Error(COPY.offline); e.status = 0; throw e; });
   }
@@ -187,6 +221,7 @@
     panel.innerHTML =
       '<header class="mkc-head"><span class="mkc-mark" aria-hidden="true">M</span>'
       + '<div class="mkc-who"><b class="mkc-name">' + esc(COPY.name) + '</b><div class="mkc-status"><span class="mkc-dot"></span><span class="mkc-line">' + esc(COPY.lineOff) + '</span></div></div>'
+      + '<button type="button" class="mkc-icon" data-act="mute" hidden></button>'
       + '<button type="button" class="mkc-icon" data-act="close" aria-label="' + esc(COPY.close) + '">' + IC.down + '</button></header>'
       + '<div class="mkc-body"><div class="mkc-log" role="log" aria-live="polite"></div><div class="mkc-art" hidden></div></div>'
       + '<form class="mkc-compose" autocomplete="off" novalidate><label class="mkc-sr" for="mkcIn">' + esc(COPY.question) + '</label>'
@@ -198,16 +233,31 @@
     art = panel.querySelector('.mkc-art');
     input = panel.querySelector('.mkc-in');
     sendBtn = panel.querySelector('.mkc-send');
-    footR = button('mkc-link', COPY.emailUs, function () { reach(); });
+    footL = panel.querySelector('.mkc-foot span');
+    footO = button('mkc-link', COPY.otherLink, other);
+    footO.hidden = true;
+    panel.querySelector('.mkc-foot').insertBefore(footO, footL);
+    footR = button('mkc-link', COPY.emailUs, footAction);
     panel.querySelector('.mkc-foot').appendChild(footR);
+    muteBtn = panel.querySelector('[data-act="mute"]');
+    muteBtn.addEventListener('click', function () { setMute(!muted()); });
+    paintMute();
     panel.querySelector('[data-act="close"]').addEventListener('click', function () { setOpen(false); });
     panel.querySelector('.mkc-compose').addEventListener('submit', function (e) {
       e.preventDefault();
       var v = input.value.trim();
-      if (v.length < 2) { input.focus(); return; }
+      var withPerson = S.state === 'waiting' || S.state === 'live';
+      if (v.length < (withPerson ? 1 : 2)) { input.focus(); return; }
       input.value = '';
-      ask(v, false);
+      if (withPerson) sayIt(v); else ask(v, false);
     });
+    // The visitor typing to a person: a dot signal, at most every 3 seconds. Never the words.
+    input.addEventListener('input', function () {
+      if ((S.state === 'waiting' || S.state === 'live') && input.value && Date.now() - S.typedAt > 3000) { S.typedAt = Date.now(); post('typing', withConv({})).catch(function () {}); }
+    });
+    // The browser plays the chime only after the visitor has touched the page.
+    panel.addEventListener('pointerdown', unlockAudio, { passive: true });
+    panel.addEventListener('keydown', unlockAudio);
     panel.addEventListener('keydown', onKey);
     if (window.visualViewport) {
       visualViewport.addEventListener('resize', fitPhone);
@@ -246,7 +296,8 @@
     fitPhone();
     if (open) {
       if (!S.shownAt) S.shownAt = Date.now();
-      if (!S.said) { S.said = true; firstView(from); }
+      S.unread = 0; badge(); stopFlash();
+      if (!S.said) { S.said = true; firstView(from); } else loop();
       // A phone keyboard covering half the screen on open hides the answers: there focus goes to the panel's close
       // button (it is a dialog), and to the box only on a computer.
       setTimeout(function () { (phone.matches ? panel.querySelector('[data-act="close"]') : input).focus(); }, 60);
@@ -260,12 +311,19 @@
     var saved = loadConv();
     track('open', { from: from || 'button', resumed: saved ? 'yes' : 'no' });
     post('hello', firstFacts({})).then(function (j) {
-      S.live = !!j.live;
+      if (!(S.state === 'waiting' || S.state === 'live')) S.live = !!j.live;
       if (j.chips && j.chips.length) S.chips = j.chips;
       var ch = log.querySelector('.mkc-chips');
       if (ch && S.chips) fillChips(ch);
+      var sub = log.querySelector('.mkc-sub');
+      if (sub) sub.textContent = S.live ? COPY.subOn : COPY.sub;
+      head();
     }).catch(function () {});
-    if (!saved) { hello(); return; }
+    restore(saved);
+  }
+  // The chat so far for this browser, or the welcome. Also how a page with a live chat picks it up in the background.
+  function restore(saved) {
+    if (!saved) { hello(); head(); return; }
     S.conv = { c: saved.c, t: saved.t };
     S.state = saved.st;
     var wait = add(el('div', 'mkc-wait', esc(COPY.loading)));
@@ -275,12 +333,12 @@
     }).catch(function (e) {
       wait.remove();
       if (e.ended) forget();
-      hello();
+      hello(); head();
     });
   }
 
   function hello() {
-    add(el('div', '', '<p class="mkc-hello">' + esc(COPY.hello) + '<br>' + esc(COPY.hello2) + '</p><p class="mkc-sub">' + esc(COPY.sub) + '</p>'));
+    add(el('div', '', '<p class="mkc-hello">' + esc(COPY.hello) + '<br>' + esc(COPY.hello2) + '</p><p class="mkc-sub">' + esc(S.live ? COPY.subOn : COPY.sub) + '</p>'));
     fillChips(add(el('div', 'mkc-chips')));
   }
   function fillChips(box) {
@@ -295,17 +353,23 @@
     S.state = j.state || S.state;
     S.emailGiven = !!j.emailGiven;
     S.live = !!j.live;
+    liveFacts(j);
     saveConv();
     var msgs = j.messages || [];
-    if (!msgs.length) { hello(); return; }
+    if (!msgs.length) { hello(); head(); return; }
     msgs.forEach(function (m) {
-      if (m.kind === 'visitor') add(el('div', 'mkc-me')).textContent = m.body || '';
+      S.lastSeq = Math.max(S.lastSeq, Number(m.seq) || 0);
+      if (m.kind === 'visitor') { var b = add(el('div', 'mkc-me')); b.textContent = m.body || ''; b.setAttribute('data-seq', m.seq); }
       else if (m.kind === 'results') results(m.results || [], m.qid, false);
       else if (m.kind === 'rep') { S.replied = true; repLine(m); }
       else if (m.kind === 'system') systemLine(m);
     });
     if (S.state === 'email' && !S.replied) add(el('div', 'mkc-note', esc(COPY.already)));
-    if (S.replied && !j.rated) rate();
+    if (S.state === 'waiting') waitBox();
+    if (S.replied && !j.rated && S.state !== 'live' && S.state !== 'waiting') rate();
+    head();
+    paintLiveBits(j);
+    loop();
   }
   function repLine(m) {
     var who = m.alias || 'MAKETZO';
@@ -315,8 +379,16 @@
   }
   function systemLine(m) {
     if (m.code === 'note') { add(el('div', 'mkc-me')).textContent = m.body || ''; return; }
-    var text = { emailed: COPY.sent, 'rated-yes': COPY.ratedYes, 'rated-no': COPY.ratedNo }[m.code];
+    var name = m.alias || 'MAKETZO';
+    if (m.code === 'joined' || m.code === 'handed') S.everLive = true;
+    var text = {
+      emailed: COPY.sent, 'rated-yes': COPY.ratedYes, 'rated-no': COPY.ratedNo,
+      joined: COPY.joined.replace('{name}', name),
+      handed: COPY.handed.replace('{from}', m.from || 'MAKETZO').replace('{name}', name),
+      ended: m.by === 'visitor' ? COPY.endedYou : COPY.endedRep.replace('{name}', name)
+    }[m.code];
     if (text) add(el('div', 'mkc-sys')).textContent = text;
+    if (m.code === 'missed') { S.missedOnce = true; add(el('div', 'mkc-note')).textContent = COPY.missed; }
   }
 
   // -- a question --
@@ -338,8 +410,10 @@
       S.busy = false; sendBtn.disabled = false;
       if (j.c && j.t) S.conv = { c: j.c, t: j.t };
       S.emailGiven = !!j.emailGiven;
+      if (typeof j.live === 'boolean') S.live = j.live;
       if (S.state === 'closed') S.state = 'bot';
       saveConv();
+      head();
       track('ask', { matched: j.matched ? 'yes' : 'no', results: (j.results || []).length, top: j.results && j.results[0] ? j.results[0].kind : 'none', chip: chip ? 'yes' : 'no' });
       results(j.results || [], j.qid, !then);
       if (then) then(j);
@@ -357,8 +431,9 @@
   function results(list, qid, live) {
     add(el('div', 'mkc-label')).textContent = COPY.from;
     if (!list.length) {
-      add(el('div', 'mkc-card', '<b class="mkc-title">' + esc(COPY.noneTitle) + '</b><p>' + esc(COPY.noneBody) + '</p>'));
-      if (live && S.state !== 'email') add(el('div', 'mkc-row')).appendChild(button('mkc-b mkc-b--gold', COPY.emailUs, function () { reach(); }));
+      var person = live && personOffered();
+      add(el('div', 'mkc-card', '<b class="mkc-title">' + esc(COPY.noneTitle) + '</b><p>' + esc(person ? COPY.noneBodyOn : COPY.noneBody) + '</p>'));
+      if (live && S.state !== 'email') add(el('div', 'mkc-row')).appendChild(button('mkc-b mkc-b--gold', person ? COPY.talk : COPY.emailUs, function () { reach(); }));
       return;
     }
     list.forEach(function (x) { add(x.kind === 'answer' ? answerCard(x, qid) : articleCard(x, qid)); });
@@ -366,7 +441,7 @@
     var box = add(el('div', 'mkc-ask', '<p>' + esc(COPY.didIt) + '</p>'));
     var row = box.appendChild(el('div', 'mkc-row'));
     var yes = row.appendChild(button('mkc-b', COPY.helped));
-    var no = row.appendChild(button('mkc-b', COPY.emailUs));
+    var no = row.appendChild(button('mkc-b', personOffered() ? COPY.talk : COPY.emailUs));
     function pick(b, helpful) {
       b.setAttribute('aria-pressed', 'true'); yes.disabled = no.disabled = true;
       track('helpful', { helpful: helpful ? 'yes' : 'no' });
@@ -440,8 +515,13 @@
     window.location.href = '/pricing';
   }
 
-  // -- a person: in phase A, an email to the team --
+  // -- a person: live when someone is online (personForm), otherwise an email to the team (emailForm) --
+  function personOffered() { return S.live && !S.missedOnce && S.state !== 'email'; }
   function reach() {
+    if (personOffered() && (S.state === 'bot' || S.state === 'closed' || S.state === 'missed')) return personForm();
+    return emailForm();
+  }
+  function emailForm(title) {
     build();
     if (!S.open) setOpen(true);
     closeArticle();
@@ -453,7 +533,7 @@
     var f = add(el('form', 'mkc-form'));
     f.setAttribute('data-k', 'email');
     f.noValidate = true;
-    f.innerHTML = '<p><b>' + esc(askEmail ? COPY.emailAsk : COPY.moreAsk) + '</b></p>'
+    f.innerHTML = '<p><b>' + esc(title || (askEmail ? COPY.emailAsk : COPY.moreAsk)) + '</b></p>'
       + (askEmail ? '<label class="mkc-sr" for="mkcEm">' + esc(COPY.emailLabel) + '</label>'
         + '<input class="mkc-in" id="mkcEm" type="email" autocomplete="email" inputmode="email" placeholder="' + esc(COPY.emailPh) + '" maxlength="160" required>' : '')
       + '<label class="mkc-sr" for="mkcNote">' + esc(needQ ? COPY.question : COPY.noteLabel) + '</label>'
@@ -478,7 +558,7 @@
         // With no email field the server uses the one this chat already has.
         post('email', withConv({ email: email || undefined, newsletter: news ? 1 : 0, note: asked ? '' : text, hp: hp.value })).then(function (j) {
           f.remove();
-          S.state = 'email'; S.emailGiven = true; S.replied = false; saveConv();
+          S.state = 'email'; S.emailGiven = true; S.replied = false; saveConv(); endWait(); head();
           track('contact', { newsletter: news ? 'yes' : 'no', asked_first: needQ ? 'no' : 'yes', again: askEmail ? 'no' : 'yes' });
           add(el('div', 'mkc-sys')).textContent = COPY.sent;
           add(el('div', 'mkc-note', esc(COPY.gotIt).replace('{email}', '<b>' + esc(j.email || email) + '</b>') + ' ' + esc(COPY.gotIt2)));
@@ -594,10 +674,275 @@
     ON.forEach(function (n) { document.addEventListener(n, go, { capture: true, passive: true }); });
   }
 
+  // -- live chat (phase B, 2026-11-16) --
+  // A person, when someone is online. The panel holds one request open while the chat waits or is live (POST
+  // /support/sync with hold), so a join, a reply or a typing signal shows within a second; hidden, it checks every 15
+  // seconds. Typing dots show only while a real rep is typing, and stop on their own. The chime plays only when the
+  // panel is closed or the tab is hidden, never before the visitor has touched the page, and can be muted.
+  function liveFacts(j) {
+    if (!j) return;
+    if (j.rep !== undefined) S.rep = j.rep;
+    if (j.v) S.v = j.v;
+    if (j.waited != null) S.waitStart = Date.now() - j.waited * 1000;
+    if (j.state === 'live') S.everLive = true;
+  }
+  function head() {
+    if (!S.built) return;
+    var name = panel.querySelector('.mkc-name'), line = panel.querySelector('.mkc-line'), dot = panel.querySelector('.mkc-dot'), mark = panel.querySelector('.mkc-head .mkc-mark');
+    var st = S.state, withPerson = st === 'live' || st === 'waiting';
+    if (st === 'live' && S.rep) {
+      mark.className = 'mkc-mark is-rep'; mark.textContent = S.rep.charAt(0).toUpperCase(); name.textContent = S.rep; line.textContent = COPY.lineRep; dot.className = 'mkc-dot is-on';
+    } else {
+      mark.className = 'mkc-mark'; mark.textContent = 'M'; name.textContent = COPY.name;
+      if (st === 'waiting') { dot.className = 'mkc-dot is-wait'; line.textContent = COPY.lineWait; }
+      else if (personOffered()) { dot.className = 'mkc-dot is-on'; line.textContent = COPY.lineOn; }
+      else { dot.className = 'mkc-dot'; line.textContent = COPY.lineOff; }
+    }
+    muteBtn.hidden = !withPerson;
+    footO.hidden = st !== 'live';
+    footL.hidden = st === 'live';
+    footR.textContent = st === 'live' ? COPY.endChat : st === 'waiting' ? COPY.emailUs : (personOffered() ? COPY.talk : COPY.emailUs);
+    input.placeholder = st === 'live' ? COPY.messagePh.replace('{name}', S.rep || 'MAKETZO') : st === 'waiting' ? COPY.waitPh : COPY.placeholder;
+    input.maxLength = withPerson ? 1000 : 300;
+  }
+  function footAction() {
+    if (S.state === 'live') return endChat();
+    if (S.state === 'waiting') return emailForm();
+    reach();
+  }
+
+  // "Talk to a Person": the email first, with the reason, and skippable; the question too when none was asked yet.
+  function personForm() {
+    build();
+    if (!S.open) setOpen(true);
+    closeArticle();
+    var open = log.querySelector('form.mkc-form[data-k="person"]');
+    if (open) { open.querySelector('input:not(.mkc-hp), textarea').focus(); return; }
+    var needQ = !S.conv;
+    if (S.emailGiven && !needQ) return askPerson({});
+    var f = add(el('form', 'mkc-form'));
+    f.setAttribute('data-k', 'person');
+    f.noValidate = true;
+    f.innerHTML = (needQ ? '<p><b>' + esc(COPY.hello2) + '</b></p><label class="mkc-sr" for="mkcPq">' + esc(COPY.question) + '</label>'
+        + '<textarea class="mkc-in" id="mkcPq" maxlength="300" placeholder="' + esc(COPY.questionPh) + '"></textarea>' : '')
+      + (S.emailGiven ? '' : '<p>' + (needQ ? esc(COPY.personAsk) : '<b>' + esc(COPY.personAsk) + '</b>') + '</p><label class="mkc-sr" for="mkcPe">' + esc(COPY.emailLabel) + '</label>'
+        + '<input class="mkc-in" id="mkcPe" type="email" autocomplete="email" inputmode="email" placeholder="' + esc(COPY.emailPh) + '" maxlength="160">'
+        + '<label class="mkc-check"><input type="checkbox"> ' + esc(COPY.newsletter) + '</label>')
+      + '<input class="mkc-hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">'
+      + '<div class="mkc-row"><button class="mkc-b mkc-b--gold" type="submit">' + esc(COPY.goOn) + '</button>'
+      + (S.emailGiven ? '' : '<button class="mkc-b" type="button" data-skip>' + esc(COPY.skip) + '</button>') + '</div>'
+      + '<p class="mkc-note is-error" hidden></p>';
+    var q = f.querySelector('#mkcPq'), em = f.querySelector('#mkcPe'), nl = f.querySelector('input[type=checkbox]'), hp = f.querySelector('.mkc-hp'), err = f.querySelector('.is-error');
+    function problem(t) { err.textContent = t; err.hidden = !t; }
+    function go(withEmail) {
+      var email = withEmail && em ? em.value.trim() : '';
+      if (email && !EMAIL_RE.test(email)) { problem(COPY.badEmail); em.focus(); return; }
+      var text = q ? q.value.trim() : '';
+      if (q && !S.conv && text.length < 2) { problem(COPY.needQuestion); q.focus(); return; }
+      problem('');
+      var extra = { email: email || undefined, newsletter: email && nl && nl.checked ? 1 : 0, hp: hp.value };
+      f.remove();
+      if (q && !S.conv) {
+        add(el('div', 'mkc-me')).textContent = text;
+        send(text, false, true, function () { askPerson(extra); }, function () { log.appendChild(f); });
+      } else askPerson(extra);
+    }
+    f.addEventListener('submit', function (e) { e.preventDefault(); go(true); });
+    var skip = f.querySelector('[data-skip]');
+    if (skip) skip.addEventListener('click', function () { go(false); });
+    (q || em).focus();
+  }
+  function askPerson(extra) {
+    track('reach', { live: 'yes', email: extra && extra.email ? 'yes' : 'no' });
+    post('person', withConv(extra || {})).then(function (j) {
+      if (j.next === 'email') { S.live = false; head(); return emailForm(); }
+      if (extra && extra.email) S.emailGiven = true;
+      var was = S.state;
+      S.state = j.state || S.state;
+      S.emailGiven = S.emailGiven || !!j.emailGiven;
+      liveFacts(j);
+      saveConv();
+      if (S.state === 'waiting' && was !== 'waiting') { track('wait', {}); waitBox(COPY.waitNote); }
+      head(); paintLiveBits(j); loop();
+    }).catch(function (e) { add(el('div', 'mkc-note is-error')).textContent = e.message; });
+  }
+
+  // Waiting: what is happening, and for how long (on the server's clock). Never a queue position.
+  var waitEl = null, waitT = null;
+  function waitBox(text) {
+    endWait(true);
+    waitEl = add(el('div', 'mkc-waitbox', '<span></span><time></time>'));
+    waitEl.querySelector('span').textContent = text || COPY.waitNote;
+    if (!S.waitStart) S.waitStart = Date.now();
+    var tick = function () {
+      if (!waitEl || S.state !== 'waiting') { clearInterval(waitT); return; }
+      var s = Math.max(0, Math.floor((Date.now() - S.waitStart) / 1000));
+      waitEl.querySelector('time').textContent = Math.floor(s / 60) + ':' + ('0' + s % 60).slice(-2);
+    };
+    tick();
+    waitT = setInterval(tick, 1000);
+  }
+  function endWait(keepClock) { clearInterval(waitT); if (waitEl) waitEl.remove(); waitEl = null; if (!keepClock) S.waitStart = 0; }
+
+  // The held request. Visible and with a person: held until something changes. Hidden: every 15 seconds. An answers
+  // chat with the panel open: every 10 seconds, so an admin who enters the chat at will is seen.
+  var loopT = null, looping = false;
+  function wantLoop() { return !!S.conv && (S.state === 'waiting' || S.state === 'live' || (S.open && !document.hidden)); }
+  function loop() {
+    clearTimeout(loopT);
+    if (!wantLoop() || looping) return;
+    looping = true;
+    var withPerson = S.state === 'waiting' || S.state === 'live';
+    var hold = withPerson && !document.hidden;
+    var body = withConv({ after: S.lastSeq, hold: hold ? 1 : 0 });
+    if (hold && S.v) body.v = S.v;
+    if (S.open && !document.hidden) body.read = S.lastSeq;
+    var t0 = Date.now(), ok = true, v0 = S.v, n0 = S.lastSeq;
+    post('sync', body).then(apply).catch(function (e) {
+      ok = false;
+      if (e.ended) { S.state = 'closed'; endWait(); dropDots(); saveConv(); head(); }
+    }).then(function () {
+      looping = false;
+      if (!wantLoop()) return;
+      var p = S.state === 'waiting' || S.state === 'live';
+      // A quick answer with nothing new waits a moment (never a hot loop); one that brought something goes again at
+      // once, which also tells the server the visitor now has it on screen (Seen).
+      var changed = S.v !== v0 || S.lastSeq !== n0;
+      var ms = !ok ? 5000 : !p ? 10000 : document.hidden ? 15000 : (!changed && Date.now() - t0 < 400 ? 1500 : 0);
+      loopT = setTimeout(loop, ms);
+    });
+  }
+  // What came back: new replies and system lines (the visitor's own lines are already on screen), the state, the dots.
+  function apply(j) {
+    var was = S.state;
+    S.state = j.state || S.state;
+    S.emailGiven = S.emailGiven || !!j.emailGiven;
+    if (typeof j.live === 'boolean' && S.state !== 'waiting' && S.state !== 'live') S.live = j.live;
+    liveFacts(j);
+    var fresh = 0;
+    (j.messages || []).forEach(function (m) {
+      if (Number(m.seq) <= S.lastSeq) return;
+      S.lastSeq = Number(m.seq);
+      if (m.kind === 'rep') { S.replied = true; dropDots(); repLine(m); fresh++; }
+      else if (m.kind === 'system' && (m.code === 'joined' || m.code === 'handed' || m.code === 'missed' || (m.code === 'ended' && m.by !== 'visitor'))) systemLine(m);
+    });
+    if (was !== S.state) {
+      if (S.state === 'live') { if (was === 'waiting') track('joined', { waited_s: S.waitStart ? Math.round((Date.now() - S.waitStart) / 1000) : 0 }); endWait(); }
+      else if (S.state === 'waiting' && was === 'live') waitBox(COPY.waitOther);
+      else if (S.state === 'missed') { endWait(); track('missed', {}); if (!S.emailGiven) emailForm(COPY.missedAsk); }
+      else if (S.state === 'closed') { endWait(); dropDots(); if (S.everLive && !j.rated && !log.querySelector('.mkc-rate')) rate(); }
+    }
+    if (fresh) newReply(fresh);
+    saveConv();
+    head();
+    paintLiveBits(j);
+  }
+  // The rep typing (dots, redrawn on each signal so the three-beat animation restarts and never loops on its own), and
+  // Seen under the visitor's last message once the rep has read it.
+  var dotsEl = null;
+  function dropDots() { if (dotsEl) { dotsEl.remove(); dotsEl = null; } }
+  function paintLiveBits(j) {
+    if (!S.built) return;
+    dropDots();
+    if (S.state === 'live' && j && j.repTyping) {
+      var who = S.rep || 'MAKETZO';
+      dotsEl = add(el('div', 'mkc-rep mkc-typing', '<span class="mkc-mark" aria-hidden="true">' + esc(who.charAt(0).toUpperCase()) + '</span>'
+        + '<div><div class="mkc-bub"><span class="mkc-dots" data-motion-keep role="img" aria-label="' + esc(COPY.typing.replace('{name}', who)) + '"><i></i><i></i><i></i></span></div></div>'));
+    }
+    var seen = log.querySelector('.mkc-seen'); if (seen) seen.remove();
+    var mine = log.querySelectorAll('.mkc-me[data-seq]');
+    var last = mine.length ? mine[mine.length - 1] : null;
+    if (last && j && S.state === 'live' && Number(j.repRead) >= Number(last.getAttribute('data-seq'))) last.insertAdjacentElement('afterend', el('div', 'mkc-seen', esc(COPY.seen)));
+  }
+  function sayIt(text) {
+    var b = add(el('div', 'mkc-me'));
+    b.textContent = text;
+    post('say', withConv({ text: text })).then(function (j) { b.setAttribute('data-seq', j.seq); loop(); })
+      .catch(function (e) {
+        if (e.status === 409) { S.state = e.state || 'bot'; saveConv(); head(); }
+        add(el('div', 'mkc-note is-error')).textContent = e.message;
+      });
+  }
+  // "Talk to Someone Else": a real handoff to another admin who is online; with nobody else, the same person stays.
+  function other() {
+    post('other', withConv({})).then(function (j) {
+      track('other', { alone: j.alone ? 'yes' : 'no' });
+      if (j.next === 'email') {
+        add(el('div', 'mkc-note')).textContent = COPY.otherAlone;
+        add(el('div', 'mkc-row')).appendChild(button('mkc-b', COPY.emailUs, function () { emailForm(); }));
+        return;
+      }
+      S.state = 'waiting'; liveFacts(j); S.waitStart = Date.now(); saveConv();
+      waitBox(COPY.waitOther); head(); loop();
+    }).catch(function (e) { add(el('div', 'mkc-note is-error')).textContent = e.message; });
+  }
+  function endChat() {
+    post('close', withConv({})).catch(function () {});
+    track('end', { by: 'visitor' });
+    S.state = 'closed'; endWait(); dropDots(); saveConv(); head();
+    add(el('div', 'mkc-sys')).textContent = COPY.endedYou;
+    if (S.everLive && !log.querySelector('.mkc-rate')) rate();
+  }
+
+  // Sound, the unread count on the button, the tab title.
+  var actx = null, flashT = null, baseTitle = document.title;
+  function muted() { try { return localStorage.getItem('mkc_mute') === '1'; } catch (e) { return false; } }
+  function setMute(m) { try { localStorage.setItem('mkc_mute', m ? '1' : '0'); } catch (e) {} paintMute(); track('mute', { on: m ? 'yes' : 'no' }); }
+  function paintMute() {
+    if (!muteBtn) return;
+    var m = muted();
+    muteBtn.innerHTML = m ? IC.mute : IC.snd;
+    muteBtn.setAttribute('aria-pressed', m ? 'true' : 'false');
+    muteBtn.setAttribute('aria-label', m ? COPY.soundOn : COPY.soundOff);
+  }
+  function unlockAudio() { try { if (!actx) actx = new (window.AudioContext || window.webkitAudioContext)(); if (actx.state === 'suspended') actx.resume(); } catch (e) {} }
+  function chime() {
+    if (muted() || !actx || actx.state !== 'running') return;
+    var t = actx.currentTime;
+    [[740, 0], [988, 0.11]].forEach(function (n) {
+      var o = actx.createOscillator(), g = actx.createGain();
+      o.type = 'sine'; o.frequency.value = n[0];
+      g.gain.setValueAtTime(0, t + n[1]); g.gain.linearRampToValueAtTime(0.06, t + n[1] + 0.012); g.gain.exponentialRampToValueAtTime(0.0001, t + n[1] + 0.42);
+      o.connect(g); g.connect(actx.destination); o.start(t + n[1]); o.stop(t + n[1] + 0.45);
+    });
+  }
+  function badge() {
+    var b = btn.querySelector('.mkc-badge');
+    if (S.unread && !S.open) {
+      if (!b) { b = el('span', 'mkc-badge'); btn.appendChild(b); }
+      b.textContent = S.unread;
+      btn.setAttribute('aria-label', COPY.unreadLabel.replace('{n}', S.unread));
+    } else { if (b) b.remove(); btn.setAttribute('aria-label', COPY.chatLabel); }
+  }
+  function newReply(n) {
+    if (S.open && !document.hidden) return;
+    if (!S.open) { S.unread += n; badge(); }
+    chime();
+    if (document.hidden && !flashT) {
+      var on = true;
+      baseTitle = document.title;
+      flashT = setInterval(function () { on = !on; document.title = on ? '(' + Math.max(1, S.unread || n) + ') ' + COPY.newReply : baseTitle; }, 1500);
+    }
+  }
+  function stopFlash() { if (flashT) { clearInterval(flashT); flashT = null; document.title = baseTitle; } }
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) { stopFlash(); if (S.conv) loop(); } });
+
+  // A page opened while a chat waits for, or is with, a person: pick it up without opening the panel, so a reply
+  // still rings and counts on the button.
+  function watch() {
+    build();
+    if (S.said) return;
+    var saved = loadConv();
+    if (!saved || (saved.st !== 'waiting' && saved.st !== 'live')) return;
+    S.said = true;
+    restore(saved);
+  }
+
   window.MKChat = {
     open: function (from) { setOpen(true, from); },
     close: function () { setOpen(false); },
     toggle: function (from) { setOpen(!S.open, from); },
-    fromEmail: fromEmail
+    fromEmail: fromEmail,
+    watch: watch
   };
 })();
