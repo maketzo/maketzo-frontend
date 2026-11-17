@@ -177,8 +177,16 @@
     hidNone: 'Nothing private found, so our team sees the file unchanged.',
     shotHelp: 'Drag a box over anything private. It is removed from the picture before sending.',
     clearBoxes: 'Clear Boxes',
-    expand: 'Expand',
-    expandName: 'Open {name} in a bigger view',
+    fullBlack: 'BLACK OUT ANYTHING PRIVATE',
+    tileBlack: 'Black Out',
+    tileView: 'View',
+    tileRemove: 'Remove',
+    tileOpenPic: 'Open {name} to black out',
+    tileOpenCsv: 'Open {name}',
+    tileCols: '{n} columns hidden: {names}',
+    tileCol1: '1 column hidden: {names}',
+    tileNone: 'Nothing private found',
+    tileBox0: 'Nothing blacked out yet',
     fullDone: 'Done',
     undoBox: 'Undo Last Box',
     fullRows: '{n} rows',
@@ -186,12 +194,8 @@
     shotSent: 'Sent with {n} areas blacked out.',
     shotSent1: 'Sent with 1 area blacked out.',
     shotSent0: 'Sent with nothing blacked out.',
-    chipCols: '{n} columns hidden',
-    chipCol1: '1 column hidden',
-    chipNone: 'nothing hidden',
     chipBoxes: '{n} areas blacked out',
     chipBox1: '1 area blacked out',
-    chipShot: 'drag to black out',
     fileBig: '{name} is over 5 MB. Send a smaller file, or only the rows that matter.',
     fileMax: 'Attach up to 3 files at a time.',
     fileType: '{name} can’t be read here. Attach a CSV or text file, or a PNG or JPG picture.',
@@ -210,6 +214,8 @@
     back: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>',
     clip: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 11.5 12 20a5.5 5.5 0 0 1-7.8-7.8l8.6-8.6a3.7 3.7 0 0 1 5.2 5.2l-8.6 8.6a1.8 1.8 0 0 1-2.6-2.6l7.9-7.9"/></svg>',
     expand: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M20 4l-7 7M10 20H4v-6M4 20l7-7"/></svg>',
+    pencil: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4Z"/></svg>',
+    x: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>',
     up: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10v11H4V10h3Zm0 0 4-7a2 2 0 0 1 3 2l-1 4h6a2 2 0 0 1 2 2.3l-1.4 7A2 2 0 0 1 17.6 21H7"/></svg>',
     dn: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 14V3h3v11h-3Zm0 0-4 7a2 2 0 0 1-3-2l1-4H5a2 2 0 0 1-2-2.3l1.4-7A2 2 0 0 1 6.4 3H17"/></svg>'
   };
@@ -721,9 +727,11 @@
         S.files.push(f); paintFiles();
         lib.prepare(file).then(function (item) {
           f.item = item; f.busy = false; f.name = item.name;
-          f.card = item.kind === 'csv' ? csvCard(item, f) : shotCard(item, f);
+          f.card = fileTile(item, f);
           track('attach', { kind: item.kind, hidden: item.kind === 'csv' ? String(item.masked.cols.length) : '0' });
           paintFiles(); head();
+          // A picture opens big at once, ready to black out (Ed's pick A, 2026-11-17, "Black Out First").
+          if (item.kind === 'image') reviewNext();
         }, function (e) {
           S.files.splice(S.files.indexOf(f), 1); paintFiles(); head();
           var name = e.fileName || file.name;
@@ -733,20 +741,75 @@
       });
     }, function () { fileNote(COPY.error); });
   }
-  // What a CSV sends: the header and the first rows as they go, with what was hidden marked, and one line saying what.
-  function csvCard(item, f) {
-    var m = item.masked;
-    var c = add(el('div', 'mkc-card mkc-file'));
+  // Attached files sit in the chat as slim tiles under one READY TO SEND (then SENT) label (Ed's pick A, 2026-11-17,
+  // after an F: the old card grew past the chat on a long file name, and a pill above the box repeated it). A tile is a
+  // thumbnail, the name cut to fit, what was hidden, and two small buttons: Black Out (a CSV: View) and Remove.
+  function attGroup() {
+    if (S.attGroup && S.attGroup.isConnected) return S.attGroup;
+    var g = add(el('div', 'mkc-atts'));
+    g.appendChild(el('span', 'mkc-k')).textContent = COPY.sentK;
+    S.attGroup = g;
+    return g;
+  }
+  function fileTile(item, f) {
     item.file = f;
-    fileHead(c, item);
-    if (m.header.length) c.appendChild(el('div', 'mkc-tbl', csvTable(m, 5, false)));
-    var said = [];
-    if (m.cols.length) said.push((m.cols.length === 1 ? COPY.hidCol1 : COPY.hidCols).replace('{n}', m.cols.length + ' columns').replace('{names}', listOf(m.cols.map(function (x) { return x.name; }))));
-    if (m.lines) said.push((m.lines === 1 ? COPY.hidLine1 : COPY.hidLines).replace('{n}', m.lines));
-    if (m.cells) said.push((m.cells === 1 ? COPY.hidCell1 : COPY.hidCells).replace('{n}', m.cells));
-    item.said = said.length ? said.join(' ') + ' ' + COPY.hidRest : COPY.hidNone;
-    c.appendChild(el('p', 'mkc-note')).textContent = item.said;
-    return c;
+    var pic = item.kind === 'image', g = attGroup(), t = g.appendChild(el('div', 'mkc-tile'));
+    var th = t.appendChild(el('button', 'mkc-thumb' + (pic ? '' : ' is-csv')));
+    th.type = 'button';
+    th.setAttribute('aria-label', (pic ? COPY.tileOpenPic : COPY.tileOpenCsv).replace('{name}', item.name));
+    var cv = pic ? th.appendChild(el('canvas')) : null;
+    if (!pic) th.textContent = 'CSV';
+    var nm = t.appendChild(el('div', 'mkc-tnm'));
+    var b = nm.appendChild(el('b')); b.textContent = item.name; b.title = item.name;
+    var st = nm.appendChild(el('span'));
+    var acts = t.appendChild(el('div', 'mkc-tacts'));
+    var open = acts.appendChild(el('button', 'mkc-ib mkc-topen', pic ? IC.pencil : IC.expand));
+    open.type = 'button'; open.title = pic ? COPY.tileBlack : COPY.tileView; open.setAttribute('aria-label', open.title + ': ' + item.name);
+    var rm = acts.appendChild(el('button', 'mkc-ib mkc-trm', IC.x));
+    rm.type = 'button'; rm.title = COPY.tileRemove; rm.setAttribute('aria-label', COPY.removeFile.replace('{name}', item.name));
+    var go = function () { openFull(item, open); };
+    th.addEventListener('click', go); open.addEventListener('click', go);
+    rm.addEventListener('click', function () { removeFile(f); track('attach_removed', {}); });
+    if (!pic) {
+      // What the CSV's tile says, and the line above the full table.
+      var m = item.masked, said = [], names = listOf(m.cols.map(function (x) { return x.name; }));
+      if (m.cols.length) said.push((m.cols.length === 1 ? COPY.hidCol1 : COPY.hidCols).replace('{n}', m.cols.length + ' columns').replace('{names}', names));
+      if (m.lines) said.push((m.lines === 1 ? COPY.hidLine1 : COPY.hidLines).replace('{n}', m.lines));
+      if (m.cells) said.push((m.cells === 1 ? COPY.hidCell1 : COPY.hidCells).replace('{n}', m.cells));
+      item.said = said.length ? said.join(' ') + ' ' + COPY.hidRest : COPY.hidNone;
+      st.textContent = m.cols.length ? (m.cols.length === 1 ? COPY.tileCol1 : COPY.tileCols.replace('{n}', m.cols.length)).replace('{names}', names) : COPY.tileNone;
+      st.classList.toggle('is-on', !!(m.cols.length || m.lines || m.cells));
+    }
+    // A picture's thumbnail (the middle of it, square) and its line follow the boxes drawn in the big view.
+    item.sync = function () {
+      if (pic) {
+        var tmp = document.createElement('canvas'); item.draw(tmp);
+        var s = Math.min(item.w, item.h);
+        cv.width = 112; cv.height = 112;
+        cv.getContext('2d').drawImage(tmp, (item.w - s) / 2, (item.h - s) / 2, s, s, 0, 0, 112, 112);
+        var n = item.boxes.length;
+        st.textContent = n ? (n === 1 ? COPY.chipBox1 : COPY.chipBoxes.replace('{n}', n)) : COPY.tileBox0;
+        st.classList.toggle('is-on', n > 0);
+      }
+      head();
+    };
+    item.sync();
+    return t;
+  }
+  function removeFile(f) {
+    var i = S.files.indexOf(f); if (i >= 0) S.files.splice(i, 1);
+    var g = f.card && f.card.parentNode;
+    if (f.card) f.card.remove();
+    if (g && !g.querySelector('.mkc-tile')) { g.remove(); if (S.attGroup === g) S.attGroup = null; }
+    paintFiles(); head();
+  }
+  // Pictures not yet looked at open one after another, each when the last is put away.
+  function reviewNext() {
+    if (root.querySelector('.mkc-full')) return;
+    var f = S.files.filter(function (x) { return x.item && x.item.kind === 'image' && !x.reviewed && !x.sent; })[0];
+    if (!f) return;
+    f.reviewed = true;
+    openFull(f.item, f.card && f.card.querySelector('.mkc-topen'), reviewNext);
   }
   // The header and the first n rows as they go, hidden cells marked; numbered in the bigger view.
   function csvTable(m, n, numbered) {
@@ -755,32 +818,7 @@
     };
     return '<table><thead>' + row(m.header, 'th', '#') + '</thead><tbody>' + m.sample.slice(0, n).map(function (r, i) { return row(r, 'td', i + 1); }).join('') + '</tbody></table>';
   }
-  // A file card's top line: what it is and where it stands, and Expand (Ed, 2026-11-17: "so small and unusable").
-  function fileHead(c, item) {
-    var h = c.appendChild(el('div', 'mkc-fh'));
-    h.appendChild(el('span', 'mkc-k')).textContent = COPY.sentK + ' · ' + item.name.toUpperCase();
-    var x = h.appendChild(el('button', 'mkc-xp', IC.expand + '<span>' + esc(COPY.expand) + '</span>'));
-    x.type = 'button';
-    x.setAttribute('aria-label', COPY.expandName.replace('{name}', item.name));
-    x.addEventListener('click', function () { openFull(item, x); });
-  }
   function listOf(names) { return names.length < 2 ? names.join('') : names.slice(0, -1).join(', ') + ' and ' + names[names.length - 1]; }
-  // A picture: the trader drags boxes over anything private; each is painted black into the picture that is sent.
-  function shotCard(item, f) {
-    var c = add(el('div', 'mkc-card mkc-file'));
-    item.file = f;
-    fileHead(c, item);
-    var cv = c.appendChild(el('canvas', 'mkc-shot'));
-    item.draw(cv);
-    var foot = c.appendChild(el('div', 'mkc-row'));
-    foot.appendChild(el('p', 'mkc-note')).textContent = COPY.shotHelp;
-    var clear = foot.appendChild(button('mkc-link', COPY.clearBoxes, function () { item.boxes = []; item.sync(); }));
-    clear.hidden = true;
-    // The chat's picture, the bigger view's and the chips all follow the same boxes.
-    item.sync = function () { item.draw(cv); clear.hidden = !item.boxes.length; paintFiles(); };
-    boxDrawing(cv, item, function () { item.draw(cv); }, item.sync);
-    return c;
-  }
   // Drag to add a black box. Boxes are fractions of the picture, so they land in the same place at any size.
   function boxDrawing(cv, item, moved, done) {
     var start = null, live = null;
@@ -802,7 +840,7 @@
   // The bigger view (Ed's pick A, 2026-11-17): the file over the whole window. A picture as big as it fits, to black
   // out with Undo Last Box and Clear Boxes; a CSV with every column and up to 200 rows. Done, Esc or a click outside
   // puts it back in the chat, with any boxes drawn here.
-  function openFull(item, from) {
+  function openFull(item, from, then) {
     if (root.querySelector('.mkc-full')) return;
     var pic = item.kind === 'image', f = item.file, locked = pic && f && f.sent;
     var v = el('div', 'mkc-full');
@@ -810,7 +848,7 @@
     sh.setAttribute('role', 'dialog'); sh.setAttribute('aria-modal', 'true'); sh.setAttribute('aria-label', item.name);
     var top = sh.appendChild(el('div', 'mkc-shd'));
     var nm = top.appendChild(el('div', 'mkc-snm'));
-    nm.appendChild(el('span', '', esc(f && f.sent ? COPY.sentDone : COPY.sentK)));
+    nm.appendChild(el('span', '', esc(f && f.sent ? COPY.sentDone : pic ? COPY.fullBlack : COPY.sentK)));
     nm.appendChild(el('b', '', esc(item.name.toUpperCase())));
     var done = top.appendChild(button('mkc-done', COPY.fullDone, function () { shut(); }));
     var tools = sh.appendChild(el('div', 'mkc-tools'));
@@ -831,6 +869,8 @@
       body.classList.add('is-table');
       body.appendChild(el('div', 'mkc-tbl', csvTable(m, 200, true)));
     }
+    // What a file is used for, once, quietly, while it can still be changed or removed.
+    if (!(f && f.sent)) tools.appendChild(el('p', 'mkc-use')).textContent = COPY.consent;
     function fit() {
       if (!big) return;
       var W = body.clientWidth - 2, H = body.clientHeight - 2, k = Math.min(W / item.w, H / item.h);
@@ -854,7 +894,8 @@
       window.removeEventListener('resize', fit);
       v.remove();
       if (item.sync) item.sync();
-      if (from && from.focus) from.focus();
+      if (from && from.focus && from.isConnected) from.focus();
+      if (then) then();
     }
     v.addEventListener('keydown', key);
     v.addEventListener('click', function (e) { if (e.target === v) shut(); });
@@ -864,29 +905,14 @@
     done.focus();
     track('file_expand', { kind: item.kind });
   }
-  // The chips above the box: one per file, with what was hidden, and a way to take it off. The footer says what the
-  // file is used for while any is attached.
+  // The bar above the box carries only an import's read now; files are tiles in the chat (no pill repeating them, Ed:
+  // "The pill underneath the image is extremely ugly"). The footer says what a file is used for while any is attached.
   function paintFiles() {
     if (!S.built || !CFG.files) return;
     var bar = panel.querySelector('.mkc-att');
-    Array.prototype.forEach.call(bar.querySelectorAll('.mkc-attc[data-file]'), function (n) { n.remove(); });
-    S.files.forEach(function (f, i) {
-      var what = !f.item ? COPY.loading : f.item.kind === 'csv'
-        ? (f.item.masked.cols.length ? (f.item.masked.cols.length === 1 ? COPY.chipCol1 : COPY.chipCols.replace('{n}', f.item.masked.cols.length)) : COPY.chipNone)
-        : (f.item.boxes.length ? (f.item.boxes.length === 1 ? COPY.chipBox1 : COPY.chipBoxes.replace('{n}', f.item.boxes.length)) : COPY.chipShot);
-      var c = bar.appendChild(el('span', 'mkc-attc', '<em>' + esc(f.name) + '</em> &middot; ' + esc(what)));
-      c.setAttribute('data-file', i);
-      var x = c.appendChild(button('mkc-attx', '✕', function () {
-        S.files.splice(S.files.indexOf(f), 1);
-        if (f.card) f.card.remove();
-        track('attach_removed', {});
-        paintFiles(); head();
-      }));
-      x.setAttribute('aria-label', COPY.removeFile.replace('{name}', f.name));
-    });
-    bar.hidden = !S.read && !S.files.length;
+    bar.hidden = !S.read;
   }
-  function dropFiles() { S.files.forEach(function (f) { if (f.card) f.card.remove(); }); S.files = []; paintFiles(); }
+  function dropFiles() { S.files.slice().forEach(removeFile); S.files = []; S.attGroup = null; paintFiles(); }
   // What the message says about its files (the server keeps it with the message, and the team sees it).
   function filesMeta() {
     return S.files.filter(function (f) { return f.item; }).map(function (f) {
@@ -897,6 +923,8 @@
   // After the message is stored (seq), each file goes on its own request: one line of JSON, then the bytes in base64.
   function sendFiles(seq, list) {
     var chain = Promise.resolve(), failed = [];
+    // These tiles belong to this message now; a file attached next starts a new READY TO SEND.
+    S.attGroup = null;
     list.forEach(function (f, i) {
       chain = chain.then(function () { return f.item.blob(); }).then(function (blob) {
         return new Promise(function (ok, fail) {
@@ -914,16 +942,17 @@
     });
     return chain.then(function () { failed.forEach(function (n) { fileNote(COPY.fileFailed.replace('{name}', n)); }); });
   }
-  // Once sent, a picture's card stops taking boxes and says what went.
+  // Once sent, a tile loses Remove, a picture's pencil becomes View (it opens locked), and when every tile in the group
+  // has gone the label reads SENT.
   function sentCard(f) {
     f.sent = true;
-    var k = f.card && f.card.querySelector('.mkc-k');
-    if (k) k.textContent = COPY.sentDone + ' · ' + f.name.toUpperCase();
-    if (!f.card || f.item.kind !== 'image') return;
+    if (!f.card) return;
     f.card.classList.add('is-sent');
-    var row = f.card.querySelector('.mkc-row'); if (row) row.remove();
-    var n = f.item.boxes.length;
-    f.card.appendChild(el('p', 'mkc-note')).textContent = n ? (n === 1 ? COPY.shotSent1 : COPY.shotSent.replace('{n}', n)) : COPY.shotSent0;
+    var rm = f.card.querySelector('.mkc-trm'); if (rm) rm.remove();
+    var op = f.card.querySelector('.mkc-topen');
+    if (op && f.item.kind === 'image') { op.innerHTML = IC.expand; op.title = COPY.tileView; op.setAttribute('aria-label', COPY.tileView + ': ' + f.name); }
+    var g = f.card.parentNode, k = g && g.querySelector('.mkc-k');
+    if (k && !g.querySelector('.mkc-tile:not(.is-sent)')) k.textContent = COPY.sentDone;
   }
   // The trader's line shows its files under the words, on screen now and on any reload.
   function fileLine(node, files) {
@@ -1471,8 +1500,10 @@
     input.placeholder = filesReady() ? COPY.filesPh : st === 'live' ? COPY.messagePh.replace('{name}', (S.rep || 'MAKETZO').split(' ')[0]) : st === 'waiting' ? COPY.waitPh
       : S.prompt ? S.prompt : replying ? COPY.replyPh.replace('{name}', firstName()) : COPY.placeholder;
     input.maxLength = (withPerson || replying || teamBound()) ? 1000 : 300;
-    // A file attached: the footer says what it is used for (shown only then).
-    if (S.files.length) { footL.hidden = false; footL.textContent = COPY.consent; footR.hidden = true; footO.hidden = true; }
+    // A file attached: Send sends it, so the footer's other ways out step aside. What a file is used for is said in the
+    // big view, where the trader decides what to share (Ed's pick, 2026-11-17: "No need to state how we use this file"
+    // under the box), and on privacy.html.
+    if (S.files.length) { footR.hidden = true; footO.hidden = true; }
   }
   function footAction() {
     if (S.state === 'live') return endChat();
