@@ -177,6 +177,12 @@
     hidNone: 'Nothing private found, so our team sees the file unchanged.',
     shotHelp: 'Drag a box over anything private. It is removed from the picture before sending.',
     clearBoxes: 'Clear Boxes',
+    expand: 'Expand',
+    expandName: 'Open {name} in a bigger view',
+    fullDone: 'Done',
+    undoBox: 'Undo Last Box',
+    fullRows: '{n} rows',
+    fullFirst: 'The first {n} of {total} rows.',
     shotSent: 'Sent with {n} areas blacked out.',
     shotSent1: 'Sent with 1 area blacked out.',
     shotSent0: 'Sent with nothing blacked out.',
@@ -203,6 +209,7 @@
     send: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>',
     back: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>',
     clip: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 11.5 12 20a5.5 5.5 0 0 1-7.8-7.8l8.6-8.6a3.7 3.7 0 0 1 5.2 5.2l-8.6 8.6a1.8 1.8 0 0 1-2.6-2.6l7.9-7.9"/></svg>',
+    expand: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M20 4l-7 7M10 20H4v-6M4 20l7-7"/></svg>',
     up: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10v11H4V10h3Zm0 0 4-7a2 2 0 0 1 3 2l-1 4h6a2 2 0 0 1 2 2.3l-1.4 7A2 2 0 0 1 17.6 21H7"/></svg>',
     dn: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 14V3h3v11h-3Zm0 0-4 7a2 2 0 0 1-3-2l1-4H5a2 2 0 0 1-2-2.3l1.4-7A2 2 0 0 1 6.4 3H17"/></svg>'
   };
@@ -714,7 +721,7 @@
         S.files.push(f); paintFiles();
         lib.prepare(file).then(function (item) {
           f.item = item; f.busy = false; f.name = item.name;
-          f.card = item.kind === 'csv' ? csvCard(item) : shotCard(item, f);
+          f.card = item.kind === 'csv' ? csvCard(item, f) : shotCard(item, f);
           track('attach', { kind: item.kind, hidden: item.kind === 'csv' ? String(item.masked.cols.length) : '0' });
           paintFiles(); head();
         }, function (e) {
@@ -727,48 +734,135 @@
     }, function () { fileNote(COPY.error); });
   }
   // What a CSV sends: the header and the first rows as they go, with what was hidden marked, and one line saying what.
-  function csvCard(item) {
+  function csvCard(item, f) {
     var m = item.masked;
     var c = add(el('div', 'mkc-card mkc-file'));
-    c.appendChild(el('span', 'mkc-k')).textContent = COPY.sentK + ' · ' + item.name.toUpperCase();
-    if (m.header.length) {
-      var row = function (cells, tag) { return '<tr>' + cells.map(function (x) { return '<' + tag + (x.hid ? ' class="is-hid"' : '') + '>' + esc(String(x.t == null ? '' : x.t).slice(0, 40)) + '</' + tag + '>'; }).join('') + '</tr>'; };
-      c.appendChild(el('div', 'mkc-tbl', '<table><thead>' + row(m.header, 'th') + '</thead><tbody>' + m.sample.map(function (r) { return row(r, 'td'); }).join('') + '</tbody></table>'));
-    }
+    item.file = f;
+    fileHead(c, item);
+    if (m.header.length) c.appendChild(el('div', 'mkc-tbl', csvTable(m, 5, false)));
     var said = [];
     if (m.cols.length) said.push((m.cols.length === 1 ? COPY.hidCol1 : COPY.hidCols).replace('{n}', m.cols.length + ' columns').replace('{names}', listOf(m.cols.map(function (x) { return x.name; }))));
     if (m.lines) said.push((m.lines === 1 ? COPY.hidLine1 : COPY.hidLines).replace('{n}', m.lines));
     if (m.cells) said.push((m.cells === 1 ? COPY.hidCell1 : COPY.hidCells).replace('{n}', m.cells));
-    c.appendChild(el('p', 'mkc-note')).textContent = said.length ? said.join(' ') + ' ' + COPY.hidRest : COPY.hidNone;
+    item.said = said.length ? said.join(' ') + ' ' + COPY.hidRest : COPY.hidNone;
+    c.appendChild(el('p', 'mkc-note')).textContent = item.said;
     return c;
+  }
+  // The header and the first n rows as they go, hidden cells marked; numbered in the bigger view.
+  function csvTable(m, n, numbered) {
+    var row = function (cells, tag, num) {
+      return '<tr>' + (numbered ? '<' + tag + ' class="mkc-rn">' + num + '</' + tag + '>' : '') + cells.map(function (x) { return '<' + tag + (x.hid ? ' class="is-hid"' : '') + '>' + esc(String(x.t == null ? '' : x.t).slice(0, numbered ? 80 : 40)) + '</' + tag + '>'; }).join('') + '</tr>';
+    };
+    return '<table><thead>' + row(m.header, 'th', '#') + '</thead><tbody>' + m.sample.slice(0, n).map(function (r, i) { return row(r, 'td', i + 1); }).join('') + '</tbody></table>';
+  }
+  // A file card's top line: what it is and where it stands, and Expand (Ed, 2026-11-17: "so small and unusable").
+  function fileHead(c, item) {
+    var h = c.appendChild(el('div', 'mkc-fh'));
+    h.appendChild(el('span', 'mkc-k')).textContent = COPY.sentK + ' · ' + item.name.toUpperCase();
+    var x = h.appendChild(el('button', 'mkc-xp', IC.expand + '<span>' + esc(COPY.expand) + '</span>'));
+    x.type = 'button';
+    x.setAttribute('aria-label', COPY.expandName.replace('{name}', item.name));
+    x.addEventListener('click', function () { openFull(item, x); });
   }
   function listOf(names) { return names.length < 2 ? names.join('') : names.slice(0, -1).join(', ') + ' and ' + names[names.length - 1]; }
   // A picture: the trader drags boxes over anything private; each is painted black into the picture that is sent.
   function shotCard(item, f) {
     var c = add(el('div', 'mkc-card mkc-file'));
-    c.appendChild(el('span', 'mkc-k')).textContent = COPY.sentK + ' · ' + item.name.toUpperCase();
+    item.file = f;
+    fileHead(c, item);
     var cv = c.appendChild(el('canvas', 'mkc-shot'));
     item.draw(cv);
     var foot = c.appendChild(el('div', 'mkc-row'));
     foot.appendChild(el('p', 'mkc-note')).textContent = COPY.shotHelp;
-    var clear = foot.appendChild(button('mkc-link', COPY.clearBoxes, function () { item.boxes = []; item.draw(cv); clear.hidden = true; paintFiles(); }));
+    var clear = foot.appendChild(button('mkc-link', COPY.clearBoxes, function () { item.boxes = []; item.sync(); }));
     clear.hidden = true;
+    // The chat's picture, the bigger view's and the chips all follow the same boxes.
+    item.sync = function () { item.draw(cv); clear.hidden = !item.boxes.length; paintFiles(); };
+    boxDrawing(cv, item, function () { item.draw(cv); }, item.sync);
+    return c;
+  }
+  // Drag to add a black box. Boxes are fractions of the picture, so they land in the same place at any size.
+  function boxDrawing(cv, item, moved, done) {
     var start = null, live = null;
     var at = function (ev) { var r = cv.getBoundingClientRect(); return { x: Math.min(1, Math.max(0, (ev.clientX - r.left) / r.width)), y: Math.min(1, Math.max(0, (ev.clientY - r.top) / r.height)) }; };
-    cv.addEventListener('pointerdown', function (ev) { if (f.sent) return; ev.preventDefault(); start = at(ev); live = { x: start.x, y: start.y, w: 0, h: 0 }; item.boxes.push(live); try { cv.setPointerCapture(ev.pointerId); } catch (x) {} });
+    cv.addEventListener('pointerdown', function (ev) { if (item.file && item.file.sent) return; ev.preventDefault(); start = at(ev); live = { x: start.x, y: start.y, w: 0, h: 0 }; item.boxes.push(live); try { cv.setPointerCapture(ev.pointerId); } catch (x) {} });
     cv.addEventListener('pointermove', function (ev) {
       if (!start) return;
       var p = at(ev);
       live.x = Math.min(start.x, p.x); live.y = Math.min(start.y, p.y); live.w = Math.abs(p.x - start.x); live.h = Math.abs(p.y - start.y);
-      item.draw(cv);
+      moved();
     });
     var end = function () {
       if (!start) return;
       if (live.w < 0.01 || live.h < 0.01) item.boxes.pop();
-      start = live = null; item.draw(cv); clear.hidden = !item.boxes.length; paintFiles();
+      start = live = null; done();
     };
     cv.addEventListener('pointerup', end); cv.addEventListener('pointercancel', end);
-    return c;
+  }
+  // The bigger view (Ed's pick A, 2026-11-17): the file over the whole window. A picture as big as it fits, to black
+  // out with Undo Last Box and Clear Boxes; a CSV with every column and up to 200 rows. Done, Esc or a click outside
+  // puts it back in the chat, with any boxes drawn here.
+  function openFull(item, from) {
+    if (root.querySelector('.mkc-full')) return;
+    var pic = item.kind === 'image', f = item.file, locked = pic && f && f.sent;
+    var v = el('div', 'mkc-full');
+    var sh = v.appendChild(el('div', 'mkc-sheet'));
+    sh.setAttribute('role', 'dialog'); sh.setAttribute('aria-modal', 'true'); sh.setAttribute('aria-label', item.name);
+    var top = sh.appendChild(el('div', 'mkc-shd'));
+    var nm = top.appendChild(el('div', 'mkc-snm'));
+    nm.appendChild(el('span', '', esc(f && f.sent ? COPY.sentDone : COPY.sentK)));
+    nm.appendChild(el('b', '', esc(item.name.toUpperCase())));
+    var done = top.appendChild(button('mkc-done', COPY.fullDone, function () { shut(); }));
+    var tools = sh.appendChild(el('div', 'mkc-tools'));
+    var body = sh.appendChild(el('div', 'mkc-sbody'));
+    var big, undo, clear;
+    if (pic) {
+      tools.appendChild(el('p', '')).textContent = locked ? (item.boxes.length ? (item.boxes.length === 1 ? COPY.shotSent1 : COPY.shotSent.replace('{n}', item.boxes.length)) : COPY.shotSent0) : COPY.shotHelp;
+      if (!locked) {
+        undo = tools.appendChild(button('mkc-link', COPY.undoBox, function () { item.boxes.pop(); paint(); }));
+        clear = tools.appendChild(button('mkc-link', COPY.clearBoxes, function () { item.boxes = []; paint(); }));
+      }
+      big = body.appendChild(el('canvas', 'mkc-big'));
+      if (locked) big.classList.add('is-sent');
+    } else {
+      var m = item.masked, shown = Math.min(m.sample.length, 200);
+      tools.appendChild(el('p', '')).textContent = item.said || '';
+      tools.appendChild(el('span', 'mkc-cnt')).textContent = m.rows > shown ? COPY.fullFirst.replace('{n}', shown).replace('{total}', m.rows) : COPY.fullRows.replace('{n}', m.rows);
+      body.classList.add('is-table');
+      body.appendChild(el('div', 'mkc-tbl', csvTable(m, 200, true)));
+    }
+    function fit() {
+      if (!big) return;
+      var W = body.clientWidth - 2, H = body.clientHeight - 2, k = Math.min(W / item.w, H / item.h);
+      big.style.width = Math.max(1, Math.floor(item.w * k)) + 'px'; big.style.height = Math.max(1, Math.floor(item.h * k)) + 'px';
+    }
+    function paint() {
+      item.draw(big);
+      if (undo) undo.disabled = !item.boxes.length;
+      if (clear) clear.disabled = !item.boxes.length;
+      if (item.sync) item.sync();
+    }
+    function key(e) {
+      if (e.key === 'Escape') { e.stopPropagation(); e.preventDefault(); shut(); return; }
+      if (e.key !== 'Tab') return;
+      var list = Array.prototype.filter.call(sh.querySelectorAll('button'), function (b) { return !b.disabled; });
+      var first = list[0], last = list[list.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
+    function shut() {
+      window.removeEventListener('resize', fit);
+      v.remove();
+      if (item.sync) item.sync();
+      if (from && from.focus) from.focus();
+    }
+    v.addEventListener('keydown', key);
+    v.addEventListener('click', function (e) { if (e.target === v) shut(); });
+    window.addEventListener('resize', fit);
+    root.appendChild(v);
+    if (big) { paint(); fit(); boxDrawing(big, item, function () { item.draw(big); }, paint); }
+    done.focus();
+    track('file_expand', { kind: item.kind });
   }
   // The chips above the box: one per file, with what was hidden, and a way to take it off. The footer says what the
   // file is used for while any is attached.

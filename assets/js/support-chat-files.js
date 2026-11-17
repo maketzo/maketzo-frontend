@@ -186,12 +186,12 @@
       result[0] = le ? 0xFF : 0xFE; result[1] = le ? 0xFE : 0xFF;
       for (var k = 0; k < out.length; k++) { result[2 + 2 * k] = le ? out[k] & 255 : out[k] >> 8; result[3 + 2 * k] = le ? out[k] >> 8 : out[k] & 255; }
     }
-    // The preview: the header and the first rows under it, as sent.
+    // The preview: the header and the first rows under it, as sent (the chat card shows 5, the bigger view up to 200).
     var sample = [], header = [];
     if (h >= 0) {
       var shown = function (r, c, i) { return { t: hid[r + ':' + i] ? (edits.filter(function (ed) { return ed.s === c.s; })[0] || {}).t : displayOf(src, c.s, c.e), hid: !!hid[r + ':' + i] }; };
       header = rows[h].map(function (c, i) { return { t: displayOf(src, c.s, c.e), hid: !!byCol[i] }; });
-      for (var rr = h + 1; rr < rows.length && sample.length < 5; rr++) {
+      for (var rr = h + 1; rr < rows.length && sample.length < 200; rr++) {
         if (!rows[rr].some(function (c) { return c.e > c.s; })) continue;
         sample.push(rows[rr].map(function (c, i) { return shown(rr, c, i); }));
       }

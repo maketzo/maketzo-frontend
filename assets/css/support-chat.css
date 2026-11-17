@@ -277,6 +277,46 @@ textarea.mkc-in { resize: none; min-height: 68px; }
 .mkc-tbl .is-hid { color: var(--mkc-accent); font-weight: 600; }
 .mkc-shot { display: block; width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--mkc-line); cursor: crosshair; touch-action: none; }
 .mkc-file.is-sent .mkc-shot { cursor: default; touch-action: auto; }
+/* Expand on a file card, and the bigger view it opens (Ed's pick A, 2026-11-17: "so small and unusable"). */
+.mkc-fh { display: flex; align-items: center; gap: 8px; }
+.mkc-fh .mkc-k { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mkc-xp {
+  flex: none; display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 11px 0 9px; border-radius: 15px;
+  border: 1px solid var(--mkc-line2); background: var(--mkc-bg); color: var(--mkc-fg); font: 600 13px/1 var(--mkc-sans); cursor: pointer; white-space: nowrap;
+}
+.mkc-xp:hover { border-color: var(--mkc-gold); }
+.mkc-xp:focus-visible { outline: 2px solid var(--mkc-gold); outline-offset: 2px; }
+.mkc-xp svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+/* inverted-by-design: the bigger view dims whatever page is behind it the same way in both modes. */
+.mkc-full {
+  position: fixed; inset: 0; z-index: 2100; display: flex; align-items: center; justify-content: center; padding: 24px;
+  background: rgba(6, 8, 12, .72); font: 15px/1.5 var(--mkc-sans); text-align: left; animation: mkcFade .18s ease-out;
+}
+.mkc-sheet {
+  display: flex; flex-direction: column; width: min(1120px, 100%); height: min(860px, 100%); overflow: hidden; border-radius: 18px;
+  background: var(--mkc-bg); color: var(--mkc-fg); box-shadow: 0 30px 80px rgba(0, 0, 0, .55); animation: mkcRise .24s cubic-bezier(.2, .8, .2, 1);
+}
+.mkc-shd { display: flex; align-items: center; gap: 14px; padding: 14px 18px; background: linear-gradient(180deg, #151923, #0F1218); color: var(--mkc-head-fg); }
+.mkc-snm { flex: 1; min-width: 0; }
+.mkc-snm span { display: block; font: 500 10.5px/1.3 var(--mkc-mono); letter-spacing: .16em; color: var(--mkc-gold-hi); }
+.mkc-snm b { display: block; font: 400 24px/1.1 var(--mkc-display); letter-spacing: .03em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mkc-done { flex: none; height: 40px; padding: 0 22px; border: 0; border-radius: 20px; background: var(--mkc-gold); color: #14161B; font: 700 15px/1 var(--mkc-sans); cursor: pointer; }
+.mkc-done:hover { background: var(--mkc-gold-hi); }
+.mkc-done:focus-visible { outline: 2px solid var(--mkc-gold-hi); outline-offset: 3px; }
+.mkc-tools { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 18px; padding: 12px 18px; border-bottom: 1px solid var(--mkc-line); }
+.mkc-tools p { flex: 1 1 280px; min-width: 0; margin: 0; font-size: 14.5px; color: var(--mkc-fg2); }
+.mkc-cnt { font: 500 11px/1.3 var(--mkc-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--mkc-accent); }
+.mkc-sbody { flex: 1; min-height: 0; margin: 18px; display: flex; align-items: center; justify-content: center; }
+.mkc-sbody.is-table { display: block; }
+.mkc-sbody .mkc-tbl { height: 100%; overflow: auto; }
+.mkc-sbody .mkc-tbl table { font-size: 13.5px; }
+.mkc-sbody .mkc-tbl th, .mkc-sbody .mkc-tbl td { padding: 7px 12px; }
+.mkc-sbody .mkc-tbl th { position: sticky; top: 0; background: var(--mkc-bg); }
+.mkc-tbl .mkc-rn { color: var(--mkc-fg3); text-align: right; }
+.mkc-big { display: block; border-radius: 10px; border: 1px solid var(--mkc-line); cursor: crosshair; touch-action: none; box-shadow: 0 6px 24px rgba(20, 25, 35, .18); }
+.mkc-big.is-sent { cursor: default; touch-action: auto; }
+@keyframes mkcFade { from { opacity: 0; } }
+@keyframes mkcRise { from { opacity: 0; transform: translateY(14px) scale(.985); } }
 .mkc-mefiles { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
 .mkc-mefiles:first-child { margin-top: 0; }
 .mkc-mefiles span { font-size: 12px; padding: 2px 8px; border-radius: 999px; background: rgba(255,255,255,.14); }
@@ -285,6 +325,7 @@ textarea.mkc-in { resize: none; min-height: 68px; }
   .mkc-panel { animation: none; }
   .mkc-btn { transition: none; }
   .mkc-dots i { animation: none; opacity: .7; }
+  .mkc-full, .mkc-sheet { animation: none; }
 }
 
 /* -- a phone: the panel is the whole screen, sized to the visible area so the keyboard never covers the box; the
@@ -305,5 +346,12 @@ textarea.mkc-in { resize: none; min-height: 68px; }
   .mkc-head { padding-top: calc(12px + env(safe-area-inset-top, 0px)); padding-left: 18px; }
   .mkc-foot { padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px)); }
   html.mkc-lock, html.mkc-lock body { overflow: hidden; }
+  .mkc-full { padding: 0; }
+  .mkc-sheet { width: 100%; height: 100%; border-radius: 0; box-shadow: none; }
+  .mkc-shd { padding: calc(12px + env(safe-area-inset-top, 0px)) 14px 12px; }
+  .mkc-snm b { font-size: 20px; }
+  .mkc-tools { padding: 10px 14px; }
+  .mkc-tools p { flex-basis: 100%; font-size: 14px; }
+  .mkc-sbody { margin: 12px 12px calc(12px + env(safe-area-inset-bottom, 0px)); }
 }
 @keyframes mkcUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
