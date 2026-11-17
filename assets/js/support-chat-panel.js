@@ -1327,8 +1327,18 @@
       });
   }
   // "Talk to Someone Else": a real handoff to another admin who is online; with nobody else, the same person stays.
+  // The click shows at once (Ed, 2026-11-17: "When I click on Talk to Someone Else nothing happens"): the search line
+  // with its dots while the server looks, then the answer in its place. One request at a time.
   function other() {
+    if (footO.disabled) return;
+    footO.disabled = true;
+    track('other_click', {});
+    var looking = add(el('div', 'mkc-wait mkc-think', '<span class="mkc-dots" data-motion-keep aria-hidden="true"><i></i><i></i><i></i></span><span>' + esc(COPY.waitOther) + '</span>'));
+    var started = Date.now();
     post('other', withConv({})).then(function (j) {
+      return new Promise(function (ok) { setTimeout(function () { ok(j); }, Math.max(0, THINK_MS - (Date.now() - started))); });
+    }).then(function (j) {
+      looking.remove(); footO.disabled = false;
       track('other', { alone: j.alone ? 'yes' : 'no' });
       if (j.next === 'email') {
         add(el('div', 'mkc-note')).textContent = COPY.otherAlone;
@@ -1337,7 +1347,7 @@
       }
       S.state = 'waiting'; liveFacts(j); S.waitStart = Date.now(); saveConv();
       waitBox(COPY.waitOther); head(); loop();
-    }).catch(function (e) { add(el('div', 'mkc-note is-error')).textContent = e.message; });
+    }).catch(function (e) { looking.remove(); footO.disabled = false; add(el('div', 'mkc-note is-error')).textContent = e.message; });
   }
   // Sound, the unread count on the button, the tab title.
   var actx = null, flashT = null, baseTitle = document.title;
