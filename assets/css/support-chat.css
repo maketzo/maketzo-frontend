@@ -258,6 +258,29 @@ textarea.mkc-in { resize: none; min-height: 68px; }
 .mkc-attx { width: 24px; height: 24px; border: 0; border-radius: 50%; background: transparent; color: var(--mkc-fg2); display: grid; place-items: center; font-size: 13px; line-height: 1; cursor: pointer; }
 .mkc-attx:hover { background: var(--mkc-bg); }
 
+/* Files (only where the page allows them, the app): the paperclip beside the box, What Is Sent for a CSV, the black-out
+   box on a picture, and the file names under the trader's line. */
+.mkc-clip {
+  width: 42px; height: 42px; flex: none; border-radius: 50%; border: 1px solid var(--mkc-line2);
+  background: var(--mkc-card); color: var(--mkc-fg2); display: grid; place-items: center; cursor: pointer;
+}
+.mkc-clip:hover { border-color: var(--mkc-gold); color: var(--mkc-fg); }
+.mkc-clip svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.mkc-file { gap: 8px; }
+.mkc-file .mkc-note { margin: 0; font-size: 13px; }
+.mkc-file .mkc-row { align-items: center; justify-content: space-between; gap: 10px; }
+.mkc-tbl { overflow-x: auto; border: 1px solid var(--mkc-line); border-radius: 8px; background: var(--mkc-bg); }
+.mkc-tbl table { border-collapse: collapse; width: 100%; font: 400 12px/1.3 var(--mkc-mono); color: var(--mkc-fg); }
+.mkc-tbl th, .mkc-tbl td { padding: 5px 7px; text-align: left; white-space: nowrap; border-bottom: 1px solid var(--mkc-line); }
+.mkc-tbl th { color: var(--mkc-fg3); font-weight: 500; }
+.mkc-tbl tr:last-child td { border-bottom: 0; }
+.mkc-tbl .is-hid { color: var(--mkc-accent); font-weight: 600; }
+.mkc-shot { display: block; width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--mkc-line); cursor: crosshair; touch-action: none; }
+.mkc-file.is-sent .mkc-shot { cursor: default; touch-action: auto; }
+.mkc-mefiles { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+.mkc-mefiles:first-child { margin-top: 0; }
+.mkc-mefiles span { font-size: 12px; padding: 2px 8px; border-radius: 999px; background: rgba(255,255,255,.14); }
+
 @media (prefers-reduced-motion: reduce) {
   .mkc-panel { animation: none; }
   .mkc-btn { transition: none; }

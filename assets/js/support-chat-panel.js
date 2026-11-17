@@ -157,7 +157,38 @@
     readIn: '{n} trades in',
     readOut: '{n} rows left out',
     readNone: 'No trades found in {rows} rows',
-    removeRead: 'Remove how the import read it'
+    removeRead: 'Remove how the import read it',
+    // Files (only where the page allows them: CFG.files, the app)
+    attach: 'Attach a file',
+    removeFile: 'Remove {name}',
+    consent: 'We use this file to fix your import and to improve how MAKETZO reads files from your broker.',
+    sentK: 'WHAT IS SENT',
+    hidCols: 'We hid {n}: {names}.',
+    hidCol1: 'We hid 1 column: {names}.',
+    hidLines: '{n} lines above the header are hidden.',
+    hidLine1: '1 line above the header is hidden.',
+    hidCells: '{n} other values that looked like an email, phone or card number are hidden.',
+    hidCell1: '1 other value that looked like an email, phone or card number is hidden.',
+    hidRest: 'Everything else goes as it is.',
+    hidNone: 'Nothing private found. It goes as it is.',
+    shotHelp: 'Drag a box over anything private. It is removed from the picture before sending.',
+    clearBoxes: 'Clear Boxes',
+    shotSent: 'Sent with {n} areas blacked out.',
+    shotSent1: 'Sent with 1 area blacked out.',
+    shotSent0: 'Sent as it is.',
+    chipCols: '{n} columns hidden',
+    chipCol1: '1 column hidden',
+    chipNone: 'nothing hidden',
+    chipBoxes: '{n} areas blacked out',
+    chipBox1: '1 area blacked out',
+    chipShot: 'drag to black out',
+    fileBig: '{name} is over 5 MB. Send a smaller file, or only the rows that matter.',
+    fileMax: 'Attach up to 3 files at a time.',
+    fileType: '{name} can’t be read here. Attach a CSV or text file, or a PNG or JPG picture.',
+    fileExcel: 'We can’t read Excel files here yet. Save {name} as CSV and attach that.',
+    filePic: 'We couldn’t open {name}. Take a screenshot (PNG or JPG) and attach that.',
+    fileFailed: 'We couldn’t send {name}. Attach it again.',
+    filesSent: 'Attached'
   };
   if (CFG.copy) Object.keys(CFG.copy).forEach(function (k) { if (typeof CFG.copy[k] === 'string') COPY[k] = CFG.copy[k]; });
 
@@ -167,6 +198,7 @@
     down: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>',
     send: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>',
     back: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>',
+    clip: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 11.5 12 20a5.5 5.5 0 0 1-7.8-7.8l8.6-8.6a3.7 3.7 0 0 1 5.2 5.2l-8.6 8.6a1.8 1.8 0 0 1-2.6-2.6l7.9-7.9"/></svg>',
     up: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10v11H4V10h3Zm0 0 4-7a2 2 0 0 1 3 2l-1 4h6a2 2 0 0 1 2 2.3l-1.4 7A2 2 0 0 1 17.6 21H7"/></svg>',
     dn: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 14V3h3v11h-3Zm0 0-4 7a2 2 0 0 1-3-2l1-4H5a2 2 0 0 1-2-2.3l1.4-7A2 2 0 0 1 6.4 3H17"/></svg>'
   };
@@ -205,7 +237,9 @@
     key: randomKey(),
     // live chat: who is answering, the chat's version (the held request waits on it), the last message seq this panel
     // has, whether a person ever joined (the rating), unread replies while closed, and a miss (email from then on)
-    rep: null, v: null, lastSeq: 0, everLive: false, unread: 0, missedOnce: false, typedAt: 0
+    rep: null, v: null, lastSeq: 0, everLive: false, unread: 0, missedOnce: false, typedAt: 0,
+    // files the trader attached for the next message (CFG.files only)
+    files: []
   };
   var panel, log, art, input, sendBtn, footR, footL, footO, muteBtn, endBtn;
 
@@ -354,7 +388,10 @@
       + '<button type="button" class="mkc-icon" data-act="close" aria-label="' + esc(COPY.close) + '">' + IC.down + '</button></header>'
       + '<div class="mkc-body"><div class="mkc-log" role="log" aria-live="polite"></div><div class="mkc-art" hidden></div></div>'
       + '<div class="mkc-att" hidden></div>'
-      + '<form class="mkc-compose" autocomplete="off" novalidate><label class="mkc-sr" for="mkcIn">' + esc(COPY.question) + '</label>'
+      + '<form class="mkc-compose" autocomplete="off" novalidate>'
+      + (CFG.files ? '<button type="button" class="mkc-clip" data-act="clip" aria-label="' + esc(COPY.attach) + '" title="' + esc(COPY.attach) + '">' + IC.clip + '</button>'
+        + '<input type="file" class="mkc-sr" data-act="file" tabindex="-1" aria-hidden="true" multiple accept=".csv,.txt,.tsv,.xls,.xlsx,text/csv,text/plain,image/png,image/jpeg,image/heic,image/webp">' : '')
+      + '<label class="mkc-sr" for="mkcIn">' + esc(COPY.question) + '</label>'
       + '<input class="mkc-in" id="mkcIn" name="q" placeholder="' + esc(COPY.placeholder) + '" maxlength="300" enterkeyhint="send">'
       + '<button class="mkc-send" type="submit" aria-label="' + esc(COPY.send) + '">' + IC.send + '</button></form>'
       + '<div class="mkc-foot"><span>' + esc(COPY.footLeft) + '</span></div>';
@@ -380,10 +417,17 @@
       e.preventDefault();
       var v = input.value.trim();
       var withPerson = S.state === 'waiting' || S.state === 'live';
-      if (v.length < (withPerson ? 1 : 2)) { input.focus(); return; }
+      // Files can go on their own; words otherwise need two letters (one to a person).
+      if (!filesReady() && v.length < (withPerson ? 1 : 2)) { input.focus(); return; }
+      if (S.files.some(function (f) { return f.busy; })) return;
       input.value = '';
       if (withPerson) sayIt(v); else if (replyMode() && !teamBound()) writeBack(v); else ask(v, false);
     });
+    if (CFG.files) {
+      var picker = panel.querySelector('[data-act="file"]');
+      panel.querySelector('[data-act="clip"]').addEventListener('click', function () { picker.value = ''; picker.click(); });
+      picker.addEventListener('change', function () { attach([].slice.call(picker.files || [])); });
+    }
     // The visitor typing to a person: a dot signal, at most every 3 seconds. Never the words.
     input.addEventListener('input', function () {
       if ((S.state === 'waiting' || S.state === 'live') && input.value && Date.now() - S.typedAt > 3000) { S.typedAt = Date.now(); post('typing', withConv({})).catch(function () {}); }
@@ -479,7 +523,7 @@
     clearTimeout(loopT);
     forget();
     S.replied = false; S.missedOnce = false; S.everLive = false; S.rated = false; S.rep = null; S.v = null; S.lastSeq = 0; S.unread = 0; S.waitStart = 0;
-    S.extra = null; S.prompt = null; S.read = null; S.opener = null; paintRead();
+    S.extra = null; S.prompt = null; S.read = null; S.opener = null; paintRead(); dropFiles();
     endWait(); dropDots(); closeArticle(); badge();
     log.innerHTML = '';
     add(el('div', 'mkc-sys')).textContent = COPY.endedYou;
@@ -620,16 +664,173 @@
   function paintRead() {
     if (!S.built) return;
     var bar = panel.querySelector('.mkc-att');
-    bar.innerHTML = '';
-    bar.hidden = !S.read;
+    Array.prototype.forEach.call(bar.querySelectorAll('.mkc-attc[data-read]'), function (n) { n.remove(); });
+    bar.hidden = !S.read && !S.files.length;
     if (!S.read) return;
-    var c = bar.appendChild(el('span', 'mkc-attc', '<em>' + esc(COPY.readChip) + '</em> &middot; ' + esc(readLine(S.read))));
+    var c = bar.insertBefore(el('span', 'mkc-attc', '<em>' + esc(COPY.readChip) + '</em> &middot; ' + esc(readLine(S.read))), bar.firstChild);
+    c.setAttribute('data-read', '1');
     var x = c.appendChild(button('mkc-attx', '✕', function () { track('read_removed', {}); setRead(null); input.focus(); }));
     x.setAttribute('aria-label', COPY.removeRead);
   }
   // The trader's next message goes straight to the team: an answer to what we saw or the check-in, a team start, or
   // an import's read.
-  function teamBound() { return !!(S.read || (S.extra && (S.extra.team || S.extra.saw || S.extra.checkin))); }
+  function teamBound() { return !!(S.read || filesReady() || (S.extra && (S.extra.team || S.extra.saw || S.extra.checkin))); }
+
+  // -- files (only where the page allows them, CFG.files: the app). Never asked for; the trader chooses to attach. --
+  // Each file is cleaned in the browser first (support-chat-files.js, loaded on the first attach): a CSV shows What Is
+  // Sent with what was hidden, a picture shows the black-out box. The message goes first, listing the files; then each
+  // file goes on its own, tied to that message.
+  var filesLib = null;
+  function loadFilesLib() {
+    if (window.MKChatFiles) return Promise.resolve(window.MKChatFiles);
+    if (filesLib) return filesLib;
+    var tag = document.querySelector('script[data-mkc-files]');
+    var src = (tag && tag.getAttribute('data-mkc-files')) || CFG.filesSrc;
+    if (!src) return Promise.reject(new Error('files'));
+    filesLib = new Promise(function (ok, fail) {
+      var s = document.createElement('script');
+      s.src = src;
+      s.onload = function () { window.MKChatFiles ? ok(window.MKChatFiles) : fail(new Error('files')); };
+      s.onerror = function () { filesLib = null; fail(new Error('files')); };
+      document.head.appendChild(s);
+    });
+    return filesLib;
+  }
+  function filesReady() { return S.files.some(function (f) { return f.item; }); }
+  function fileNote(text) { add(el('div', 'mkc-note is-error')).textContent = text; }
+  function attach(list) {
+    if (!list.length) return;
+    if (S.blocked) return;
+    var room = 3 - S.files.length;
+    if (list.length > room) { fileNote(COPY.fileMax); list = list.slice(0, Math.max(0, room)); }
+    if (!list.length) return;
+    loadFilesLib().then(function (lib) {
+      list.forEach(function (file) {
+        var f = { name: file.name, busy: true, item: null, card: null };
+        S.files.push(f); paintFiles();
+        lib.prepare(file).then(function (item) {
+          f.item = item; f.busy = false; f.name = item.name;
+          f.card = item.kind === 'csv' ? csvCard(item) : shotCard(item, f);
+          track('attach', { kind: item.kind, hidden: item.kind === 'csv' ? String(item.masked.cols.length) : '0' });
+          paintFiles(); head();
+        }, function (e) {
+          S.files.splice(S.files.indexOf(f), 1); paintFiles(); head();
+          var name = e.fileName || file.name;
+          fileNote((e.code === 'big' ? COPY.fileBig : e.code === 'excel' ? COPY.fileExcel : e.code === 'picture' ? COPY.filePic : COPY.fileType).replace('{name}', name));
+          track('attach_refused', { why: e.code || 'error' });
+        });
+      });
+    }, function () { fileNote(COPY.error); });
+  }
+  // What a CSV sends: the header and the first rows as they go, with what was hidden marked, and one line saying what.
+  function csvCard(item) {
+    var m = item.masked;
+    var c = add(el('div', 'mkc-card mkc-file'));
+    c.appendChild(el('span', 'mkc-k')).textContent = COPY.sentK + ' · ' + item.name.toUpperCase();
+    if (m.header.length) {
+      var row = function (cells, tag) { return '<tr>' + cells.map(function (x) { return '<' + tag + (x.hid ? ' class="is-hid"' : '') + '>' + esc(String(x.t == null ? '' : x.t).slice(0, 40)) + '</' + tag + '>'; }).join('') + '</tr>'; };
+      c.appendChild(el('div', 'mkc-tbl', '<table><thead>' + row(m.header, 'th') + '</thead><tbody>' + m.sample.map(function (r) { return row(r, 'td'); }).join('') + '</tbody></table>'));
+    }
+    var said = [];
+    if (m.cols.length) said.push((m.cols.length === 1 ? COPY.hidCol1 : COPY.hidCols).replace('{n}', m.cols.length + ' columns').replace('{names}', listOf(m.cols.map(function (x) { return x.name; }))));
+    if (m.lines) said.push((m.lines === 1 ? COPY.hidLine1 : COPY.hidLines).replace('{n}', m.lines));
+    if (m.cells) said.push((m.cells === 1 ? COPY.hidCell1 : COPY.hidCells).replace('{n}', m.cells));
+    c.appendChild(el('p', 'mkc-note')).textContent = said.length ? said.join(' ') + ' ' + COPY.hidRest : COPY.hidNone;
+    return c;
+  }
+  function listOf(names) { return names.length < 2 ? names.join('') : names.slice(0, -1).join(', ') + ' and ' + names[names.length - 1]; }
+  // A picture: the trader drags boxes over anything private; each is painted black into the picture that is sent.
+  function shotCard(item, f) {
+    var c = add(el('div', 'mkc-card mkc-file'));
+    c.appendChild(el('span', 'mkc-k')).textContent = item.name.toUpperCase();
+    var cv = c.appendChild(el('canvas', 'mkc-shot'));
+    item.draw(cv);
+    var foot = c.appendChild(el('div', 'mkc-row'));
+    foot.appendChild(el('p', 'mkc-note')).textContent = COPY.shotHelp;
+    var clear = foot.appendChild(button('mkc-link', COPY.clearBoxes, function () { item.boxes = []; item.draw(cv); clear.hidden = true; paintFiles(); }));
+    clear.hidden = true;
+    var start = null, live = null;
+    var at = function (ev) { var r = cv.getBoundingClientRect(); return { x: Math.min(1, Math.max(0, (ev.clientX - r.left) / r.width)), y: Math.min(1, Math.max(0, (ev.clientY - r.top) / r.height)) }; };
+    cv.addEventListener('pointerdown', function (ev) { if (f.sent) return; ev.preventDefault(); start = at(ev); live = { x: start.x, y: start.y, w: 0, h: 0 }; item.boxes.push(live); try { cv.setPointerCapture(ev.pointerId); } catch (x) {} });
+    cv.addEventListener('pointermove', function (ev) {
+      if (!start) return;
+      var p = at(ev);
+      live.x = Math.min(start.x, p.x); live.y = Math.min(start.y, p.y); live.w = Math.abs(p.x - start.x); live.h = Math.abs(p.y - start.y);
+      item.draw(cv);
+    });
+    var end = function () {
+      if (!start) return;
+      if (live.w < 0.01 || live.h < 0.01) item.boxes.pop();
+      start = live = null; item.draw(cv); clear.hidden = !item.boxes.length; paintFiles();
+    };
+    cv.addEventListener('pointerup', end); cv.addEventListener('pointercancel', end);
+    return c;
+  }
+  // The chips above the box: one per file, with what was hidden, and a way to take it off. The footer says what the
+  // file is used for while any is attached.
+  function paintFiles() {
+    if (!S.built || !CFG.files) return;
+    var bar = panel.querySelector('.mkc-att');
+    Array.prototype.forEach.call(bar.querySelectorAll('.mkc-attc[data-file]'), function (n) { n.remove(); });
+    S.files.forEach(function (f, i) {
+      var what = !f.item ? COPY.loading : f.item.kind === 'csv'
+        ? (f.item.masked.cols.length ? (f.item.masked.cols.length === 1 ? COPY.chipCol1 : COPY.chipCols.replace('{n}', f.item.masked.cols.length)) : COPY.chipNone)
+        : (f.item.boxes.length ? (f.item.boxes.length === 1 ? COPY.chipBox1 : COPY.chipBoxes.replace('{n}', f.item.boxes.length)) : COPY.chipShot);
+      var c = bar.appendChild(el('span', 'mkc-attc', '<em>' + esc(f.name) + '</em> &middot; ' + esc(what)));
+      c.setAttribute('data-file', i);
+      var x = c.appendChild(button('mkc-attx', '✕', function () {
+        S.files.splice(S.files.indexOf(f), 1);
+        if (f.card) f.card.remove();
+        track('attach_removed', {});
+        paintFiles(); head();
+      }));
+      x.setAttribute('aria-label', COPY.removeFile.replace('{name}', f.name));
+    });
+    bar.hidden = !S.read && !S.files.length;
+  }
+  function dropFiles() { S.files.forEach(function (f) { if (f.card) f.card.remove(); }); S.files = []; paintFiles(); }
+  // What the message says about its files (the server keeps it with the message, and the team sees it).
+  function filesMeta() {
+    return S.files.filter(function (f) { return f.item; }).map(function (f) {
+      var m = f.item.meta();
+      return { kind: f.item.kind, name: f.name, hidden: f.item.kind === 'csv' ? m.cols.length + m.lines + m.cells : m.boxes, meta: m };
+    });
+  }
+  // After the message is stored (seq), each file goes on its own request: one line of JSON, then the bytes in base64.
+  function sendFiles(seq, list) {
+    var chain = Promise.resolve(), failed = [];
+    list.forEach(function (f, i) {
+      chain = chain.then(function () { return f.item.blob(); }).then(function (blob) {
+        return new Promise(function (ok, fail) {
+          var rd = new FileReader();
+          rd.onload = function () { ok(String(rd.result).replace(/^data:[^,]*,/, '')); };
+          rd.onerror = function () { fail(new Error('read')); };
+          rd.readAsDataURL(blob);
+        });
+      }).then(function (b64) {
+        var head = withConv({ seq: seq, i: i });
+        if (CFG.src) head.src = CFG.src;
+        return fetch(apiBase() + '/support/file', { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify(head) + '\n' + b64,
+          credentials: signedIn() ? 'include' : 'omit', mode: 'cors' }).then(function (r) { if (!r.ok) throw new Error('upload ' + r.status); });
+      }).then(function () { sentCard(f); track('file_sent', { kind: f.item.kind }); }, function () { failed.push(f.name); track('file_failed', { kind: f.item.kind }); });
+    });
+    return chain.then(function () { failed.forEach(function (n) { fileNote(COPY.fileFailed.replace('{name}', n)); }); });
+  }
+  // Once sent, a picture's card stops taking boxes and says what went.
+  function sentCard(f) {
+    f.sent = true;
+    if (!f.card || f.item.kind !== 'image') return;
+    f.card.classList.add('is-sent');
+    var row = f.card.querySelector('.mkc-row'); if (row) row.remove();
+    var n = f.item.boxes.length;
+    f.card.appendChild(el('p', 'mkc-note')).textContent = n ? (n === 1 ? COPY.shotSent1 : COPY.shotSent.replace('{n}', n)) : COPY.shotSent0;
+  }
+  // The trader's line shows its files under the words, on screen now and on any reload.
+  function fileLine(node, files) {
+    if (!files || !files.length) return;
+    var d = node.appendChild(el('div', 'mkc-mefiles'));
+    files.forEach(function (f) { d.appendChild(el('span', '', esc(f.name))); });
+  }
   // The suggested questions come only from the server, which offers only ones the chat can answer right now (Ed,
   // 2026-11-16: a suggested question that found nothing). Until it answers, or when it has none, there are none.
   function fillChips(box) {
@@ -653,7 +854,7 @@
     var lastWho = null;
     msgs.forEach(function (m) {
       S.lastSeq = Math.max(S.lastSeq, Number(m.seq) || 0);
-      if (m.kind === 'visitor') { var b = add(el('div', 'mkc-me')); b.textContent = m.body || ''; b.setAttribute('data-seq', m.seq); lastWho = 'visitor'; }
+      if (m.kind === 'visitor') { var b = add(el('div', 'mkc-me')); b.textContent = m.body || ''; fileLine(b, m.files); b.setAttribute('data-seq', m.seq); lastWho = 'visitor'; }
       else if (m.kind === 'results') results(m.results || [], m.qid, false);
       else if (m.kind === 'rep') { S.replied = true; repLine(m); lastWho = 'rep'; }
       else if (m.kind === 'system') { systemLine(m); if (m.code === 'note') lastWho = 'visitor'; }
@@ -703,6 +904,7 @@
     if (S.read) add(readCard(S.read));
     S.asked = add(el('div', 'mkc-me'));
     S.asked.textContent = q;
+    if (filesReady()) fileLine(S.asked, filesMeta());
     // "Hello" is not a question: it gets a hello back and the suggested questions, not "nothing answers that".
     // Nothing is sent or stored for it.
     if (!chip && !teamBound() && GREETING.test(q)) return greet();
@@ -721,9 +923,11 @@
     var started = Date.now(), slow = null;
     var wait = add(el('div', 'mkc-wait mkc-think', '<span class="mkc-dots" data-motion-keep aria-hidden="true"><i></i><i></i><i></i></span><span>' + esc(team ? COPY.sending : COPY.searching) + '</span>'));
     var body = withConv({ q: q });
+    var sending = team ? S.files.filter(function (f) { return f.item; }) : [];
     if (team) {
       if (S.extra) Object.keys(S.extra).forEach(function (k) { if (k !== 'lead') body[k] = S.extra[k]; });
       if (S.read) { body.read = S.read; if (!body.kind) body.kind = 'problem'; }
+      if (sending.length) { body.files = filesMeta(); if (!body.kind) body.kind = 'problem'; }
       body.p = page();
     }
     // ms feeds the server's too-fast rule (a first question under 0.8 s after opening is treated as a bot). A tapped
@@ -739,9 +943,20 @@
       // The question as sent, strong words hidden: the newest line that reads exactly what was typed.
       if (j.said) {
         var mine = log.querySelectorAll('.mkc-me');
-        for (var i = mine.length - 1; i >= 0; i--) { if (mine[i].textContent === q) { mine[i].textContent = j.said; break; } }
+        for (var i = mine.length - 1; i >= 0; i--) {
+          var words = mine[i].firstChild;
+          if (words && words.nodeType === 3 && words.nodeValue === q) { words.nodeValue = j.said; break; }
+        }
       }
-      if (j.sent) return sentToTeam(j, wasWithTeam);
+      if (j.sent) {
+        // The files go now, each tied to the message just stored; their cards stay in the thread as the record.
+        if (sending.length && j.mseq) {
+          sendFiles(j.mseq, sending);
+          S.files = S.files.filter(function (f) { return sending.indexOf(f) < 0; });
+          paintFiles();
+        }
+        return sentToTeam(j, wasWithTeam);
+      }
       S.emailGiven = !!j.emailGiven;
       if (typeof j.live === 'boolean') S.live = j.live;
       if (S.state === 'closed') S.state = 'bot';
@@ -1156,6 +1371,8 @@
     input.placeholder = st === 'live' ? COPY.messagePh.replace('{name}', (S.rep || 'MAKETZO').split(' ')[0]) : st === 'waiting' ? COPY.waitPh
       : S.prompt ? S.prompt : replying ? COPY.replyPh.replace('{name}', firstName()) : COPY.placeholder;
     input.maxLength = (withPerson || replying || teamBound()) ? 1000 : 300;
+    // A file attached: the footer says what it is used for (shown only then).
+    if (S.files.length) { footL.hidden = false; footL.textContent = COPY.consent; footR.hidden = true; footO.hidden = true; }
   }
   function footAction() {
     if (S.state === 'live') return endChat();
@@ -1319,8 +1536,16 @@
   function sayIt(text) {
     var b = add(el('div', 'mkc-me'));
     b.textContent = text;
+    // Files attached while with a person go with this line, the same way (sendFiles).
+    var sending = S.files.filter(function (f) { return f.item; }), body = { text: text };
+    if (sending.length) { body.files = filesMeta(); fileLine(b, body.files); }
     // Strong words come back hidden (Ed, 2026-11-16, "Hide the words"): the line shows as the team sees it.
-    post('say', withConv({ text: text })).then(function (j) { b.setAttribute('data-seq', j.seq); if (j.said) b.textContent = j.said; loop(); })
+    post('say', withConv(body)).then(function (j) {
+      b.setAttribute('data-seq', j.seq);
+      if (j.said && b.firstChild && b.firstChild.nodeType === 3) b.firstChild.nodeValue = j.said;
+      if (sending.length && j.seq) { sendFiles(j.seq, sending); S.files = S.files.filter(function (f) { return sending.indexOf(f) < 0; }); paintFiles(); head(); }
+      loop();
+    })
       .catch(function (e) {
         if (e.status === 409) { S.state = e.state || 'bot'; saveConv(); head(); }
         add(el('div', 'mkc-note is-error')).textContent = e.message;
