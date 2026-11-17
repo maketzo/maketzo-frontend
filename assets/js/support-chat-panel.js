@@ -162,7 +162,11 @@
     attach: 'Attach a file',
     removeFile: 'Remove {name}',
     consent: 'We use this file to fix your import and to improve how MAKETZO reads files from your broker.',
-    sentK: 'WHAT IS SENT',
+    // A file waits for Send, so the trader can check what was hidden first (Ed, 2026-11-17: "Didn't receive the CSV
+    // upload - where does it go?"; it read as already sent).
+    sentK: 'READY TO SEND',
+    sentDone: 'SENT',
+    filesPh: 'Add a note, or press Send',
     hidCols: 'We hid {n}: {names}.',
     hidCol1: 'We hid 1 column: {names}.',
     hidLines: '{n} lines above the header are hidden.',
@@ -742,7 +746,7 @@
   // A picture: the trader drags boxes over anything private; each is painted black into the picture that is sent.
   function shotCard(item, f) {
     var c = add(el('div', 'mkc-card mkc-file'));
-    c.appendChild(el('span', 'mkc-k')).textContent = item.name.toUpperCase();
+    c.appendChild(el('span', 'mkc-k')).textContent = COPY.sentK + ' · ' + item.name.toUpperCase();
     var cv = c.appendChild(el('canvas', 'mkc-shot'));
     item.draw(cv);
     var foot = c.appendChild(el('div', 'mkc-row'));
@@ -819,6 +823,8 @@
   // Once sent, a picture's card stops taking boxes and says what went.
   function sentCard(f) {
     f.sent = true;
+    var k = f.card && f.card.querySelector('.mkc-k');
+    if (k) k.textContent = COPY.sentDone + ' · ' + f.name.toUpperCase();
     if (!f.card || f.item.kind !== 'image') return;
     f.card.classList.add('is-sent');
     var row = f.card.querySelector('.mkc-row'); if (row) row.remove();
@@ -1368,7 +1374,7 @@
     // the email, so it goes too.
     footR.hidden = st === 'live' || S.blocked || ((withTeam() || replying) && !personOffered());
     // The reply box says the person's first name only (Ed, 2026-11-16: "Message John Hanshe... Maybe Message John").
-    input.placeholder = st === 'live' ? COPY.messagePh.replace('{name}', (S.rep || 'MAKETZO').split(' ')[0]) : st === 'waiting' ? COPY.waitPh
+    input.placeholder = filesReady() ? COPY.filesPh : st === 'live' ? COPY.messagePh.replace('{name}', (S.rep || 'MAKETZO').split(' ')[0]) : st === 'waiting' ? COPY.waitPh
       : S.prompt ? S.prompt : replying ? COPY.replyPh.replace('{name}', firstName()) : COPY.placeholder;
     input.maxLength = (withPerson || replying || teamBound()) ? 1000 : 300;
     // A file attached: the footer says what it is used for (shown only then).
