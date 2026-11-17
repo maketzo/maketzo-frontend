@@ -516,6 +516,7 @@
       if (!j.blocked && S.blocked) S.blocked = false;
       if (!j.blocked) { try { localStorage.removeItem(BLK_KEY); } catch (e) {} }
       if (!(S.state === 'waiting' || S.state === 'live')) S.live = !!j.live;
+      if (j.tr !== undefined) S.tr = !!j.tr;
       if (Array.isArray(j.chips)) S.chips = j.chips;
       // Signed in: their account's email is used, so no form asks for one.
       S.account = !!j.account;
@@ -1374,6 +1375,10 @@
   // -- "Email Me This Chat": the whole thread to the visitor's inbox. conv: a chat the panel has already moved on from
   // (End Chat), with known saying whether that chat has their email. --
   function transcriptLink(conv, known) {
+    // Off unless the team turned it on (Support > Settings > Email Me This Chat; Ed, 2026-11-17: "for legal reasons, I
+    // don't want to send the E-mail thread to the user after their session is over ... defaults to off"). The server
+    // says so on hello and every sync (tr), and refuses the send when it is off.
+    if (!S.tr) return;
     if (known === undefined) known = hasEmail();
     var row = add(el('div', 'mkc-row mkc-tr'));
     var b = row.appendChild(button('mkc-link', COPY.transcript));
@@ -1483,6 +1488,7 @@
   // panel is closed or the tab is hidden, never before the visitor has touched the page, and can be muted.
   function liveFacts(j) {
     if (!j) return;
+    if (j.tr !== undefined) S.tr = !!j.tr;
     if (j.rep !== undefined) S.rep = j.rep;
     if (j.v) S.v = j.v;
     if (j.waited != null) S.waitStart = Date.now() - j.waited * 1000;
