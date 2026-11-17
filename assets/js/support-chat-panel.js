@@ -151,13 +151,15 @@
     ciOff: 'What looks off?',
     ciImport: 'What happened when you imported?',
     ciQuestion: 'What is your question?',
-    readK: 'HOW THE IMPORT READ IT',
-    readChip: 'How the import read it',
+    // Ed, 2026-11-17: the copy must be easy to understand and put zero burden on the trader. "How the import read it"
+    // was the engine's words; the trader's are "import details".
+    readK: 'IMPORT DETAILS',
+    readChip: 'Import details',
     readAsk: 'What looks wrong with this import?',
     readIn: '{n} trades in',
     readOut: '{n} rows left out',
     readNone: 'No trades found in {rows} rows',
-    removeRead: 'Remove how the import read it',
+    removeRead: 'Remove the import details',
     // Files (only where the page allows them: CFG.files, the app)
     attach: 'Attach a file',
     removeFile: 'Remove {name}',
@@ -558,6 +560,7 @@
     if (!saved) { hello(); head(); return; }
     S.conv = { c: saved.c, t: saved.t };
     S.state = saved.st;
+    S.restoring = true;
     var wait = add(el('div', 'mkc-wait', esc(COPY.loading)));
     post('sync', withConv({ after: 0 })).then(function (j) {
       wait.remove();
@@ -565,17 +568,29 @@
       // Keep checking while the panel is open (every 10 seconds without a person), so a person coming online or a
       // reply from the team shows without a reload.
       loop();
+      S.restoring = false; flushSend();
     }).catch(function (e) {
       wait.remove();
       if (e.ended) forget();
       hello(); head();
+      S.restoring = false; flushSend();
     });
+  }
+  // ONE TAP SENDS IT (the app, Ed 2026-11-17: help must "place zero burden on the user"): a message the app wrote for
+  // the trader, with what it knew attached, goes as soon as the chat is ready, after the chat so far has loaded so it
+  // lands in order.
+  function sendNow(text) { S.queued = text; flushSend(); }
+  function flushSend() {
+    if (!S.queued || S.restoring) return;
+    if (S.busy) { setTimeout(flushSend, 300); return; }
+    var q = S.queued; S.queued = null;
+    ask(q);
   }
 
   function hello() {
     var hi = COPY.hello;
     try { if (CFG.hello) hi = CFG.hello() || hi; } catch (e) {}
-    add(el('div', '', '<p class="mkc-hello">' + esc(hi) + '<br>' + esc(S.read ? COPY.readAsk : COPY.hello2) + '</p><p class="mkc-sub">' + esc(S.live ? COPY.subOn : COPY.sub) + '</p>'));
+    add(el('div', '', '<p class="mkc-hello">' + esc(hi) + '<br>' + esc(S.read && !S.queued ? COPY.readAsk : COPY.hello2) + '</p><p class="mkc-sub">' + esc(S.live ? COPY.subOn : COPY.sub) + '</p>'));
     add(el('div', 'mkc-opener')).hidden = true;
     paintOpener();
     fillChips(add(el('div', 'mkc-chips')));
@@ -1763,8 +1778,18 @@
   }
 
   window.MKChat = {
-    // o.read (the app): how an import read the trader's file, to go with their next message.
-    open: function (from, o) { build(); if (o && o.read) setRead(o.read); setOpen(true, from); },
+    // o.read (the app): an import's details (counts and reasons, never the file), to go with the next message.
+    // o.team: the next message goes straight to the team. o.send: that message, sent at once, written by the app for
+    // the trader, so nothing is left for them to type (the app's error nudge and Send to Support on an import card).
+    open: function (from, o) {
+      build();
+      if (o && o.read) setRead(o.read);
+      if (o && o.team) S.extra = { team: 1, kind: 'problem' };
+      // Queued before the panel opens, so the welcome does not ask a question the message is about to answer.
+      if (o && o.send) { S.queued = String(o.send); S.prompt = null; }
+      setOpen(true, from);
+      flushSend();
+    },
     close: function () { setOpen(false); },
     toggle: function (from) { setOpen(!S.open, from); },
     fromEmail: fromEmail,
