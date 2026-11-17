@@ -157,7 +157,7 @@
    "tap-skill-market-wont-teach"
   ],
   "hold-winners-cut-losers-clean": [
-   "small-account-one-engine-compounding",
+   "size-up-silent-promotion",
    "small-loss-complete-trade",
    "small-accounts-die-from-frequency"
   ],
@@ -376,13 +376,18 @@
    "float-is-small-mistakes-arent",
    "trader-operating-system-not-setup"
   ],
+  "size-up-silent-promotion": [
+   "hold-winners-cut-losers-clean",
+   "bigger-clip-different-trade",
+   "small-losses-keep-you-dangerous"
+  ],
   "small-account-discipline-harder": [
    "rules-dont-fail-discipline-does",
    "you-dont-lose-you-give-it-back",
    "the-trade-you-dont-take-luj2"
   ],
   "small-account-one-engine-compounding": [
-   "hold-winners-cut-losers-clean",
+   "size-up-silent-promotion",
    "small-losses-keep-you-dangerous",
    "big-winners-sit-on-small-losses"
   ],
