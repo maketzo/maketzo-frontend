@@ -18,10 +18,27 @@
  *   - The question's words never go to analytics; events carry short facts only (matched, kind, yes or no).
  *
  * Every visitor-facing string is in COPY below. CLAUDE.md section 3: no em dashes, one reading, Title Case buttons.
+ *
+ * ONE CHAT, TWO PLACES (Ed, 2026-11-17: "STOP BUILDING STUFF FROM SCRATCH", "Questions are different - but the
+ * mechanisms should be similar"). maketzo-app runs this file as it is (a byte-identical copy, checked by the app's
+ * build) with window.MKChatConfig set before it loads; the site sets none, so nothing here changes for it:
+ *   src 'app'          every request says so; the server makes it the trader's App chat (their session, the app's
+ *                      questions, no email asked or stored)
+ *   apiBase, signedIn  where the server is, and that the session goes with every request
+ *   track(name, props) the app's analytics instead of the site's
+ *   page()             the app screen the trader is on, for the questions and the team
+ *   copy               words that differ in the app (replies come here, not by email)
+ *   article(slug)      a Promise of a Knowledge Center article with its full text (signed in, nothing is gated)
+ *   hello()            the welcome's first line (the trader's first name)
+ *   dismissSaw(key), checkinGood(key)   what the app records for those two taps
+ * The app's own pieces show only when the server sends them: what we saw, the check-in and the team starts by the
+ * trader's stage (hello), and an import's read handed over by MKChat.open('import', { read }). Each goes with the
+ * trader's next message, straight to the team.
  */
 (function () {
   'use strict';
   if (window.MKChat) return;
+  var CFG = window.MKChatConfig || {};
 
   var COPY = {
     name: 'MAKETZO Support',
@@ -122,8 +139,27 @@
     chatLabel: 'Chat with us',
     unreadLabel: 'Chat with us, {n} new',
     error: 'Something went wrong. Try again in a minute.',
-    offline: 'We could not reach the chat. Check your connection and try again.'
+    offline: 'We could not reach the chat. Check your connection and try again.',
+    // Shown only when the server sends the app's pieces (see the header); the app words them through its config.
+    sending: 'Sending to our team',
+    teamNote: 'Our team has it and will reply within one trading day.',
+    sawK: 'WHAT WE SAW',
+    sawYesQ: 'Yes, look into it.',
+    orStart: 'Or start with one of these.',
+    teamLabel: 'Or tell our team',
+    checkinGood: 'Glad to hear it. If anything gets in your way, tell us here.',
+    ciOff: 'What looks off?',
+    ciImport: 'What happened when you imported?',
+    ciQuestion: 'What is your question?',
+    readK: 'HOW THE IMPORT READ IT',
+    readChip: 'How the import read it',
+    readAsk: 'What looks wrong with this import?',
+    readIn: '{n} trades in',
+    readOut: '{n} rows left out',
+    readNone: 'No trades found in {rows} rows',
+    removeRead: 'Remove how the import read it'
   };
+  if (CFG.copy) Object.keys(CFG.copy).forEach(function (k) { if (typeof CFG.copy[k] === 'string') COPY[k] = CFG.copy[k]; });
 
   var IC = {
     snd: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg>',
@@ -182,7 +218,11 @@
   // typing dots, a late layout) or a resize (a phone keyboard) keeps it in view. Scrolled up to reread, it stays put.
   // Ed, 2026-11-16: "Cursor position is off while I chat" -- his last message sat half under the box after Seen landed.
   var stick = true;
-  function toEnd() { log.scrollTop = log.scrollHeight; stick = true; }
+  // The welcome reads from its top: the greeting first, however much arrives under it a moment later (the suggested
+  // questions, and in the app what we saw and the team starts). Until anything is added under it.
+  var welcomeTop = false;
+  function toEnd() { log.scrollTop = log.scrollHeight; stick = true; welcomeTop = false; }
+  function toWelcome() { log.scrollTop = 0; stick = false; welcomeTop = true; }
   // A help-library answer reads from the question down (Ed's pick, 2026-11-16: "the cursor was on the bottom, so I had
   // to scroll up"): the visitor's question sits at the top of the thread and the cards run below it. An answer that
   // fits moves nothing. Live chat with a person still follows the newest line (stick, above).
@@ -194,7 +234,7 @@
     log.scrollTop = Math.max(0, top);
   }
   function pinLog() {
-    log.addEventListener('scroll', function () { stick = log.scrollHeight - log.scrollTop - log.clientHeight < 48; }, { passive: true });
+    log.addEventListener('scroll', function () { stick = !welcomeTop && log.scrollHeight - log.scrollTop - log.clientHeight < 48; }, { passive: true });
     var keep = function () { if (stick) log.scrollTop = log.scrollHeight; };
     if (window.MutationObserver) new MutationObserver(keep).observe(log, { childList: true, subtree: true, characterData: true });
     if (window.ResizeObserver) new ResizeObserver(keep).observe(log);
@@ -206,7 +246,14 @@
     try { var a = new Uint8Array(12); crypto.getRandomValues(a); return Array.prototype.map.call(a, function (n) { return (n % 36).toString(36); }).join(''); }
     catch (e) { return Math.random().toString(36).slice(2, 14); }
   }
-  function track(name, props) { try { if (window.MKT && MKT.trackEvent) MKT.trackEvent('mkt_chat_' + name, props || {}); } catch (e) {} }
+  function track(name, props) {
+    try {
+      if (CFG.track) return CFG.track(name, props || {});
+      if (window.MKT && MKT.trackEvent) MKT.trackEvent('mkt_chat_' + name, props || {});
+    } catch (e) {}
+  }
+  // The page as the server and the team see it: the site's path, or the app screen (CFG.page).
+  function page() { try { if (CFG.page) return String(CFG.page() || '/'); } catch (e) {} return location.pathname; }
   function clock(at) {
     var d = new Date(at); if (isNaN(d)) return '';
     var t = d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
@@ -247,6 +294,7 @@
 
   // -- the server: text/plain JSON, one round trip, no cookie --
   function apiBase() {
+    if (CFG.apiBase) return CFG.apiBase;
     if (window.MKT && MKT.apiBase) return MKT.apiBase;
     var h = location.hostname;
     if (h === 'localhost' || h.indexOf('127.') === 0 || /^dev[.-]/.test(h)) return 'https://dev-api.maketzo.co';
@@ -256,12 +304,13 @@
   // A visitor signed in to MAKETZO: the sign-in's readable cookie (mkt_csrf, the one the nav reads before first paint)
   // is on the page. Only then does the chat send the session with its requests, so the server attaches their account
   // and never asks for an email (the plan's default). Everyone else's requests carry no cookies, as before.
-  function signedIn() { try { return /(?:^|;\s*)mkt_csrf=/.test(document.cookie); } catch (e) { return false; } }
+  function signedIn() { if (CFG.signedIn) return true; try { return /(?:^|;\s*)mkt_csrf=/.test(document.cookie); } catch (e) { return false; } }
   // The chat has somewhere to reply: an email given, or the account of a signed-in visitor (hello said so).
   function hasEmail() { return !!(S.emailGiven || S.account); }
   // keep: the request outlives the page (a tap on an answer's link leaves it at once).
   function post(path, body, keep) {
     body = body || {};
+    if (CFG.src) body.src = CFG.src;
     var blk = blkId(); if (blk && body.blk === undefined) body.blk = blk;
     return fetch(apiBase() + '/support/' + path, {
       method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify(body), credentials: signedIn() ? 'include' : 'omit', mode: 'cors', keepalive: !!keep
@@ -278,7 +327,7 @@
   // Who is asking, for the first question only: this page, where they came from, and the browser id only when the
   // visitor allows analytics (otherwise a random key that counts tries and is never stored).
   function firstFacts(b) {
-    b.p = location.pathname;
+    b.p = page();
     try { b.r = document.referrer || ''; } catch (e) {}
     var link = false;
     try { link = !!(window.MKT && MKT.canLink && MKT.canLink()); } catch (e) {}
@@ -304,6 +353,7 @@
       + '<button type="button" class="mkc-icon" data-act="mute" hidden></button>'
       + '<button type="button" class="mkc-icon" data-act="close" aria-label="' + esc(COPY.close) + '">' + IC.down + '</button></header>'
       + '<div class="mkc-body"><div class="mkc-log" role="log" aria-live="polite"></div><div class="mkc-art" hidden></div></div>'
+      + '<div class="mkc-att" hidden></div>'
       + '<form class="mkc-compose" autocomplete="off" novalidate><label class="mkc-sr" for="mkcIn">' + esc(COPY.question) + '</label>'
       + '<input class="mkc-in" id="mkcIn" name="q" placeholder="' + esc(COPY.placeholder) + '" maxlength="300" enterkeyhint="send">'
       + '<button class="mkc-send" type="submit" aria-label="' + esc(COPY.send) + '">' + IC.send + '</button></form>'
@@ -332,7 +382,7 @@
       var withPerson = S.state === 'waiting' || S.state === 'live';
       if (v.length < (withPerson ? 1 : 2)) { input.focus(); return; }
       input.value = '';
-      if (withPerson) sayIt(v); else if (replyMode()) writeBack(v); else ask(v, false);
+      if (withPerson) sayIt(v); else if (replyMode() && !teamBound()) writeBack(v); else ask(v, false);
     });
     // The visitor typing to a person: a dot signal, at most every 3 seconds. Never the words.
     input.addEventListener('input', function () {
@@ -406,7 +456,11 @@
       if (Array.isArray(j.chips)) S.chips = j.chips;
       // Signed in: their account's email is used, so no form asks for one.
       S.account = !!j.account;
-      var ch = log.querySelector('.mkc-chips');
+      // The app's opener: what we saw, or the one check-in (the server sends at most one).
+      S.opener = j.saw || j.checkin ? { saw: j.saw || null, checkin: j.checkin || null } : null;
+      if (Array.isArray(j.starts)) S.starts = j.starts;
+      paintOpener(); paintStarts();
+      var ch = log.querySelector('.mkc-chips:not(.mkc-ci)');
       if (ch && S.chips) fillChips(ch);
       var sub = log.querySelector('.mkc-sub');
       if (sub) sub.textContent = S.live ? COPY.subOn : COPY.sub;
@@ -425,6 +479,7 @@
     clearTimeout(loopT);
     forget();
     S.replied = false; S.missedOnce = false; S.everLive = false; S.rated = false; S.rep = null; S.v = null; S.lastSeq = 0; S.unread = 0; S.waitStart = 0;
+    S.extra = null; S.prompt = null; S.read = null; S.opener = null; paintRead();
     endWait(); dropDots(); closeArticle(); badge();
     log.innerHTML = '';
     add(el('div', 'mkc-sys')).textContent = COPY.endedYou;
@@ -435,7 +490,7 @@
     remember(S.chips); S.chips = null;
     hello(); head(); sayHello();
     input.value = '';
-    log.scrollTop = 0; stick = false;
+    toWelcome();
   }
   // The chat so far for this browser, or the welcome. Also how a page with a live chat picks it up in the background.
   function restore(saved) {
@@ -457,9 +512,124 @@
   }
 
   function hello() {
-    add(el('div', '', '<p class="mkc-hello">' + esc(COPY.hello) + '<br>' + esc(COPY.hello2) + '</p><p class="mkc-sub">' + esc(S.live ? COPY.subOn : COPY.sub) + '</p>'));
+    var hi = COPY.hello;
+    try { if (CFG.hello) hi = CFG.hello() || hi; } catch (e) {}
+    add(el('div', '', '<p class="mkc-hello">' + esc(hi) + '<br>' + esc(S.read ? COPY.readAsk : COPY.hello2) + '</p><p class="mkc-sub">' + esc(S.live ? COPY.subOn : COPY.sub) + '</p>'));
+    add(el('div', 'mkc-opener')).hidden = true;
+    paintOpener();
     fillChips(add(el('div', 'mkc-chips')));
+    add(el('div', 'mkc-fb')).hidden = true;
+    paintStarts();
+    toWelcome();
   }
+
+  // -- the app's own pieces (see the header); none of them shows on the site --
+  // A line in MAKETZO's name (what we saw, the check-in): our words, never passed off as a person.
+  function mLine(text) {
+    var d = el('div', 'mkc-rep', '<span class="mkc-mark" aria-hidden="true">M</span><div><p class="mkc-meta">MAKETZO</p><div class="mkc-bub"></div></div>');
+    d.querySelector('.mkc-bub').textContent = text || '';
+    return d;
+  }
+  // One start picked at a time, marked until the message goes.
+  function pickIn(box, b) {
+    Array.prototype.forEach.call(root.querySelectorAll('.mkc-chip.is-on'), function (n) { n.classList.remove('is-on'); n.setAttribute('aria-pressed', 'false'); });
+    if (b) { b.classList.add('is-on'); b.setAttribute('aria-pressed', 'true'); }
+  }
+  // What we saw (Yes, Look Into It goes straight to the team), or the check-in and its answers. On the welcome only.
+  function paintOpener() {
+    var box = log && log.querySelector('.mkc-opener');
+    if (!box) return;
+    box.innerHTML = '';
+    var o = S.opener;
+    box.hidden = !o || !!S.read;
+    if (box.hidden) return;
+    if (o.saw) {
+      var saw = o.saw;
+      var c = box.appendChild(el('div', 'mkc-card', '<span class="mkc-k">' + esc(COPY.sawK) + '</span><b class="mkc-title">' + esc(saw.text) + '</b>' + (saw.sub ? '<p>' + esc(saw.sub) + '</p>' : '')));
+      var row = c.appendChild(el('div', 'mkc-row'));
+      row.appendChild(button('mkc-b mkc-b--gold', saw.yes, function () {
+        track('saw', { action: 'yes', kind: saw.kind || '' });
+        S.opener = null; S.extra = { saw: saw.key, kind: 'problem', lead: saw.text };
+        ask(COPY.sawYesQ, false);
+      }));
+      row.appendChild(button('mkc-b', saw.no, function () {
+        track('saw', { action: 'no', kind: saw.kind || '' });
+        try { if (CFG.dismissSaw) CFG.dismissSaw(saw.key); } catch (e) {}
+        S.opener = null; paintOpener();
+      }));
+    } else if (o.checkin) {
+      var ci = o.checkin;
+      box.appendChild(mLine(ci.text));
+      var chips = box.appendChild(el('div', 'mkc-chips mkc-ci'));
+      (ci.chips || []).forEach(function (pair) {
+        var b = chips.appendChild(button('mkc-chip', pair[1], function () {
+          track('checkin', { answer: pair[0], key: ci.key || '' });
+          if (pair[0] === 'good') {
+            try { if (CFG.checkinGood) CFG.checkinGood(ci.key); } catch (e) {}
+            if (S.extra && S.extra.checkin) { S.extra = null; S.prompt = null; }
+            S.opener = null; paintOpener(); add(mLine(COPY.checkinGood)); head();
+            return;
+          }
+          pickIn(chips, b);
+          S.extra = { checkin: pair[0], kind: pair[0] === 'question' ? 'howto' : 'problem', lead: ci.text };
+          S.prompt = pair[0] === 'off' ? COPY.ciOff : pair[0] === 'import' ? COPY.ciImport : COPY.ciQuestion;
+          head(); input.focus();
+        }));
+        b.setAttribute('aria-pressed', 'false');
+      });
+    }
+    box.appendChild(el('p', 'mkc-sub')).textContent = COPY.orStart;
+  }
+  // Straight-to-the-team starts, by the trader's stage (hello's starts: a problem, a need, an idea). A second tap takes
+  // the pick back.
+  function paintStarts() {
+    var box = log && log.querySelector('.mkc-fb');
+    if (!box) return;
+    box.innerHTML = '';
+    var list = S.starts || [];
+    box.hidden = !list.length;
+    if (!list.length) return;
+    box.appendChild(el('p', 'mkc-sub')).textContent = COPY.teamLabel;
+    var chips = box.appendChild(el('div', 'mkc-chips mkc-ci'));
+    list.forEach(function (f) {
+      var b = chips.appendChild(button('mkc-chip', f.label, function () {
+        var on = !(S.extra && S.extra.team && S.extra.kind === f.kind);
+        pickIn(chips, on ? b : null);
+        S.extra = on ? { team: 1, kind: f.kind } : null;
+        S.prompt = on ? f.prompt : null;
+        track('start', { kind: f.kind, on: on ? 'yes' : 'no' });
+        head(); input.focus();
+      }));
+      b.setAttribute('aria-pressed', 'false');
+    });
+  }
+  // How an import read the trader's file (counts and reasons, never the file): a chip above the box until it goes
+  // with the next message, and a card in the thread after.
+  function readLine(r) {
+    r = r || {};
+    if (r.empty) return COPY.readNone.replace('{rows}', r.rows || 0);
+    return COPY.readIn.replace('{n}', r.trades || 0) + (r.skipped ? ', ' + COPY.readOut.replace('{n}', r.skipped) : '');
+  }
+  function readCard(r) { return el('div', 'mkc-card mkc-readc', '<span class="mkc-k">' + esc(COPY.readK) + '</span><p>' + esc(readLine(r)) + '</p>'); }
+  function setRead(r) {
+    S.read = r || null;
+    S.prompt = S.read ? COPY.readAsk : null;
+    if (S.extra && !S.extra.team) S.extra = null;
+    paintRead(); paintOpener(); head();
+  }
+  function paintRead() {
+    if (!S.built) return;
+    var bar = panel.querySelector('.mkc-att');
+    bar.innerHTML = '';
+    bar.hidden = !S.read;
+    if (!S.read) return;
+    var c = bar.appendChild(el('span', 'mkc-attc', '<em>' + esc(COPY.readChip) + '</em> &middot; ' + esc(readLine(S.read))));
+    var x = c.appendChild(button('mkc-attx', '✕', function () { track('read_removed', {}); setRead(null); input.focus(); }));
+    x.setAttribute('aria-label', COPY.removeRead);
+  }
+  // The trader's next message goes straight to the team: an answer to what we saw or the check-in, a team start, or
+  // an import's read.
+  function teamBound() { return !!(S.read || (S.extra && (S.extra.team || S.extra.saw || S.extra.checkin))); }
   // The suggested questions come only from the server, which offers only ones the chat can answer right now (Ed,
   // 2026-11-16: a suggested question that found nothing). Until it answers, or when it has none, there are none.
   function fillChips(box) {
@@ -506,6 +676,9 @@
   }
   function systemLine(m) {
     if (m.code === 'note') { add(el('div', 'mkc-me')).textContent = m.body || ''; return; }
+    // The app's context lines, as the trader saw them: what we saw or the check-in, and how an import read the file.
+    if (m.code === 'saw' || m.code === 'checkin') { add(mLine(m.body)); return; }
+    if (m.code === 'import-read') { add(readCard(m.read)); return; }
     var name = m.alias || 'MAKETZO';
     if (m.code === 'joined' || m.code === 'handed') S.everLive = true;
     var text = {
@@ -521,13 +694,18 @@
   // -- a question --
   function ask(q, chip) {
     if (S.busy) return;
-    var ch = log.querySelector('.mkc-chips'); if (ch) ch.remove();
+    // The welcome's starts go (the suggested questions and, in the app, the opener and the team starts).
+    Array.prototype.forEach.call(log.querySelectorAll('.mkc-chips, .mkc-opener, .mkc-fb'), function (n) { n.remove(); });
     closeArticle();
+    // In the app, what the message answers goes above it, as the team reads it: what we saw or the check-in, or how
+    // the import read the file.
+    if (S.extra && S.extra.lead) add(mLine(S.extra.lead));
+    if (S.read) add(readCard(S.read));
     S.asked = add(el('div', 'mkc-me'));
     S.asked.textContent = q;
     // "Hello" is not a question: it gets a hello back and the suggested questions, not "nothing answers that".
     // Nothing is sent or stored for it.
-    if (!chip && GREETING.test(q)) return greet();
+    if (!chip && !teamBound() && GREETING.test(q)) return greet();
     // Only a suggested question is remembered, never what the visitor typed.
     if (chip) remember([q]);
     send(q, chip, true);
@@ -535,16 +713,23 @@
   // then / failed: the email path asks a first question before it sends; they run after the answer, or after an error.
   function send(q, chip, retry, then, failed) {
     S.busy = true; sendBtn.disabled = true;
+    // In the app, a message with something the app knew (see teamBound) goes straight to the team, and says so.
+    var team = !then && teamBound(), wasWithTeam = withTeam();
     // The search line with its dots shows for at least THINK_MS (Ed, 2026-11-16: the answer "came back too fast, I'd
     // prefer a slight delay with the thinking animation"). It says what is happening, a search of the help library,
     // so the pause is never passed off as a person typing.
     var started = Date.now(), slow = null;
-    var wait = add(el('div', 'mkc-wait mkc-think', '<span class="mkc-dots" data-motion-keep aria-hidden="true"><i></i><i></i><i></i></span><span>' + esc(COPY.searching) + '</span>'));
+    var wait = add(el('div', 'mkc-wait mkc-think', '<span class="mkc-dots" data-motion-keep aria-hidden="true"><i></i><i></i><i></i></span><span>' + esc(team ? COPY.sending : COPY.searching) + '</span>'));
     var body = withConv({ q: q });
+    if (team) {
+      if (S.extra) Object.keys(S.extra).forEach(function (k) { if (k !== 'lead') body[k] = S.extra[k]; });
+      if (S.read) { body.read = S.read; if (!body.kind) body.kind = 'problem'; }
+      body.p = page();
+    }
     // ms feeds the server's too-fast rule (a first question under 0.8 s after opening is treated as a bot). A tapped
     // suggestion is left out of it: a quick tap is a person, and the rule answered one with "Nothing in our help
     // library answers that" (the harness hit it 2026-11-16; Ed's earlier "Major bug" was the same miss for a chip).
-    if (!S.conv) { firstFacts(body); if (!chip) body.ms = S.shownAt ? Date.now() - S.shownAt : 0; }
+    if (!S.conv) { firstFacts(body); if (!chip && !team) body.ms = S.shownAt ? Date.now() - S.shownAt : 0; }
     post('ask', body).then(function (j) {
       return new Promise(function (ok) { setTimeout(function () { ok(j); }, Math.max(0, THINK_MS - (Date.now() - started))); });
     }).then(function (j) {
@@ -556,6 +741,7 @@
         var mine = log.querySelectorAll('.mkc-me');
         for (var i = mine.length - 1; i >= 0; i--) { if (mine[i].textContent === q) { mine[i].textContent = j.said; break; } }
       }
+      if (j.sent) return sentToTeam(j, wasWithTeam);
       S.emailGiven = !!j.emailGiven;
       if (typeof j.live === 'boolean') S.live = j.live;
       if (S.state === 'closed') S.state = 'bot';
@@ -650,8 +836,11 @@
     var back = art.appendChild(button('mkc-link', '\u2190 ' + COPY.back, closeArticle));
     var wait = art.appendChild(el('div', 'mkc-wait', esc(COPY.loading)));
     back.focus();
-    fetch(apiBase() + '/kb/public/' + encodeURIComponent(x.slug), { credentials: 'omit' })
-      .then(function (r) { return r.ok ? r.json() : null; }, function () { return null; })
+    // Signed in to the app, the article comes whole from the app's Knowledge Center (CFG.article); on the site, the
+    // public copy, where a gated guide shows its opening and the trial.
+    (CFG.article ? Promise.resolve().then(function () { return CFG.article(x.slug); })
+      : fetch(apiBase() + '/kb/public/' + encodeURIComponent(x.slug), { credentials: 'omit' }).then(function (r) { return r.ok ? r.json() : null; }))
+      .then(null, function () { return null; })
       .then(function (a) {
         if (art.hidden) return;
         wait.remove();
@@ -716,6 +905,27 @@
       if (!input.value) input.value = text;
       add(el('div', 'mkc-note is-error')).textContent = e.message;
     });
+  }
+  // In the app: a message that went straight to the team (see send). A person now when one is online; otherwise the
+  // reply comes later, and "Sent to our team" is said once per round, as on the email path.
+  function sentToTeam(j, wasWithTeam) {
+    var props = { kind: (S.extra && S.extra.kind) || 'none', with_read: S.read ? 'yes' : 'no', with_saw: S.extra && S.extra.saw ? 'yes' : 'no', with_checkin: S.extra && S.extra.checkin ? 'yes' : 'no' };
+    S.extra = null; S.prompt = null; S.read = null;
+    paintRead(); pickIn(null, null);
+    var was = S.state;
+    S.state = j.state || 'email';
+    S.emailGiven = true;
+    if (typeof j.live === 'boolean') S.live = j.live;
+    liveFacts(j);
+    saveConv();
+    props.to = S.state;
+    track('team', props);
+    if (S.state === 'waiting' && was !== 'waiting') { track('wait', {}); waitBox(COPY.waitNote); }
+    else if (S.state !== 'waiting' && S.state !== 'live') {
+      if (wasWithTeam) alreadyNote();
+      else { add(el('div', 'mkc-sys')).textContent = COPY.sent; add(el('div', 'mkc-note')).textContent = COPY.teamNote; }
+    }
+    head(); paintLiveBits(j); loop();
   }
   // Said once: asking again moves the note to the bottom instead of stacking copies (Ed, 2026-11-16: "Trying to click
   // Email us and keep getting the same message").
@@ -944,8 +1154,8 @@
     footR.hidden = st === 'live' || S.blocked || ((withTeam() || replying) && !personOffered());
     // The reply box says the person's first name only (Ed, 2026-11-16: "Message John Hanshe... Maybe Message John").
     input.placeholder = st === 'live' ? COPY.messagePh.replace('{name}', (S.rep || 'MAKETZO').split(' ')[0]) : st === 'waiting' ? COPY.waitPh
-      : replying ? COPY.replyPh.replace('{name}', firstName()) : COPY.placeholder;
-    input.maxLength = (withPerson || replying) ? 1000 : 300;
+      : S.prompt ? S.prompt : replying ? COPY.replyPh.replace('{name}', firstName()) : COPY.placeholder;
+    input.maxLength = (withPerson || replying || teamBound()) ? 1000 : 300;
   }
   function footAction() {
     if (S.state === 'live') return endChat();
@@ -1187,7 +1397,8 @@
   }
 
   window.MKChat = {
-    open: function (from) { setOpen(true, from); },
+    // o.read (the app): how an import read the trader's file, to go with their next message.
+    open: function (from, o) { build(); if (o && o.read) setRead(o.read); setOpen(true, from); },
     close: function () { setOpen(false); },
     toggle: function (from) { setOpen(!S.open, from); },
     fromEmail: fromEmail,

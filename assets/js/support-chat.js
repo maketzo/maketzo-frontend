@@ -10,17 +10,25 @@
  *     and runs it, and never touches it (offer.html, 2026-11-10).
  *   - On a computer, a panel left open reopens on the next page, so following an answer's link keeps the chat.
  *   - The button sits above the page's pinned email bar: its height goes into --mkc-lift.
+ *
+ * maketzo-app runs this file too, as a byte-identical copy (see support-chat-panel.js, ONE CHAT, TWO PLACES). There
+ * window.MKChatConfig.css is false (the app links its own copy of the stylesheet), the script tag names the app's
+ * copy of the panel (data-mkc-panel), and the app's own ways in open it through window.MKChatLoad.
  */
 (function () {
   'use strict';
   if (window.__mkcBoot) return;
   window.__mkcBoot = true;
   try { if (window.top !== window.self) return; } catch (e) { return; }
+  var CFG = window.MKChatConfig || {};
 
   var me = document.currentScript;
   var src = (me && me.src) || '/assets/js/support-chat.js';
   var ver = (src.match(/\?.*$/) || [''])[0];
   var base = src.replace(/js\/support-chat\.js(\?.*)?$/, '');
+  // The panel sits beside this file on the site; the app names its own (content-hashed) copy on the script tag. The
+  // attribute carries the chat's prefix: the app's own data-panel names its screens, and its rail code reads that one.
+  var panelSrc = (me && me.getAttribute('data-mkc-panel')) || base + 'js/support-chat-panel.js' + ver;
   var root, btn, loading = null;
 
   function css() {
@@ -37,13 +45,15 @@
     btn.setAttribute('aria-busy', 'true');
     loading = new Promise(function (ok, fail) {
       var s = document.createElement('script');
-      s.src = base + 'js/support-chat-panel.js' + ver;
+      s.src = panelSrc;
       s.onload = function () { btn.removeAttribute('aria-busy'); window.MKChat ? ok(window.MKChat) : fail(new Error('panel')); };
       s.onerror = function () { btn.removeAttribute('aria-busy'); loading = null; fail(new Error('panel')); };
       document.head.appendChild(s);
     });
     return loading;
   }
+  // The panel for a page's own way in (the app's More row and its import card): loaded on first use, like the button.
+  window.MKChatLoad = function () { return btn ? panel() : Promise.reject(new Error('panel')); };
 
   // The pinned email bar's height, so the button never sits on it. On a phone the bar is a card 10px above the tab bar.
   var lift = -1;
@@ -70,7 +80,7 @@
 
   function start() {
     if (document.getElementById('mkc')) return;
-    css();
+    if (CFG.css !== false) css();
     root = document.createElement('div');
     root.className = 'mkc';
     root.id = 'mkc';
