@@ -7,7 +7,13 @@
    Placement, bottom right: the button sits above the page's pinned email bar (.sticky-bar, z 55; the script measures
    it into --mkc-lift) and the phone tab bar (z 70), and under the offer tab (z 80), which it steps above when one is
    showing. Hidden on a phone while the cookie banner asks. The open panel sits over everything but the banner.
-   Motion is transform and opacity, once, never looping; reduced motion shows the end state. */
+   Motion is transform and opacity, once, never looping; reduced motion shows the end state.
+
+   ONE CHAT LOOK, TWO PLACES: the app's support chat (maketzo-app lib/help-chat.js) loads a byte-identical copy of this
+   file, maketzo-app/support-chat.css, so a trader sees the same chat on the site and in the app (Ed, 2026-11-17: "Why
+   is the look-and-feel different from the website?"). Every app build compares the two (maketzo-app
+   scripts/check-support-chat-twin.js) and fails if they differ: change both together. The app's own layering and its
+   extra pieces live in help-chat.js, never here. */
 
 .mkc {
   --mkc-bg: #D2D6DD; --mkc-card: #E2E5EA; --mkc-fg: #262B35; --mkc-fg2: #4D5565; --mkc-fg3: #6F7787;
