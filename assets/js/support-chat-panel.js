@@ -97,6 +97,11 @@
     waitOther: 'Finding someone else for you.',
     waitPh: 'Add anything while you wait',
     messagePh: 'Message {name}',
+    // after the team's emailed reply (Ed, 2026-11-17): the reply says it went to their inbox, and what they type next
+    // goes to that person, not the help library
+    emailedYou: 'Emailed to you',
+    replyPh: 'Reply to {name}',
+    footReply: '{name} replies by email',
     joined: '{name} from MAKETZO joined',
     handed: '{from} handed you to {name}',
     otherLink: 'Talk to Someone Else',
@@ -159,7 +164,7 @@
   var phone = window.matchMedia('(max-width: 767px)');
 
   var S = {
-    open: false, built: false, busy: false, conv: null, state: 'bot', emailGiven: false, replied: false, live: false,
+    open: false, built: false, busy: false, conv: null, state: 'bot', emailGiven: false, replied: false, live: false, repName: null,
     shownAt: 0, chips: null, said: false, artFrom: null,
     key: randomKey(),
     // live chat: who is answering, the chat's version (the held request waits on it), the last message seq this panel
@@ -224,7 +229,7 @@
       else localStorage.removeItem(KEY);
     } catch (e) {}
   }
-  function forget() { S.conv = null; S.state = 'bot'; S.emailGiven = false; saveConv(); }
+  function forget() { S.conv = null; S.state = 'bot'; S.emailGiven = false; S.repName = null; saveConv(); }
   // Blocked by the team: this browser remembers the chat it was blocked in and sends it with every request (blk), so a
   // fresh chat stays blocked; the server decides, and a lifted or expired block clears it (sayHello).
   var BLK_KEY = 'mkc_blk';
@@ -327,7 +332,7 @@
       var withPerson = S.state === 'waiting' || S.state === 'live';
       if (v.length < (withPerson ? 1 : 2)) { input.focus(); return; }
       input.value = '';
-      if (withPerson) sayIt(v); else ask(v, false);
+      if (withPerson) sayIt(v); else if (replyMode()) writeBack(v); else ask(v, false);
     });
     // The visitor typing to a person: a dot signal, at most every 3 seconds. Never the words.
     input.addEventListener('input', function () {
@@ -474,24 +479,29 @@
     saveConv();
     var msgs = j.messages || [];
     if (!msgs.length) { hello(); head(); return; }
+    // Whose line is last: after the visitor wrote back, the chat waits on the team, so it does not ask for a rating yet.
+    var lastWho = null;
     msgs.forEach(function (m) {
       S.lastSeq = Math.max(S.lastSeq, Number(m.seq) || 0);
-      if (m.kind === 'visitor') { var b = add(el('div', 'mkc-me')); b.textContent = m.body || ''; b.setAttribute('data-seq', m.seq); }
+      if (m.kind === 'visitor') { var b = add(el('div', 'mkc-me')); b.textContent = m.body || ''; b.setAttribute('data-seq', m.seq); lastWho = 'visitor'; }
       else if (m.kind === 'results') results(m.results || [], m.qid, false);
-      else if (m.kind === 'rep') { S.replied = true; repLine(m); }
-      else if (m.kind === 'system') systemLine(m);
+      else if (m.kind === 'rep') { S.replied = true; repLine(m); lastWho = 'rep'; }
+      else if (m.kind === 'system') { systemLine(m); if (m.code === 'note') lastWho = 'visitor'; }
     });
     if (S.state === 'email' && !S.replied) alreadyNote();
     if (S.state === 'waiting') waitBox();
-    if (S.replied && !j.rated && S.state !== 'live' && S.state !== 'waiting') rate();
+    var owedByEmail = (S.state === 'email' || S.state === 'missed') && lastWho === 'visitor';
+    if (S.replied && !owedByEmail && !j.rated && S.state !== 'live' && S.state !== 'waiting') rate();
     head();
     paintLiveBits(j);
     loop();
   }
   function repLine(m) {
     var who = m.alias || 'MAKETZO';
+    S.repName = who;
     add(el('div', 'mkc-rep', '<span class="mkc-mark" aria-hidden="true">' + esc(who.charAt(0).toUpperCase()) + '</span>'
-      + '<div><p class="mkc-meta">' + esc(who) + ' &middot; ' + esc(clock(m.at)) + '</p><div class="mkc-bub"></div></div>'))
+      + '<div><p class="mkc-meta">' + esc(who) + ' &middot; ' + esc(clock(m.at)) + '</p><div class="mkc-bub"></div>'
+      + (m.emailed ? '<p class="mkc-emailed">' + esc(COPY.emailedYou) + '</p>' : '') + '</div>'))
       .querySelector('.mkc-bub').textContent = m.body || '';
   }
   function systemLine(m) {
@@ -677,6 +687,36 @@
   function personOffered() { return S.live && !S.missedOnce && !S.blocked; }
   // Sent to the team by email and not yet answered: anything typed here is added to it.
   function withTeam() { return S.state === 'email' && S.emailGiven && !S.replied; }
+  // A person has replied by email and nobody is live: what they type next is a reply to that person, so it goes to the
+  // team (Needs You lights) and never to the help library (Ed, 2026-11-17).
+  function replyMode() { return !!S.repName && S.replied && S.emailGiven && !S.blocked && (S.state === 'email' || S.state === 'missed'); }
+  function firstName() { return String(S.repName || 'MAKETZO').split(' ')[0]; }
+  function writeBack(text) {
+    if (S.busy) return;
+    var ch = log.querySelector('.mkc-chips'); if (ch) ch.remove();
+    // An unanswered "How was this chat?" goes: they are still talking, so the chat is not over.
+    Array.prototype.forEach.call(log.querySelectorAll('.mkc-rate'), function (r) { if (!r.querySelector('[aria-pressed="true"]')) r.remove(); });
+    closeArticle();
+    var mine = add(el('div', 'mkc-me'));
+    mine.textContent = text;
+    S.busy = true; sendBtn.disabled = true;
+    // No email field: the server uses the one this chat already has, and says whether this round was already sent.
+    post('email', withConv({ note: text })).then(function (j) {
+      S.busy = false; sendBtn.disabled = false;
+      S.state = 'email'; S.emailGiven = true; saveConv(); head();
+      track('contact', { newsletter: 'no', asked_first: 'yes', again: 'reply' });
+      if (!j.again) {
+        add(el('div', 'mkc-sys')).textContent = COPY.sent;
+        add(el('div', 'mkc-note', esc(COPY.gotIt).replace('{email}', '<b>' + esc(j.email || '') + '</b>')));
+      }
+    }).catch(function (e) {
+      S.busy = false; sendBtn.disabled = false;
+      if (e.ended) forget();
+      mine.remove();
+      if (!input.value) input.value = text;
+      add(el('div', 'mkc-note is-error')).textContent = e.message;
+    });
+  }
   // Said once: asking again moves the note to the bottom instead of stacking copies (Ed, 2026-11-16: "Trying to click
   // Email us and keep getting the same message").
   function alreadyNote() {
@@ -896,12 +936,16 @@
     endBtn.hidden = !S.conv;
     footO.hidden = st !== 'live';
     footL.hidden = st === 'live';
+    var replying = replyMode();
+    footL.textContent = replying ? COPY.footReply.replace('{name}', firstName()) : COPY.footLeft;
     footR.textContent = st === 'live' ? COPY.endChat : st === 'waiting' ? COPY.emailUs : (personOffered() ? COPY.talk : COPY.emailUs);
-    // Already with the team by email and nobody online: there is nothing for Email Us to do.
-    footR.hidden = st === 'live' || S.blocked || (withTeam() && !personOffered());
+    // Already with the team by email and nobody online: there is nothing for Email Us to do. After a reply, typing IS
+    // the email, so it goes too.
+    footR.hidden = st === 'live' || S.blocked || ((withTeam() || replying) && !personOffered());
     // The reply box says the person's first name only (Ed, 2026-11-16: "Message John Hanshe... Maybe Message John").
-    input.placeholder = st === 'live' ? COPY.messagePh.replace('{name}', (S.rep || 'MAKETZO').split(' ')[0]) : st === 'waiting' ? COPY.waitPh : COPY.placeholder;
-    input.maxLength = withPerson ? 1000 : 300;
+    input.placeholder = st === 'live' ? COPY.messagePh.replace('{name}', (S.rep || 'MAKETZO').split(' ')[0]) : st === 'waiting' ? COPY.waitPh
+      : replying ? COPY.replyPh.replace('{name}', firstName()) : COPY.placeholder;
+    input.maxLength = (withPerson || replying) ? 1000 : 300;
   }
   function footAction() {
     if (S.state === 'live') return endChat();

@@ -155,6 +155,8 @@ button.mkc-card:hover { border-color: var(--mkc-chip-line); }
 .mkc-rep { display: flex; gap: 8px; align-items: flex-end; max-width: 88%; }
 .mkc-rep .mkc-mark { width: 26px; height: 26px; border-radius: 50%; border: 0; background: linear-gradient(135deg, #E5C572, #B8941F); color: #15120A; font: 700 12px/1 var(--mkc-sans); }
 .mkc-meta { margin: 0 0 4px 2px; font: 500 11px/1 var(--mkc-mono); letter-spacing: .06em; color: var(--mkc-fg3); }
+/* Under a reply that went to the visitor's inbox, so it never reads as someone live right now. */
+.mkc-emailed { margin: 5px 0 0 2px; font: 500 11px/1 var(--mkc-mono); letter-spacing: .06em; color: var(--mkc-fg3); }
 .mkc-bub {
   padding: 9px 13px; border-radius: 16px 16px 16px 4px; background: var(--mkc-card); border: 1px solid var(--mkc-line);
   color: var(--mkc-fg); font-size: 15px; white-space: pre-wrap; overflow-wrap: anywhere; box-shadow: 0 1px 2px rgba(20,22,27,.05);
