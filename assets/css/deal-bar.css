@@ -1,0 +1,19 @@
+/* The deal bar (assets/js/deal-bar.js). Fixed above the top nav, which moves down by the bar's height; no blur and no
+   endless animation, so it never repaints the page under it. The site is dark only. */
+.mk-dealbar { position: fixed; top: 0; left: 0; right: 0; z-index: 60; display: flex; align-items: center; background: #2D2410; border-bottom: 1px solid rgba(212,175,55,.30); }
+.mk-dealbar-link { flex: 1; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 6px 14px; padding: 9px 48px 9px 16px; color: #FFFFFF; text-decoration: none; font-family: 'DM Sans', system-ui, sans-serif; font-size: 14px; line-height: 1.35; }
+.mk-dealbar-name { font-family: 'DM Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.16em; color: #E5C572; }
+.mk-dealbar-code { font-family: 'DM Mono', ui-monospace, monospace; color: #F3D77A; }
+.mk-dealbar-ends { color: #BFC7D5; }
+.mk-dealbar-go { color: #E5C572; font-weight: 700; }
+.mk-dealbar-link:hover .mk-dealbar-go, .mk-dealbar-link:focus-visible .mk-dealbar-go { text-decoration: underline; text-underline-offset: 3px; }
+.mk-dealbar-link:focus-visible { outline: 2px solid #D4AF37; outline-offset: -2px; }
+.mk-dealbar-x { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); width: 36px; height: 36px; border: 0; border-radius: 4px; background: transparent; color: #BFC7D5; font-size: 22px; line-height: 1; cursor: pointer; }
+.mk-dealbar-x:hover { color: #FFFFFF; background: rgba(255,255,255,.06); }
+html.has-deal-bar #mainNav { top: var(--mk-dealbar-h, 40px); }
+html.has-deal-bar body { padding-top: var(--mk-dealbar-h, 40px); }
+html.has-deal-bar { scroll-padding-top: calc(88px + var(--mk-dealbar-h, 40px)); }
+@media (max-width: 700px) {
+  .mk-dealbar-link { justify-content: flex-start; font-size: 13px; padding: 8px 44px 8px 14px; gap: 2px 10px; }
+  .mk-dealbar-ends { display: none; }
+}

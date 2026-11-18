@@ -622,6 +622,38 @@
       }).catch(function () {});
     } catch (e) {}
   }
+  // ── Deals (maketzo-backend lib/deals.js, Ed 2026-11-18) ─────────────
+  // A deal's Claim opens /pricing?code=BLACKFRIDAY. The code is kept for this tab, so whichever trial button they press
+  // next (assets/js/checkout.js, signup.html, login.html) carries it, and the server applies it only where it fits.
+  function captureDealCode() {
+    try {
+      var m = /[?&]code=([A-Za-z0-9]{4,20})(?:&|$)/.exec(window.location.search || "");
+      if (m) sessionStorage.setItem("mkt_deal_code", m[1].toUpperCase());
+    } catch (e) {}
+  }
+  // The deal bar (assets/js/deal-bar.js): one line at the top of every page while a deal shows. Loaded only when
+  // GET /deals/live has one, never on the pages where it would be in the way, and never while the $9.95 toast is held.
+  var BAR_V = 1;
+  function dealBar() {
+    try {
+      var p = window.location.pathname.replace(/\.html$/, "").replace(/\/+$/, "") || "/";
+      if (/^\/(deals|offer|internal|signup|login|verify-email|forgot-password|reset-password|unsubscribed|gauntlet|zone|kungfu|trader-type)(\/|$)/.test(p)) return;
+      if (document.documentElement.classList.contains("mkt-auth")) return;
+      if (localStorage.getItem("mkt_offer")) return;
+    } catch (e) { return; }
+    fetch(API_BASE + "/deals/live", { credentials: "omit", mode: "cors" }).then(function (r) {
+      return r.status === 200 ? r.json() : null;
+    }).then(function (j) {
+      if (!j || !j.deals || !j.deals.length) return;
+      var css = document.createElement("link");
+      css.rel = "stylesheet"; css.href = "/assets/css/deal-bar.css?v=" + BAR_V;
+      document.head.appendChild(css);
+      var s = document.createElement("script");
+      s.src = "/assets/js/deal-bar.js?v=" + BAR_V; s.async = true;
+      s.onload = function () { if (window.MKDealBar) window.MKDealBar.show(j.deals[0], j.deals.length); };
+      document.head.appendChild(s);
+    }).catch(function () {});
+  }
   // ── The $9.95 Journal offer's toast ──────────────────────────────────
   // Loaded only when an offer arrives, or when this browser already has one open (assets/js/offer-toast.js keeps
   // it in localStorage, so it follows the visitor from page to page until they claim it, close it, or it ends).
@@ -1165,7 +1197,10 @@
     // Eager IDs — first thing so any subsequent code sees them.
     getAnonId(); getSessionId();
     captureReferral();
+    captureDealCode();
     nlTake();
+    // Content, not tracking: it sends no cookie and needs no consent.
+    if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", dealBar); else dealBar();
 
     // Defer PostHog load until consent decision (or auto-decide non-EU).
     isEuVisitor().then(function (isEu) {

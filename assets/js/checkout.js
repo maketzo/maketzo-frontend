@@ -158,6 +158,12 @@
     }
   });
 
+  // A deal code the visitor arrived with (maketzo.co/deals' Claim, /pricing?code=X), kept for this tab by
+  // mkt-analytics.js. The server applies it only where it fits (maketzo-backend lib/deals.js), so sending it is safe.
+  function dealCode() {
+    try { const c = sessionStorage.getItem('mkt_deal_code'); return c && /^[A-Z0-9]{4,20}$/.test(c) ? c : null; } catch (_) { return null; }
+  }
+
   // handleCheckout accepts: (event) | (tier, event) | (tier, fakeEvent) | (priceId, event) [legacy].
   async function handleCheckout(a, b) {
     // Normalize args. If the first arg is the event itself, there's no hint.
@@ -277,10 +283,12 @@
           mkt_anon_id: anonId,
           mkt_session_id: sessionId,
           mkt_source_path: window.location.pathname
-        }))
+        }, dealCode() ? { code: dealCode() } : {}))
       });
       const data = await checkoutRes.json().catch(function () { return {}; });
       if (data.url) {
+        // A live plan already: the server sends them to Account (a second checkout would bill twice). No trial started.
+        if (data.hasPlan) { window.location.href = data.url; return; }
         // trial_started fires after the Stripe URL is in hand — most accurate
         // signal short of the conversion webhook itself.
         if (window.MKT && window.MKT.trackEvent) {

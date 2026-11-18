@@ -1,0 +1,101 @@
+/* maketzo.co/deals (deals.html, assets/js/deals.js). The live part is written by maketzo-backend lib/deals-page.js
+   (dl- classes): a ticket per deal, or one price board, or the empty state. Ed picked both looks, per deal, 2026-11-18.
+   The site is dark only. */
+.dl-hero { max-width: 1120px; margin: 0 auto; padding: 148px 32px 36px; }
+.dl-hero-eyebrow, .dl-eyebrow, .dl-label, .dl-step-n { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); }
+.dl-hero-eyebrow { margin-bottom: 14px; }
+.dl-h1 { font-family: var(--mk-font-display); font-weight: 400; font-size: clamp(2.8rem, 7vw, 4.6rem); letter-spacing: var(--mk-track-display); line-height: 0.98; text-transform: uppercase; margin-bottom: 14px; }
+.dl-hero-sub { font-size: var(--mk-text-lg); color: var(--mk-text-secondary); line-height: var(--mk-lead-body); max-width: 640px; }
+.dl-live { max-width: 1120px; margin: 0 auto; padding: 0 32px; display: flex; flex-direction: column; gap: 24px; }
+
+/* The ticket */
+.dl-ticket { display: flex; flex-wrap: wrap; border-radius: var(--mk-radius-card-lg); overflow: hidden; border: var(--mk-border-gold); background: linear-gradient(135deg, rgba(229,197,114,.14) 0%, rgba(212,175,55,.05) 60%, rgba(6,7,10,0) 100%); }
+.dl-ticket-main { flex: 3 1 520px; min-width: 0; padding: 40px; display: flex; flex-direction: column; gap: 16px; }
+.dl-head, .dl-board-head { font-family: var(--mk-font-display); font-weight: 400; letter-spacing: var(--mk-track-display); line-height: 0.95; text-transform: uppercase; color: var(--mk-text-primary); }
+.dl-head { font-size: clamp(2.4rem, 5.4vw, 4rem); }
+.dl-sub { color: var(--mk-text-secondary); font-size: var(--mk-text-md); line-height: 1.6; max-width: 58ch; }
+.dl-prices { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; max-width: 560px; }
+.dl-price { background: rgba(6,7,10,.6); border: var(--mk-border-soft); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 4px; }
+.dl-price-name, .dl-board-name { font-weight: 700; color: var(--mk-text-primary); }
+.dl-was { color: var(--mk-text-tertiary); text-decoration: line-through; font-size: var(--mk-text-sm); }
+.dl-now { font-family: var(--mk-font-display); font-size: 2.1rem; line-height: 1; color: var(--mk-gold-300); }
+.dl-per { color: var(--mk-text-secondary); font-size: var(--mk-text-sm); }
+.dl-fine { color: var(--mk-text-tertiary); font-size: var(--mk-text-sm); line-height: 1.5; }
+.dl-ticket-stub { flex: 2 1 300px; min-width: 0; padding: 40px; border-left: 2px dashed rgba(212,175,55,.35); background: rgba(6,7,10,.55); display: flex; flex-direction: column; justify-content: center; gap: 14px; }
+.dl-label { color: var(--mk-text-tertiary); }
+.dl-code { font-family: var(--mk-font-mono); font-size: clamp(1.4rem, 3vw, 2rem); letter-spacing: 0.08em; color: var(--mk-gold-300); border: 1px dashed rgba(212,175,55,.55); border-radius: 10px; padding: 14px 16px; text-align: center; word-break: break-all; }
+.dl-copy { min-height: 48px; border-radius: var(--mk-radius-button); border: var(--mk-border-strong); background: transparent; color: var(--mk-text-primary); font-family: var(--mk-font-sans); font-weight: 600; font-size: var(--mk-text-md); cursor: pointer; }
+.dl-copy:hover { border-color: var(--mk-brand); color: var(--mk-brand); }
+.dl-claim { min-height: 52px; display: flex; align-items: center; justify-content: center; border-radius: var(--mk-radius-button); background: var(--mk-gold-gradient); color: var(--mk-text-on-gold); font-weight: 700; font-size: var(--mk-text-lg); text-decoration: none; border: 1px solid rgba(0,0,0,.18); }
+.dl-claim:hover { box-shadow: var(--mk-glow-gold-md); color: var(--mk-text-on-gold); }
+.dl-ends { color: var(--mk-text-secondary); font-size: var(--mk-text-sm); text-align: center; }
+.dl-left { display: block; font-family: var(--mk-font-mono); color: var(--mk-gold-400); margin-top: 2px; }
+.dl-left:empty { display: none; }
+
+/* How it works */
+.dl-steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.dl-step { background: var(--mk-surface-base); border: var(--mk-border-hairline); border-radius: var(--mk-radius-card); padding: 22px; display: flex; flex-direction: column; gap: 8px; }
+.dl-step-t { font-weight: 700; font-size: 1.05rem; color: var(--mk-text-primary); }
+.dl-step-b { color: var(--mk-text-secondary); font-size: var(--mk-text-sm); line-height: 1.55; }
+
+/* The price board */
+.dl-board { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 24px 0 8px; }
+.dl-board-head { font-size: clamp(2.8rem, 8vw, 6rem); line-height: 0.9; }
+.dl-board-sub { color: var(--mk-text-secondary); font-size: var(--mk-text-lg); }
+.dl-code-inline { font-family: var(--mk-font-mono); font-size: inherit; color: var(--mk-gold-300); background: transparent; border: 1px dashed rgba(212,175,55,.55); border-radius: 6px; padding: 2px 8px; min-height: 0; cursor: pointer; }
+.dl-clock { display: flex; gap: 14px; margin-top: 8px; }
+.dl-clock-cell { width: 120px; padding: 16px 0; border-radius: var(--mk-radius-card); background: var(--mk-surface-base); border: var(--mk-border-hairline); display: flex; flex-direction: column; align-items: center; }
+.dl-clock-n { font-family: var(--mk-font-display); font-size: 3.6rem; line-height: 1; color: var(--mk-gold-300); }
+.dl-clock-u { font-family: var(--mk-font-mono); font-size: 11px; letter-spacing: 0.18em; color: var(--mk-text-tertiary); }
+.dl-board-ends { color: var(--mk-text-tertiary); font-size: var(--mk-text-sm); }
+.dl-board-plans { width: 100%; max-width: 900px; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; text-align: left; margin-top: 8px; }
+.dl-board-plan { background: var(--mk-surface-base); border: var(--mk-border-soft); border-radius: var(--mk-radius-card-lg); padding: 30px; display: flex; flex-direction: column; gap: 8px; }
+.dl-board-plan:last-child { border-color: rgba(212,175,55,.45); }
+.dl-board-name { font-family: var(--mk-font-display); font-weight: 400; font-size: 2rem; letter-spacing: var(--mk-track-display); text-transform: uppercase; }
+.dl-board-now { font-family: var(--mk-font-display); font-size: 3.4rem; line-height: 1; color: var(--mk-gold-300); }
+.dl-board-plan .dl-claim { margin-top: 10px; font-size: var(--mk-text-md); }
+.dl-board-fine { text-align: center; }
+
+/* No deal right now */
+.dl-empty { border-radius: var(--mk-radius-card-lg); border: var(--mk-border-soft); background: var(--mk-surface-base); padding: 44px 40px; display: flex; flex-wrap: wrap; gap: 28px; align-items: center; }
+.dl-empty-copy { flex: 3 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+.dl-empty-head { font-family: var(--mk-font-display); font-weight: 400; font-size: clamp(2rem, 4vw, 3rem); letter-spacing: var(--mk-track-display); line-height: 1; text-transform: uppercase; }
+.dl-empty-sub { color: var(--mk-text-secondary); line-height: 1.6; }
+.dl-empty-sub a { color: var(--mk-brand); text-decoration: underline; text-underline-offset: 3px; }
+.dl-alerts { flex: 2 1 320px; min-width: 0; display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; position: relative; }
+.dl-alerts-label { flex: 1 1 220px; display: flex; flex-direction: column; gap: 6px; font-size: var(--mk-text-sm); color: var(--mk-text-secondary); }
+.dl-alerts-label input { min-height: 48px; padding: 0 14px; border-radius: var(--mk-radius-input); border: var(--mk-border-default); background: var(--mk-surface-raised); color: var(--mk-text-primary); font-family: var(--mk-font-sans); font-size: var(--mk-text-md); }
+.dl-alerts-label input:focus { outline: none; border-color: var(--mk-brand); box-shadow: 0 0 0 3px rgba(212,175,55,.18); }
+.dl-alerts-label input.invalid { border-color: #ef4444; }
+.dl-alerts-btn { min-height: 48px; padding: 0 20px; border-radius: var(--mk-radius-button); border: 1px solid rgba(0,0,0,.18); background: var(--mk-gold-gradient); color: var(--mk-text-on-gold); font-family: var(--mk-font-sans); font-weight: 700; font-size: var(--mk-text-md); cursor: pointer; }
+.dl-alerts .newsletter-error { flex-basis: 100%; color: #f87171; font-size: var(--mk-text-sm); }
+.dl-alerts .newsletter-success { flex-basis: 100%; color: #4ade80; font-size: var(--mk-text-sm); }
+.dl-alerts [hidden] { display: none; }
+
+/* Questions and the terms */
+.dl-faq, .dl-terms { max-width: 880px; margin: 0 auto; padding: 56px 32px 0; }
+.dl-faq h2 { font-family: var(--mk-font-display); font-weight: 400; font-size: clamp(1.8rem, 3.4vw, 2.5rem); letter-spacing: var(--mk-track-display); text-transform: uppercase; margin-bottom: 8px; }
+.dl-faq-item { border-top: var(--mk-border-hairline); padding: 18px 0; }
+.dl-faq-item h3 { font-size: 1.05rem; font-weight: 600; margin-bottom: 6px; color: var(--mk-text-primary); }
+.dl-faq-item p { color: var(--mk-text-secondary); line-height: 1.6; }
+.dl-terms { padding-bottom: 24px; }
+.dl-terms-inner { border-top: var(--mk-border-hairline); padding-top: 24px; display: flex; flex-direction: column; gap: 10px; color: var(--mk-text-tertiary); font-size: var(--mk-text-sm); line-height: 1.6; }
+.dl-terms-inner h2 { font-family: var(--mk-font-sans); font-size: var(--mk-text-md); font-weight: 700; color: var(--mk-text-secondary); text-transform: none; letter-spacing: 0; }
+.dl-terms-inner strong { color: var(--mk-text-secondary); }
+.dl-terms-inner a { color: var(--mk-text-secondary); text-decoration: underline; text-underline-offset: 3px; }
+.dl-cta { max-width: 1120px; margin: 40px auto 0; padding: 40px 32px 96px; border-top: var(--mk-border-hairline); text-align: center; }
+.dl-cta h2 { font-family: var(--mk-font-display); font-weight: 400; font-size: clamp(1.7rem, 3.4vw, 2.4rem); letter-spacing: var(--mk-track-display); text-transform: uppercase; margin-bottom: 22px; }
+.dl-cta-hint { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: 0.04em; color: var(--mk-text-tertiary); margin-top: 18px; }
+@media (max-width: 760px) {
+  .dl-hero { padding: 112px 20px 28px; }
+  .dl-live { padding: 0 20px; }
+  .dl-ticket-main, .dl-ticket-stub { padding: 26px 22px; }
+  .dl-ticket-stub { border-left: 0; border-top: 2px dashed rgba(212,175,55,.35); }
+  .dl-steps { grid-template-columns: minmax(0, 1fr); }
+  .dl-clock { gap: 8px; }
+  .dl-clock-cell { width: 88px; padding: 12px 0; }
+  .dl-clock-n { font-size: 2.6rem; }
+  .dl-empty { padding: 30px 22px; }
+  .dl-faq, .dl-terms { padding-left: 20px; padding-right: 20px; }
+  .dl-cta { padding: 36px 20px 80px; }
+}

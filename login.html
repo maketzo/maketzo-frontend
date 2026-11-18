@@ -142,7 +142,10 @@ function planBody() { return hasPlan ? { tier: activeTier, interval: activeInter
 // The visit that led here, for the Stripe webhook (same three fields as assets/js/checkout.js; 2026-11-06).
 function visitBody() {
   const M = window.MKT || {};
-  return { mkt_anon_id: M.getAnonId ? M.getAnonId() : null, mkt_session_id: M.getSessionId ? M.getSessionId() : null, mkt_source_path: window.location.pathname };
+  // A deal code from maketzo.co/deals, kept for this tab by mkt-analytics.js; the server applies it only where it fits.
+  let code = null;
+  try { const c = sessionStorage.getItem('mkt_deal_code'); if (c && /^[A-Z0-9]{4,20}$/.test(c)) code = c; } catch (e) {}
+  return Object.assign({ mkt_anon_id: M.getAnonId ? M.getAnonId() : null, mkt_session_id: M.getSessionId ? M.getSessionId() : null, mkt_source_path: window.location.pathname }, code ? { code: code } : {});
 }
 const checkoutToken = hasPlan ? (activeTier + ':' + activeInterval) : legacyPlanId;
 const planQuery = hasPlan ? ('tier=' + activeTier + '&interval=' + activeInterval) : (legacyPlanId ? ('plan=' + encodeURIComponent(legacyPlanId)) : '');
