@@ -173,10 +173,18 @@
   function showSuccess(form) {
     var success = findSuccessSlot(form);
     if (success) {
-      // Hide the form chrome; show the success slot (works for index.html
-      // main form — has a real .newsletter-success / .email-success element
-      // with full green-on-obsidian confirmation block).
-      form.style.display = "none";
+      if (form.contains(success)) {
+        // The contract above puts the success slot INSIDE the form, so hiding
+        // the form hid the message with it: /deals showed nothing at all after
+        // a signup (Ed, 2026-11-18). Hide the form's other pieces instead.
+        Array.prototype.forEach.call(form.children, function (c) {
+          if (!c.contains(success)) c.style.display = "none";
+        });
+      } else {
+        // index.html's main form keeps its success block as a SIBLING
+        // (green-on-obsidian confirmation), so the whole form goes.
+        form.style.display = "none";
+      }
       success.classList.add("show");
       success.removeAttribute("hidden");
       return;
