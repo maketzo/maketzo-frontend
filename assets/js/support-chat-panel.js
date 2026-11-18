@@ -770,7 +770,7 @@
   function fileTile(item, f) {
     item.file = f;
     var pic = item.kind === 'image', g = attGroup(), t = g.appendChild(el('div', 'mkc-tile'));
-    var th = t.appendChild(el('button', 'mkc-thumb' + (pic ? '' : ' is-csv')));
+    var th = t.appendChild(el('button', 'mkc-pic' + (pic ? '' : ' is-csv')));
     th.type = 'button';
     th.setAttribute('aria-label', (pic ? COPY.tileOpenPic : COPY.tileOpenCsv).replace('{name}', item.name));
     var cv = pic ? th.appendChild(el('canvas')) : null;

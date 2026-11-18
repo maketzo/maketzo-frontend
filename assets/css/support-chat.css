@@ -21,6 +21,9 @@
   --mkc-me-bg: #2B3039; --mkc-me-fg: #FFFFFF; --mkc-chip-line: rgba(138,100,16,.55); --mkc-chip-fg: #7A5A0E;
   --mkc-in-bg: #ECEEF2; --mkc-wash: rgba(176,138,26,.20);
   --mkc-head-fg: #FFFFFF; --mkc-head-fg2: #BFC7D5;
+  /* The header: a dark slate, lighter than the near-black app and site behind the panel so the panel stands apart
+     (Ed 2026-11-17: the near-black one "looks too black (low contrast)"). */
+  --mkc-head-bg: linear-gradient(180deg, #2C3442, #232A36);
   --mkc-sans: var(--mk-font-sans, 'DM Sans', system-ui, sans-serif);
   --mkc-display: var(--mk-font-display, 'Bebas Neue', Impact, sans-serif);
   --mkc-mono: var(--mk-font-mono, 'DM Mono', ui-monospace, monospace);
@@ -73,7 +76,7 @@ html:has(.mk-offer-tab) .mkc { --mkc-b: calc(80px + var(--mkc-lift, 0px)); }
 
 .mkc-head {
   display: flex; align-items: center; gap: 12px; padding: 15px 14px 14px 16px;
-  background: linear-gradient(180deg, #151923, #0F1218); color: var(--mkc-head-fg);
+  background: var(--mkc-head-bg); color: var(--mkc-head-fg);
   border-bottom: 1px solid rgba(255,255,255,.08); flex: none;
 }
 .mkc-mark {
@@ -274,13 +277,15 @@ textarea.mkc-in { resize: none; min-height: 68px; }
   display: grid; grid-template-columns: 56px minmax(0, 1fr) auto; gap: 12px; align-items: center; min-width: 0;
   padding: 8px; background: var(--mkc-card); border: 1px solid var(--mkc-line); border-radius: 12px;
 }
-.mkc-thumb {
+/* The tile's picture is mkc-pic, never mkc-thumb: that class is the rating's thumbs, and sharing it painted them black
+   (Ed 2026-11-17). */
+.mkc-pic {
   display: block; width: 56px; height: 56px; padding: 0; overflow: hidden; border-radius: 8px; border: 1px solid var(--mkc-line);
   background: #11151D; cursor: zoom-in;
 }
-.mkc-thumb canvas { display: block; width: 100%; height: 100%; }
-.mkc-thumb.is-csv { display: grid; place-items: center; background: var(--mkc-in-bg); color: var(--mkc-fg2); font: 600 11px/1 var(--mkc-mono); letter-spacing: .06em; }
-.mkc-thumb:focus-visible { outline: 2px solid var(--mkc-gold); outline-offset: 2px; }
+.mkc-pic canvas { display: block; width: 100%; height: 100%; }
+.mkc-pic.is-csv { display: grid; place-items: center; background: var(--mkc-in-bg); color: var(--mkc-fg2); font: 600 11px/1 var(--mkc-mono); letter-spacing: .06em; }
+.mkc-pic:focus-visible { outline: 2px solid var(--mkc-gold); outline-offset: 2px; }
 .mkc-tnm { min-width: 0; }
 .mkc-tnm b { display: block; font-size: 14px; font-weight: 600; color: var(--mkc-fg); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .mkc-tnm span { display: block; font-size: 12.5px; line-height: 1.4; color: var(--mkc-fg2); }
@@ -308,7 +313,7 @@ textarea.mkc-in { resize: none; min-height: 68px; }
   display: flex; flex-direction: column; width: min(1120px, 100%); height: min(860px, 100%); overflow: hidden; border-radius: 18px;
   background: var(--mkc-bg); color: var(--mkc-fg); box-shadow: 0 30px 80px rgba(0, 0, 0, .55); animation: mkcRise .24s cubic-bezier(.2, .8, .2, 1);
 }
-.mkc-shd { display: flex; align-items: center; gap: 14px; padding: 14px 18px; background: linear-gradient(180deg, #151923, #0F1218); color: var(--mkc-head-fg); }
+.mkc-shd { display: flex; align-items: center; gap: 14px; padding: 14px 18px; background: var(--mkc-head-bg); color: var(--mkc-head-fg); }
 .mkc-snm { flex: 1; min-width: 0; }
 .mkc-snm span { display: block; font: 500 10.5px/1.3 var(--mkc-mono); letter-spacing: .16em; color: var(--mkc-gold-hi); }
 .mkc-snm b { display: block; font: 400 24px/1.1 var(--mkc-display); letter-spacing: .03em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
