@@ -1147,7 +1147,9 @@
     var box = add(el('div', 'mkc-ask', '<p>' + esc(COPY.didIt) + '</p>'));
     var row = box.appendChild(el('div', 'mkc-row'));
     var yes = row.appendChild(button('mkc-b', COPY.helped));
-    var no = row.appendChild(button('mkc-b mkc-no', S.blocked ? COPY.notReally : personOffered() ? COPY.talk : COPY.emailUs));
+    // The No answers the question (Ed, 2026-11-18, on the app's "Send to the Team" here: "doesn't seem like appropriate
+    // copy"). What it does next is reach()'s: Talk to a Person when someone is free, else the note to the team.
+    var no = row.appendChild(button('mkc-b mkc-no', COPY.notReally));
     function pick(b, helpful) {
       b.setAttribute('aria-pressed', 'true'); yes.disabled = no.disabled = true;
       track('helpful', { helpful: helpful ? 'yes' : 'no' });
