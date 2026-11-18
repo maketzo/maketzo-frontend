@@ -19,22 +19,30 @@
     // Arrived through Claim (/pricing?code=X): say the code is already on, so nobody goes looking for a box to type it.
     var applied = false;
     try { applied = sessionStorage.getItem('mkt_deal_code') === d.code; } catch (e) {}
+    // Ed's words, 2026-11-18: "!" after the offer, a double space after it ("Add a space after year! (double space)"),
+    // and a caret after See Deals. The double space is a no-break space plus a space, since HTML folds two into one.
     bar.innerHTML = '<a class="mk-dealbar-link" href="/deals" data-cta-source="deal-bar" data-cta-target="deals">' +
       '<span class="mk-dealbar-name">' + esc(String(d.name || '').toUpperCase()) + '</span>' +
       (applied
-        ? '<span class="mk-dealbar-text">' + esc(d.headline) + '. Code <span class="mk-dealbar-code">' + esc(d.code) + '</span> is applied at checkout on ' + esc(d.plansLabel) + (d.billing === 'year' ? ', billed yearly' : d.billing === 'month' ? ', billed monthly' : '') + '</span>'
-        : '<span class="mk-dealbar-text">' + esc(d.headline) + ' with code <span class="mk-dealbar-code">' + esc(d.code) + '</span></span>') +
+        ? '<span class="mk-dealbar-text">' + esc(d.headline) + '!&nbsp; Code <span class="mk-dealbar-code">' + esc(d.code) + '</span> is applied at checkout on ' + esc(d.plansLabel) + (d.billing === 'year' ? ', billed yearly' : d.billing === 'month' ? ', billed monthly' : '') + '</span>'
+        : '<span class="mk-dealbar-text">' + esc(d.headline) + '!&nbsp; Use code <span class="mk-dealbar-code">' + esc(d.code) + '</span></span>') +
       '<span class="mk-dealbar-ends">Ends ' + esc(d.endsShort) + '</span>' +
-      // The phone's one-line version ("BLACK FRIDAY  30% off  See Deals"): the full sentence wrapped to three lines
+      // The phone's one-line version ("BLACK FRIDAY  40% off!  See Deals"): the full sentence wrapped to three lines
       // there and pushed each page's trial button down by 71px (WebKit check on staging, 2026-11-18).
-      '<span class="mk-dealbar-short">' + esc(String(d.headline || '').replace(/ off .*$/, ' off')) + (applied ? ' applied' : '') + '</span>' +
-      '<span class="mk-dealbar-go">' + (count > 1 ? 'See All Deals' : 'See Deals') + '</span></a>' +
-      '<button type="button" class="mk-dealbar-x" aria-label="Hide the deal bar">&times;</button>';
+      '<span class="mk-dealbar-short">' + esc(String(d.headline || '').replace(/ off .*$/, ' off')) + (applied ? ' applied!' : '!') + '</span>' +
+      '<span class="mk-dealbar-go">' + (count > 1 ? 'See All Deals' : 'See Deals') + '<span class="mk-dealbar-caret" aria-hidden="true">&rsaquo;</span></span></a>' +
+      '<button type="button" class="mk-dealbar-x" aria-label="Hide the deal bar">&times;</button>' +
+      // Gold Sweep (Ed's pick A, 2026-11-18): the bar slides down, one band of light crosses it, the caret nudges twice.
+      // About 2 seconds once per page, then still: nothing loops (memory feedback-no-sustained-heat-only-temporary-load).
+      '<span class="mk-dealbar-sweep" aria-hidden="true"></span>';
+    bar.classList.add('is-arriving');
     document.body.insertBefore(bar, document.body.firstChild);
     var root = document.documentElement;
     function fit() { root.style.setProperty('--mk-dealbar-h', bar.offsetHeight + 'px'); }
     root.classList.add('has-deal-bar');
     fit();
+    // The Gold Sweep is over by 2.6 seconds; after that the bar carries no animation at all.
+    setTimeout(function () { bar.classList.remove('is-arriving'); }, 3000);
     window.addEventListener('resize', fit);
     bar.querySelector('.mk-dealbar-x').addEventListener('click', function () {
       root.classList.remove('has-deal-bar');
