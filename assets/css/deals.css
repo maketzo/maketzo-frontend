@@ -88,7 +88,15 @@
 .dl-faq-item h3 { font-size: 1.05rem; font-weight: 600; margin-bottom: 6px; color: var(--mk-text-primary); }
 .dl-faq-item p { color: var(--mk-text-secondary); line-height: 1.6; }
 .dl-terms { padding-bottom: 24px; }
-.dl-terms-inner { border-top: var(--mk-border-hairline); padding-top: 24px; display: flex; flex-direction: column; gap: 10px; color: var(--mk-text-tertiary); font-size: var(--mk-text-sm); line-height: 1.6; }
+.dl-terms-inner { border-top: var(--mk-border-hairline); padding-top: 24px; display: flex; flex-direction: column; gap: 18px; color: var(--mk-text-tertiary); font-size: var(--mk-text-sm); line-height: 1.6; }
+/* One block per deal: its name, then one line per term, a rule between deals (Ed, 2026-11-18: "make sure there are
+   line breaks so it's legible"). Drawn by maketzo-backend lib/deals-page.js terms(). */
+#dealsTerms { display: flex; flex-direction: column; gap: 22px; }
+#dealsTerms:empty { display: none; }
+.dl-term { display: flex; flex-direction: column; gap: 10px; }
+.dl-term + .dl-term { padding-top: 22px; border-top: var(--mk-border-hairline); }
+.dl-term-head { margin: 0; font-family: var(--mk-font-sans); font-size: var(--mk-text-md); font-weight: 500; color: var(--mk-text-secondary); text-transform: none; letter-spacing: 0; }
+.dl-term p, .dl-terms-inner > p { margin: 0; }
 .dl-terms-inner h2 { font-family: var(--mk-font-sans); font-size: var(--mk-text-md); font-weight: 700; color: var(--mk-text-secondary); text-transform: none; letter-spacing: 0; }
 .dl-terms-inner strong { color: var(--mk-text-secondary); }
 .dl-terms-inner a { color: var(--mk-text-secondary); text-decoration: underline; text-underline-offset: 3px; }
