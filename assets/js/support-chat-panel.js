@@ -740,6 +740,9 @@
   function attach(list) {
     if (!list.length) return;
     if (S.blocked) return;
+    // A file attached while an article is open goes to the chat, so the chat comes back to show it, as a question does
+    // (Ed, 2026-11-17: "If I add a file while reading an article, it looks like nothing happened").
+    closeArticle();
     var room = 3 - S.files.length;
     if (list.length > room) { fileNote(COPY.fileMax); list = list.slice(0, Math.max(0, room)); }
     if (!list.length) return;
