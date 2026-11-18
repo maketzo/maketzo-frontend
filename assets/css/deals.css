@@ -68,9 +68,18 @@
 .dl-alerts-label input:focus { outline: none; border-color: var(--mk-brand); box-shadow: 0 0 0 3px rgba(212,175,55,.18); }
 .dl-alerts-label input.invalid { border-color: #ef4444; }
 .dl-alerts-btn { min-height: 48px; padding: 0 20px; border-radius: var(--mk-radius-button); border: 1px solid rgba(0,0,0,.18); background: var(--mk-gold-gradient); color: var(--mk-text-on-gold); font-family: var(--mk-font-sans); font-weight: 700; font-size: var(--mk-text-md); cursor: pointer; }
-.dl-alerts .newsletter-error { flex-basis: 100%; color: #f87171; font-size: var(--mk-text-sm); }
-.dl-alerts .newsletter-success { flex-basis: 100%; color: #4ade80; font-size: var(--mk-text-sm); }
-.dl-alerts [hidden] { display: none; }
+.dl-alerts-btn:disabled { opacity: .6; cursor: wait; }
+.dl-alerts-error { flex-basis: 100%; margin: 0; color: #f87171; font-size: var(--mk-text-sm); }
+.dl-alerts [hidden], .dl-stop [hidden] { display: none; }
+/* The deal alert list's own success line, in place of the box (assets/js/deals.js). */
+.dl-alerts-done { flex: 2 1 320px; min-width: 0; margin: 0; color: #4ade80; font-size: var(--mk-text-md); line-height: 1.5; }
+/* The stop link's panel, /deals#stop=<token>: a real click stops the alerts, never a mail scanner. */
+.dl-stop { margin: 0 max(32px, calc((100% - 1056px) / 2)) 24px; border-radius: var(--mk-radius-card-lg); border: 1px solid rgba(212,175,55,.45); background: var(--mk-surface-base); padding: 28px 32px; display: flex; flex-direction: column; gap: 12px; }
+.dl-stop-head { font-family: var(--mk-font-display); font-weight: 400; font-size: clamp(1.6rem, 3vw, 2.2rem); letter-spacing: var(--mk-track-display); line-height: 1; text-transform: uppercase; }
+.dl-stop-sub { color: var(--mk-text-secondary); line-height: 1.6; margin: 0; }
+.dl-stop-actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.dl-stop-keep { min-height: 48px; padding: 0 20px; border-radius: var(--mk-radius-button); border: var(--mk-border-default); background: none; color: var(--mk-text-primary); font-family: var(--mk-font-sans); font-weight: 600; font-size: var(--mk-text-md); cursor: pointer; }
+.dl-stop-keep:hover { border-color: var(--mk-brand); }
 
 /* Questions and the terms */
 .dl-faq, .dl-terms { max-width: 880px; margin: 0 auto; padding: 56px 32px 0; }
@@ -96,6 +105,7 @@
   .dl-clock-cell { width: 88px; padding: 12px 0; }
   .dl-clock-n { font-size: 2.6rem; }
   .dl-empty { padding: 30px 22px; }
+  .dl-stop { margin: 0 20px 20px; padding: 24px 22px; }
   .dl-faq, .dl-terms { padding-left: 20px; padding-right: 20px; }
   .dl-cta { padding: 36px 20px 80px; }
 }

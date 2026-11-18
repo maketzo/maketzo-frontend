@@ -50,7 +50,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/tokens.css">
 <link rel="stylesheet" href="assets/css/components.css">
-<link rel="stylesheet" href="assets/css/deals.css?v=1">
+<link rel="stylesheet" href="assets/css/deals.css?v=2">
 <script src="assets/js/mkt-analytics.js?v=20" defer></script>
 <script src="assets/js/newsletter.js?v=6" defer></script>
 <script src="assets/js/mkt-consent.js?v=2" defer></script>
@@ -58,7 +58,7 @@
 <script src="assets/js/checkout.js?v=10" defer></script>
 <script src="assets/js/phone-bar.js?v=2" defer></script>
 <script src="assets/js/support-chat.js?v=1" defer></script>
-<script src="assets/js/deals.js?v=1" defer></script>
+<script src="assets/js/deals.js?v=2" defer></script>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html { overflow-y: scroll; }
@@ -227,7 +227,7 @@ body:has(.sticky-bar.visible) { padding-bottom: 80px; }
 
 <main class="dl-live" id="dealsLive">
 <!-- DEALS:START -->
-<section class="dl-empty" aria-label="No deal right now"><div class="dl-empty-copy"><h2 class="dl-empty-head">No Codes Running Right Now</h2><p class="dl-empty-sub">Get the next one by email the day it starts. Paying yearly already saves up to 32%. <a href="/pricing" data-cta-source="deals" data-cta-target="pricing">See Pricing</a></p></div><form class="dl-alerts" onsubmit="return MKTNewsletter.handleForm(event, 'deals-alerts')"><label class="dl-alerts-label">Email address<input type="email" name="email" required autocomplete="email" placeholder="you@example.com"></label><button type="submit" class="dl-alerts-btn">Get Deal Alerts</button><div class="newsletter-error" hidden></div><div class="newsletter-success" hidden>You are on the list. The next deal reaches you the day it starts.</div></form></section>
+<section class="dl-empty" aria-label="No deal right now"><div class="dl-empty-copy"><h2 class="dl-empty-head">No Codes Running Right Now</h2><p class="dl-empty-sub">Get the next one by email the day it starts. Paying yearly already saves up to 32%. <a href="/pricing" data-cta-source="deals" data-cta-target="pricing">See Pricing</a></p></div><form class="dl-alerts" data-dl-alerts onsubmit="return false"><label class="dl-alerts-label">Email address<input type="email" name="email" required autocomplete="email" placeholder="you@example.com"></label><button type="submit" class="dl-alerts-btn" data-cta-source="deals" data-cta-target="deal-alerts">Get Deal Alerts</button><p class="dl-alerts-error" role="alert" hidden></p></form></section>
 <!-- DEALS:END -->
 </main>
 
