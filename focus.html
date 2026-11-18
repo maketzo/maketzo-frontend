@@ -257,6 +257,9 @@ body.hero-loaded .page-hero .page-hero-cta { opacity: 1; transform: translateY(0
   .page-hero-scrim { height: 54vh; }
   .page-hero-inner { padding: 39vh 22px 48px; }
   .page-hero .page-hero-cta { margin-top: 22px; }   /* the hero button clears the phone bar (assets/js/phone-bar.js) */
+  /* While a deal shows, the deal bar (assets/js/deal-bar.js) adds its height above the page; the copy starts that
+     much higher, so the hero button still clears the phone bar (it had 17px to spare, the bar is 34px). */
+  html.has-deal-bar .page-hero-inner { padding-top: calc(39vh - var(--mk-dealbar-h, 0px)); }
   .page-hero-title { font-size: clamp(2rem, 9vw, 2.8rem); }
   .page-hero-cta .btn-primary { width: 100%; justify-content: center; text-align: center; }
 }

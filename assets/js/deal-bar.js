@@ -25,6 +25,9 @@
         ? '<span class="mk-dealbar-text">' + esc(d.headline) + '. Code <span class="mk-dealbar-code">' + esc(d.code) + '</span> is applied at checkout on ' + esc(d.plansLabel) + (d.billing === 'year' ? ', billed yearly' : d.billing === 'month' ? ', billed monthly' : '') + '</span>'
         : '<span class="mk-dealbar-text">' + esc(d.headline) + ' with code <span class="mk-dealbar-code">' + esc(d.code) + '</span></span>') +
       '<span class="mk-dealbar-ends">Ends ' + esc(d.endsShort) + '</span>' +
+      // The phone's one-line version ("BLACK FRIDAY  30% off  See Deals"): the full sentence wrapped to three lines
+      // there and pushed each page's trial button down by 71px (WebKit check on staging, 2026-11-18).
+      '<span class="mk-dealbar-short">' + esc(String(d.headline || '').replace(/ off .*$/, ' off')) + (applied ? ' applied' : '') + '</span>' +
       '<span class="mk-dealbar-go">' + (count > 1 ? 'See All Deals' : 'See Deals') + '</span></a>' +
       '<button type="button" class="mk-dealbar-x" aria-label="Hide the deal bar">&times;</button>';
     document.body.insertBefore(bar, document.body.firstChild);

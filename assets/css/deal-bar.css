@@ -13,7 +13,11 @@
 html.has-deal-bar #mainNav { top: var(--mk-dealbar-h, 40px); }
 html.has-deal-bar body { padding-top: var(--mk-dealbar-h, 40px); }
 html.has-deal-bar { scroll-padding-top: calc(88px + var(--mk-dealbar-h, 40px)); }
+.mk-dealbar-short { display: none; }
+/* Phones: one line, the name, the percent and See Deals. The full sentence wrapped to three lines (71px) there. */
 @media (max-width: 700px) {
-  .mk-dealbar-link { justify-content: flex-start; font-size: 13px; padding: 8px 44px 8px 14px; gap: 2px 10px; }
-  .mk-dealbar-ends { display: none; }
+  .mk-dealbar-link { flex-wrap: nowrap; justify-content: flex-start; font-size: 13px; padding: 8px 44px 8px 14px; gap: 10px; white-space: nowrap; }
+  .mk-dealbar-name { font-size: 11px; letter-spacing: 0.14em; }
+  .mk-dealbar-text, .mk-dealbar-ends { display: none; }
+  .mk-dealbar-short { display: inline; color: #FFFFFF; font-weight: 600; }
 }
