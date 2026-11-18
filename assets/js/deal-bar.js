@@ -30,7 +30,8 @@
       // The phone's one-line version ("BLACK FRIDAY  40% off!  See Deals"): the full sentence wrapped to three lines
       // there and pushed each page's trial button down by 71px (WebKit check on staging, 2026-11-18).
       '<span class="mk-dealbar-short">' + esc(String(d.headline || '').replace(/ off .*$/, ' off')) + (applied ? ' applied!' : '!') + '</span>' +
-      '<span class="mk-dealbar-go">' + (count > 1 ? 'See All Deals' : 'See Deals') + '<span class="mk-dealbar-caret" aria-hidden="true">&rsaquo;</span></span></a>' +
+      // The hover underline sits on the words only, never the caret (Ed, 2026-11-18: "the carat is underlined").
+      '<span class="mk-dealbar-go"><span class="mk-dealbar-go-text">' + (count > 1 ? 'See All Deals' : 'See Deals') + '</span><span class="mk-dealbar-caret" aria-hidden="true">&rsaquo;</span></span></a>' +
       '<button type="button" class="mk-dealbar-x" aria-label="Hide the deal bar">&times;</button>' +
       // Gold Sweep (Ed's pick A, 2026-11-18): the bar slides down, one band of light crosses it, the caret nudges twice.
       // About 2 seconds once per page, then still: nothing loops (memory feedback-no-sustained-heat-only-temporary-load).
