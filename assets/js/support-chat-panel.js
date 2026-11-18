@@ -148,9 +148,11 @@
     orStart: 'Or start with one of these.',
     teamLabel: 'Or tell our team',
     checkinGood: 'Glad to hear it. If anything gets in your way, tell us here.',
-    ciOff: 'What looks off?',
-    ciImport: 'What happened when you imported?',
-    ciQuestion: 'What is your question?',
+    // MAKETZO's line after a check-in answer has gone to the team (one tap sends it; adding more is optional).
+    ciOff: 'We’ll look into it. If you can, type what looks off below.',
+    ciImport: 'We’ll look at your imports. If you want to add what you saw, type it below.',
+    ciQuestion: 'Type your question below.',
+    addMore: 'Add more for our team',
     // Ed, 2026-11-17: the copy must be easy to understand and put zero burden on the trader. "How the import read it"
     // was the engine's words; the trader's are "import details".
     readK: 'IMPORT DETAILS',
@@ -329,7 +331,7 @@
       else localStorage.removeItem(KEY);
     } catch (e) {}
   }
-  function forget() { S.conv = null; S.state = 'bot'; S.emailGiven = false; S.repName = null; saveConv(); }
+  function forget() { S.conv = null; S.state = 'bot'; S.emailGiven = false; S.repName = null; S.teamKind = null; saveConv(); }
   // Blocked by the team: this browser remembers the chat it was blocked in and sends it with every request (blk), so a
   // fresh chat stays blocked; the server decides, and a lifted or expired block clears it (sayHello).
   var BLK_KEY = 'mkc_blk';
@@ -543,7 +545,7 @@
     clearTimeout(loopT);
     forget();
     S.replied = false; S.missedOnce = false; S.everLive = false; S.rated = false; S.rep = null; S.v = null; S.lastSeq = 0; S.unread = 0; S.waitStart = 0;
-    S.extra = null; S.prompt = null; S.read = null; S.opener = null; paintRead(); dropFiles();
+    S.extra = null; S.prompt = null; S.after = null; S.read = null; S.opener = null; paintRead(); dropFiles();
     endWait(); dropDots(); closeArticle(); badge();
     log.innerHTML = '';
     add(el('div', 'mkc-sys')).textContent = COPY.endedYou;
@@ -639,7 +641,8 @@
       box.appendChild(mLine(ci.text));
       var chips = box.appendChild(el('div', 'mkc-chips mkc-ci'));
       (ci.chips || []).forEach(function (pair) {
-        var b = chips.appendChild(button('mkc-chip', pair[1], function () {
+        chips.appendChild(button('mkc-chip', pair[1], function () {
+          if (S.busy) return;
           track('checkin', { answer: pair[0], key: ci.key || '' });
           if (pair[0] === 'good') {
             try { if (CFG.checkinGood) CFG.checkinGood(ci.key); } catch (e) {}
@@ -647,18 +650,19 @@
             S.opener = null; paintOpener(); add(mLine(COPY.checkinGood)); head();
             return;
           }
-          pickIn(chips, b);
+          // One tap sends the answer to the team, under the check-in's question (see paintStarts).
           S.extra = { checkin: pair[0], kind: pair[0] === 'question' ? 'howto' : 'problem', lead: ci.text };
-          S.prompt = pair[0] === 'off' ? COPY.ciOff : pair[0] === 'import' ? COPY.ciImport : COPY.ciQuestion;
-          head(); input.focus();
+          S.after = pair[0] === 'off' ? COPY.ciOff : pair[0] === 'import' ? COPY.ciImport : COPY.ciQuestion;
+          ask(pair[1]);
         }));
-        b.setAttribute('aria-pressed', 'false');
       });
     }
     box.appendChild(el('p', 'mkc-sub')).textContent = COPY.orStart;
   }
-  // Straight-to-the-team starts, by the trader's stage (hello's starts: a problem, a need, an idea). A second tap takes
-  // the pick back.
+  // Straight-to-the-team starts, by the trader's stage (hello's starts: a problem, a need, an idea). ONE TAP SENDS: the
+  // label is the trader's message, it goes to the team at once, and MAKETZO's `after` line follows (Ed's pick A,
+  // 2026-11-17, after a toggle that put a cut-off question in the box and blanked it on a second tap: "No user will
+  // figure this out").
   function paintStarts() {
     var box = log && log.querySelector('.mkc-fb');
     if (!box) return;
@@ -669,15 +673,13 @@
     box.appendChild(el('p', 'mkc-sub')).textContent = COPY.teamLabel;
     var chips = box.appendChild(el('div', 'mkc-chips mkc-ci'));
     list.forEach(function (f) {
-      var b = chips.appendChild(button('mkc-chip', f.label, function () {
-        var on = !(S.extra && S.extra.team && S.extra.kind === f.kind);
-        pickIn(chips, on ? b : null);
-        S.extra = on ? { team: 1, kind: f.kind } : null;
-        S.prompt = on ? f.prompt : null;
-        track('start', { kind: f.kind, on: on ? 'yes' : 'no' });
-        head(); input.focus();
+      chips.appendChild(button('mkc-chip', f.label, function () {
+        if (S.busy) return;
+        S.extra = { team: 1, kind: f.kind };
+        S.after = f.after || null;
+        track('start', { kind: f.kind });
+        ask(f.label);
       }));
-      b.setAttribute('aria-pressed', 'false');
     });
   }
   // How an import read the trader's file (counts and reasons, never the file): a chip above the box until it goes
@@ -707,7 +709,11 @@
   }
   // The trader's next message goes straight to the team: an answer to what we saw or the check-in, a team start, or
   // an import's read.
-  function teamBound() { return !!(S.read || filesReady() || (S.extra && (S.extra.team || S.extra.saw || S.extra.checkin))); }
+  // In the app, once a message has gone to the team, the rest of that chat goes there too: MAKETZO's line says "type it
+  // below", and the note says anything written here is added (the harness found it searching the help library instead,
+  // 2026-11-17).
+  function teamBound() { return !!(S.read || filesReady() || (S.extra && (S.extra.team || S.extra.saw || S.extra.checkin)) || appWithTeam()); }
+  function appWithTeam() { return CFG.src === 'app' && withTeam(); }
 
   // -- files (only where the page allows them, CFG.files: the app). Never asked for; the trader chooses to attach. --
   // Each file is cleaned in the browser first (support-chat-files.js, loaded on the first attach): a CSV shows What Is
@@ -1073,6 +1079,7 @@
       if (S.extra) Object.keys(S.extra).forEach(function (k) { if (k !== 'lead') body[k] = S.extra[k]; });
       if (S.read) { body.read = S.read; if (!body.kind) body.kind = 'problem'; }
       if (sending.length) { body.files = filesMeta(); if (!body.kind) body.kind = 'problem'; }
+      if (!body.team && !body.saw && !body.checkin && !body.read && !body.files) { body.team = 1; body.kind = S.teamKind || 'problem'; }
       body.p = page();
     }
     // ms feeds the server's too-fast rule (a first question under 0.8 s after opening is treated as a bot). A tapped
@@ -1270,6 +1277,7 @@
   // reply comes later, and "Sent to our team" is said once per round, as on the email path.
   function sentToTeam(j, wasWithTeam) {
     var props = { kind: (S.extra && S.extra.kind) || 'none', with_read: S.read ? 'yes' : 'no', with_saw: S.extra && S.extra.saw ? 'yes' : 'no', with_checkin: S.extra && S.extra.checkin ? 'yes' : 'no' };
+    if (props.kind !== 'none') S.teamKind = props.kind;
     S.extra = null; S.prompt = null; S.read = null;
     paintRead(); pickIn(null, null);
     var was = S.state;
@@ -1285,6 +1293,8 @@
       if (wasWithTeam) alreadyNote();
       else { add(el('div', 'mkc-sys')).textContent = COPY.sent; add(el('div', 'mkc-note')).textContent = COPY.teamNote; }
     }
+    // A tapped start's own line, in MAKETZO's name: what happens next, and that adding more is optional.
+    if (S.after) { add(mLine(S.after)); S.after = null; if (!phone.matches) input.focus(); }
     head(); paintLiveBits(j); loop();
   }
   // Said once: asking again moves the note to the bottom instead of stacking copies (Ed, 2026-11-16: "Trying to click
@@ -1519,7 +1529,7 @@
     footR.hidden = st === 'live' || S.blocked || ((withTeam() || replying) && !personOffered());
     // The reply box says the person's first name only (Ed, 2026-11-16: "Message John Hanshe... Maybe Message John").
     input.placeholder = filesReady() ? COPY.filesPh : st === 'live' ? COPY.messagePh.replace('{name}', (S.rep || 'MAKETZO').split(' ')[0]) : st === 'waiting' ? COPY.waitPh
-      : S.prompt ? S.prompt : replying ? COPY.replyPh.replace('{name}', firstName()) : COPY.placeholder;
+      : S.prompt ? S.prompt : replying ? COPY.replyPh.replace('{name}', firstName()) : appWithTeam() ? COPY.addMore : COPY.placeholder;
     input.maxLength = (withPerson || replying || teamBound()) ? 1000 : 300;
     // A file attached: Send sends it, so the footer's other ways out step aside. What a file is used for is said in the
     // big view, where the trader decides what to share (Ed's pick, 2026-11-17: "No need to state how we use this file"
