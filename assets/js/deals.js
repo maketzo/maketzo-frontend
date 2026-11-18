@@ -52,6 +52,8 @@
       if (signedUp && !(j.deals && j.deals.length)) return start();
       if (live.innerHTML.trim() !== j.html.trim()) live.innerHTML = j.html;
       if (terms && typeof j.terms === 'string' && terms.innerHTML.trim() !== j.terms.trim()) terms.innerHTML = j.terms;
+      // The console's Deals report counts who opened this page while each deal showed (mkt-analytics.js dealSeen).
+      if (window.MKT && window.MKT.dealSeen) (j.deals || []).forEach(function (d) { if (d && d.code) window.MKT.dealSeen(d.code, 'deals'); });
       start();
     }).catch(function () {});
   }

@@ -625,10 +625,35 @@
   // ── Deals (maketzo-backend lib/deals.js, Ed 2026-11-18) ─────────────
   // A deal's Claim opens /pricing?code=BLACKFRIDAY. The code is kept for this tab, so whichever trial button they press
   // next (assets/js/checkout.js, signup.html, login.html) carries it, and the server applies it only where it fits.
+  //
+  // Where this tab first met a deal goes with the code, for the console's Deals report (Ed's pick 2026-11-18, "every
+  // source"; maketzo-backend lib/deals.js dealSource): the alert email's links carry utm_source=deal-alert, the Deals
+  // page's Claim and the chat's carry #from-deals and #from-chat, and the deal bar marks its own click (dealSource
+  // below). The first one stays for the tab. A code link with none of them is a link someone shared.
+  function dealSource(src) {
+    try { if (src && !sessionStorage.getItem("mkt_deal_src")) sessionStorage.setItem("mkt_deal_src", src); } catch (e) {}
+  }
+  // Once per tab per code and place, so the report counts people, not page loads.
+  function dealOnce(key) {
+    try { if (sessionStorage.getItem(key)) return false; sessionStorage.setItem(key, "1"); } catch (e) {}
+    return true;
+  }
+  function dealSeen(code, where) {
+    if (!code || !dealOnce("mkt_deal_seen_" + where + "_" + code)) return;
+    trackEvent("mkt_deal_seen", { target: code, source: where });
+  }
   function captureDealCode() {
     try {
-      var m = /[?&]code=([A-Za-z0-9]{4,20})(?:&|$)/.exec(window.location.search || "");
-      if (m) sessionStorage.setItem("mkt_deal_code", m[1].toUpperCase());
+      var q = window.location.search || "", h = window.location.hash || "";
+      var m = /[?&]code=([A-Za-z0-9]{4,20})(?:&|$)/.exec(q);
+      if (/[?&]utm_source=deal-alert(?:&|$)/.test(q)) dealSource("alert");
+      var from = /^#from-(deals|chat)$/.exec(h);
+      if (from) dealSource(from[1]);
+      if (!m) return;
+      var code = m[1].toUpperCase();
+      dealSource("link");
+      sessionStorage.setItem("mkt_deal_code", code);
+      if (dealOnce("mkt_deal_claim_" + code)) trackEvent("mkt_deal_claim", { target: code, source: sessionStorage.getItem("mkt_deal_src") });
     } catch (e) {}
   }
   // The deal bar (assets/js/deal-bar.js): one line at the top of every page while a deal shows. Loaded only when
@@ -1257,6 +1282,9 @@
     identify: identify,
     identifyUser: identifyUser,
     setPerson: setPerson,
+    // The Deals report's two marks (captureDealCode above): a deal on screen, and where this tab met it.
+    dealSeen: dealSeen,
+    dealSource: dealSource,
     linkSession: linkSession,
     getAnonId: getAnonId,
     getSessionId: getSessionId,

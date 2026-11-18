@@ -143,9 +143,10 @@ function planBody() { return hasPlan ? { tier: activeTier, interval: activeInter
 function visitBody() {
   const M = window.MKT || {};
   // A deal code from maketzo.co/deals, kept for this tab by mkt-analytics.js; the server applies it only where it fits.
-  let code = null;
-  try { const c = sessionStorage.getItem('mkt_deal_code'); if (c && /^[A-Z0-9]{4,20}$/.test(c)) code = c; } catch (e) {}
-  return Object.assign({ mkt_anon_id: M.getAnonId ? M.getAnonId() : null, mkt_session_id: M.getSessionId ? M.getSessionId() : null, mkt_source_path: window.location.pathname }, code ? { code: code } : {});
+  // And where this tab met the deal, for the console's Deals report.
+  let code = null, src = null;
+  try { const c = sessionStorage.getItem('mkt_deal_code'); if (c && /^[A-Z0-9]{4,20}$/.test(c)) { code = c; src = sessionStorage.getItem('mkt_deal_src'); } } catch (e) {}
+  return Object.assign({ mkt_anon_id: M.getAnonId ? M.getAnonId() : null, mkt_session_id: M.getSessionId ? M.getSessionId() : null, mkt_source_path: window.location.pathname }, code ? { code: code, code_source: src } : {});
 }
 const checkoutToken = hasPlan ? (activeTier + ':' + activeInterval) : legacyPlanId;
 const planQuery = hasPlan ? ('tier=' + activeTier + '&interval=' + activeInterval) : (legacyPlanId ? ('plan=' + encodeURIComponent(legacyPlanId)) : '');

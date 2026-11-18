@@ -163,6 +163,10 @@
   function dealCode() {
     try { const c = sessionStorage.getItem('mkt_deal_code'); return c && /^[A-Z0-9]{4,20}$/.test(c) ? c : null; } catch (_) { return null; }
   }
+  // Where this tab met the deal (the deal bar, the Deals page, an alert email, the chat), for the console's Deals report.
+  function dealSource() {
+    try { return sessionStorage.getItem('mkt_deal_src') || null; } catch (_) { return null; }
+  }
 
   // handleCheckout accepts: (event) | (tier, event) | (tier, fakeEvent) | (priceId, event) [legacy].
   async function handleCheckout(a, b) {
@@ -283,7 +287,7 @@
           mkt_anon_id: anonId,
           mkt_session_id: sessionId,
           mkt_source_path: window.location.pathname
-        }, dealCode() ? { code: dealCode() } : {}))
+        }, dealCode() ? { code: dealCode(), code_source: dealSource() } : {}))
       });
       const data = await checkoutRes.json().catch(function () { return {}; });
       if (data.url) {

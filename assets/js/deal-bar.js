@@ -45,6 +45,10 @@
     // The Gold Sweep is over by 2.6 seconds; after that the bar carries no animation at all.
     setTimeout(function () { bar.classList.remove('is-arriving'); }, 3000);
     window.addEventListener('resize', fit);
+    // The console's Deals report: who saw the deal, and that the bar is where they met it if they click through.
+    var M = window.MKT;
+    if (M && M.dealSeen) M.dealSeen(d.code, 'deal-bar');
+    bar.querySelector('.mk-dealbar-link').addEventListener('click', function () { if (M && M.dealSource) M.dealSource('bar'); });
     bar.querySelector('.mk-dealbar-x').addEventListener('click', function () {
       root.classList.remove('has-deal-bar');
       root.style.removeProperty('--mk-dealbar-h');
