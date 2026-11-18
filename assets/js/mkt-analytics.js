@@ -633,7 +633,7 @@
   }
   // The deal bar (assets/js/deal-bar.js): one line at the top of every page while a deal shows. Loaded only when
   // GET /deals/live has one, never on the pages where it would be in the way, and never while the $9.95 toast is held.
-  var BAR_V = 1;
+  var BAR_V = 2;
   function dealBar() {
     try {
       var p = window.location.pathname.replace(/\.html$/, "").replace(/\/+$/, "") || "/";

@@ -1,7 +1,9 @@
 /**
  * The deal bar: one line above the top nav on every marketing page while a deal shows (maketzo-backend lib/deals.js,
  * Ed's mockup pick 2026-11-18). Loaded by assets/js/mkt-analytics.js only when GET /deals/live has a deal, so a page
- * with no deal running never downloads it. Close hides it for this tab. No blur and no endless animation (the heat
+ * with no deal running never downloads it. Close hides it on this page only: a refresh or the next page shows it
+ * again (Ed, 2026-11-18: "It should come back on the next visit or if I refresh the page"; it used to stay hidden
+ * for the whole tab). No blur and no endless animation (the heat
  * check: a full-width fixed bar must not repaint the page).
  */
 (function () {
@@ -9,7 +11,6 @@
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function show(d, count) {
     if (!d || !d.code || document.getElementById('mkDealBar')) return;
-    try { if (sessionStorage.getItem('mkt_deal_bar_x') === d.code) return; } catch (e) {}
     var bar = document.createElement('div');
     bar.id = 'mkDealBar';
     bar.className = 'mk-dealbar';
@@ -33,7 +34,6 @@
     fit();
     window.addEventListener('resize', fit);
     bar.querySelector('.mk-dealbar-x').addEventListener('click', function () {
-      try { sessionStorage.setItem('mkt_deal_bar_x', d.code); } catch (e) {}
       root.classList.remove('has-deal-bar');
       root.style.removeProperty('--mk-dealbar-h');
       bar.parentNode.removeChild(bar);
