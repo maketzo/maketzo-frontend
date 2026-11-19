@@ -3,6 +3,13 @@
    Single source of truth. Import in both marketing and app.
    ===================================================================== */
 
+/* Never fake a bold. The site loads DM Mono at 400 and 500 and Bebas Neue at 400 only, so a weight of 600
+   or more on either was drawn by smearing the lighter face (Ed, 2026-11-18: "halated and hard to read").
+   With this line the browser draws the real heaviest weight instead. maketzo-app/scripts/
+   check-synthetic-bold.js (run by the pre-push hook) keeps this line here and refuses new rules that ask a
+   font for a weight it does not load. Italics are untouched: only weight synthesis is off. */
+html { font-synthesis-weight: none; }
+
 :root {
 
   /* ── COLOR · CANONICAL PALETTE ─────────────────────────────────────── */
