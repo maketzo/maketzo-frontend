@@ -23,7 +23,14 @@
 .dl-fine { color: var(--mk-text-tertiary); font-size: var(--mk-text-sm); line-height: 1.5; }
 .dl-ticket-stub { flex: 2 1 300px; min-width: 0; padding: 40px; border-left: 2px dashed rgba(212,175,55,.35); background: rgba(6,7,10,.55); display: flex; flex-direction: column; justify-content: center; gap: 14px; }
 .dl-label { color: var(--mk-text-tertiary); }
-.dl-code { font-family: var(--mk-font-mono); font-size: clamp(1.4rem, 3vw, 2rem); letter-spacing: 0.08em; color: var(--mk-gold-300); border: 1px dashed rgba(212,175,55,.55); border-radius: 10px; padding: 14px 16px; text-align: center; word-break: break-all; }
+/* A code never wraps (Ed, 2026-11-20: BLACKFRIDAY26 broke into two lines). It stays on one line, and deals.js steps
+   the type down a class at a time until the whole code fits its box. Codes run 6 to 20 characters
+   (maketzo-backend lib/deals.js CODE_RE); the last step fits 20 in the narrowest phone box. */
+.dl-code { --dl-code-size: clamp(1.4rem, 3vw, 2rem); font-family: var(--mk-font-mono); font-size: var(--dl-code-size); letter-spacing: 0.08em; color: var(--mk-gold-300); border: 1px dashed rgba(212,175,55,.55); border-radius: 10px; padding: 14px 16px; text-align: center; white-space: nowrap; }
+.dl-code.dl-code-fit-1 { font-size: calc(var(--dl-code-size) * 0.84); }
+.dl-code.dl-code-fit-2 { font-size: calc(var(--dl-code-size) * 0.7); letter-spacing: 0.06em; }
+.dl-code.dl-code-fit-3 { font-size: calc(var(--dl-code-size) * 0.58); letter-spacing: 0.04em; }
+.dl-code.dl-code-fit-4 { font-size: calc(var(--dl-code-size) * 0.48); letter-spacing: 0.02em; }
 .dl-copy { min-height: 48px; border-radius: var(--mk-radius-button); border: var(--mk-border-strong); background: transparent; color: var(--mk-text-primary); font-family: var(--mk-font-sans); font-weight: 600; font-size: var(--mk-text-md); cursor: pointer; }
 .dl-copy:hover { border-color: var(--mk-brand); color: var(--mk-brand); }
 .dl-claim { min-height: 52px; display: flex; align-items: center; justify-content: center; border-radius: var(--mk-radius-button); background: var(--mk-gold-gradient); color: var(--mk-text-on-gold); font-weight: 700; font-size: var(--mk-text-lg); text-decoration: none; border: 1px solid rgba(0,0,0,.18); }

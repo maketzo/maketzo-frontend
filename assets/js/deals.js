@@ -41,7 +41,30 @@
     });
     if (ended) { clearInterval(timer); timer = null; refresh(); }
   }
-  function start() { tick(); if (!timer && live.querySelector('[data-ends]')) timer = setInterval(tick, 15000); }
+  function start() { fitCodes(); tick(); if (!timer && live.querySelector('[data-ends]')) timer = setInterval(tick, 15000); }
+
+  // A code never wraps (deals.css .dl-code): step each code box down a class at a time until the code fits on one line.
+  var FIT = ['dl-code-fit-1', 'dl-code-fit-2', 'dl-code-fit-3', 'dl-code-fit-4'];
+  function fitCodes() {
+    live.querySelectorAll('.dl-code').forEach(function (el) {
+      FIT.forEach(function (c) { el.classList.remove(c); });
+      // Measure the text itself against the room inside the padding, so a code never runs into its border.
+      var text = document.createRange(); text.selectNodeContents(el);
+      var cs = getComputedStyle(el), room = el.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+      for (var i = 0; i < FIT.length && text.getBoundingClientRect().width > room; i++) {
+        if (i) el.classList.remove(FIT[i - 1]);
+        el.classList.add(FIT[i]);
+      }
+    });
+  }
+  var fitQueued = false;
+  window.addEventListener('resize', function () {
+    if (fitQueued) return;
+    fitQueued = true;
+    requestAnimationFrame(function () { fitQueued = false; fitCodes(); });
+  });
+  // The mono font can arrive after the first fit, and it is wider than the fallback.
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitCodes);
 
   function refresh() {
     fetch(apiBase() + '/deals/live', { credentials: 'omit', mode: 'cors', cache: 'no-store' }).then(function (r) {
