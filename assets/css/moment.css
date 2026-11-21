@@ -102,8 +102,7 @@
   .moment--three .moment-link::after { left: 50%; right: auto; top: auto; bottom: 7px; margin: 0 0 0 -5.5px; transform: rotate(135deg); }
   .moment--three .moment-link i { left: 50%; top: 4px; margin: 0 0 0 -4.5px; }
 }
-/* The closed card's three facts are longer than a third of a narrow card ("Frozen at 3 At the close0 strikes" ran
-   together at 1170px), so they read as rows there. */
+/* The closed card's three facts read as rows (at 1170px three columns ran together on a narrow card). */
 .moment--three .moment-card--closed .moment-facts { grid-template-columns: minmax(0, 1fr); gap: 8px; }
 /* and DAY CLOSED, which wrapped to two lines inside a round pill, is a full-width banner there */
 .moment--three .moment-closed { justify-self: stretch; text-align: center; border-radius: var(--mk-radius-card); line-height: 1.6; }
