@@ -603,6 +603,13 @@
       } catch (e) {}
       liveFirst = false;
     }
+    // The visit trail's steps since the last beat (at most 60), when the trail is loaded (trailStart).
+    try {
+      if (window.MaketzoTrail && typeof window.MaketzoTrail.take === "function") {
+        var tr = window.MaketzoTrail.take();
+        if (tr) body.tr = tr;
+      }
+    } catch (e) {}
     // text/plain on purpose: a JSON body makes the browser send a CORS preflight (OPTIONS) before every beat;
     // text/plain is a "simple" request, so each beat is one round trip, not two. The server parses it.
     // (Under CDP, Chrome DevTools reports these POSTs as net::ERR_ABORTED even though they arrive; a local
@@ -740,9 +747,40 @@
     try { held = localStorage.getItem("mkt_offer"); } catch (e) {}
     if (held) loadOfferToast().then(function (t) { t.resume(); }).catch(function () {});
   }
+  // ── The visit trail (Ed's go 2026-11-21, "same trail on the site") ─────────
+  // The app's own trail (maketzo-app lib/app-trail.js through trail-embed.js from the matching app tier) names every
+  // press with the site's and the server's own words, and its steps ride on this beacon: no requests of its own.
+  // Loaded only here, once the beacon is allowed, so it follows the same consent and privacy signals.
+  var trailLoaded = false, lastBeatNow = 0;
+  function trailAppBase() {
+    var h = (window.location.hostname || "").replace(/^www\./, "");
+    if (h.indexOf("dev.") === 0) return "https://dev-app.maketzo.co";
+    if (h.indexOf("staging.") === 0) return "https://staging-app.maketzo.co";
+    return "https://app.maketzo.co";
+  }
+  function trailStart() {
+    if (trailLoaded || analyticsOptOut()) return;
+    var host = window.location.hostname.replace(/^www\./, "");
+    if (!MKT_TIERS[host]) return;
+    trailLoaded = true;
+    // A blocker asks for a beat at once (a missing page, an error message); at most one every 2 seconds.
+    window.MKTLiveBeatNow = function () {
+      var now = Date.now();
+      if (now - lastBeatNow < 2000) return;
+      lastBeatNow = now;
+      liveBeat(false);
+    };
+    try {
+      var s = document.createElement("script");
+      s.src = trailAppBase() + "/trail-embed.js";
+      s.async = true;
+      document.head.appendChild(s);
+    } catch (e) {}
+  }
   // Started once the EU lookup has answered (boot), or when an EU visitor accepts (mkt:consent-changed). Once only.
   function liveStart() {
     if (liveTimer || !liveAllowed()) return;
+    trailStart();
     liveBeat(true);
     liveTimer = setInterval(function () { if (!document.hidden) liveBeat(false); }, LIVE_EVERY_MS);
     offerWait();
