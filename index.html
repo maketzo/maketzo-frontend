@@ -2285,7 +2285,7 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
   <div class="hero-content">
     <div class="hero-badge"><span class="badge-dot"></span>TRADING JOURNAL + LIVE DISCIPLINE SYSTEM</div>
     <h1 class="hero-headline">Your journal is a day late.<br><em>MAKETZO gets there before the damage.</em></h1>
-    <p class="hero-sub">MAKETZO is a trading journal that starts before the bell. Sign your rules before the open, type your P&amp;L as you trade, and it counts your strikes, warns you before the last one, and calls the day when your rules say stop.</p>
+    <p class="hero-sub">MAKETZO is a trading journal that starts before the bell. Sign your rules before the open and type your P&amp;L as you trade. Every loss bigger than the limit you set is a strike. MAKETZO warns you before your last one and ends your day in the app when your rules say stop.</p>
     <div class="hero-ctas">
       <button class="btn-primary" data-cta-source="hero" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
       <a href="#see-it-work" class="btn-secondary" data-shiw>&#9654; See How It Works</a>
@@ -2301,7 +2301,7 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
 </section>
 <!-- STICKY EMAIL BAR -->
 <div class="sticky-bar" id="stickyBar">
-  <p class="sticky-bar-text"><strong>Stay Sharp.</strong> Bi-weekly trading discipline insights.</p>
+  <p class="sticky-bar-text"><strong>Stay Sharp.</strong> Trading discipline insights, every two weeks.</p>
   <form class="sticky-bar-form" onsubmit="return MKTNewsletter.handleForm(event, 'sticky-bar')" novalidate>
     <input type="email" class="sticky-bar-input" placeholder="your@email.com" id="stickyEmail" name="email" required autocomplete="email" aria-describedby="stickyEmailError">
     <button class="btn-primary" type="submit">Subscribe</button>
@@ -2438,7 +2438,7 @@ body.hero-loaded .hero-proof    { opacity: 1; transform: translateY(0); transiti
               <div class="fs-tile fs-tile--up"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg><p><span class="fs-tile-k">Peak</span><span class="fs-tile-v">$220</span></p></div>
               <div class="fs-tile fs-tile--down"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg><p><span class="fs-tile-k">Drawdown</span><span class="fs-tile-v">$180</span></p></div>
               <div class="fs-tile"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 13l9 5 9-5"/></svg><p><span class="fs-tile-k">Strikes Used</span><span class="fs-tile-v">1 / 3</span></p></div>
-              <div class="fs-tile"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg><p><span class="fs-tile-k">Rules Fired</span><span class="fs-tile-v">0</span></p></div>
+              <div class="fs-tile"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg><p><span class="fs-tile-k">Rules Broken</span><span class="fs-tile-v">0</span></p></div>
             </div>
           </div>
           <p class="fs-note">The day closes at +$40 with one strike used. Your debrief opens with every number already filled in.</p>
@@ -2676,20 +2676,20 @@ document.addEventListener("DOMContentLoaded", function() {
         <p class="hw-when">10:30</p>
         <h3>The Checkpoint</h3>
         <p class="hw-line">Type your P&amp;L. At each checkpoint, MAKETZO tells you what kind of day it is.</p>
-        <a class="hw-link" href="system.html#checkpoints" data-cta-source="how" data-cta-target="system-checkpoints">How the 10:30 call is made&nbsp;&rarr;</a>
+        <a class="hw-link" href="system.html#checkpoints" data-cta-source="how" data-cta-target="system-checkpoints">How the 10:30 checkpoint works&nbsp;&rarr;</a>
         <div class="hw-screen" aria-label="The dashboard at the 10:30 checkpoint">
           <div class="hw-tiles">
             <p class="hw-tile"><span class="hw-k">NET P&amp;L</span><span class="hw-tile-v hw-pos">+$120.00</span></p>
             <p class="hw-tile"><span class="hw-k">STRIKES</span><span class="hw-tile-v">0 <small>of 2</small></span></p>
           </div>
-          <p class="hw-call"><span class="hw-call-v">Protect Capital</span><span class="hw-call-t">Green at $120, $280 short of the $400 goal.</span></p>
+          <p class="hw-call"><span class="hw-call-v">Protect Capital</span><span class="hw-call-t">Green at $120, $280 from your $400 goal.</span></p>
           <div class="hw-coach">
             <p class="hw-k">COACH SAYS</p>
-            <p>Protect what you have. Take only the cleanest setup or step away.</p>
+            <p>You&rsquo;re up $120. Before the next trade, ask: is this an A+ setup from my plan? If not, stop for the day.</p>
           </div>
           <div>
             <p class="hw-k">YOUR CONTRACT, ON SCREEN ALL SESSION</p>
-            <p class="hw-pills"><span>A+ SETUPS ONLY</span><span>KEEP YOUR GAINS</span><span>TWO STRIKES CLOSES CONTRACT</span><span>PATIENCE IS KEY</span></p>
+            <p class="hw-pills"><span>A+ SETUPS ONLY</span><span>KEEP YOUR GAINS</span><span>DAY ENDS AT TWO STRIKES</span><span>NO NEW NAMES AFTER 10:30</span></p>
           </div>
         </div>
       </li>
@@ -2707,7 +2707,7 @@ document.addEventListener("DOMContentLoaded", function() {
           <div>
             <p class="hw-k">IN-TRADE RULES</p>
             <ul class="hw-rows">
-              <li class="hw-row"><span>The stop is the stop</span><span class="hw-ok"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M7.5 12.3l3 3 6-6.3"/></svg>Followed</span></li>
+              <li class="hw-row"><span>Exit at my stop. Never move it further away.</span><span class="hw-ok"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M7.5 12.3l3 3 6-6.3"/></svg>Followed</span></li>
               <li class="hw-row"><span>Never add to a loser</span><span class="hw-ok"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M7.5 12.3l3 3 6-6.3"/></svg>Followed</span></li>
               <li class="hw-row"><span>No new names after 10:30</span><span class="hw-ok"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M7.5 12.3l3 3 6-6.3"/></svg>Followed</span></li>
             </ul>
@@ -2834,7 +2834,7 @@ document.addEventListener("DOMContentLoaded", function() {
         <div class="price-rule"></div>
         <ul class="price-list">
           <li>Everything in Journal</li>
-          <li>COACH SAYS, State Machine, and Strike System</li>
+          <li>COACH SAYS, Checkpoints, and Strike System</li>
           <li>Focus Room: Lock-In, Reset, Soundtrack</li>
           <li>Profit Floor for protecting green days</li>
           <li>Maketzo Edge + Pulse on TradingView</li>
@@ -2875,7 +2875,7 @@ document.addEventListener("DOMContentLoaded", function() {
     <p class="section-sub reveal">Anything else, email info@maketzo.co. We read every one.</p>
     <div class="faq-list">
       <div class="faq-item reveal"><button class="faq-q" onclick="toggleFaq(this)">Do I need to connect my broker?</button><div class="faq-a"><strong>No.</strong> Type your net P&amp;L and the accountability engine runs from day one. DAS Trader Pro import is optional, for trade-level detail, &cent;/share tracking and session analysis from your fills.</div></div>
-      <div class="faq-item reveal"><button class="faq-q" onclick="toggleFaq(this)">Can MAKETZO stop my broker from taking a trade?</button><div class="faq-a"><strong>No, and we say so plainly.</strong> At three strikes MAKETZO closes your day inside the app: the P&amp;L log locks, COACH SAYS tells you to walk, and getting back in is a deliberate override with the strikes still standing. Your broker never hears from it. It works because you set it up when you were calm, and the version of you that is tilting has to stop and choose.</div></div>
+      <div class="faq-item reveal"><button class="faq-q" onclick="toggleFaq(this)">Can MAKETZO block a trade at my broker?</button><div class="faq-a"><strong>No, and we say so plainly.</strong> At three strikes MAKETZO closes your day inside the app: the P&amp;L log locks, COACH SAYS tells you to walk, and getting back in is a deliberate override with the strikes still standing. Your broker never hears from it. It works because you set it up when you were calm, and the version of you that is tilting has to stop and choose.</div></div>
       <div class="faq-item reveal"><button class="faq-q" onclick="toggleFaq(this)">How is this different from TradeZella or TraderVue?</button><div class="faq-a">They record and analyze trades well, and <strong>MAKETZO does that too</strong>: DAS import, &cent;/share, win rate, equity curve, streaks. The difference is what happens before the mistake: <a href="system.html#the-moment">checkpoints you set, strikes, and a day that closes when your own rules say so</a>.</div></div>
       <div class="faq-item reveal"><button class="faq-q" onclick="toggleFaq(this)">How does the 7-day free trial work?</button><div class="faq-a">Card required at signup, <strong>no charge until day 8</strong>. Cancel any time before then and you pay nothing. Pro and Elite get their TradingView indicator invite within 24 hours.</div></div>
       <div class="faq-item reveal"><button class="faq-q" onclick="toggleFaq(this)">Is MAKETZO built for small-cap traders?</button><div class="faq-a"><strong>Yes, on purpose.</strong> <a href="dilution-check.html">Dilution Check</a>, <a href="tools.html">Halt Clock</a> and the coaching cadence are built for the speed of small-cap momentum. If you trade large caps or swing, the accountability engine still applies; the indicators were tuned for small caps.</div></div>
@@ -2892,12 +2892,12 @@ document.addEventListener("DOMContentLoaded", function() {
   <div class="section-inner">
     <p class="section-eyebrow reveal">Ready?</p>
     <h2 class="final-cta-headline reveal">Stop losing to <em>yourself.</em></h2>
-    <p class="final-cta-sub reveal">7 days free. Full access from day one. No charge until day 8. Cancel anytime.</p>
+    <p class="final-cta-sub reveal">7 days free on the plan you pick. No charge until day 8. Cancel anytime.</p>
     <div class="final-cta-btns reveal">
       <button class="btn-primary" data-cta-source="final" onclick="handleCheckout('pro',event)">Start Free Trial &rarr;</button>
       <a href="pricing.html" class="btn-secondary">Compare All Plans</a>
     </div>
-    <p class="final-cta-note reveal">Pro &middot; $49/mo or $399/yr &middot; Discipline OS, Focus Room &amp; Dilution Check &middot; Cancel anytime</p>
+    <p class="final-cta-note reveal">Pro &middot; $49/mo or $399/yr &middot; strikes, COACH SAYS, Focus Room and Dilution Check &middot; Cancel anytime</p>
     <ul class="trust-strip">
       <li class="reveal"><svg class="trust-ic trust-ic--line" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><path d="M16 3.5l10 4v7.2c0 6.3-4.2 11.4-10 13.8C10.2 26.1 6 21 6 14.7V7.5z"/><path d="M11.5 16.2l3.2 3.2 6-6.4"/></svg><div><p class="trust-title">Cancel Anytime</p><p class="trust-sub">No long-term commitment.</p></div></li>
       <li class="reveal"><svg class="trust-ic trust-ic--fill" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><rect x="5" y="20" width="3.4" height="7" rx="1"/><rect x="11" y="15.5" width="3.4" height="11.5" rx="1"/><rect x="17" y="10.5" width="3.4" height="16.5" rx="1"/><rect x="23" y="5" width="3.4" height="22" rx="1"/></svg><div><p class="trust-title">Built for Small-Cap Traders</p><p class="trust-sub">Tools, structure, and accountability for every session.</p></div></li>
@@ -2919,7 +2919,7 @@ document.addEventListener("DOMContentLoaded", function() {
             <img class="mk-brand-lockup__wordmark" src="assets/logo-wordmark.png" alt="MAKETZO">
           </a>
         </div>
-        <p class="footer-tagline"><strong>Stop the trade you'd regret.</strong>Discipline in every session. Edge in every trade. Accountability when it counts.</p>
+        <p class="footer-tagline"><strong>Stop the trade you'd regret.</strong></p>
       </div>
       <div><div class="footer-col-title">Product</div><ul class="footer-links"><li><a href="journal.html">Journal</a></li><li><a href="system.html">The System</a></li><li><a href="indicators.html">Indicators</a></li><li><a href="focus.html">Focus Room</a></li><li><a href="tools.html">Free Tools</a></li><li><a href="dilution-check.html">Dilution Check</a></li><li><a href="pricing.html" data-cta-source="footer-product" data-cta-target="pricing">Pricing</a></li><li><a href="deals.html" data-cta-source="footer-product" data-cta-target="deals">Deals</a></li></ul></div>
       <div><div class="footer-col-title">Explore</div><ul class="footer-links"><li><a href="guides.html" data-cta-source="footer-explore" data-cta-target="guides">Guides</a></li><li><a href="trader-type.html" data-cta-source="footer-explore" data-cta-target="trader-type">Trader Type</a></li><li><a href="trade-replay.html" data-cta-source="footer-explore" data-cta-target="trade-replay">Trade Replay</a></li><li><a href="trading-os.html" data-cta-source="footer-explore" data-cta-target="trading-os">Trading OS</a></li><li><a href="soundtrack.html" data-cta-source="footer-explore" data-cta-target="soundtrack">Soundtrack</a></li><li><a href="why.html" data-cta-source="footer-explore" data-cta-target="why">Why MAKETZO</a></li><li><a href="contact.html" data-cta-source="footer-explore" data-cta-target="contact">Contact Us</a></li></ul></div>

@@ -141,7 +141,7 @@
       '<button type="button" class="mk-psheet-x" aria-label="Close">' + svg('x') + '</button></div>' +
       '<ul class="mk-ptiles">' + tiles + '</ul>' +
       '<a class="mk-plogin" href="' + url('app') + '" data-to="app">' + svg('login') + '<span class="mk-p-out">Log In</span><span class="mk-p-in">Launch the App</span></a>' +
-      '<div class="mk-pnews"><p><strong>Stay Sharp.</strong> Bi-weekly trading discipline insights.</p>' +
+      '<div class="mk-pnews"><p><strong>Stay Sharp.</strong> Trading discipline insights, every two weeks.</p>' +
       '<form novalidate><input type="email" name="email" placeholder="you@email.com" autocomplete="email" aria-label="Email address">' +
       '<button type="submit">Subscribe</button><p class="newsletter-error" role="alert" hidden></p></form></div>';
     sheet.querySelector('.mk-psheet-x').addEventListener('click', closeSheet);

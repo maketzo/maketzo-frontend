@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Behavioral Accountability for Day Traders · MAKETZO</title>
-<meta name="description" content="Set your rules when you're calm. MAKETZO enforces them when you're not: State Machine, COACH SAYS, Strike System, Reset Protocols, end-of-day lockout.">
+<meta name="description" content="Set your rules when you're calm. MAKETZO enforces them when you're not: checkpoints, COACH SAYS, the Strike System and guided resets.">
 <meta name="theme-color" content="#06070A">
 <meta property="og:title" content="The System · MAKETZO">
 <meta property="og:description" content="The behavioral accountability layer that enforces your rules when willpower fails.">
@@ -14,7 +14,7 @@
 <meta property="og:image" content="https://maketzo.co/assets/cards/system.png?v=2">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="The MAKETZO System. Set your rules calm, we enforce them live. State read, COACH SAYS, Strike System, end-of-day lockout.">
+<meta property="og:image:alt" content="The MAKETZO System: rules you set while calm, checkpoints, COACH SAYS and the Strike System.">
 <meta name="twitter:card" content="summary_large_image">
 <meta property="og:type" content="website">
 <link rel="canonical" href="https://maketzo.co/system">
@@ -27,7 +27,7 @@
       "@id": "https://maketzo.co/system#webpage",
       "url": "https://maketzo.co/system",
       "name": "Behavioral Accountability for Day Traders",
-      "description": "Set your rules when you're calm. MAKETZO enforces them when you're not: State Machine, COACH SAYS, Strike System, Reset Protocols, end-of-day lockout.",
+      "description": "Set your rules when you're calm. MAKETZO enforces them when you're not: checkpoints, COACH SAYS, the Strike System and guided resets.",
       "inLanguage": "en-US",
       "isPartOf": {
         "@id": "https://maketzo.co/#website"
@@ -878,8 +878,8 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
     <div class="page-hero-text">
       <p class="page-hero-eyebrow">01 · BEHAVIORAL ACCOUNTABILITY</p>
       <h1 class="page-hero-title">Set your rules when you're calm. <em>We enforce them when you're not.</em></h1>
-      <p class="page-hero-sub">Every time you log your P&amp;L, the System reads where the day stands and puts the guardrails you set in front of you. A live state read, timed checkpoints, COACH SAYS in real time, a three-strike circuit breaker, and guided resets turn your rules from good intentions into enforced reality.</p>
-      <p class="page-hero-sub">Most traders don't blow up because they lack a strategy. They blow up because, at exactly the wrong moment, they stop listening to themselves. The System is the part of you that was listening this morning, still in the room at 10:42.</p>
+      <p class="page-hero-sub">Every time you log your P&amp;L, the System reads where the day stands and puts the guardrails you set in front of you. After every P&amp;L you type, you see where your day stands. You also get checkpoints at times you choose, COACH SAYS on screen, three strikes before your day ends, and a guided reset when you need one.</p>
+      <p class="page-hero-sub">Most traders don't blow up because they lack a strategy. They blow up because, at exactly the wrong moment, they stop listening to themselves. It keeps the rules you signed at 9:00 in front of you at 10:42.</p>
       <div class="page-hero-cta">
         <button class="btn-primary" data-cta-source="page-hero" style="padding:16px 32px;font-size:var(--mk-text-md);" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
         <p class="final-cta-note">7 days free &middot; No charge until day 8 &middot; Cancel anytime.</p>
@@ -902,7 +902,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
   <div class="section-inner">
     <div class="only-head">
       <p class="section-eyebrow reveal">CHECKPOINTS AND STRIKES &middot; ONE MORNING, 10:30 TO 11:07</p>
-      <h2 class="section-title reveal">Read at 10:30. Warned at 10:42. Closed at 11:07. <em>Your rules, enforced, not suggested.</em></h2>
+      <h2 class="section-title reveal">Checked at 10:30. Warned at 10:42. Day closed at 11:07. <em>Your rules, enforced, not suggested.</em></h2>
     </div>
     <div class="moment moment--sequence moment--three reveal">
       <article class="moment-card moment-card--read" aria-label="MAKETZO at 10:30, the checkpoint read">
@@ -911,10 +911,10 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
           <div class="moment-pnl"><span class="moment-pnl-label">10:30 checkpoint</span><span class="moment-pnl-val">&minus;$180.00</span></div>
           <div class="moment-strikes" aria-label="One of three strikes"><span class="is-hit">1</span><span>2</span><span>3</span><em>1 of 3 strikes</em></div>
           <dl class="moment-facts"><div><dt>Trades</dt><dd>3</dd></div><div><dt>Wins</dt><dd>1</dd></div><div><dt>Losses</dt><dd class="is-loss">2</dd></div></dl>
-          <div class="moment-read"><span class="moment-read-label">The read</span><strong>Walk Away</strong><span class="moment-read-alarm">Alarm rang at 10:30, the time you set</span></div>
+          <div class="moment-read"><span class="moment-read-label">Status</span><strong>Walk Away</strong><span class="moment-read-alarm">Alarm rang at 10:30, the time you set</span></div>
           <div class="moment-coach"><span class="moment-coach-label">Coach Says</span><p>&minus;$180 right now, net red well into the session. Stop here and the day costs $180. A big red day is usually a small one plus the trades taken to win it back. Close the platform for today and write down what went wrong while it&rsquo;s fresh.</p></div>
         </div>
-        <p class="moment-verdict moment-verdict--us">The read came before the damage. It was ignored.</p>
+        <p class="moment-verdict moment-verdict--us">The warning came at 10:30. The trader ignored it.</p>
       </article>
       <div class="moment-link" aria-hidden="true"><span>12 min</span><i></i></div>
       <article class="moment-card moment-card--us" aria-label="MAKETZO at 10:42, second strike">
@@ -1028,7 +1028,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
         <span class="aw-ring" aria-hidden="true"><svg viewBox="0 0 44 44"><path class="ink" d="M16.5 6.5a5.5 5.5 0 0 1 11 0L26 27.5a4 4 0 0 1-8 0Z"/><circle class="ink" cx="22" cy="38.6" r="4.6"/></svg></span>
         <p class="aw-when">TAKING LOSSES</p>
         <h3 class="aw-head">Slow down.</h3>
-        <p class="aw-desc">Be more selective and tighten up.</p>
+        <p class="aw-desc">Take fewer trades, and only setups from your plan.</p>
       </div>
       <div class="aw-col" data-state="danger">
         <span class="aw-ring" aria-hidden="true"><svg viewBox="0 0 44 44"><rect class="ink" x="6" y="6" width="32" height="32" rx="5.5"/></svg></span>
@@ -1059,7 +1059,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
         <ul class="floorx-list">
           <li>When your best P&amp;L of the day passes half your daily goal, MAKETZO sets a walk-away line under it: your Profit Floor.</li>
           <li>The floor sits 20% below your best P&amp;L (you can set a different give-back) and only moves up as your best P&amp;L rises.</li>
-          <li>Fall back to the floor and the day is called while you're still green. To keep trading, you press Override and confirm it.</li>
+          <li>Fall back to the floor and the day is called while you're still green. To keep trading, you click Override and confirm it.</li>
         </ul>
       </div>
       <div class="fd">
@@ -1267,8 +1267,8 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 <section class="section section-dark coach" id="coach-says">
   <div class="section-inner">
     <p class="section-eyebrow reveal">COACH SAYS</p>
-    <h2 class="coach-title reveal">The voice in the room <em>that doesn't flinch</em></h2>
-    <p class="coach-sub reveal">You set the rules. When emotions take over, COACH SAYS speaks up, instantly and clearly, so you stick to them.</p>
+    <h2 class="coach-title reveal">Coaching on Your Screen <em>While You Trade</em></h2>
+    <p class="coach-sub reveal">You set the rules. When your P&amp;L crosses a line you set, COACH SAYS tells you what to do next.</p>
 
     <div class="coach-wrap">
       <div class="coach-card reveal">
@@ -1281,7 +1281,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
           </svg>
         </div>
         <p class="coach-quote">Two losers <em>in a row</em>.</p>
-        <p class="coach-body">Step into a reset: a timed breathing session to re-enter the zone before your next setup.</p>
+        <p class="coach-body">Start a reset: a timed breathing session to calm down before your next trade.</p>
         <div class="coach-stats">
           <div><span class="coach-stat-k">STREAK</span><span class="coach-stat-v profit">12 days</span></div>
           <div><span class="coach-stat-k">SESSION P&amp;L</span><span class="coach-stat-v danger">-$240</span></div>
@@ -1291,19 +1291,13 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 
       <div class="coach-copy reveal">
         <h3>It speaks when your <em>state turns</em>.</h3>
-        <p>COACH SAYS monitors your live P&amp;L, strikes, and current state, and speaks up the moment your behavior starts to break from your rules. It puts a clear, calm prompt on your screen right when it matters, then stays quiet otherwise.</p>
+        <p>COACH SAYS reads each P&amp;L you type, your strikes and where your day stands, and puts one plain instruction on screen when you near a limit you set. Otherwise it stays quiet.</p>
         <ul class="coach-triggers">
           <li><span class="coach-ring" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 4v5h-5"/><path d="M4 20v-5h5"/><path d="M5.6 9.5A7 7 0 0 1 18.4 8.2L20 9M4 15l1.6.8a7 7 0 0 0 12.8-1.3"/></svg></span><span class="coach-trig-k">TILT</span><span class="coach-trig-d"><strong>Two losers in a row.</strong> Step into a reset before the third one costs you the day.</span></li>
-          <li><span class="coach-ring" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg></span><span class="coach-trig-k">STRIKE</span><span class="coach-trig-d"><strong>A strike lands.</strong> The rule you just broke, named, before you break the next.</span></li>
-          <li><span class="coach-ring" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><path d="M12 12l7.5-7.5M16.5 3.5v4h4"/></svg></span><span class="coach-trig-k">TARGET</span><span class="coach-trig-d"><strong>You hit your number.</strong> Protect the win, and don't force the next tier.</span></li>
+          <li><span class="coach-ring" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg></span><span class="coach-trig-k">STRIKE</span><span class="coach-trig-d"><strong>You take a strike.</strong> COACH SAYS names it and tells you what to do before the next trade.</span></li>
+          <li><span class="coach-ring" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><path d="M12 12l7.5-7.5M16.5 3.5v4h4"/></svg></span><span class="coach-trig-k">TARGET</span><span class="coach-trig-d"><strong>You hit your goal.</strong> Protect the win, and don't force one more trade for a bigger number.</span></li>
         </ul>
       </div>
-    </div>
-
-    <div class="coach-banner reveal">
-      <svg viewBox="0 0 24 26" aria-hidden="true"><path d="M12 2l8 3.2v6.3c0 5.2-3.4 9.6-8 11.5-4.6-1.9-8-6.3-8-11.5V5.2L12 2z"/></svg>
-      <span class="coach-banner-bar" aria-hidden="true"></span>
-      <p><span>Clear rules.</span> <span>Calm reminders.</span> <em>Better decisions.</em></p>
     </div>
 
     <div class="mk-cta-repeat">
@@ -1314,8 +1308,8 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 <script>
 /* COACH SAYS lands once, in the order the app makes it (Ed, 2026-10-17: "Create a beautiful and elegant animation
    for this section"). The CSS is under .cs-armed, which only this adds, so no script means the finished section.
-   Wide, the beats chain once the card is on screen; stacked, the triggers wait for their list and the banner for
-   itself, so the story keeps its order. Words and numbers never change; only light is added. */
+   Wide, the beats chain once the card is on screen; stacked, the triggers wait for their list, so the story keeps
+   its order. (The slogan banner that was the third beat was cut 2026-11-21.) Words and numbers never change; only light is added. */
 (function () {
   var sec = document.getElementById('coach-says');
   if (!sec || !('IntersectionObserver' in window) || !window.matchMedia || !window.requestAnimationFrame) return;
@@ -1323,9 +1317,8 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
   var bars = wave && wave.querySelector('path'), defs = wave && wave.querySelector('defs'), quote = sec.querySelector('.coach-quote');
   var stats = Array.prototype.slice.call(sec.querySelectorAll('.coach-stat-v'));
   var rows = Array.prototype.slice.call(sec.querySelectorAll('.coach-triggers li'));
-  var list = sec.querySelector('.coach-triggers'), banner = sec.querySelector('.coach-banner');
-  var phrases = banner ? Array.prototype.slice.call(banner.querySelectorAll('p > span, p > em')) : [];
-  if (!card || !ring || !bars || !defs || !quote || stats.length !== 3 || rows.length !== 3 || !banner || phrases.length !== 3) return;
+  var list = sec.querySelector('.coach-triggers');
+  if (!card || !ring || !bars || !defs || !quote || stats.length !== 3 || rows.length !== 3) return;
   var gentle = matchMedia('(prefers-reduced-motion: reduce)').matches;
   var NS = 'http://www.w3.org/2000/svg';
 
@@ -1434,11 +1427,6 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
         setTimeout(function () { li.classList.remove('is-lit'); }, (j + 1) * STOP);
       });
       setTimeout(done, 3 * STOP - 200);
-    },
-    function (done) {
-      banner.classList.add('is-lit');
-      say(phrases, 450);
-      setTimeout(function () { banner.classList.remove('is-lit'); done(); }, 2700);
     }
   ];
   sec.classList.add('cs-armed');
@@ -1449,7 +1437,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
     running = true;
     beats[next++](function () { running = false; pump(); });
   }
-  [card, list, banner].forEach(function (el, i) {
+  [card, list].forEach(function (el, i) {
     var o = new IntersectionObserver(function (es) {
       if (!es[0].isIntersecting) return;
       o.disconnect();
@@ -1467,7 +1455,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 <section class="section" id="strikes">
   <div class="section-inner">
     <p class="section-eyebrow reveal">STRIKE SYSTEM</p>
-    <h2 class="section-title reveal">Three strikes. <em>Then the rule is the rule.</em></h2>
+    <h2 class="section-title reveal">Three strikes <em>and your day is done.</em></h2>
     <p class="section-sub reveal">A single bad trade is human. A repeat pattern is a habit. A loss past your strike line earns a strike; a win past it earns one back. The system lets you wobble, but only so far.</p>
 
     <div class="strikes-wrap">
@@ -1480,16 +1468,16 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
         <div class="strike-card reveal">
           <div class="strike-num">2</div>
           <div class="strike-title">Second Strike</div>
-          <div class="strike-text">One more significant loss ends the day. Take only the cleanest setup. Most traders stop right here.</div>
+          <div class="strike-text">One more loss past your strike line ends the day. Before your next trade, leave the screen for five minutes and ask: would I take this if I were green today?</div>
         </div>
         <div class="strike-card reveal">
           <div class="strike-num">3</div>
           <div class="strike-title">Third Strike</div>
-          <div class="strike-text">The day closes. New entries stop. You can still journal and review. Getting back in takes a deliberate override, not a click you'll make by accident.</div>
+          <div class="strike-text">The day closes in MAKETZO and future P&amp;L entries lock. You can still journal and review. Getting back in takes a deliberate override, not a click you'll make by accident.</div>
         </div>
       </div>
       <div class="strikes-note reveal">
-        <strong>Why three?</strong> One warning gets ignored, a single stop feels punitive. Three steps gives you the room to be human while removing the room to spiral.
+        <strong>Why three?</strong> One warning is easy to ignore, and ending the day after one loss feels too harsh. Three gives you room for a bad trade, but not for a losing streak.
       </div>
     </div>
 
@@ -1545,7 +1533,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
       </div>
       <div class="waiting-copy reveal">
         <h3>A protocol, a breath, <em>a way back.</em></h3>
-        <p>When a rule you set fires, a real loss or a give-back near the day's highs, MAKETZO locks your P&amp;L input and surfaces the right <a href="focus.html">Reset Protocol</a>: a guided breathing reset with a live countdown ring, your own anchors, and the soundtrack. Work through it and you come back composed. Keep breaking rules and the Strike System closes the day.</p>
+        <p>When a rule you set is hit, like a loss past your strike line or giving back profit near the day's high, MAKETZO locks future P&amp;L entries and opens the matching <a href="focus.html">reset</a>: a guided breathing reset with a live countdown ring, your own anchor photos, and the soundtrack. Work through it and you come back composed. Keep losing past your strike line and the Strike System ends the day.</p>
         <p>On a slow day you never see it. On the day you need it, it is the difference between one loss and four.</p>
       </div>
     </div>
@@ -1561,14 +1549,14 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 <!-- LOCKOUT -->
 <section class="section" id="lockout">
   <div class="section-inner">
-    <p class="section-eyebrow reveal">END-OF-DAY LOCKOUT</p>
-    <h2 class="section-title reveal">The kill-switch <em>you set for yourself</em></h2>
-    <p class="section-sub reveal">Hit your strike cap and the day closes. New entries stop cold. Getting back in isn't a click, it's a deliberate override with a "make sure you know why" warning, and the strikes stand. The version of you that's tilting has to stop and choose.</p>
+    <p class="section-eyebrow reveal">AT YOUR STRIKE LIMIT</p>
+    <h2 class="section-title reveal">Your Day Ends <em>in MAKETZO</em></h2>
+    <p class="section-sub reveal">Hit your strike limit and MAKETZO ends your day: future P&amp;L entries lock and COACH SAYS tells you to walk away. Getting back in takes a deliberate override with a warning, and the strikes still count. Your broker is never touched, so the last choice is yours, with your morning rules in front of you.</p>
 
     <div class="lockout-wrap">
       <div class="lockout-card reveal">
         <span class="lockout-badge">SESSION LOCKED</span>
-        <div class="lockout-title">Three strikes. Trading is closed until the next open.</div>
+        <div class="lockout-title">Three strikes. Your day is closed in MAKETZO until tomorrow.</div>
         <div class="lockout-timer" id="lockoutCountdown">23:47:12</div>
         <p class="lockout-text">Journal access stays open. Write down what went wrong while it's fresh, and it's waiting for you in the debrief when you're back.</p>
       </div>
@@ -1614,7 +1602,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
           <p class="rr-bar"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></p>
         </div>
         <div class="result-title">Picard Score</div>
-        <div class="result-text">A daily grade on how well you kept your rules. Your P&amp;L isn't part of it, so a lucky green day can't buy a good score.</div>
+        <div class="result-text">A daily grade on how well you followed your rules. Your P&amp;L isn't part of it, so a lucky green day can't buy a good score.</div>
       </div>
       <div class="result-card reveal">
         <div class="rr-view rr-view--streak" aria-hidden="true">
@@ -1623,7 +1611,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
           <p class="rr-pips"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></p>
         </div>
         <div class="result-title">Held-the-Line Streak</div>
-        <div class="result-text">Sessions in a row scoring 7 or better. Keeping your rules builds it, not a green P&amp;L, and a logged no-trade day never breaks the run.</div>
+        <div class="result-text">Sessions in a row scoring 7 or better. Following your rules builds it, not a green P&amp;L, and a logged no-trade day never breaks the run.</div>
       </div>
       <div class="result-card reveal">
         <div class="rr-view rr-view--trend" aria-hidden="true">
@@ -1736,7 +1724,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
   <h2 class="final-cta-title reveal">Stop fighting your worst self <em>alone</em></h2>
   <div class="final-cta-btn-wrap reveal">
     <button class="btn-primary" style="padding:18px 44px;font-size:var(--mk-text-md);" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial</button>
-    <p class="final-cta-note">Pro · $49/mo · The full discipline OS, Focus Room, and the toolkit · Cancel anytime</p>
+    <p class="final-cta-note">Pro · $49/mo · strikes, COACH SAYS, Focus Room and Dilution Check · Cancel anytime</p>
   </div>
 </section>
 
@@ -1752,7 +1740,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
             <img class="mk-brand-lockup__wordmark" src="assets/logo-wordmark.png" alt="MAKETZO">
           </a>
         </div>
-        <p class="footer-tagline"><strong>Stop the trade you'd regret.</strong>Discipline in every session. Edge in every trade. Accountability when it counts.</p>
+        <p class="footer-tagline"><strong>Stop the trade you'd regret.</strong></p>
       </div>
       <div><div class="footer-col-title">Product</div><ul class="footer-links"><li><a href="journal.html">Journal</a></li><li><a href="system.html">The System</a></li><li><a href="indicators.html">Indicators</a></li><li><a href="focus.html">Focus Room</a></li><li><a href="tools.html">Free Tools</a></li><li><a href="dilution-check.html">Dilution Check</a></li><li><a href="pricing.html" data-cta-source="footer-product" data-cta-target="pricing">Pricing</a></li><li><a href="deals.html" data-cta-source="footer-product" data-cta-target="deals">Deals</a></li></ul></div>
       <div><div class="footer-col-title">Explore</div><ul class="footer-links"><li><a href="guides.html" data-cta-source="footer-explore" data-cta-target="guides">Guides</a></li><li><a href="trader-type.html" data-cta-source="footer-explore" data-cta-target="trader-type">Trader Type</a></li><li><a href="trade-replay.html" data-cta-source="footer-explore" data-cta-target="trade-replay">Trade Replay</a></li><li><a href="trading-os.html" data-cta-source="footer-explore" data-cta-target="trading-os">Trading OS</a></li><li><a href="soundtrack.html" data-cta-source="footer-explore" data-cta-target="soundtrack">Soundtrack</a></li><li><a href="why.html" data-cta-source="footer-explore" data-cta-target="why">Why MAKETZO</a></li><li><a href="contact.html" data-cta-source="footer-explore" data-cta-target="contact">Contact Us</a></li></ul></div>
@@ -1768,7 +1756,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 </footer>
 
 <div class="sticky-bar" id="stickyBar">
-  <span class="sticky-bar-text"><strong>Stay Sharp.</strong> Bi-weekly trading discipline insights.</span>
+  <span class="sticky-bar-text"><strong>Stay Sharp.</strong> Trading discipline insights, every two weeks.</span>
   <form class="sticky-bar-form" onsubmit="return MKTNewsletter.handleForm(event, 'sticky-bar')" novalidate>
     <input class="sticky-bar-input" id="stickyEmail" name="email" type="email" placeholder="your@email.com" required autocomplete="email" aria-describedby="stickyEmailError">
     <button class="btn-primary" type="submit">Subscribe</button>

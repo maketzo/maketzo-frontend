@@ -68,7 +68,7 @@
       "name": "How much can you make day trading with $1000?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "There is no honest fixed number, because the result depends on your edge, your costs and whether you follow your plan. Three facts shape a $1,000 account. It sits under the $2,000 needed to borrow on margin, so it trades as a cash account, and the cash from each sale has to settle, the next business day, before it can pay for a trade you also close that day. Costs like the spread take a bigger bite from small positions. And losses compound against you, so the first goal is to keep the account alive long enough to learn whether your edge is real."
+        "text": "There is no honest fixed number, because the result depends on your edge, your costs and whether you follow your plan. Three facts shape a $1,000 account. It sits under the $2,000 needed to borrow on margin, so it trades as a cash account. Money from a sale settles the next business day. Buy with it today and sell that buy before the money settles, and you have a good-faith violation. Costs like the spread take a bigger bite from small positions. And losses compound against you, so the first goal is to keep the account alive long enough to learn whether your edge is real."
       }
     }
   ]
@@ -447,7 +447,7 @@ body:has(.sticky-bar.visible) { padding-bottom: 80px; }
   <h2>Most Traders Who Lose Already Knew Better</h2>
   <figure class="blog-fig blog-fig-right"><img src="https://media.maketzo.co/blog-images/5cb0984e-0617-443e-b510-225d91519eb4.jpg" alt="Trading chart showing a sharp selloff, beside a trading plan checklist and a handwritten note reading “I knew better.”"></figure><p>It is 9:31. A small cap is up 60% on a contract headline, and a trader has a written plan: wait for the first pullback, buy it with a limit order, stop under the pullback's low. The stock dips for eight seconds and rips. The trader drops the plan and hits a market order into a thin book, and the fill lands well over the price on the screen. Two minutes later the stock flushes through the stop, the stop-limit never fills, and the trader is holding a loss the plan said could not exist. By 11:00 there are four more trades, each one trying to win back the first. The day closes red, and the trader's verdict is three words: I knew better.</p>
   <p>That trader did not have a knowledge problem. Every rule broken that morning was one they could have recited at breakfast. The rules live in the calm part of the brain, and the order gets clicked by the part that wants relief, revenge or to be right. You cannot fix a doing problem with more knowing, which is why one more course or one more indicator rarely turns a red month green.</p>
-  <p>What does turn it is structure around the moment of decision: rules set before the bell, a record that grades whether you followed them, and something that catches the drift while it is happening. That is the job MAKETZO does for small cap day traders. The <a href="/journal">MAKETZO journal</a> grades discipline on every trade, and its <a href="/journal">Picard Score</a> measures how well you ran your process whatever the P&amp;L said. <a href="/system">COACH SAYS</a> steps in during the session when your trading drifts from the rules you set, and the <a href="/focus">Focus Room</a> is where you get your head straight before the next order instead of firing it. Every plan starts with a <a href="/pricing">7-day free trial</a>.</p>
+  <p>What does turn it is structure around the moment of decision: rules set before the bell, a record that grades whether you followed them, and something that ends your day when your rules say stop. That is the job MAKETZO does for small cap day traders. The <a href="/journal">MAKETZO journal</a> grades how well you followed your rules each day, and its <a href="/journal">Picard Score</a> measures how well you ran your process whatever the P&amp;L said. As you trade, type your P&amp;L. MAKETZO counts every loss past your <a href="/system">strike line</a> as a strike, warns you before your last one, and ends your day in the app when your rules say stop. The <a href="/focus">Focus Room</a> is where you get your head straight before the next order instead of firing it. The Lock-In, COACH SAYS, strikes, the Focus Room and Dilution Check come with Pro and Elite. Every plan starts with a <a href="/pricing">7-day free trial</a>.</p>
 </div>
 
 <div class="prose-wrap">
@@ -455,7 +455,7 @@ body:has(.sticky-bar.visible) { padding-bottom: 80px; }
   <p>Every order makes you choose between two things you cannot both lock down: getting filled, and the price you get.</p>
   <p>When you buy, your broker routes the order to a market where it meets a seller. The bid is the highest price a buyer is offering right now, the ask is the lowest price a seller will take, and the gap between them is the spread, a cost you pay on every round trip. Behind each price sits a number of shares, and that depth decides how your order fills.</p>
   <ul><li><strong>Market order.</strong> Fills now at whatever is resting in the book. Fine in a deep, liquid name. In a thin small cap it sweeps up through every offer until it is full, and your average price can land far from where you clicked.</li><li><strong>Limit order.</strong> Fills only at your price or better. It protects the price and can sit unfilled while the stock runs without you.</li><li><strong>Stop-market.</strong> Turns into a market order when it triggers. You get out, at no known price, and on a fast flush it can fill well through the stop.</li><li><strong>Stop-limit.</strong> Turns into a limit order when it triggers. It caps the price, and in a fast drop that cap is the trap: price blows past the limit, nothing fills, and you still own the shares.</li></ul>
-  <p>All four come down to one line. Market and stop-market guarantee the execution, limit and stop-limit guarantee the price, and nothing guarantees both. In a thin, fast name, a marketable limit set at or just through the ask fills quickly while capping the worst price you will pay. When your first job is to be flat, use the stop that fills, not the one that might not.</p>
+  <p>All four come down to one line. Market and stop-market guarantee the execution, limit and stop-limit guarantee the price, and nothing guarantees both. In a thin, fast name, a marketable limit set at or just through the ask fills quickly while capping the worst price you will pay. When getting out matters more than the price, use a stop-market order, not a stop-limit.</p>
   <p>A low share price is no discount on the danger. A two-dollar stock with a thin book sweeps a market order as hard as a two-hundred-dollar one, so pick the order type from the book in front of you, never from habit.</p>
 </div>
 
@@ -471,7 +471,7 @@ body:has(.sticky-bar.visible) { padding-bottom: 80px; }
 
 <div class="prose-wrap">
   <h2>The Clock and the Runner: Trading the Day's Rhythm</h2>
-  <p>The market at 9:35 is a different animal from the market at noon, and trading against the clock is a quiet, steady way to bleed.</p>
+  <p>The market at 9:35 is a different animal from the market at noon, and ignoring the time of day is a quiet, steady way to lose money.</p>
   <p>The open brings the heaviest volume, the biggest moves and the most noise. Late morning into lunch, volume thins, price drifts and chops, and the setups get worse while the urge to trade does not. That midday stretch is where overtrading does most of its damage, and the disciplined move when the tape goes quiet is to trade less, not to invent trades. The last hour, power hour, wakes up again as the day's positions get resolved, so it earns your attention back.</p>
   <p>When a theme is running, trade the leader: the name with the most relative strength, making new highs. A weak name moving only in sympathy is usually the first to fade.</p>
   <p>Small caps add one question that has nothing to do with the chart: can the company sell stock into this move? A runner with an open channel to issue shares can turn into the supply that buries it. Before you trade one, run it through <a href="/dilution-check">Dilution Check</a>. It reads the company's SEC filings and returns a supply risk read: whether a registered way to sell stock is open right now, such as an effective shelf or an at-the-market program, how often the company has used it in the last year, and how long its cash lasts at its last reported burn. Every form code links straight to the filing, so you can check the read rather than trust it. If you trade <a href="/small-cap-day-trading">low float stocks</a>, that read belongs in your premarket routine next to the news.</p>
@@ -480,10 +480,10 @@ body:has(.sticky-bar.visible) { padding-bottom: 80px; }
 <div class="prose-wrap">
   <h2>Size for the Losing Streak You Will Get</h2>
   <p>Give two traders the same edge, the same win rate and the same reward for each dollar of risk, and one can compound for years while the other is gone by spring. The difference is bet size.</p>
-  <p>Every strategy, even a great one, produces losing streaks, because the math guarantees stretches of bad luck. Bet small and a cold streak is a dip you trade through. Bet big and the same ordinary streak buries you before the edge has a chance to pay. The relationship is steep: cut your risk per trade in half and it takes roughly twice as many losers in a row to do the same damage.</p>
+  <p>Every strategy, even a great one, produces losing streaks, because the math guarantees stretches of bad luck. Bet small and a cold streak is a drawdown you can trade through. Bet big and the same ordinary streak buries you before the edge has a chance to pay. The relationship is steep: cut your risk per trade in half and it takes roughly twice as many losers in a row to do the same damage.</p>
   <p>Drawdowns also climb out slower than they fall in. A 25% drawdown takes a 33% gain to recover, and a 50% hole takes 100%. That is why the first job of size is to keep you in the game long enough for your edge to show up.</p>
   <ul><li>Judge your size by the worst normal streak, not the average trade.</li><li>Keep edge and bet size as separate decisions. A good week is not a reason to bet more.</li><li>If a normal cold streak is doing real damage, the size was wrong, not the edge.</li></ul>
-  <p>The time to settle that number is before the open, while you are calm. In MAKETZO, the <a href="/focus">Morning Lock-In</a> is where you sign your rules for the day before the first order, your max loss included, so the version of you at 9:31 is overruled by the one who already made the call.</p>
+  <p>The time to settle that number is before the open, while you are calm. In MAKETZO, the <a href="/focus">Morning Lock-In</a> is where you sign your rules for the day before the first order, your max loss included. As you trade, type your P&amp;L, and MAKETZO ends your day in the app when your rules say stop.</p>
   <p>Go back to the trader who chased at 9:31. They knew the order types, the clock and the rules on size. Knowing the setup is the easy half of stock trading. The half that pays is doing what you planned when the stock rips and your own money is on the line.</p>
 </div>
 
@@ -494,7 +494,7 @@ body:has(.sticky-bar.visible) { padding-bottom: 80px; }
   <h3>What is swing trading?</h3>
   <p>Swing trading holds a position for several days to a few weeks to catch a move larger than one session offers. It takes less screen time and fewer decisions than day trading. The cost is overnight risk: news after the close can gap the stock past your stop by the next open, and a stop-market order then fills at the first real price, not at your stop. Swing traders lean on the daily chart and the company's calendar, including earnings dates and filings.</p>
   <h3>How much can you make day trading with $1000?</h3>
-  <p>There is no honest fixed number, because the result depends on your edge, your costs and whether you follow your plan. Three facts shape a $1,000 account. It sits under the $2,000 needed to borrow on margin, so it trades as a cash account, and the cash from each sale has to settle, the next business day, before it can pay for a trade you also close that day. Costs like the spread take a bigger bite from small positions. And losses compound against you, so the first goal is to keep the account alive long enough to learn whether your edge is real.</p>
+  <p>There is no honest fixed number, because the result depends on your edge, your costs and whether you follow your plan. Three facts shape a $1,000 account. It sits under the $2,000 needed to borrow on margin, so it trades as a cash account. Money from a sale settles the next business day. Buy with it today and sell that buy before the money settles, and you have a good-faith violation. Costs like the spread take a bigger bite from small positions. And losses compound against you, so the first goal is to keep the account alive long enough to learn whether your edge is real.</p>
 </div>
       <div class="blog-fig-clear" aria-hidden="true"></div>
       
@@ -519,7 +519,7 @@ body:has(.sticky-bar.visible) { padding-bottom: 80px; }
 <section class="final-cta-section">
   <p class="final-cta-eyebrow">Stop Losing to Yourself</p>
   <h2 class="final-cta-title">Start trading <em>with discipline.</em></h2>
-  <p class="final-cta-sub">Maketzo is the system that closes the door at the exact moment your hand is on it.</p>
+  <p class="final-cta-sub">MAKETZO checks every P&amp;L you type against your rules and ends your day in the app when they say you are done.</p>
   <div class="final-cta-btn-wrap">
     <button class="btn-primary" data-cta-source="page-stock-trading" onclick="handleCheckout('pro',event)">Start 7-Day Free Trial &rarr;</button>
     <p class="final-cta-note">7-day free trial &middot; cancel anytime</p>
@@ -537,7 +537,7 @@ body:has(.sticky-bar.visible) { padding-bottom: 80px; }
             <img class="mk-brand-lockup__wordmark" src="https://maketzo.co/assets/logo-wordmark.png" alt="MAKETZO">
           </a>
         </div>
-        <p class="footer-tagline"><strong>Stop the trade you'd regret.</strong>Discipline in every session. Edge in every trade. Accountability when it counts.</p>
+        <p class="footer-tagline"><strong>Stop the trade you'd regret.</strong></p>
       </div>
       <div><div class="footer-col-title">Product</div><ul class="footer-links"><li><a href="https://maketzo.co/journal">Journal</a></li><li><a href="https://maketzo.co/system">The System</a></li><li><a href="https://maketzo.co/indicators">Indicators</a></li><li><a href="https://maketzo.co/focus">Focus Room</a></li><li><a href="https://maketzo.co/tools">Free Tools</a></li><li><a href="https://maketzo.co/dilution-check">Dilution Check</a></li><li><a href="https://maketzo.co/pricing">Pricing</a></li><li><a href="https://maketzo.co/deals">Deals</a></li></ul></div>
       <div><div class="footer-col-title">Explore</div><ul class="footer-links"><li><a href="https://maketzo.co/guides">Guides</a></li><li><a href="https://maketzo.co/trade-replay">Trade Replay</a></li><li><a href="https://maketzo.co/trading-os">Trading OS</a></li><li><a href="https://maketzo.co/why">Why MAKETZO</a></li><li><a href="https://maketzo.co/blog">Blog</a></li><li><a href="https://maketzo.co/contact">Contact Us</a></li></ul></div>
@@ -561,7 +561,7 @@ function closeDrawer(){
 }
 </script>
 <div class="sticky-bar" id="stickyBar">
-  <span class="sticky-bar-text"><strong>Stay Sharp.</strong> Bi-weekly trading discipline insights.</span>
+  <span class="sticky-bar-text"><strong>Stay Sharp.</strong> Trading discipline insights, every two weeks.</span>
   <form class="sticky-bar-form" onsubmit="return MKTNewsletter.handleForm(event, 'sticky-bar')" novalidate>
     <input class="sticky-bar-input" id="stickyEmail" name="email" type="email" placeholder="your@email.com" required autocomplete="email" aria-label="Email address" aria-describedby="stickyEmailError">
     <button class="btn-primary" type="submit">Subscribe</button>
