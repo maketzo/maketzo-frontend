@@ -162,7 +162,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
 .station-eyebrow { font-family: var(--mk-font-mono); font-size: var(--mk-mono-xs); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-brand); margin-bottom: 8px; }
 .station-title { font-family: var(--mk-font-display); font-size: var(--mk-display-md); letter-spacing: var(--mk-track-display); text-transform: uppercase; color: var(--mk-text-primary); font-weight: 400; line-height: 1.06; margin-bottom: 16px; }
 .station-cards { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; }
-.station-cards--multi { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.station-cards--multi { grid-template-columns: repeat(2, minmax(0, 1fr)); } /* two cards since the Focus Timer card left, 2026-11-23 */
 
 .tool-card { display: flex; flex-direction: column; gap: 10px; padding: 22px 22px; background: var(--mk-surface-raised); border: 1px solid rgba(255,255,255,.06); border-radius: var(--mk-radius-card); transition: transform var(--mk-dur-med) var(--mk-ease-out), border-color var(--mk-dur-med); }
 .tool-card { position: relative; }
@@ -478,13 +478,6 @@ body:has(.sticky-bar.visible) { padding-bottom: 80px; }
           <p class="tool-card-desc">Focus music built for the desk. Mental conditioning that happens to sound like an album.</p>
           <a class="tool-card-cta" href="soundtrack.html" data-cta-source="tools" data-cta-target="soundtrack">Press play <span aria-hidden="true">&rarr;</span></a>
         </div>
-        <div class="tool-card">
-          <div class="tool-card-nameline">
-            <div class="tool-card-name">Focus Timer</div>
-            <div class="tool-card-tag">IN THE APP &middot; EVERY PLAN</div>
-          </div>
-          <p class="tool-card-desc">A break timer that gets you off the screen before boredom turns into a bad click.</p>
-        </div>
       </div>
     </div>
   </div>
@@ -550,7 +543,7 @@ body:has(.sticky-bar.visible) { padding-bottom: 80px; }
     </div>
     <div class="freebox-row">
       <div class="freebox-k">Free in the app</div>
-      <div class="freebox-v">Halt Clock, Focus Timer, Sticky Notes, Flash Cards, the Trading OS, and the Knowledge Center are built into MAKETZO and included in every plan.</div>
+      <div class="freebox-v">Halt Clock, Sticky Notes, Flash Cards, the Trading OS, and the Knowledge Center are built into MAKETZO and included in every plan.</div>
     </div>
     <div class="freebox-row">
       <div class="freebox-k">Needs Pro</div>
