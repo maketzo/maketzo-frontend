@@ -19,8 +19,8 @@
   "@type": "BlogPosting",
   "headline": "What Happens When a Stock You Own Halts Down?",
   "description": "A halt down does not stop the selling. It stores it. What happens to your shares, your stop and your orders while a stock is frozen, and how it reopens.",
-  "datePublished": "2026-11-19T03:46:07.000Z",
-  "dateModified": "2026-11-19T03:46:07.000Z",
+  "datePublished": "2026-11-19T03:46:15.000Z",
+  "dateModified": "2026-11-19T03:46:15.000Z",
   "url": "https://maketzo.co/blog/what-happens-when-a-stock-you-own-halts",
   "mainEntityOfPage": {
     "@type": "WebPage",
@@ -245,7 +245,7 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
    bigger "Browse all posts" card at the end of the body before the CTA. */
 .blog-back-strip { max-width: 820px; margin: 0 auto; padding: 16px 32px 0; }
 .blog-back-strip--bottom { max-width: 820px; margin: 56px auto 0; padding: 0 32px; text-align: center; }
-.blog-back-link { display: inline-flex; align-items: center; gap: 10px; padding: 14px 28px; background: var(--mk-smoke-800, #1a1a1a); border: 1px solid var(--mk-smoke-700); border-radius: var(--mk-radius-button); font-family: var(--mk-font-mono); font-size: var(--mk-mono-sm, .8125rem); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-text-primary); font-weight: 600; transition: background var(--mk-dur-fast), border-color var(--mk-dur-fast), transform var(--mk-dur-fast); }
+.blog-back-link { display: inline-flex; align-items: center; gap: 10px; padding: 14px 28px; background: var(--mk-smoke-800, #1a1a1a); border: 1px solid var(--mk-smoke-700); border-radius: var(--mk-radius-button); font-family: var(--mk-font-mono); font-size: var(--mk-mono-sm, .8125rem); letter-spacing: var(--mk-track-eyebrow); text-transform: uppercase; color: var(--mk-text-primary); font-weight: 500; transition: background var(--mk-dur-fast), border-color var(--mk-dur-fast), transform var(--mk-dur-fast); }
 .blog-back-link:hover { background: var(--mk-smoke-700); border-color: var(--mk-smoke-600, #444); transform: translateY(-1px); }
 .blog-browse-more { display: block; max-width: 660px; margin: 64px auto 0; padding: 36px 32px; text-align: center; background: linear-gradient(135deg, rgba(212,175,55,.04), transparent 70%); border: 1px solid rgba(212,175,55,.18); border-radius: var(--mk-radius-card); transition: border-color var(--mk-dur-fast), background var(--mk-dur-fast); }
 .blog-browse-more:hover { border-color: rgba(212,175,55,.4); background: linear-gradient(135deg, rgba(212,175,55,.08), transparent 70%); }
@@ -393,7 +393,8 @@ footer { background: var(--mk-obsidian-950); border-top: var(--mk-border-hairlin
   <p>The code tells you what kind of wait this is. The indicative price tells you how far the stock is going.</p>
   <p>Check the halt code before anything else. A volatility pause shows as LUDP, lasts five minutes at the minimum, and the stock trades again the same day. A T1 means the company has news on the way, and then the next print depends on what the company says, not on the band. A T12 means the exchange wants answers from the company, and there is no clock on that one at all. The guide to <a href="/trading-halts">halts</a> lists every code you will meet and how long each one tends to last.</p>
   <p>On a volatility pause, the number that matters next is the indicative price, the level the auction would clear at right now. On a Nasdaq listing, the first auction can price only so far under the band where the stock froze, 5% under it, or 15 cents when that band is $3 or less. If the indicative price sits under that limit, the pause extends by five minutes and the limit drops another step.</p>
-  <p>At 10:42 the indicative price on the trader's stock reads $3.65, and the limit has to step down twice to reach it: - 10:41 to 10:46. The auction can price no lower than $3.80, so it cannot clear at $3.65. The pause extends. - 10:46 to 10:51. The limit drops to $3.60. The indicative price now sits inside it, so the auction can clear when this window ends. Past ten minutes, a stuck auction can release the stock at any second, not only on the five-minute marks.</p>
+  <p>At 10:42 the indicative price on the trader's stock reads $3.65, and the limit has to step down twice to reach it:</p>
+  <ul><li>10:41 to 10:46. The auction can price no lower than $3.80, so it cannot clear at $3.65. The pause extends.</li><li>10:46 to 10:51. The limit drops to $3.60. The indicative price now sits inside it, so the auction can clear when this window ends. Past ten minutes, a stuck auction can release the stock at any second, not only on the five-minute marks.</li></ul>
   <p>That gap, $4.00 to $3.65, is the whole story of the wait. A 9% gap is about two steps, so plan on roughly ten minutes. A 20% gap is four steps and closer to twenty, if the indicative price holds still, which it rarely does.</p>
   <p>MAKETZO's <a href="/tools#halt-clock">Halt Clock</a>, which comes with every plan, does that arithmetic while you watch. Tap Now when the screen freezes, enter the last price and your broker's indicative price, and it shows an estimated reopen time, how many five-minute halts the move adds up to, and the bands the stock would reopen into. Keep the indicative price current, because the estimate follows it, and if your platform shows no indicative or imbalance data, treat the time as a guess.</p>
 </div>
