@@ -121,6 +121,9 @@
     footReply: '{name} replies by email',
     joined: '{name} from MAKETZO joined',
     handed: '{from} handed you to {name}',
+    // A different person answers than last time, outside a live chat (Ed's pick A, Helping You Now, 2026-11-26)
+    handTitle: '{name} is helping you now',
+    handBody: '{from} passed your chat to {first}, along with everything you’ve sent.',
     otherLink: 'Talk to Someone Else',
     otherAlone: 'Nobody else is free right now. Keep chatting here, or email the team instead.',
     endChat: 'End Chat',
@@ -1006,6 +1009,8 @@
     if (!msgs.length) { hello(); head(); return; }
     // Whose line is last: after the visitor wrote back, the chat waits on the team, so it does not ask for a rating yet.
     var lastWho = null;
+    // The whole chat is drawn again here, so who answered is learned again from its first reply (handCard).
+    S.repName = null;
     msgs.forEach(function (m) {
       S.lastSeq = Math.max(S.lastSeq, Number(m.seq) || 0);
       if (m.kind === 'visitor') { var b = add(el('div', 'mkc-me')); b.textContent = m.body || ''; fileLine(b, m.files); b.setAttribute('data-seq', m.seq); lastWho = 'visitor'; }
@@ -1023,11 +1028,24 @@
   }
   function repLine(m) {
     var who = m.alias || 'MAKETZO';
+    if (S.repName && S.repName !== who) handCard(who, S.repName);
     S.repName = who;
     add(el('div', 'mkc-rep', '<span class="mkc-mark" aria-hidden="true">' + esc(who.charAt(0).toUpperCase()) + '</span>'
       + '<div><p class="mkc-meta">' + esc(who) + ' &middot; ' + esc(clock(m.at)) + '</p><div class="mkc-bub"></div>'
       + (m.emailed ? '<p class="mkc-emailed">' + esc(COPY.emailedYou) + '</p>' : '') + '</div>'))
       .querySelector('.mkc-bub').textContent = m.body || '';
+  }
+  // A different person answers than the one before (Ed's pick A, Helping You Now, 2026-11-26): who is helping now, and
+  // that the whole chat went with it, so nobody wonders whether to explain it all again. Shown once, above that
+  // person's first reply. A live chat's own joined or handed line already says it, so those set the name (systemLine)
+  // and no card follows. The reply email carries the same words (maketzo-backend lib/support-mail.js handLine). The mark
+  // is the reply's round gold mark with its letter centred (Ed on the mockup: "make sure the 'E' is in the circle").
+  function handCard(who, from) {
+    var first = String(who).trim().split(/\s+/)[0];
+    var card = add(el('div', 'mkc-hand', '<span class="mkc-mark" aria-hidden="true">' + esc(who.charAt(0).toUpperCase()) + '</span>'
+      + '<div class="mkc-hand-t"><p class="mkc-hand-w"></p><p class="mkc-hand-s"></p></div>'));
+    card.querySelector('.mkc-hand-w').textContent = COPY.handTitle.split('{name}').join(who);
+    card.querySelector('.mkc-hand-s').textContent = COPY.handBody.split('{from}').join(from).split('{first}').join(first);
   }
   function systemLine(m) {
     if (m.code === 'note') { add(el('div', 'mkc-me')).textContent = m.body || ''; return; }
@@ -1035,7 +1053,7 @@
     if (m.code === 'saw' || m.code === 'checkin') { add(mLine(m.body)); return; }
     if (m.code === 'import-read') { add(readCard(m.read)); return; }
     var name = m.alias || 'MAKETZO';
-    if (m.code === 'joined' || m.code === 'handed') S.everLive = true;
+    if (m.code === 'joined' || m.code === 'handed') { S.everLive = true; S.repName = name; }
     var text = {
       emailed: COPY.sent, 'rated-yes': COPY.ratedYes, 'rated-no': COPY.ratedNo,
       joined: COPY.joined.replace('{name}', name),

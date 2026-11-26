@@ -162,6 +162,14 @@ button.mkc-card:hover { border-color: var(--mkc-chip-line); }
   font: 500 11px/1.3 var(--mkc-mono); letter-spacing: .06em; color: var(--mkc-fg3);
 }
 .mkc-sys::before, .mkc-sys::after { content: ""; flex: 1; height: 1px; background: var(--mkc-line2); }
+/* A different person answers than the one before (Ed's pick A, Helping You Now, 2026-11-26): who is helping now, above
+   their first reply. The mark is the reply's own round gold mark, its letter centred in the circle (Ed on the mockup,
+   where a text rule had knocked it out: "make sure the 'E' is in the circle"), so the text rules name their own classes. */
+.mkc-hand { display: flex; gap: 10px; align-items: center; padding: 10px 12px; border-radius: 12px; background: var(--mkc-in-bg); border: 1px solid var(--mkc-line2); }
+.mkc-hand .mkc-mark { width: 30px; height: 30px; border-radius: 50%; border: 0; background: linear-gradient(135deg, #E5C572, #B8941F); color: #15120A; font: 700 13px/1 var(--mkc-sans); letter-spacing: 0; }
+.mkc-hand-t { flex: 1; min-width: 0; }
+.mkc-hand-w { margin: 0; font-size: 14px; font-weight: 600; line-height: 1.3; color: var(--mkc-fg); overflow-wrap: anywhere; }
+.mkc-hand-s { margin: 2px 0 0; font-size: 13px; line-height: 1.4; color: var(--mkc-fg2); overflow-wrap: anywhere; }
 .mkc-rep { display: flex; gap: 8px; align-items: flex-end; max-width: 88%; }
 .mkc-rep .mkc-mark { width: 26px; height: 26px; border-radius: 50%; border: 0; background: linear-gradient(135deg, #E5C572, #B8941F); color: #15120A; font: 700 12px/1 var(--mkc-sans); }
 .mkc-meta { margin: 0 0 4px 2px; font: 500 11px/1 var(--mkc-mono); letter-spacing: .06em; color: var(--mkc-fg3); }
