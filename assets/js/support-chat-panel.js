@@ -536,6 +536,15 @@
       head();
     }).catch(function () {});
   }
+  // A clean panel: no chat held, nothing on screen, nothing waiting (End Chat, and opening another of the trader's chats).
+  function fresh() {
+    clearTimeout(loopT);
+    forget();
+    S.replied = false; S.missedOnce = false; S.everLive = false; S.rated = false; S.rep = null; S.v = null; S.lastSeq = 0; S.unread = 0; S.waitStart = 0;
+    S.extra = null; S.prompt = null; S.after = null; S.read = null; S.opener = null; paintRead(); dropFiles();
+    endWait(); dropDots(); closeArticle(); badge();
+    log.innerHTML = '';
+  }
   // End Chat: a labelled button in the chat's header whenever there is a chat (Ed's picks, 2026-11-16: the header
   // button, then "a way to log out of the chat so it resets and then prompted for feedback"). The thread is kept across
   // visits on purpose; this ends it, starts the panel fresh, and asks how the chat was. A chat still waiting on the
@@ -545,12 +554,7 @@
     if (!ended) return;
     if (!pending) post('close', withConv({})).catch(function () {});
     track('end', { by: 'visitor', from: was });
-    clearTimeout(loopT);
-    forget();
-    S.replied = false; S.missedOnce = false; S.everLive = false; S.rated = false; S.rep = null; S.v = null; S.lastSeq = 0; S.unread = 0; S.waitStart = 0;
-    S.extra = null; S.prompt = null; S.after = null; S.read = null; S.opener = null; paintRead(); dropFiles();
-    endWait(); dropDots(); closeArticle(); badge();
-    log.innerHTML = '';
+    fresh();
     add(el('div', 'mkc-sys')).textContent = COPY.endedYou;
     if (!S.blocked) transcriptLink(ended, known);
     if (pending) add(el('div', 'mkc-note')).textContent = COPY.stillWithTeam;
@@ -1513,6 +1517,28 @@
     }
     ON.forEach(function (n) { document.addEventListener(n, go, { capture: true, passive: true }); });
   }
+  // One of a signed-in trader's own chats, by its id: the app's reply card opens the chat an answer is in (Ed's pick A,
+  // 2026-11-27). The server opens it for its owner only (POST /support/resume with own). The panel already holding that
+  // chat just opens; another chat is cleared first. A tap asked for it, so nothing waits for a touch.
+  function openOwn(id) {
+    build();
+    var held = S.conv || loadConv();
+    if (held && held.c === id) { setOpen(true, 'reply'); return; }
+    fresh();
+    S.said = true;
+    setOpen(true, 'reply');
+    var wait = add(el('div', 'mkc-wait', esc(COPY.opening)));
+    post('resume', { own: String(id || '') }).then(function (j) {
+      wait.remove();
+      S.conv = { c: j.c, t: j.t };
+      track('open', { from: 'reply', resumed: 'yes' });
+      thread(j);
+    }).catch(function (e) {
+      wait.remove();
+      add(el('div', 'mkc-note')).textContent = e.message;
+      hello();
+    });
+  }
 
   // -- live chat (phase B, 2026-11-16) --
   // A person, when someone is online. The panel holds one request open while the chat waits or is live (POST
@@ -1832,6 +1858,7 @@
     close: function () { setOpen(false); },
     toggle: function (from) { setOpen(!S.open, from); },
     fromEmail: fromEmail,
+    openOwn: openOwn,
     watch: watch
   };
 })();
