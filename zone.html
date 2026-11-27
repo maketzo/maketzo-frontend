@@ -117,16 +117,16 @@ strong { color: var(--mk-text-primary); font-weight: 600; }
 /* ── Hero — the breathing stage takes most of the first viewport ─── */
 .zone-hero { position: relative; min-height: 100vh; padding: 100px 24px 60px; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; }
 .zone-hero-bg { position: absolute; inset: 0; background-size: cover; background-position: center; transition: background-image 420ms ease; z-index: 0; }
-.zone-hero-bg[data-env="beach"]    { background-color: #1a3a4f; background-image: url("https://maketzo.co/assets/environments/beach-1920.jpg"), linear-gradient(180deg,#2d5872 0%,#0a1f2e 100%); }
-.zone-hero-bg[data-env="mountain"] { background-color: #2a2a3a; background-image: url("https://maketzo.co/assets/environments/mountain-1920.jpg"), linear-gradient(180deg,#4a4a5e 0%,#15151f 100%); }
+.zone-hero-bg[data-env="beach"]    { background-color: #1a3a4f; background-image: url("https://media.maketzo.co/environments/beach-1448.jpg"), linear-gradient(180deg,#2d5872 0%,#0a1f2e 100%); }
+.zone-hero-bg[data-env="mountain"] { background-color: #2a2a3a; background-image: url("https://media.maketzo.co/environments/mountain-1448.jpg"), linear-gradient(180deg,#4a4a5e 0%,#15151f 100%); }
 .zone-hero-scrim { position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 50%, rgba(0,0,0,0.50) 0%, rgba(0,0,0,0.78) 65%, rgba(0,0,0,0.92) 100%), linear-gradient(180deg, rgba(0,0,0,0.55), rgba(0,0,0,0.10) 28%, rgba(0,0,0,0.10) 72%, rgba(0,0,0,0.55)); pointer-events: none; z-index: 1; }
 
 /* ── Top chrome row: env picker (left) + audio cluster (right) ──── */
 .zone-chrome { position: relative; z-index: 3; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 8px 32px; width: 100%; max-width: 1080px; flex-wrap: wrap; }
 .zone-envs { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
 .zone-env-thumb { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 64px; height: 42px; border-radius: 8px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.14); background-size: cover; background-position: center; color: #fff; cursor: pointer; transition: all 200ms var(--mk-ease-out); overflow: hidden; }
-.zone-env-thumb[data-env="beach"]    { background-image: url("https://maketzo.co/assets/environments/beach-1920.jpg"), linear-gradient(135deg, #3e7a96, #0a1f2e); background-color: #2d5872; }
-.zone-env-thumb[data-env="mountain"] { background-image: url("https://maketzo.co/assets/environments/mountain-1920.jpg"), linear-gradient(135deg, #6a6a82, #15151f); background-color: #4a4a5e; }
+.zone-env-thumb[data-env="beach"]    { background-image: url("https://media.maketzo.co/environments/beach-1448.jpg"), linear-gradient(135deg, #3e7a96, #0a1f2e); background-color: #2d5872; }
+.zone-env-thumb[data-env="mountain"] { background-image: url("https://media.maketzo.co/environments/mountain-1448.jpg"), linear-gradient(135deg, #6a6a82, #15151f); background-color: #4a4a5e; }
 .zone-env-thumb::after { content: ""; position: absolute; inset: 0; background: rgba(0,0,0,0.35); transition: background 200ms ease; }
 .zone-env-thumb:hover::after { background: rgba(0,0,0,0.15); }
 .zone-env-thumb.is-active { border-color: var(--mk-brand); box-shadow: 0 0 0 1px var(--mk-brand), 0 0 18px rgba(212,175,55,0.40); }
