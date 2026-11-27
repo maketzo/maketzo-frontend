@@ -47,7 +47,7 @@
    "pre-market-zone-routine"
   ],
   "cant-name-the-setup": [
-   "perfect-entry-heart-rate",
+   "last-twenty-trades-real-strategy",
    "low-float-arguments-not-levels",
    "hands-take-trades-brain-vetoed"
   ],
@@ -206,6 +206,11 @@
    "rules-dont-fail-discipline-does",
    "blue-belt-phase-every-trader"
   ],
+  "last-twenty-trades-real-strategy": [
+   "perfect-entry-before-the-click",
+   "stop-trading-randomly-noise-vs-signal",
+   "the-trade-you-dont-take-3pj6"
+  ],
   "limitp-premarket-after-hours-stops": [
    "perfect-entry-heart-rate",
    "trading-os-runs-whether-you-wrote-it",
@@ -317,7 +322,7 @@
    "size-that-unmakes-you"
   ],
   "perfect-entry-heart-rate": [
-   "limitp-premarket-after-hours-stops",
+   "last-twenty-trades-real-strategy",
    "good-setup-wrong-temperature",
    "green-to-red-is-a-second-trade"
   ],
